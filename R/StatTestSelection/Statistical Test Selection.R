@@ -122,18 +122,18 @@ if (observation_type == "R") {
 # Show recommendations ----------------------------------------------------
 # T-Test (and alternatives) ------------------------------------------------------------------
 if (is_continuous_outcome & is_groups & is_two_groups & is_related_obs == FALSE) {
-     prompt_text = paste("Since you are comparing a continuous outcome across 2 independent groups, the T-Test might be best for you.",
-                         "However, if one of the following scenarios is true, then you may get misleading results in your T-Test:",
-                         "--  Sample size is small (less than 100 per group) AND the outcome is not normally distributed; or",
-                         "--  Sample sizes in each group are unequal AND variances are non-homogenous. Note that this is only applicable if you want to use pooled variance ('var.equal = TRUE' in the t.test function in R), which you should use whenever possible.",
-                         "",
-                         "If one of the above scenarios is true, consider taking one of the following corrective actions:",
-                         "--  Transform the outcome (e.g. take the natural log or square root of the outcome) in an effort to make it more normally distributed, then running the T-Test on that transformed variable. Just remember to transform the estimates back to their original form, or else you'll confuse your reader.",
-                         "--  Run a Wilcoxon rank-sum test, which compares the ranks of the values in each group rather than the absolute values. This is a non-parametric test though, so you will not get any estimates on the outcome - you'll only get a p-value.",
-                          sep = "\n")
-     rstudioapi::showQuestion(
-          title = "Statistical Test Recommendation",
-          message = prompt_text)
+        prompt_text = paste("Since you are comparing a continuous outcome across 2 independent groups, the T-Test might be best for you.",
+                            "However, if one of the following scenarios is true, then you may get misleading results in your T-Test:",
+                            "--  Sample size is small (less than 100 per group) AND the outcome is not normally distributed; or",
+                            "--  Sample sizes in each group are unequal AND variances are non-homogenous. Note that this is only applicable if you want to use pooled variance ('var.equal = TRUE' in the t.test function in R), which you should use whenever possible.",
+                            "",
+                            "If one of the above scenarios is true, consider taking one of the following corrective actions:",
+                            "--  Transform the outcome (e.g. take the natural log or square root of the outcome) in an effort to make it more normally distributed, then running the T-Test on that transformed variable. Just remember to transform the estimates back to their original form, or else you'll confuse your reader.",
+                            "--  Run a Wilcoxon rank-sum test, which compares the ranks of the values in each group rather than the absolute values. This is a non-parametric test though, so you will not get any estimates on the outcome - you'll only get a p-value.",
+                            sep = "\n")
+        rstudioapi::showQuestion(
+                title = "Statistical Test Recommendation",
+                message = prompt_text)
 }
 if (is_continuous_outcome & is_groups & is_two_groups & is_related_obs) {
      prompt_text = paste("Since you are comparing a continuous outcome across 2 related groups, the Paired T-Test might be best for you.",
@@ -142,7 +142,7 @@ if (is_continuous_outcome & is_groups & is_two_groups & is_related_obs) {
                          "--  Sample sizes in each group are unequal AND variances are non-homogenous. Note that this is only applicable if you want to use pooled variance ('var.equal = TRUE' in the t.test function in R), which you should use whenever possible.",
                          "",
                          "If one of the above scenarios is true, consider taking one of the following corrective actions:",
-                         "--  Transform the outcome (e.g. take the natural log or square root of the outcome) in an effort to make it more normally distributed, then running the T-Test on that transformed variable. Just remember to transform the estimates back to their original form, or else you'll confuse your reader.",
+                         "--  Transform the outcome (e.g. take the natural log or square root of the outcome) in an effort to make it more normally distributed, then running the Paired T-Test on that transformed variable. Just remember to transform the estimates back to their original form, or else you'll confuse your reader.",
                          "--  Run a Wilcoxon signed-rank test, which compares the ranks of the values in each group rather than the absolute values. This is a non-parametric test though, so you will not get any estimates on the outcome - you'll only get a p-value.",
                          sep = "\n")
      rstudioapi::showQuestion(
@@ -151,4 +151,31 @@ if (is_continuous_outcome & is_groups & is_two_groups & is_related_obs) {
 }
 
 # ANOVA (and alternatives) -------------------------------------------------
-
+if (is_continuous_outcome & is_groups & is_two_groups == FALSE & is_related_obs == FALSE) {
+        prompt_text = paste("Since you are comparing a continuous outcome across 3 or more independent groups, the ANOVA might be best for you.",
+                            "However, if one of the following scenarios is true, then you may get misleading results in your ANOVA:",
+                            "--  Sample size is small (less than 100 per group) AND the outcome is not normally distributed; or",
+                            "--  Sample sizes in each group are unequal AND variances are non-homogenous.",
+                            "",
+                            "If one of the above scenarios is true, consider taking one of the following corrective actions:",
+                            "--  Transform the outcome (e.g. take the natural log or square root of the outcome) in an effort to make it more normally distributed, then running the ANOVA on that transformed variable. Just remember to transform the estimates back to their original form, or else you'll confuse your reader.",
+                            "--  Run a Kruskal-Wallis test, which compares the ranks of the values in each group rather than the absolute values. This is a non-parametric test though, so you will not get any estimates on the outcome - you'll only get a p-value.",
+                            sep = "\n")
+        rstudioapi::showQuestion(
+                title = "Statistical Test Recommendation",
+                message = prompt_text)
+}
+if (is_continuous_outcome & is_groups & is_two_groups == FALSE & is_related_obs) {
+        prompt_text = paste("Since you are comparing a continuous outcome across 3 or more related groups, the Repeated Measures ANOVA might be best for you.",
+                            "However, if one of the following scenarios is true, then you may get misleading results in your Repeated Measures ANOVA:",
+                            "--  Sample size is small (less than 100 per group) AND the outcome is not normally distributed; or",
+                            "--  Sample sizes in each group are unequal AND variances are non-homogenous.",
+                            "",
+                            "If one of the above scenarios is true, consider taking one of the following corrective actions:",
+                            "--  Transform the outcome (e.g. take the natural log or square root of the outcome) in an effort to make it more normally distributed, then running the Repeated Measures ANOVA on that transformed variable. Just remember to transform the estimates back to their original form, or else you'll confuse your reader.",
+                            "--  Run a Kruskal-Wallis test, which compares the ranks of the values in each group rather than the absolute values. This is a non-parametric test though, so you will not get any estimates on the outcome - you'll only get a p-value.",
+                            sep = "\n")
+        rstudioapi::showQuestion(
+                title = "Statistical Test Recommendation",
+                message = prompt_text)
+}
