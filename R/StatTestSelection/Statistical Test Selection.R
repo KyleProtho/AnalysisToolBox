@@ -19,7 +19,6 @@ if (outcome_variable_type_1 == "C") {
         is_categorical_outcome = FALSE
 }
 
-
 # If quantitative outcome selected, determine discrete or continuous --------------
 if (outcome_variable_type_1 == "Q") {
      prompt_text = paste("You've selected a quantitative outcome.",
@@ -149,7 +148,6 @@ if (observation_type == "R") {
      is_related_obs = FALSE
 }
 
-
 # Show recommendations ----------------------------------------------------
 # T-Test (and alternatives) ------------------------------------------------------------------
 if (is_continuous_outcome & is_groups & is_two_groups & is_related_obs == FALSE) {
@@ -211,7 +209,6 @@ if (is_continuous_outcome & is_groups & is_two_groups == FALSE & is_related_obs)
                 message = prompt_text)
 }
 
-
 # Chi-square test (and alternatives) ----------------------------------------------------------
 if (is_categorical_outcome & is_groups & is_related_obs == FALSE) {
         prompt_text = paste("Since you are comparing a categorical outcome across independent groups, then any of the following are options for you:",
@@ -238,7 +235,6 @@ if (is_categorical_outcome & is_groups & is_related_obs) {
                 title = "Statistical Test Recommendation",
                 message = prompt_text) 
 }
-
 
 # Rate Ratio --------------------------------------------------------------
 if (is_discrete_outcome & is_groups & is_related_obs == FALSE) {
@@ -290,7 +286,7 @@ if (is_quantitative_outcome & is_groups == FALSE & is_one_predictor & is_related
 
 # Multiple linear regression ----------------------------------------------
 if (is_quantitative_outcome & is_groups == FALSE & is_one_predictor == FALSE & is_related_obs == FALSE) {
-        prompt_text = paste("Since you are analyzing the relationship between 1 dependent and 2 or more independent variable, then it is best if you use one of the following methods:",
+        prompt_text = paste("Since you are analyzing the relationship between 1 quantitative (dependent) outcome and 2 or more predictor (independent) variables, then it is best if you use one of the following methods:",
                             "",
                             "A)  Pearson's correlation coefficent matrix, if you are not interested in the predictive relationship between the dependent and independent variables",
                             "However, if sample size is small (less than 100) AND the outcome is not normally distributed, then you may get misleading results in your Pearson's correlation coeffiencent.",
@@ -304,6 +300,32 @@ if (is_quantitative_outcome & is_groups == FALSE & is_one_predictor == FALSE & i
                             "--  The outcome is not distributed normally at each value of the predictors. In other words, the random error does not follow a normal distribution",
                             "--  The variance of the outcome at every value of the predictors is not the same. In other words, there is no homogeneity of variances.",
                             "If any of the first 3 scenarios are true, then consider transforming your variable(s) (e.g. take the natural log or square root of them) in an effort to make them more normally distributed, then running the Linear Regression on those transformed variables. Just remember to transform the estimates back to their original form, or else you'll confuse your reader.",
+                            sep = "\n")
+        rstudioapi::showQuestion(
+                title = "Statistical Test Recommendation",
+                message = prompt_text) 
+}
+
+# Logistic regression -----------------------------------------------------
+if (is_categorical_outcome & is_groups == FALSE & is_related_obs == FALSE) {
+        prompt_text = paste("Since you are analyzing the relationship between 1 cateogrical (dependent) outcome and 1 or more quantitative and/or ordered categorical predictor (independent) variables, then Logistic Regression might be best.",
+                            "Before proceeding, you must ensure:", 
+                            "-- That each of your cateogorical outcomes is dummy-coded -- meaning each cateogory is converted to a separate column and the values in that column include only 0s or 1s",
+                            "-- The 'linear in the logit' an assumption is met -- meaning the logit function of the outcome has a linear relationship with the continuous predictor",
+                            "",
+                            "A helpful note: When an event is rare (less 10% of sample or population experiences it), then the rate ratio and odds ratio become increasingly similar.",
+                            "Otherwise, odds ratios can exaggerate the frequency of some event compared to rate ratios. Keep that in mind when interpreting your results.",
+                            sep = "\n")
+        rstudioapi::showQuestion(
+                title = "Statistical Test Recommendation",
+                message = prompt_text) 
+}
+if (is_categorical_outcome & is_groups == FALSE & is_related_obs) {
+        prompt_text = paste("Since you are analyzing the relationship between 1 cateogrical (dependent) outcome and 1 or more quantitative and/or ordered categorical predictor (independent) variables, then Conditional Logistic Regression might be best.",
+                            "Before proceeding, you must ensure that each of your cateogorical outcomes is dummy-coded -- meaning each cateogory is converted to a separate column and the values in that column include only 0s or 1s",
+                            "",
+                            "A helpful note: When an event is rare (less 10% of sample or population experiences it), then the rate ratio and odds ratio become increasingly similar.",
+                            "Otherwise, odds ratios can exaggerate the frequency of some event compared to rate ratios. Keep that in mind when interpreting your results.",
                             sep = "\n")
         rstudioapi::showQuestion(
                 title = "Statistical Test Recommendation",
