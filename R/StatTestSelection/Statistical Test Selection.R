@@ -38,7 +38,7 @@ if (outcome_variable_type_1 == "Q" & outcome_variable_type_2 == "C") {
 } else {
      is_continuous_outcome = FALSE
 }
-if (outcome_variable_type_1 == "Q" & outcome_variable_type_2 == "C") {
+if (outcome_variable_type_1 == "Q" & outcome_variable_type_2 == "D") {
      is_discrete_outcome = TRUE
      is_quantitative_outcome = TRUE
 } else {
@@ -80,6 +80,7 @@ if (outcome_variable_type_1 == "T") {
 prompt_text = paste("Now that your outcome variable has been considered, you need to consider the independent/explanatory variable of your analysis.",
                     "--  Enter 'C' if your explanatory variable is categorical. Categorical variables can be either text or a number that represents one of a limited, fixed set of qualitative values. Select this one if you are comparing your outcome across groups. Examples included treated/untreated, high/moderate/low, success/failure, Likert scale values or ratings (1, 2, 3, 4, or 5), etc.",
                     "--  Enter 'Q' if your explanatory variable is quantitative. Quantitative variables are numbers that can be easily added, subtracted, multiplied, or divided.",
+                    "--  Enter 'M' if you are exploring the explanatory or predictive relationship between many variables and your outcome.",
                     sep = "\n")
 explanatory_variable_type_1 = rstudioapi::showPrompt(
      title = "Enter Explanatory Variable Type",
@@ -112,26 +113,6 @@ if (is_two_groups == "Y") {
      is_two_groups = FALSE
 }
 
-# If quantitative explanatory variable selected, determine number of predictor variables ---------------------
-if (explanatory_variable_type_1 == "Q") {
-        prompt_text = paste("You've selected a quantitative explanatory variable.",
-                            "Next, you'll have to consider the number of predictors you'd like to study.",
-                            "The appropriate regression model for your analysis most often depends on whether you are analyzing 1 or more than 1 predictor variable.",
-                            "--  Enter 'Y' if you are analyzing 1 predictor (or independent variable).",
-                            "--  Enter 'N' if you are analyzing 2 or more predictors (or independent variables).",
-                            sep = "\n")
-        is_one_predictor = rstudioapi::showPrompt(
-                title = "Are You Analyzing 1 Predictor?",
-                message = prompt_text, 
-                default = ""
-        )
-}
-if (is_one_predictor == "Y") {
-        is_one_predictor = TRUE
-} else {
-        is_one_predictor = FALSE
-}
-
 # Determine independent or related observations ------------------------------------
 prompt_text = paste("Finally, you will have to specify whether your observations are independent or correlated.",
                     "--  Enter 'I' if your observations are independent. This is most likely the case if your groups or measurements are taken on completely separate subjects or people.",
@@ -147,6 +128,8 @@ if (observation_type == "R") {
 } else {
      is_related_obs = FALSE
 }
+
+
 
 # Show recommendations ----------------------------------------------------
 # T-Test (and alternatives) ------------------------------------------------------------------
@@ -262,44 +245,22 @@ if (is_time_to_event_outcome & is_groups & is_related_obs == FALSE) {
                 message = prompt_text) 
 }
 
-# Linear regression -------------------------------------------------------
-if (is_quantitative_outcome & is_groups == FALSE & is_one_predictor & is_related_obs == FALSE) {
-        prompt_text = paste("Since you are analyzing the relationship between 1 dependent and 1 independent variable, then it is best if you use one of the following methods:",
+# Linear regression ----------------------------------------------
+if (is_continuous_outcome & (is_groups == FALSE | explanatory_variable_type_1 == "M") & is_related_obs == FALSE) {
+        prompt_text = paste("Since you are analyzing the relationship between 1 continuous outcome (dependent variable) and 1 or more predictor (independent) variables, then it is best if you use one of the following methods:",
                             "",
-                            "A)  Pearson's correlation coefficent, if you are not interested in the predictive relationship between the two variables",
+                            "A)  Pearson's correlation coefficent matrix, if you are not interested in the predictive relationship between the dependent and independent variable(s)",
                             "However, if sample size is small (less than 100) AND the outcome is not normally distributed, then you may get misleading results in your Pearson's correlation coeffiencent.",
                             "If the above scenario is true, consider taking one of the following corrective actions:",
                             "--  Use the non-parametric Spearman's correlation coefficient test instead, which finds the relationship between the ranks of each data point rather than their absoluate values.",
                             "--  Transforming your variable(s) (e.g. take the natural log or square root of them) in an effort to make them more normally distributed, then running the Pearson's correlation coefficent test on that transformed variable. Just remember that the estimates of Pearson's correlation coefficient will be on the transformed variable, not the original values.",
                             "",
-                            "B)  Linear regression, if you are interested in the predictive relationship between the outcome (dependent) and the predictor (independent) variables",
-                            "However, if one of the following scenarios is true, then you may get misleading results in your Linear regression:",
-                            "--  The relationship between the outcome and the predictor is not linear",
-                            "--  The outcome is not distributed normally at each value of the predictor. In other words, the random error does not follow a normal distribution",
-                            "--  The variance of the outcome at every value of the predictor is not the same. In other words, there is no homogeneity of variances.",
-                            "If any of the first 3 scenarios are true, then consider transforming your variable(s) (e.g. take the natural log or square root of them) in an effort to make them more normally distributed, then running the Linear Regression on those transformed variables. Just remember to transform the estimates back to their original form, or else you'll confuse your reader.",
-                            sep = "\n")
-        rstudioapi::showQuestion(
-                title = "Statistical Test Recommendation",
-                message = prompt_text) 
-}
-
-# Multiple linear regression ----------------------------------------------
-if (is_quantitative_outcome & is_groups == FALSE & is_one_predictor == FALSE & is_related_obs == FALSE) {
-        prompt_text = paste("Since you are analyzing the relationship between 1 quantitative (dependent) outcome and 2 or more predictor (independent) variables, then it is best if you use one of the following methods:",
-                            "",
-                            "A)  Pearson's correlation coefficent matrix, if you are not interested in the predictive relationship between the dependent and independent variables",
-                            "However, if sample size is small (less than 100) AND the outcome is not normally distributed, then you may get misleading results in your Pearson's correlation coeffiencent.",
-                            "If the above scenario is true, consider taking one of the following corrective actions:",
-                            "--  Use the non-parametric Spearman's correlation coefficient test instead, which finds the relationship between the ranks of each data point rather than their absoluate values.",
-                            "--  Transforming your variable(s) (e.g. take the natural log or square root of them) in an effort to make them more normally distributed, then running the Pearson's correlation coefficent test on that transformed variable. Just remember that the estimates of Pearson's correlation coefficient will be on the transformed variable, not the original values.",
-                            "",
-                            "B)  Multiple linear regression, if you are interested in the predictive relationship between the independent and the dependent variables",
+                            "B)  Linear regression, if you are interested in the predictive relationship between the dependent and independent variable(s)",
                             "However, if one of the following scenarios is true, then you may get misleading results in your Linear regression:",
                             "--  The relationship between the outcome and the predictors is not linear",
                             "--  The outcome is not distributed normally at each value of the predictors. In other words, the random error does not follow a normal distribution",
                             "--  The variance of the outcome at every value of the predictors is not the same. In other words, there is no homogeneity of variances.",
-                            "If any of the first 3 scenarios are true, then consider transforming your variable(s) (e.g. take the natural log or square root of them) in an effort to make them more normally distributed, then running the Linear Regression on those transformed variables. Just remember to transform the estimates back to their original form, or else you'll confuse your reader.",
+                            "If any of these scenarios are true, then consider transforming your variable(s) (e.g. take the natural log or square root of them) in an effort to make them more normally distributed, then running the Linear Regression on those transformed variables. Just remember to transform the estimates back to their original form, or else you'll confuse your reader.",
                             sep = "\n")
         rstudioapi::showQuestion(
                 title = "Statistical Test Recommendation",
@@ -307,7 +268,7 @@ if (is_quantitative_outcome & is_groups == FALSE & is_one_predictor == FALSE & i
 }
 
 # Logistic regression -----------------------------------------------------
-if (is_categorical_outcome & is_groups == FALSE & is_related_obs == FALSE) {
+if (is_categorical_outcome & (is_groups == FALSE | explanatory_variable_type_1 == "M") & is_related_obs == FALSE) {
         prompt_text = paste("Since you are analyzing the relationship between 1 cateogrical (dependent) outcome and 1 or more quantitative and/or ordered categorical predictor (independent) variables, then Logistic Regression might be best.",
                             "Before proceeding, you must ensure:", 
                             "-- That each of your cateogorical outcomes is dummy-coded -- meaning each cateogory is converted to a separate column and the values in that column include only 0s or 1s",
@@ -320,7 +281,7 @@ if (is_categorical_outcome & is_groups == FALSE & is_related_obs == FALSE) {
                 title = "Statistical Test Recommendation",
                 message = prompt_text) 
 }
-if (is_categorical_outcome & is_groups == FALSE & is_related_obs) {
+if (is_categorical_outcome & (is_groups == FALSE | explanatory_variable_type_1 == "M") & is_related_obs) {
         prompt_text = paste("Since you are analyzing the relationship between 1 cateogrical (dependent) outcome and 1 or more quantitative and/or ordered categorical predictor (independent) variables, then Conditional Logistic Regression might be best.",
                             "Before proceeding, you must ensure that each of your cateogorical outcomes is dummy-coded -- meaning each cateogory is converted to a separate column and the values in that column include only 0s or 1s",
                             "",
@@ -331,3 +292,28 @@ if (is_categorical_outcome & is_groups == FALSE & is_related_obs) {
                 title = "Statistical Test Recommendation",
                 message = prompt_text) 
 }
+
+# Poisson regression ------------------------------------------------------
+if (is_discrete_outcome & (is_groups == FALSE | explanatory_variable_type_1 == "M") & is_related_obs == FALSE) {
+        prompt_text = paste("Since you are analyzing the relationship between 1 discrete outcome (dependent variable) and 1 or more predictor (independent) variables, then it is best if you use one of the following methods:",
+                            "",
+                            "A)  Poisson regression",
+                            "However, if one of the following scenarios is true, then you may get misleading results in your Poisson regression:",
+                            "--  The relationship between the natural log of the outcome (or incidence rate of the outcome) and the predictors is not linear",
+                            "--  The variance of the outcome is significantly greater than the mean of the outcome. In other words, the outcome is 'overdispersed' and does not follow a Poisson distribution.",
+                            "If any of these scenarios are true, then consider transforming your variable(s) (e.g. take the natural log or square root of them) in an effort to make them comply with the assumption listed above. Then run a Poisson regression using the transformed variables. Just remember to transform the estimates back to their original form, or else you'll confuse your reader.",
+                            "If overdispersion remains, consider running a negative binonial regression instead.",
+                            "",
+                            "B)  Negative binomial regression",
+                            "It is an extension of the Poisson model that fits an extra parameter, called the dispersion parameter, that accounts for overdispersion.",
+                            "All beta coefficients are interpreted in the same way.",
+                            "However, if the relationship between the natural log of the outcome (or incidence rate of the outcome) and the predictors is not linear, then you may get misleading results in your negative binonial regression.",
+                            sep = "\n")
+        rstudioapi::showQuestion(
+                title = "Statistical Test Recommendation",
+                message = prompt_text) 
+}
+
+
+# Clear all selections ----------------------------------------------------
+rm(list = ls())
