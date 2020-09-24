@@ -234,9 +234,18 @@ if (is_discrete_outcome & is_groups & is_related_obs == FALSE) {
 # Kaplan-Meier statistics --------------------------------------------------------------
 if (is_time_to_event_outcome & is_groups & is_related_obs == FALSE) {
         prompt_text = paste("Since you are comparing time-to-event across independent groups, then it is best if you use one of the following methods:",
-                            "A)  Kaplan-Meier statistics (also known as Survival Analysis)",
-                            "B)  Rate Ratios and/or Odds Ratios (the 'epitools' package is useful for this)",
+                            "A)  Kaplan-Meier statistics",
+                            "Kaplan-Meier Statistics is to estimate a survival curve for some binary outcome.",
+                            "Kaplan-Meier provides a non-parametric estimate of the survival function",
+                            "By non-parametric, we mean we are not assuming the curve follows any particular mathematical function (e.g. a normal distribution or exponential function).",
+                            "Instead, it provided observed probability of 'surviving' past certain times in the sample (taking into account censoring)",
+                            "You can compare Kaplan-Meier curves between two or more groups using a log-rank test.",
                             "",
+                            "B)  Cox regression",
+                            "However, the proportional hazards assumption must be true in order for the Cox regression to be reliabile.",
+                            "The proportional hazards assumption states that the difference between two (or more) groups is constant over time.",
+                            "",
+                            "C)  Rate Ratios and/or Odds Ratios (the 'epitools' package is useful for this)",
                             "A helpful note: When an event is rare (less 10% of sample or population experiences it), then the rate ratio and odds ratio become increasingly similar.",
                             "Otherwise, odds ratios can exaggerate the frequency of some event compared to rate ratios. Keep that in mind when interpreting your results.",
                             sep = "\n")
@@ -267,15 +276,19 @@ if (is_continuous_outcome & (is_groups == FALSE | explanatory_variable_type_1 ==
                 message = prompt_text) 
 }
 
-# Logistic regression -----------------------------------------------------
+# Logistic regression and alternative -----------------------------------------------------
 if (is_categorical_outcome & (is_groups == FALSE | explanatory_variable_type_1 == "M") & is_related_obs == FALSE) {
-        prompt_text = paste("Since you are analyzing the relationship between 1 cateogrical (dependent) outcome and 1 or more quantitative and/or ordered categorical predictor (independent) variables, then Logistic Regression might be best.",
+        prompt_text = paste("Since you are analyzing the relationship between 1 cateogrical (dependent) outcome and 1 or more quantitative and/or ordered categorical predictor (independent) variables, then it is best if you use one of the following methods:",
+                            "A)  Logistic regression",
                             "Before proceeding, you must ensure:", 
                             "-- That each of your cateogorical outcomes is dummy-coded -- meaning each cateogory is converted to a separate column and the values in that column include only 0s or 1s",
                             "-- The 'linear in the logit' an assumption is met -- meaning the logit function of the outcome has a linear relationship with the continuous predictor",
                             "",
                             "A helpful note: When an event is rare (less 10% of sample or population experiences it), then the rate ratio and odds ratio become increasingly similar.",
                             "Otherwise, odds ratios can exaggerate the frequency of some event compared to rate ratios. Keep that in mind when interpreting your results.",
+                            "",
+                            "B)  Poisson regression with robust standard errors",
+                            ".	When you have a binary outcome, you may use Poisson regression with robust standard errors to get risk ratios - as opposed to odds ratios from a logistic regression.",
                             sep = "\n")
         rstudioapi::showQuestion(
                 title = "Statistical Test Recommendation",
@@ -314,6 +327,19 @@ if (is_discrete_outcome & (is_groups == FALSE | explanatory_variable_type_1 == "
                 message = prompt_text) 
 }
 
+# Cox regression ----------------------------------------------------------
+if (is_time_to_event_outcome & explanatory_variable_type_1 == "M" & is_related_obs == FALSE) {
+        prompt_text = paste("Since you are analyzing the relationship between 1 time-to-event outcome (dependent variable) and 1 or more predictor (independent) variables, then it is best if you use one of the following methods:",
+                            "",
+                            "A)  Cox regression",
+                            "When you exponentiate the beta coefficients from a Cox regression, you get an adjusted hazard ratio for each of your predictor variables.",
+                            "However, the proportional hazards assumption must be true in order for the Cox regression to be reliabile.",
+                            "The proportional hazards assumption states that the difference between two (or more) groups is constant over time.",
+                            sep = "\n")
+        rstudioapi::showQuestion(
+                title = "Statistical Test Recommendation",
+                message = prompt_text) 
+}
 
 # Clear all selections ----------------------------------------------------
 rm(list = ls())
