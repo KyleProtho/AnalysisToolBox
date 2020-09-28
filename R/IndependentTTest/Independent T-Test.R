@@ -259,9 +259,8 @@ helper_t_test <- function(data,
 }
 
 
-# Build test dataset ------------------------------------------------------
+# TESTING / DEMO ------------------------------------------------------
 df_mtcars = mtcars
 helper_t_test(data = df_mtcars,
              outcome_column = "mpg",
-             grouping_column = "am",
-             alternative_hypothesis = "greater")
+             grouping_column = "am")
