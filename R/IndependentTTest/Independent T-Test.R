@@ -10,13 +10,14 @@ library(ggthemes)
 
 # Set function parameters -------------------------------------------------
 helper_t_test <- function(data,
-                         outcome_column,
-                         grouping_column,
-                         alternative_hypothesis = "two.sided",
-                         is_homogeneity_of_variances = FALSE,
-                         is_related_observations = FALSE,
-                         plot_distribution_of_means = TRUE,
-                         plot_difference_in_means = TRUE) {
+                          outcome_column,
+                          grouping_column,
+                          alternative_hypothesis = "two.sided",
+                          test_normality_assumption = FALSE,
+                          is_homogeneity_of_variances = FALSE,
+                          is_related_observations = FALSE,
+                          plot_distribution_of_means = TRUE,
+                          plot_difference_in_means = TRUE) {
   # Ensure grouping variable is only 2 --------------------------------------
   is_two_groups = ifelse(
     n_distinct(data[[grouping_column]], na.rm = TRUE) == 2,
@@ -51,6 +52,46 @@ helper_t_test <- function(data,
                          sep = "\n")
     cat(error_string)
     return(NULL)
+  }
+  
+
+  # Test for normality of outcome -------------------------------------------
+  if (test_normality_assumption) {
+    # Use Scott method to get number of bins
+    max_value = max(data[[outcome_column]], na.rm = TRUE)
+    min_value = min(data[[outcome_column]], na.rm = TRUE)
+    sd_value = sd(data[[outcome_column]], na.rm = TRUE)
+    obs_count = nrow(data)
+    scott_number_bins_numer = (max_value - min_value) * obs_count ^ (1/3)
+    scott_number_bins_denom = 3.5 * sd_value
+    scott_number_bins = scott_number_bins_numer / scott_number_bins_denom
+    scott_number_bins = round(scott_number_bins, 0)
+    # Use Scott method to get bin width
+    scott_bin_width_numer = 3.5 * sd_value
+    scott_bin_width_denom = obs_count ^ (1/3)
+    scott_bin_width = scott_bin_width_numer / scott_bin_width_denom
+    scott_bin_width = ifelse(scott_bin_width < 1,
+                             1,
+                             round(scott_bin_width, 0))
+    # Generate title for plot
+    title_for_plot = paste("Histogram - Distribution of the Mean for Each Group")
+    title_for_plot = str_wrap(title_for_plot, width = 60)
+    # Draw plot
+    p = ggplot(data, aes(x = data[[outcome_column]])) + 
+      geom_histogram(aes(y = ..density..),
+                     color = "black",
+                     fill = "#7f1a61",
+                     bins = scott_number_bins,
+                     binwidth = scott_bin_width) +
+      geom_density(alpha = .4,
+                   fill = "#8c0303") + 
+      labs(title = title_for_plot,
+           y = "Density",
+           x = paste(outcome_column)) + 
+      theme_hc() +
+      facet_grid(data[[grouping_column]] ~ .)
+    plot(p)
+    
   }
   
   # Get groups --------------------------------------------------------------
@@ -235,7 +276,58 @@ helper_t_test <- function(data,
     # Calculate difference in means for vertical line
     observed_difference_in_means = test_results[["estimate"]][1] - test_results[["estimate"]][2]
     # Draw plot
-    p = ggplot(df_results_2, aes(x = df_results_2[["null_difference"]])) + 
+    p = ggplot(df_results_2, 
+               aes(x = df_results_2[["null_difference"]]))
+    # If two-sided test, insert two lines. Otherwise, insert one line
+    if (alternative_hypothesis == "two.sided") {
+      p = p + 
+        geom_vline(xintercept = observed_difference_in_means,
+                   color = "#de0000",
+                   size = 2) +
+        geom_vline(xintercept = observed_difference_in_means * -1,
+                   color = "#de0000",
+                   size = 2)
+      abs_observed_difference_in_means = abs(observed_difference_in_means)
+      p = p + 
+        annotate("rect",
+                 xmin = -Inf, 
+                 xmax = abs_observed_difference_in_means * -1,
+                 ymin = 0, 
+                 ymax = Inf, 
+                 alpha = 0.2,
+                 fill = "#de0000") + 
+        annotate("rect",
+                 xmin = abs_observed_difference_in_means, 
+                 xmax = Inf,
+                 ymin = 0, 
+                 ymax = Inf, 
+                 alpha = 0.2,
+                 fill = "#de0000")
+    } else {
+      p = p +
+        geom_vline(xintercept = observed_difference_in_means,
+                   color = "#de0000",
+                   size = 2)
+      if (alternative_hypothesis == "greater") {
+        p = p + annotate("rect",
+                         xmin = observed_difference_in_means, 
+                         xmax = Inf, 
+                         ymin = 0, 
+                         ymax = Inf, 
+                         alpha = 0.2,
+                         fill = "#de0000")
+      } else {
+        p = p + annotate("rect",
+                         xmin = -Inf, 
+                         xmax = observed_difference_in_means,
+                         ymin = 0, 
+                         ymax = Inf, 
+                         alpha = 0.2,
+                         fill = "#de0000")
+      }
+      
+    }
+    p = p + 
       geom_histogram(color = "black",
                      fill = "#7f1a61",
                      bins = scott_number_bins,
@@ -243,14 +335,11 @@ helper_t_test <- function(data,
       labs(title = title_for_plot,
            subtitle = "Reference/Control group minus Exposed/Treatement Group",
            caption = paste("This chart shows what one could expect if there were no detectable difference between the means of the groups (the null hypothesis).",
-                           "The p-value, which represents P(your data | the null hypothesis being true), is illustrated by the red line.",
+                           "The p-value, which represents P(your data | the null hypothesis being true), is illustrated by the red line(s).",
                            sep = "\n"),
            y = "Simulated Occurences of the Mean",
            x = "Difference in Means between Groups") + 
-      theme_hc() + 
-      geom_vline(xintercept = observed_difference_in_means,
-                 color = "#de0000",
-                 size = 2)
+      theme_hc()
     plot(p)
   }
   
@@ -261,6 +350,26 @@ helper_t_test <- function(data,
 
 # TESTING / DEMO ------------------------------------------------------
 df_mtcars = mtcars
-helper_t_test(data = df_mtcars,
-             outcome_column = "mpg",
-             grouping_column = "am")
+t_test_results_am = helper_t_test(data = df_mtcars,
+                                  outcome_column = "mpg",
+                                  grouping_column = "am",
+                                  test_normality_assumption = TRUE,
+                                  plot_distribution_of_means = TRUE,
+                                  plot_difference_in_means = TRUE)
+t_test_results_am_less = helper_t_test(data = df_mtcars,
+                                       outcome_column = "mpg",
+                                       grouping_column = "am",
+                                       alternative_hypothesis = "less",
+                                       plot_distribution_of_means = FALSE,
+                                       plot_difference_in_means = TRUE)
+t_test_results_am_greater = helper_t_test(data = df_mtcars,
+                                          outcome_column = "mpg",
+                                          grouping_column = "am",
+                                          alternative_hypothesis = "greater",
+                                          plot_distribution_of_means = FALSE,
+                                          plot_difference_in_means = TRUE)
+t_test_results_cyl = helper_t_test(data = df_mtcars,  ## This should fail since there are more than two groups
+                                   outcome_column = "mpg",
+                                   grouping_column = "cyl",
+                                   plot_distribution_of_means = TRUE,
+                                   plot_difference_in_means = TRUE)
