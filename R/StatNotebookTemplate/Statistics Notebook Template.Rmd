@@ -1,0 +1,44 @@
+---
+title: "R Notebook Starter Template"
+author: "Your name here"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+    highlight: kate
+---
+
+# 1. Prep data
+Load into SAS or R, merge datasets as needed, rename variables as needed, make new/derivative variables (ex. age from birthdate)
+
+# 2, Check data
+Double-check your N, check for impossible or unlikely values (indicative of error), cross-check variables for inconsistencies
+
+
+# 3. Study variables
+Descriptive statistics, counts for categorical variables, histograms for quantitative variables
+
+
+# 4. Deal with missing data
+Identify it, document reasons for missing data, compare participants who are missing data to those who are not, decide on exclusion (ex. If they are missing the primary exposure or outcome), impute missing data (an advanced skill)
+
+
+# 5. Explore simple relations and assumptions
+Correlation matrix, two-variable plots for relationship of interest, plots to test assumptions
+
+
+# 6. Prepare a descriptive table
+
+# 7. Test the main hypothesis or hypotheses
+Run formal statistical tests, run regression models, generate p-values and confidence intervals
+
+
+# 8. Build final models and accompanying graphics
+Check model assumptions, focus on data presentation, build accompanying graphics
+
+
+# 9. Perform sensitivity analyses
+Run models with and without outliers, try different values for the parameters, try different ways of imputing missing data
+
+
+# 10. Prepare final code documents
+Data creation (usually the longest), final tables and figures, additional analyses
