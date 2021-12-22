@@ -12,9 +12,11 @@ Conditions:
 # Load packages
 import random
 import pandas as pd
-import seaborn as sns
+import numpy as np
 import matplotlib.pyplot as plt
-from numpy.random import poisson
+import seaborn as sns
+sns.set_style("white")
+sns.set_context("paper")
 
 def SimulateCountOutcome(expected_count,
                          number_of_trials = 10000,
@@ -31,8 +33,8 @@ def SimulateCountOutcome(expected_count,
         random.seed(random_seed)
         
     # Simulate count outcome
-    df_simulation = pd.DataFrame(poisson(lam = expected_count, 
-                                         size = number_of_trials),
+    df_simulation = pd.DataFrame(np.random.poisson(lam = expected_count,
+                                                   size = number_of_trials),
                                  columns = [simulated_variable_name])
     
     # Generate plot if user requests it

@@ -11,10 +11,11 @@ Conditions:
 # Load packages
 import random
 import pandas as pd
-import seaborn as sns
+import numpy as np
 import matplotlib.pyplot as plt
-from numpy import linspace
-from numpy.random import beta
+import seaborn as sns
+sns.set_style("white")
+sns.set_context("paper")
 
 def SimulateBoundedOutcome(expected_outcome,
                            minimum_outcome,
@@ -45,16 +46,16 @@ def SimulateBoundedOutcome(expected_outcome,
     beta_param = (1 - relative_mean) / relative_mean * alpha_param
     
     # Simulate bounded outcome
-    df_simulation = pd.DataFrame(beta(a = alpha_param, 
-                                      b = beta_param,
-                                      size = number_of_trials),
+    df_simulation = pd.DataFrame(np.random.beta(a = alpha_param,
+                                                b = beta_param,
+                                                size = number_of_trials),
                                  columns = [simulated_variable_name])
     df_simulation[simulated_variable_name] = round(df_simulation[simulated_variable_name], 3)
     
     # Rescale simulated outcomes to original values
     df_value_lookup = pd.DataFrame({
-        'Original Value': linspace(start = minimum_outcome, stop = maximum_outcome, num = 1000),
-        simulated_variable_name: linspace(start = 0, stop = 1,  num = 1000)
+        'Original Value': np.linspace(start = minimum_outcome, stop = maximum_outcome, num = 1000),
+        simulated_variable_name: np.linspace(start = 0, stop = 1,  num = 1000)
     })
     df_value_lookup[simulated_variable_name] = round(df_value_lookup[simulated_variable_name], 3)
     df_simulation = df_simulation.merge(df_value_lookup, 

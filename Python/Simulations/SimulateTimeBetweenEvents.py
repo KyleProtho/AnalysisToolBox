@@ -10,9 +10,11 @@ Conditions:
 # Load packages
 import random
 import pandas as pd
-import seaborn as sns
+import numpy as np
 import matplotlib.pyplot as plt
-from numpy.random import exponential
+import seaborn as sns
+sns.set_style("white")
+sns.set_context("paper")
 
 def SimulateTimeBetweenEvents(expected_time_between_events = 1,
                               number_of_trials = 10000,
@@ -29,8 +31,8 @@ def SimulateTimeBetweenEvents(expected_time_between_events = 1,
         random.seed(random_seed)
         
     # Simulate time between events
-    df_simulation = pd.DataFrame(exponential(scale = expected_time_between_events,
-                                             size = number_of_trials),
+    df_simulation = pd.DataFrame(np.random.exponential(scale = expected_time_between_events,
+                                                       size = number_of_trials),
                                  columns = [simulated_variable_name])
     
     # Generate plot if user requests it

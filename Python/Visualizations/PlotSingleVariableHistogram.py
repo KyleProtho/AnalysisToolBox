@@ -9,14 +9,16 @@ import pandas as pd
 import os
 from matplotlib import pyplot as plt
 import seaborn as sns
+sns.set_style("white")
+sns.set_context("paper")
 
 # Create histogram function
-def sfs_histogram(data,
-                  quantitative_variable,
-                  readable_label_for_quantitative_variable = None,
-                  folder_to_save_plot = None,
-                  fill_color = "#3269a8",
-                  is_discrete_variable = False):
+def PlotSingleVariableHistogram(data,
+                                quantitative_variable,
+                                readable_label_for_quantitative_variable = None,
+                                folder_to_save_plot = None,
+                                fill_color = "#3269a8",
+                                is_discrete_variable = False):
     # Calculate best number of bins and bin width/size
     sd_of_var = data[quantitative_variable].std()
     min_of_var = data[quantitative_variable].min()

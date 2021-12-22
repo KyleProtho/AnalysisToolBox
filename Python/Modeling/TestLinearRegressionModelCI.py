@@ -1,0 +1,49 @@
+import pandas as pd
+import numpy as np
+import statsmodels.api as sm
+from scipy import stats
+
+def TestLinearRegressionModelCI(model_dictionary,
+                                outcome_variable):
+    # Join outcome and predictors of test datasets
+    df_temp_test = model_dictionary["Outcome Test Dataset"].to_frame()
+    df_temp_test = df_temp_test.merge(
+        model_dictionary["Predictor Test Dataset"],
+        how='left',
+        left_index=True,
+        right_index=True
+    )
+    
+    # Add 95% CI estimates of model based on predictors (y = m*x + b = predictor*beta coeff + constant)
+    for variable in model_dictionary["Predictor Test Dataset"].columns:
+        degrees_of_freedom = model_dictionary["Fitted Model"].df_resid
+        standard_error = model_dictionary["Fitted Model"].bse[variable]
+        if degrees_of_freedom >= 30:
+            ninety_five_ci = standard_error * 1.96
+        else:
+            t_score = stats.t.ppf(1 - 0.025, degrees_of_freedom)
+            ninety_five_ci = standard_error * t_score
+        lower_bound = model_dictionary["Fitted Model"].params[variable] - ninety_five_ci
+        upper_bound = model_dictionary["Fitted Model"].params[variable] + ninety_five_ci
+        best_guess = model_dictionary["Fitted Model"].params[variable]
+        if variable == "const":
+            df_temp_test['Lower bound'] = lower_bound
+            df_temp_test['Upper bound'] = upper_bound
+            df_temp_test['Best guess'] = best_guess
+        else:
+            df_temp_test['Lower bound'] += df_temp_test['Lower bound'] + (lower_bound * df_temp_test[variable])
+            df_temp_test['Upper bound'] += df_temp_test['Upper bound'] + (upper_bound * df_temp_test[variable])
+            df_temp_test['Best guess'] = df_temp_test['Best guess'] + (best_guess * df_temp_test[variable])
+    
+    # Add flag show if observation falls within 95% confidence interval
+    df_temp_test['Is within CI'] = np.where(
+        (df_temp_test[outcome_variable] >= df_temp_test['Lower bound']) & (df_temp_test[outcome_variable] <= df_temp_test['Upper bound']),
+        1,
+        0
+    )
+    
+    # Calculate different (residual) between best guess and observed outcome
+    df_temp_test['Residual'] = df_temp_test[outcome_variable] - df_temp_test['Best guess']
+    
+    # Return tested dataset
+    return df_temp_test

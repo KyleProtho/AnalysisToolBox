@@ -13,9 +13,11 @@ Conditions:
 # Load packages
 import random
 import pandas as pd
-import seaborn as sns
+import numpy as np
 import matplotlib.pyplot as plt
-from numpy.random import standard_t
+import seaborn as sns
+sns.set_style("white")
+sns.set_context("paper")
 
 def SimulateTDistributedOutcome(degrees_of_freedom,
                                 expected_outcome = 0,
@@ -36,8 +38,8 @@ def SimulateTDistributedOutcome(degrees_of_freedom,
         random.seed(random_seed)
         
     # Simulate T distributed outcome
-    df_simulation = pd.DataFrame(standard_t(df = degrees_of_freedom,
-                                            size = number_of_trials),
+    df_simulation = pd.DataFrame(np.random.standard_t(df = degrees_of_freedom,
+                                                      size = number_of_trials),
                                  columns = [simulated_variable_name])
     
     # Convert T score to original value scale

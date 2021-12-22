@@ -11,9 +11,11 @@ Conditions:
 # Load packages
 import random
 import pandas as pd
-import seaborn as sns
+import numpy as np
 import matplotlib.pyplot as plt
-from numpy.random import gamma
+import seaborn as sns
+sns.set_style("white")
+sns.set_context("paper")
 
 def SimulateTimeUntilNEvents(number_of_events = 1,
                              expected_time_between_events = 1,
@@ -33,14 +35,13 @@ def SimulateTimeUntilNEvents(number_of_events = 1,
         random.seed(random_seed)
         
     # Simulate time between events
-    df_simulation = pd.DataFrame(gamma(shape = number_of_events,
+    df_simulation = pd.DataFrame(np.random.gamma(shape = number_of_events,
                                        scale = expected_time_between_events,
                                        size = number_of_trials),
                                  columns = [simulated_variable_name])
     
     # Generate plot if user requests it
     if plot_simulation_results == True:
-        sns.set(style = "whitegrid")
         dcount = df_simulation[simulated_variable_name].nunique()
         if dcount >= 40:
             bin_setting = 40

@@ -13,8 +13,10 @@ Conditions:
 # Load packages
 import random
 import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set_style("white")
+sns.set_context("paper")
 
 def SimulateCountUntilFirstSuccess(probability_of_success,
                                    number_of_trials = 10000,

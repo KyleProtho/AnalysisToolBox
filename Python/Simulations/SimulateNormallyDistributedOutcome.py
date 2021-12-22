@@ -13,9 +13,11 @@ Conditions:
 # Load packages
 import random
 import pandas as pd
-import seaborn as sns
+import numpy as np
 import matplotlib.pyplot as plt
-from numpy.random import normal
+import seaborn as sns
+sns.set_style("white")
+sns.set_context("paper")
 
 def SimulateNormallyDistributedOutcome(expected_outcome = 0,
                                        sd_of_outcome = 1,
@@ -33,9 +35,9 @@ def SimulateNormallyDistributedOutcome(expected_outcome = 0,
         random.seed(random_seed)
         
     # Simulate normally distributed outcome
-    df_simulation = pd.DataFrame(normal(loc = expected_outcome,
-                                        scale = sd_of_outcome,
-                                        size = number_of_trials),
+    df_simulation = pd.DataFrame(np.random.normal(loc = expected_outcome,
+                                                  scale = sd_of_outcome,
+                                                  size = number_of_trials),
                                  columns = [simulated_variable_name])
     
     # Generate plot if user requests it

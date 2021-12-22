@@ -10,13 +10,15 @@ import pandas as pd
 import os
 from matplotlib import pyplot as plt
 import seaborn as sns
+sns.set_style("white")
+sns.set_context("paper")
 
 # Create histogram function
-def sfs_barchart(data,
-                  categorical_variable,
-                  readable_label_for_categorical_variable = None,
-                  folder_to_save_plot = None,
-                  fill_color = None):
+def PlotSingleVariableBarChart(data,
+                               categorical_variable,
+                               readable_label_for_categorical_variable = None,
+                               folder_to_save_plot = None,
+                               fill_color = None):
     # Create readable label for qualitative variable if one isn't specified
     if readable_label_for_categorical_variable == None:
         readable_label_for_categorical_variable = categorical_variable
