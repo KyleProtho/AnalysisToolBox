@@ -2,13 +2,14 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 import statsmodels.api as sm
+import seaborn as sns
 
-def CreateLinearRegressionModel(dataframe,
-                                outcome_variable,
-                                list_of_predictors,
-                                share_to_use_as_test_set = .20,
-                                show_diagnostic_plots = True,
-                                show_help = True):
+def CreateLogisticRegressionModel(dataframe,
+                                  outcome_variable,
+                                  list_of_predictors,
+                                  share_to_use_as_test_set = .20,
+                                  show_diagnostic_plots = True,
+                                  show_help = True):
     
     # Select columns specified
     arr_columns = list_of_predictors.copy()
@@ -44,7 +45,7 @@ def CreateLinearRegressionModel(dataframe,
     Y_test = Y[-test_size:]
     
     # Create linear regression model
-    model = sm.OLS(Y_train, X_train)
+    model = sm.Logit(Y_train, X_train)
     model_res = model.fit()
     model_summary = model_res.summary()
     
@@ -52,18 +53,26 @@ def CreateLinearRegressionModel(dataframe,
     if show_diagnostic_plots:
         for variable in list_of_predictors:
             fig = plt.figure(figsize=(12, 8))
-            fig = sm.graphics.plot_regress_exog(model_res, variable, fig=fig)
+            sns.lmplot(
+                x=variable, 
+                y=outcome_variable, 
+                data=complete_case_dataframe,
+                logistic=True, 
+                y_jitter=.03
+            )
+            # Show plots
+            plt.show()
     
     # If requested, show help text
     if show_help:
         print(
-            "Quick guide on accessing output of CreateLinearRegressionModel function:",
-            "\nThe ouput of the CreateLinearRegressionModel function is a dictionary containing the regression results, a test dataset of predictors, and a test dataset of outcomes.",
+            "Quick guide on accessing output of CreateLogisticRegressionModel function:",
+            "\nThe ouput of the CreateLogisticRegressionModel function is a dictionary containing the regression results, a test dataset of predictors, and a test dataset of outcomes.",
             "\n\t--To access the linear regression model, use the 'Fitted Model' key."
             "\n\t--To view the model's statistical summary, use the 'Model Summary' key.",
             "\n\t--To access the test dataset of predictors, use the 'Predictor Test Dataset' key.",
             "\n\t--To access the test dataset of outcomes, use the 'Outcome Test Dataset' key.",
-            "\n\nRemember that you can utilize the TestLinearRegressionModelCI function to test the accuracy of the 95% confidence interval of your fitted regression model."
+            "\n\nRemember that you can utilize the TestLogisticRegressionModelCI function to test the accuracy of the 95% confidence interval of your fitted regression model."
         )
     
     # Create dictionary of objects to return
@@ -79,12 +88,12 @@ def CreateLinearRegressionModel(dataframe,
 # # Import data
 # df_bitcoin = pd.read_csv("C:/Users/oneno/OneDrive/Data/BitcoinWeeklyData_20180101_20211222.csv")
 # # Run regression
-# dict_bitcoin_model = CreateLinearRegressionModel(
+# dict_bitcoin_model = CreateLogisticRegressionModel(
 #     dataframe = df_bitcoin,
-#     outcome_variable = 'Close Price in USD',
+#     outcome_variable = 'Is Price Higher than Previous Week',
 #     list_of_predictors = [
 #         'Week Count from 1/1/2018', 
-#         'Normalized Google Search Volume of Previous Week - bitcoin',
+#         # 'Normalized Google Search Volume of Previous Week - bitcoin',
 #         'Close Price in USD of Previous Week'
 #     ],
 #     share_to_use_as_test_set = .20,

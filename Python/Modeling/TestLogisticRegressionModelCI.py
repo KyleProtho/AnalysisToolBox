@@ -3,8 +3,8 @@ import numpy as np
 import statsmodels.api as sm
 from scipy import stats
 
-def TestLinearRegressionModelCI(model_dictionary,
-                                outcome_variable):
+def TestLogisticRegressionModelCI(model_dictionary,
+                                  outcome_variable):
     # Join outcome and predictors of test datasets
     df_temp_test = model_dictionary["Outcome Test Dataset"].to_frame()
     df_temp_test = df_temp_test.merge(
@@ -34,13 +34,9 @@ def TestLinearRegressionModelCI(model_dictionary,
             df_temp_test['Lower bound'] += df_temp_test['Lower bound'] + (lower_bound * df_temp_test[variable])
             df_temp_test['Upper bound'] += df_temp_test['Upper bound'] + (upper_bound * df_temp_test[variable])
             df_temp_test['Best guess'] = df_temp_test['Best guess'] + (best_guess * df_temp_test[variable])
-    
-    # Add flag show if observation falls within 95% confidence interval
-    df_temp_test['Is within CI'] = np.where(
-        (df_temp_test[outcome_variable] >= df_temp_test['Lower bound']) & (df_temp_test[outcome_variable] <= df_temp_test['Upper bound']),
-        1,
-        0
-    )
+        df_temp_test['Lower bound'] = np.exp(df_temp_test['Lower bound']) / (1 + np.exp(df_temp_test['Lower bound']))
+        df_temp_test['Upper bound'] = np.exp(df_temp_test['Upper bound']) / (1 + np.exp(df_temp_test['Upper bound']))
+        df_temp_test['Best guess'] = np.exp(df_temp_test['Best guess']) / (1 + np.exp(df_temp_test['Best guess']))
     
     # Calculate different (residual) between best guess and observed outcome
     df_temp_test['Residual'] = df_temp_test[outcome_variable] - df_temp_test['Best guess']
