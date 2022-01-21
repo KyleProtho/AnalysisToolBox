@@ -16,24 +16,17 @@ def TestLogisticRegressionModelCI(model_dictionary,
     
     # Add 95% CI estimates of model based on predictors (y = m*x + b = predictor*beta coeff + constant)
     for variable in model_dictionary["Predictor Test Dataset"].columns:
-        degrees_of_freedom = model_dictionary["Fitted Model"].df_resid
-        standard_error = model_dictionary["Fitted Model"].bse[variable]
-        if degrees_of_freedom >= 30:
-            ninety_five_ci = standard_error * 1.96
-        else:
-            t_score = stats.t.ppf(1 - 0.025, degrees_of_freedom)
-            ninety_five_ci = standard_error * t_score
-        lower_bound = model_dictionary["Fitted Model"].params[variable] - ninety_five_ci
-        upper_bound = model_dictionary["Fitted Model"].params[variable] + ninety_five_ci
+        lower_bound = model_dictionary["Fitted Model"].conf_int()[0][variable]
+        upper_bound = model_dictionary["Fitted Model"].conf_int()[1][variable]
         best_guess = model_dictionary["Fitted Model"].params[variable]
         if variable == "const":
             df_temp_test['Lower bound'] = lower_bound
             df_temp_test['Upper bound'] = upper_bound
             df_temp_test['Best guess'] = best_guess
         else:
-            df_temp_test['Lower bound'] += df_temp_test['Lower bound'] + (lower_bound * df_temp_test[variable])
-            df_temp_test['Upper bound'] += df_temp_test['Upper bound'] + (upper_bound * df_temp_test[variable])
-            df_temp_test['Best guess'] = df_temp_test['Best guess'] + (best_guess * df_temp_test[variable])
+            df_temp_test['Lower bound'] = df_temp_test['Lower bound'] + (lower_bound * df_temp_test[variable])
+            df_temp_test['Upper bound'] = df_temp_test['Upper bound'] + (upper_bound * df_temp_test[variable])
+            df_temp_test['Best bound'] = df_temp_test['Best guess'] + (best_guess * df_temp_test[variable])
         df_temp_test['Lower bound'] = np.exp(df_temp_test['Lower bound']) / (1 + np.exp(df_temp_test['Lower bound']))
         df_temp_test['Upper bound'] = np.exp(df_temp_test['Upper bound']) / (1 + np.exp(df_temp_test['Upper bound']))
         df_temp_test['Best guess'] = np.exp(df_temp_test['Best guess']) / (1 + np.exp(df_temp_test['Best guess']))
