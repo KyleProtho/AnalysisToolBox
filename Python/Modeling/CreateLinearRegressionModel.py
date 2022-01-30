@@ -6,9 +6,9 @@ import statsmodels.api as sm
 def CreateLinearRegressionModel(dataframe,
                                 outcome_variable,
                                 list_of_predictors,
-                                share_to_use_as_test_set = .20,
-                                show_diagnostic_plots = True,
-                                show_help = True):
+                                share_to_use_as_test_set=.20,
+                                show_diagnostic_plots=True,
+                                show_help=True):
     
     # Select columns specified
     arr_columns = list_of_predictors.copy()

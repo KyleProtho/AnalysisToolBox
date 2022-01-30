@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Oct  6 09:48:33 2020
-
-@author: oneno
-"""
-
 # Load packages
 import pandas as pd
 import os
@@ -14,47 +7,60 @@ sns.set_style("white")
 sns.set_context("paper")
 
 # Create histogram function
-def PlotSingleVariableBarChart(data,
-                               categorical_variable,
-                               readable_label_for_categorical_variable = None,
-                               folder_to_save_plot = None,
-                               fill_color = None):
-    # Create readable label for qualitative variable if one isn't specified
-    if readable_label_for_categorical_variable == None:
-        readable_label_for_categorical_variable = categorical_variable
-    
-    # Create histogram title
-    title_for_plot = "Bar Chart - " + readable_label_for_categorical_variable
-    
-    # Set style theme
-    sns.set_style("whitegrid")
-    
-    # Generate bar chart
-    fig = plt.figure()
-    if fill_color == None:
-        ax = sns.countplot(data = data,
-                           x = categorical_variable, 
-                           palette = "Spectral")
-    else:
-        ax = sns.countplot(data = data,
-                           x = categorical_variable,
-                           color = fill_color)
-    ax.set_title(title_for_plot,
-                 loc = 'left')
-    ax.set_xlabel(readable_label_for_categorical_variable)
-    
-    # Save plot to folder if one is specified
-    if folder_to_save_plot != None:
-        try:
-            plot_filepath = str(folder_to_save_plot) + title_for_plot + ".png"
-            plot_filepath = os.path.normpath(plot_filepath)
-            fig.savefig(plot_filepath)
-        except:
-            print("The filpath you entered to save your plot is invalid. Plot not saved.")
-    
-    # Show plot
-    plt.show()
-    
-    # Clear plot
-    plt.clf()
+def PlotSingleVariableBarChart(dataframe,
+                               list_categorical_variables,
+                               folder_to_save_plot=None,
+                               fill_color=None):
+    # Iterate through the list of categorical variables
+    for categorical_variable in list_categorical_variables:
+        # Generate bar chart
+        fig = plt.figure()
+        if fill_color == None:
+            ax = sns.countplot(data=dataframe,
+                               y=categorical_variable,
+                               order=dataframe[categorical_variable].value_counts(ascending=False).index,
+                               palette="Spectral")
+        else:
+            ax = sns.countplot(data=dataframe,
+                               y=categorical_variable,
+                               order=dataframe[categorical_variable].value_counts(ascending=False).index,
+                               color=fill_color)
+        ax.grid(False)
+        ax.set_ylabel(None)
+        ax.set_xlabel(None)
+        ax.set(xticklabels=[])
+        ax.tick_params(axis='y', which='major', labelsize=10)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        plt.suptitle("Distribution",
+                     x=0.125,
+                     horizontalalignment='left',
+                     verticalalignment='top',
+                     fontsize=14)
+        plt.title(categorical_variable,
+                  loc='left',
+                  fontsize=10)
+        
+        # Add data labels
+        abs_values = dataframe[categorical_variable].value_counts(ascending=False)
+        rel_values = dataframe[categorical_variable].value_counts(ascending=False, normalize=True).values * 100
+        lbls = [f'{p[0]} ({p[1]:.0f}%)' for p in zip(abs_values, rel_values)]
+        ax.bar_label(container=ax.containers[0],
+                     labels=lbls,
+                     padding=5)
+        
+        # Save plot to folder if one is specified
+        if folder_to_save_plot != None:
+            try:
+                plot_filepath = str(folder_to_save_plot) + "Bar chart - " + categorical_variable + ".png"
+                plot_filepath = os.path.normpath(plot_filepath)
+                fig.savefig(plot_filepath)
+            except:
+                print("The filepath you entered to save your plot is invalid. Plot not saved.")
+        
+        # Show plot
+        plt.show()
+        
+        # Clear plot
+        plt.clf()
 
