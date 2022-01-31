@@ -19,7 +19,7 @@ def PlotSingleVariableBarChart(dataframe,
             ax = sns.countplot(data=dataframe,
                                y=categorical_variable,
                                order=dataframe[categorical_variable].value_counts(ascending=False).index,
-                               palette="Spectral")
+                               palette="Set3")
         else:
             ax = sns.countplot(data=dataframe,
                                y=categorical_variable,

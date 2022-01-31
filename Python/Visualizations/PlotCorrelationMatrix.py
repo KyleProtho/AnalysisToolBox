@@ -19,6 +19,3 @@ def PlotCorrelationMatrix(dataframe,
         sns.pairplot(completed_df)
     else:
         print(completed_df.corr())
-        
-    # Return complete case dataset
-    return(completed_df)
