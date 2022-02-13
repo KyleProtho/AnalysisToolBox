@@ -26,7 +26,7 @@ def TestLogisticRegressionModelCI(model_dictionary,
         else:
             df_temp_test['Lower bound'] = df_temp_test['Lower bound'] + (lower_bound * df_temp_test[variable])
             df_temp_test['Upper bound'] = df_temp_test['Upper bound'] + (upper_bound * df_temp_test[variable])
-            df_temp_test['Best bound'] = df_temp_test['Best guess'] + (best_guess * df_temp_test[variable])
+            df_temp_test['Best guess'] = df_temp_test['Best guess'] + (best_guess * df_temp_test[variable])
         df_temp_test['Lower bound'] = np.exp(df_temp_test['Lower bound']) / (1 + np.exp(df_temp_test['Lower bound']))
         df_temp_test['Upper bound'] = np.exp(df_temp_test['Upper bound']) / (1 + np.exp(df_temp_test['Upper bound']))
         df_temp_test['Best guess'] = np.exp(df_temp_test['Best guess']) / (1 + np.exp(df_temp_test['Best guess']))

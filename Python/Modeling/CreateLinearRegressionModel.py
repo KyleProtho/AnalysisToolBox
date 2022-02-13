@@ -74,22 +74,3 @@ def CreateLinearRegressionModel(dataframe,
         "Outcome Test Dataset": Y_test
     }
     return dict_return
-
-# ## Testing
-# # Import data
-# df_bitcoin = pd.read_csv("C:/Users/oneno/OneDrive/Data/BitcoinWeeklyData_20180101_20211222.csv")
-# # Run regression
-# dict_bitcoin_model = CreateLinearRegressionModel(
-#     dataframe = df_bitcoin,
-#     outcome_variable = 'Close Price in USD',
-#     list_of_predictors = [
-#         'Week Count from 1/1/2018', 
-#         'Normalized Google Search Volume of Previous Week - bitcoin',
-#         'Close Price in USD of Previous Week'
-#     ],
-#     share_to_use_as_test_set = .20,
-#     show_diagnostic_plots = True,
-#     show_help = True
-# )
-# # Show the model summary
-# dict_bitcoin_model['Model Summary']

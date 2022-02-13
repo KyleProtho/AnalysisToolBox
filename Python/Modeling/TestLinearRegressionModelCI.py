@@ -26,7 +26,7 @@ def TestLinearRegressionModelCI(model_dictionary,
         else:
             df_temp_test['Lower bound'] = df_temp_test['Lower bound'] + (lower_bound * df_temp_test[variable])
             df_temp_test['Upper bound'] = df_temp_test['Upper bound'] + (upper_bound * df_temp_test[variable])
-            df_temp_test['Best bound'] = df_temp_test['Best guess'] + (best_guess * df_temp_test[variable])
+            df_temp_test['Best guess'] = df_temp_test['Best guess'] + (best_guess * df_temp_test[variable])
     
     # Add flag show if observation falls within 95% confidence interval
     df_temp_test['Is within CI'] = np.where(
