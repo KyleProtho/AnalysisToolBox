@@ -3,15 +3,15 @@ library(dplyr)
 library(stringr)
 library(table1)
 
-PlotSingleVariableHistogram=function(data,
+PlotSingleVariableHistogram=function(dataframe,
                                      quantitative_variable,
                                      readable_variable_label=NULL, 
                                      fill_color="#4f92ff") {
   # Use Scott method to get number of bins
-  max_value = max(data[[quantitative_variable]], na.rm=TRUE)
-  min_value = min(data[[quantitative_variable]], na.rm=TRUE)
-  sd_value = sd(data[[quantitative_variable]], na.rm=TRUE)
-  obs_count = nrow(data)
+  max_value = max(dataframe[[quantitative_variable]], na.rm=TRUE)
+  min_value = min(dataframe[[quantitative_variable]], na.rm=TRUE)
+  sd_value = sd(dataframe[[quantitative_variable]], na.rm=TRUE)
+  obs_count = nrow(dataframe)
   scott_number_bins_numer = (max_value - min_value) * obs_count ^ (1/3)
   scott_number_bins_denom = 3.5 * sd_value
   scott_number_bins = scott_number_bins_numer / scott_number_bins_denom
@@ -30,22 +30,21 @@ PlotSingleVariableHistogram=function(data,
     readable_variable_label = quantitative_variable
   }
   
-  # Generate title for plot
-  title_for_plot = paste("Distribution")
-  title_for_plot = str_wrap(title_for_plot, width=60)
-  
   # Draw plot
-  p = ggplot(data, aes(x=data[[quantitative_variable]])) + 
+  p = ggplot(data=dataframe, 
+             aes(x=dataframe[[quantitative_variable]])) + 
     geom_histogram(fill=fill_color,
+                   color="white",
                    alpha=0.8,
                    bins=scott_number_bins,
                    binwidth=scott_bin_width) +
-    labs(title=title_for_plot,
+    labs(title="Distribution",
          subtitle=readable_variable_label,
          y="Count") + 
     theme_minimal() + 
     theme(axis.line=element_line(size=1, colour="#d6d6d6"),
-          axis.text=element_text(color="#3b3b3b", size=10),
+          axis.text=element_text(color="#3b3b3b"),
+          axis.text.x=element_text(size=12),
           panel.grid.major=element_blank(),
           panel.grid.minor=element_blank(),
           axis.title.x=element_blank()
@@ -53,3 +52,7 @@ PlotSingleVariableHistogram=function(data,
   plot(p)
 }
 
+# Test
+data(iris)
+PlotSingleVariableHistogram(dataframe=iris,
+                            quantitative_variable="Sepal.Length")
