@@ -19,7 +19,8 @@ PlotSingleVariableBarChart <- function(dataframe,
   # Create bar chart
   if (is.null(fill_color)) {
     p = ggplot(data=dataframe, 
-               aes(x=dataframe[[categorical_variable]], fill=dataframe[[categorical_variable]])) +
+               aes(x=dataframe[[categorical_variable]], 
+                   fill=dataframe[[categorical_variable]])) +
       geom_bar(stat="count",
                width=0.75,
                alpha=0.8) +
