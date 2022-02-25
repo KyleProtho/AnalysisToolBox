@@ -1,8 +1,8 @@
 library(ggplot2)
-library(RColorBrewer)
 
 PlotVectorFromOrigin = function(x_coord,
                                 y_coord,
+                                vector_color="#5ad1a9",
                                 show_plot=TRUE) {
   # Get maximum of x and y for plot boundary
   plot_boundary_max = max(y_coord, x_coord)
@@ -23,24 +23,29 @@ PlotVectorFromOrigin = function(x_coord,
     scale_y_continuous(limits = c(plot_boundary*-1, plot_boundary)) +
     # Add x and y axis lines
     geom_hline(yintercept=0,
-               size=0.5, 
-               colour="#454545") + 
+               size=1, 
+               color="#454545") + 
     geom_vline(xintercept=0,
-               size=0.5, 
-               colour="#454545")+ 
+               size=1,
+               color="#454545") +
     # Draw vector
     geom_segment(aes(x=0,
                      y=0, 
                      xend=x_coord,
                      yend=y_coord),
-                 color=brewer.pal(8, "Set2")[1],
+                 color=vector_color,
                  size=3,
                  lineend = "round",
                  linejoin = "round",
                  arrow = arrow(length = unit(0.3, "inches"))) +
+    theme_minimal() +
     theme(axis.title=element_blank(), 
           panel.grid.minor=element_blank(),
           legend.position="none") +
+    # Add origin point dot
+    geom_point(aes(x=0, y=0), 
+               color="#454545",
+               size=5) +
     # Add title
     labs(title = "Vector from origin point",
          subtitle = paste0("[", x_coord, ", ", y_coord, "]"))
@@ -53,3 +58,4 @@ PlotVectorFromOrigin = function(x_coord,
   # Return plot
   return(p)
 }
+
