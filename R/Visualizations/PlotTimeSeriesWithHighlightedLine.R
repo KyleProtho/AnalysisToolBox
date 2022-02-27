@@ -9,7 +9,7 @@ PlotTimeSeriesWithHighlightedLine <- function(dataframe,
                                               quantitative_variable_column_name,
                                               entity_column_name,
                                               entity_to_highlight,
-                                              highlight_color="#5183e8",
+                                              highlight_color="#2f7fff",
                                               right_margin_in_cm=3,
                                               entity_label_wrap_limit=25,
                                               quantitative_variable_label=NULL,
@@ -25,6 +25,7 @@ PlotTimeSeriesWithHighlightedLine <- function(dataframe,
   if (is.null(title_text)) {
     title_text = paste(quantitative_variable_label, "over time")
   }
+  
   # Draw plot
   p = ggplot() +
     geom_line(data=dataframe,
@@ -34,8 +35,8 @@ PlotTimeSeriesWithHighlightedLine <- function(dataframe,
               color="#454545",
               alpha=0.20,
               size=0.75) + 
-    labs(title = str_wrap(title_text, width = 60),
-         subtitle = str_wrap(subtitle_text, width = 90),
+    labs(title = str_wrap(title_text, width = 80),
+         subtitle = str_wrap(subtitle_text, width = 110),
          x="Time",
          y="") +
     scale_x_date() +

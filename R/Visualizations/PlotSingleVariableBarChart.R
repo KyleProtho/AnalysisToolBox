@@ -6,14 +6,14 @@ library(RColorBrewer)
 # Define function
 PlotSingleVariableBarChart <- function(dataframe,
                                        categorical_variable,
-                                       readable_variable_label=NULL,
+                                       categorical_variable_label=NULL,
                                        fill_color=NULL) {
   # Concert categorical variable to factor
   dataframe[[categorical_variable]] = as.factor(dataframe[[categorical_variable]])
   
   # Set label
-  if (is.null(readable_variable_label)) {
-    readable_variable_label = quantitative_variable
+  if (is.null(categorical_variable_label)) {
+    categorical_variable_label = quantitative_variable
   }
   
   # Create bar chart
@@ -47,7 +47,7 @@ PlotSingleVariableBarChart <- function(dataframe,
           panel.grid.minor=element_blank(),
           legend.position = "none") +
     labs(title="Distribution",
-         subtitle=readable_variable_label) + 
+         subtitle=categorical_variable_label) + 
     geom_text(aes(label=paste0(..count.., " (", round(..count../sum(..count..)*100, 2), "%)")), 
               stat="count",
               color="#3b3b3b",
