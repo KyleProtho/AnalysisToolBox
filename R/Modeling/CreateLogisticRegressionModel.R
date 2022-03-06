@@ -5,13 +5,13 @@ library(stringr)
 library(ggplot2)
 
 # Declare function
-CreateLinearRegressionModel = function(dataframe,
-                                       outcome_variable,
-                                       list_of_predictors,
-                                       share_for_training=.80,
-                                       show_residual_plot=TRUE,
-                                       show_help=TRUE,
-                                       random_seed=NULL) {
+CreateLogisticRegressionModel = function(dataframe,
+                                         outcome_variable,
+                                         list_of_predictors,
+                                         share_for_training=.80,
+                                         show_residual_plot=TRUE,
+                                         show_help=TRUE,
+                                         random_seed=NULL) {
   # Select columns to use in model
   list_of_variables = append(x = list_of_predictors,
                              values = outcome_variable)
@@ -23,6 +23,9 @@ CreateLinearRegressionModel = function(dataframe,
   
   # Print the sample size used for modeling
   print(paste("Number of observations eligible for modeling:", nrow(df_modeling)))
+  
+  # Ensure that the outcome variable is categorical
+  df_modeling[[outcome_variable]] = as.factor(df_modeling[[outcome_variable]])
   
   # Set random seed for random selection of train-test split, if specified
   if (!is.null(random_seed)) {
@@ -48,9 +51,10 @@ CreateLinearRegressionModel = function(dataframe,
   }
   formula_string = as.formula(formula_string)
   
-  # Create linear regression model
-  model = lm(formula_string, 
-             data = trainSet)
+  # Create logistic regression model
+  model = glm(formula_string, 
+              data = trainSet,
+              family = "binomial")
   
   # Show residual plot if requested
   df_residulals = as.data.frame(residuals(model))
