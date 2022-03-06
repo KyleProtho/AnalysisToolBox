@@ -5,13 +5,13 @@ library(stringr)
 library(ggplot2)
 
 # Declare function
-CreateLinearRegressionModel <- function(dataframe,
-                                        outcome_variable,
-                                        list_of_predictors,
-                                        share_of_dataframe_for_training=.70,
-                                        show_residual_plot=TRUE,
-                                        show_help=TRUE,
-                                        random_seed=NULL) {
+CreateLinearRegressionModel = function(dataframe,
+                                       outcome_variable,
+                                       list_of_predictors,
+                                       share_for_training=.80,
+                                       show_residual_plot=TRUE,
+                                       show_help=TRUE,
+                                       random_seed=NULL) {
   # Select columns to use in model
   list_of_variables = append(x = list_of_predictors,
                              values = outcome_variable)
@@ -33,7 +33,7 @@ CreateLinearRegressionModel <- function(dataframe,
   
   # Split dataset into training and test set
   sampleSplit = sample.split(Y = df_modeling[[outcome_variable]],
-                             SplitRatio = share_of_dataframe_for_training)
+                             SplitRatio = share_for_training)
   trainSet = subset(x=df_modeling, sampleSplit==TRUE)
   testSet = subset(x=df_modeling, sampleSplit==FALSE)
   
@@ -52,7 +52,7 @@ CreateLinearRegressionModel <- function(dataframe,
   
   # Create linear regression model
   model = lm(formula_string, 
-             data = testSet)
+             data = trainSet)
   
   # Show residual plot if requested
   df_residulals = as.data.frame(residuals(model))

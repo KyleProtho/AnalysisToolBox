@@ -129,7 +129,6 @@ RecommendStatTest = function() {
   }
   
   
-  
   # Show recommendations
   # T-Test (and alternatives)
   if (is_continuous_outcome & is_groups & is_two_groups & is_related_obs == FALSE) {

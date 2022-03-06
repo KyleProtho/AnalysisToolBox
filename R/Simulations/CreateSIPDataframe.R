@@ -15,13 +15,13 @@ CreateSIPDataframe = function(name_of_items,
   for (i in 1:length(list_of_items)) {
     # Create dataframe of rows for each trial
     df_temp = data.frame(1:number_of_trials)
-    colnames(df_temp) = "Trial"
+    colnames(df_temp) = "trial"
     
     # Add item as column
     df_temp[[name_of_items]] = list_of_items[i]
     
     # Concatenate item and trial number as key
-    row.names(df_temp) = paste0(df_temp[["Trial"]], "-", df_temp[[name_of_items]])
+    row.names(df_temp) = paste0(df_temp[["trial"]], "-", df_temp[[name_of_items]])
     
     # Append to placeholder dataframe
     df_sip = bind_rows(df_sip, df_temp)
