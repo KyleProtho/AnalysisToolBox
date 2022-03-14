@@ -4,17 +4,17 @@ library(stringr)
 library(dplyr)
 
 # Define function
-PlotTimeSeriesWithHighlightedLine <- function(dataframe,
-                                              time_column_name,
-                                              quantitative_variable_column_name,
-                                              entity_column_name,
-                                              entity_to_highlight,
-                                              highlight_color="#2f7fff",
-                                              right_margin_in_cm=3,
-                                              entity_label_wrap_limit=25,
-                                              quantitative_variable_label=NULL,
-                                              title_text=NULL,
-                                              subtitle_text=NULL) {
+PlotTimeSeriesWithHighlightedLine = function(dataframe,
+                                             time_column_name,
+                                             quantitative_variable_column_name,
+                                             entity_column_name,
+                                             entity_to_highlight,
+                                             highlight_color="#2f7fff",
+                                             right_margin_in_cm=3,
+                                             entity_label_wrap_limit=25,
+                                             quantitative_variable_label=NULL,
+                                             title_text=NULL,
+                                             subtitle_text=NULL) {
   
   # Set readable quantity label if none set
   if (is.null(quantitative_variable_label)) {
@@ -72,24 +72,3 @@ PlotTimeSeriesWithHighlightedLine <- function(dataframe,
   # Return plot
   return(p)
 }
-
-# Test
-library(sweep)
-df_bike_sales = as.data.frame(bike_sales)
-df_bike_sales = df_bike_sales %>%
-  group_by(
-    order.date, 
-    model, 
-    category.primary, 
-    category.secondary
-  ) %>%
-  summarize(
-    total_quantity = sum(quantity)
-  )
-PlotTimeSeriesWithHighlightedLine(dataframe = df_bike_sales,
-                                  time_column_name = "order.date",
-                                  quantitative_variable_column_name = "total_quantity",
-                                  entity_column_name = "model",
-                                  entity_to_highlight = "Slice Hi-Mod Dura Ace D12",
-                                  right_margin_in_cm=5)
-
