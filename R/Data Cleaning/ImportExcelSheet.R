@@ -1,13 +1,15 @@
 # Load packages
-library(xlsx)
+library(readxl)
+library(janitor)
 
 # Declare function
 ImportExcelSheet = function(filepath_to_excel_file,
-                            sheet_index = 1) {
+                            sheet_index = 1,
+                            clean_column_names = TRUE) {
   # Import data
-  dataframe = read.xlsx(
-    file = filepath_to_excel_file,
-    sheetIndex = sheet_index
+  dataframe = read_excel(
+    path = filepath_to_excel_file,
+    sheet = sheet_index
   )
   
   # Replace blanks with NA
@@ -18,6 +20,11 @@ ImportExcelSheet = function(filepath_to_excel_file,
     dataframe[[variable]] == ifelse(test = dataframe[[variable]] == " ",
                                     yes = NA,
                                     no = dataframe[[variable]])
+  }
+  
+  # Clean column names if requested
+  if (clean_column_names) {
+    dataframe = dataframe %>% clean_names()
   }
   
   # Return dataframe
