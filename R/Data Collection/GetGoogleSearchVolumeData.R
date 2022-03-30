@@ -1,0 +1,4 @@
+# Load packages
+library(gtrendsR)
+
+
