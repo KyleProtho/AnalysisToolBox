@@ -52,9 +52,3 @@ IdentifyCorrelatedPredictors = function(dataframe,
   return(df_correlations)
 }
 
-# Test
-data(airquality)
-results = IdentifyCorrelatedPredictors(dataframe = airquality,
-                                       outcome_column = "Temp",
-                                       predictor_columns_to_consider = c("Ozone", "Solar.R", "Wind"))
-
