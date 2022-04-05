@@ -47,12 +47,3 @@ PlotLineChart = function(dataframe,
   # Return plot
   return(p)
 }
-
-# Test
-library(lubridate)
-df_airmiles$Time = as.integer(df_airmiles$Time)
-PlotLineChart(dataframe = df_airmiles,
-              time_column_name = "Time",
-              quantitative_variable_column_name = "Airmiles")
-
-# Convert time series to dataframe
