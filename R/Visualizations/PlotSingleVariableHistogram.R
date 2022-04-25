@@ -51,8 +51,3 @@ PlotSingleVariableHistogram=function(dataframe,
     )
   plot(p)
 }
-
-# Test
-data(iris)
-PlotSingleVariableHistogram(dataframe=iris,
-                            quantitative_variable="Sepal.Length")
