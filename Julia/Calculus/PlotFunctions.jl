@@ -24,8 +24,8 @@ function PlotFunctions(array_of_functions::Array;
 end
 
 # # Example
-# f(x) = x^2
-# g(x) = 2 * pi * x
+# f(x) = x^3
+# g(x) = 3 * x^2
 # h(x) = 1 / (x - 3)
 # PlotFunctions([f])
 # PlotFunctions([f, g])
