@@ -3,20 +3,29 @@ using Plots
 function PlotFunctions(array_of_functions::Array; 
                        x_min::Number = -3,
                        x_max::Number = 3,
-                       x_step::Number = 0.5,
+                       x_step::Number = 0.1,
                        x_limit_vline::Union{Number, Nothing} = nothing)
     # Create x-axis
     x_values = x_min:x_step:x_max
 
     # Generate plot
-    p = plot(x_values, array_of_functions)
+    p = plot(x_values, array_of_functions);
 
     # Draw limit if specified
     if x_limit_vline != nothing
-        vline!([x_limit_vline], 
-               seriestype="vline",
+        vline!([x_limit_vline],
                linstyle="dash",
-               color="red")
+               color="red");
+        # Add dashed line to show limit (y-axis) -- IN PROGRESS
+        for func in array_of_functions
+            y_lim = func(x_limit_vline)
+            if isnan(y_lim)
+                y_lim = func(x_limit_vline - .001)
+            end
+            hline!([y_lim],
+                   linstyle="dot",
+                   color="red");
+        end
     end
 
     # Show plot
