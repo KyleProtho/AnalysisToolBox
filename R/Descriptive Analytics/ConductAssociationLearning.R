@@ -3,8 +3,8 @@
 library(arules)
 library(arulesViz)
 library(dplyr)
-library(tidyr)
 library(stringr)
+library(tidyr)
 
 # Declare function
 ConductAssociationLearning = function(dataframe,
@@ -15,6 +15,11 @@ ConductAssociationLearning = function(dataframe,
                                       plot_association_rules = TRUE,
                                       plot_support = FALSE,
                                       random_seed = 412) {
+  # Set seed, if specified
+  if (!is.null(random_seed)) {
+    set.seed(random_seed)
+  }
+  
   # If support_threshold not specified, set it to 2/unique count of key_column
   if (is.null(support_threshold)) {
     support_threshold = 2 / n_distinct(dataframe[[key_column]])
