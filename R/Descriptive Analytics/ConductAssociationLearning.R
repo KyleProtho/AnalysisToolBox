@@ -10,8 +10,8 @@ library(tidyr)
 ConductAssociationLearning = function(dataframe,
                                       key_column,
                                       items_column,
-                                      confidence_threshold = 0.50,
                                       support_threshold = NULL,
+                                      confidence_threshold = 0.50,
                                       plot_association_rules = TRUE,
                                       plot_support = FALSE,
                                       random_seed = 412) {
@@ -92,9 +92,8 @@ ConductAssociationLearning = function(dataframe,
   return(df_assoc_rules)
 }
 
-# Set arguments
-dataframe = read.csv("C:/Users/oneno/OneDrive/Creations/Snippets for Statistics/SnippetsForStatistics/CSV/2022 NFL Draft Picks.csv")
-association_rules = ConductAssociationLearning(dataframe = dataframe,
-                                               key_column = "Team",
-                                               items_column = "Position")
-
+# # Example
+# dataframe = read.csv("C:/Users/oneno/OneDrive/Creations/Snippets for Statistics/SnippetsForStatistics/CSV/2022 NFL Draft Picks.csv")
+# table_assoc_rules = ConductAssociationLearning(dataframe = dataframe,
+#                                                key_column = "Team",
+#                                                items_column = "Position")
