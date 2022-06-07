@@ -9,7 +9,7 @@ ConductFactorAnalysis = function(dataframe,
                                  list_of_variables = NULL,
                                  number_of_factors_to_create = NULL,
                                  measure_of_sampling_adequacy_threshold = 0.5,
-                                 pca_standard_deviation_threshold = 1,
+                                 pca_eigenvalue_threshold = 1,
                                  standardize_variables = TRUE,
                                  plot_pca_results = TRUE) {
   # Select variables and keep complete cases only
@@ -27,15 +27,20 @@ ConductFactorAnalysis = function(dataframe,
   
   # Run KMO test
   kmo_results = KMO(dataframe_kmo)
-  print(kmo_results)
-  message("The KMO (Kaiser-Meyer-Olkin) test aims to estimate the proportion of variance among the variables you selected that may be caused by some underlying factor(s).")
-  message("The closer the Overall Measure of Sampling Adequacy (MSA) is to 1, the more useful factor analysis will be for your selected variables.")
   
   # See if KMO test result is below threshold 
   if (kmo_results$MSA < measure_of_sampling_adequacy_threshold) {
+    message("The KMO (Kaiser-Meyer-Olkin) test aims to estimate the proportion of variance among the variables you selected that may be caused by some underlying factor(s).")
+    message("The closer the Overall Measure of Sampling Adequacy (MSA) is to 1, the more useful factor analysis will be for your selected variables.")
     warning(paste0("The Overall MSA is below your threshold of ", measure_of_sampling_adequacy_threshold, ". Factor analysis is not recommended!"))
-  } else {
-    message(paste("The Overall MSA is above your threshold of", measure_of_sampling_adequacy_threshold))
+  }
+  
+  # Run Bartlett test
+  bartlett_results = cortest.bartlett(dataframe_kmo)
+  
+  # See if Bartlett test p-value is below threshold
+  if (bartlett_results$p.value > 0.05) {
+    warning(paste0("The p-value of the Barlett test for sphericity above 0.05. Factor analysis is not recommended!"))
   }
   
   # Get list of variables that are above MSA threshold
@@ -73,7 +78,7 @@ ConductFactorAnalysis = function(dataframe,
   names(pca_sdev)[names(pca_sdev) == "pca_model$sdev"] = "sdev"
   pca_sdev = pca_sdev %>% 
     filter(
-      sdev >= 1
+      sdev >= pca_eigenvalue_threshold
     )
   
   # Conduct final factor analysis
@@ -102,3 +107,8 @@ ConductFactorAnalysis = function(dataframe,
   # Return dataframe
   return(dataframe)
 }
+
+# Example
+df_survey = read.csv("https://raw.githubusercontent.com/housecricket/data/main/efa/sample1.csv")
+df_survey$ID = as.character(df_survey$ID)
+df_survey = ConductFactorAnalysis(dataframe = df_survey)
