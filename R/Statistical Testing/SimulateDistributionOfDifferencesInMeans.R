@@ -15,7 +15,7 @@ SimulateDistributionOfDifferencesInMeans = function(sample_mean_of_group1,
                                                     random_seed = NULL,
                                                     show_plot = TRUE,
                                                     fill_color = "#4f92ff",
-                                                    return_simulated_means = TRUE) {
+                                                    return_simulated_differences = TRUE) {
   # Calculate difference in means
   difference_in_means = sample_mean_of_group1 - sample_mean_of_group2
   
@@ -30,8 +30,8 @@ SimulateDistributionOfDifferencesInMeans = function(sample_mean_of_group1,
   # Print confidence interval
   lower_bound = round(difference_in_means - (zscore * standard_error), 3)
   upper_bound = round(difference_in_means + (zscore * standard_error), 3)
-  print(paste("95% confidence interval lower bound:", lower_bound))
-  print(paste("95% confidence interval upper bound:", upper_bound))
+  print(paste(round(confidence_interval*100, 0),"% confidence interval lower bound:", lower_bound))
+  print(paste(round(confidence_interval*100, 0),"% confidence interval upper bound:", upper_bound))
   
   # Set random seed if specified
   if (!is.null(random_seed)) {
@@ -73,7 +73,7 @@ SimulateDistributionOfDifferencesInMeans = function(sample_mean_of_group1,
   }
   
   # Return results
-  if (return_simulated_means) {
+  if (return_simulated_differences) {
     return(df_sim_results)
   }
 }
