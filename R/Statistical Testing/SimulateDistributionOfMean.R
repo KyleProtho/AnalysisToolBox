@@ -4,7 +4,7 @@ library(dplyr)
 
 # Declare function
 SimulateDistributionOfMean = function(sample_mean,
-                                      standard_deviation,
+                                      sample_sd,
                                       sample_size,
                                       confidence_interval = 0.95,
                                       outcome_variable_name = "Mean",
@@ -14,7 +14,7 @@ SimulateDistributionOfMean = function(sample_mean,
                                       fill_color = "#4f92ff",
                                       return_simulated_means = TRUE) {
   # Calculate standard error
-  standard_error = standard_deviation / sqrt(sample_size)
+  standard_error = sample_sd / sqrt(sample_size)
   
   # Calculate 95% confidence interval
   zscore = qnorm((1-confidence_interval)/2,

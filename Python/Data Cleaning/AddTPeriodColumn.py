@@ -28,20 +28,7 @@ def AddTPeriodColumn(dataframe,
         dataframe[t_period_column_name] = dataframe[t_period_column_name].apply(np.floor)
     if t_period_interval == "years":
         dataframe[t_period_column_name] = dataframe[t_period_column_name] / np.timedelta64(1, 'Y')
-        dataframe[t_period_column_name] = dataframe[t_period_column_name].apply(np.floor)
+        dataframe[t_period_column_name] = dataframe[t_period_column_name].round(0)
     
     # Return updated dataframe
     return(dataframe)
-
-
-
-# # Import test data
-# df_products = pd.read_excel("C:/Users/oneno/OneDrive/Data/Risk Modeling - Practice Datasets/Predicting Count of Products Sold.xlsx",
-#                             sheet_name="Train Final")
-# # Test function
-# df_products = AddTPeriodColumn(dataframe=df_products,
-#                                date_column_name="Date")
-# df_products = AddTPeriodColumn(dataframe=df_products,
-#                                date_column_name="Date",
-#                                t_period_interval='months')
-
