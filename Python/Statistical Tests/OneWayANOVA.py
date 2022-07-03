@@ -1,5 +1,6 @@
 # Load packages
 from statsmodels.stats.oneway import anova_oneway
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
 import pandas as pd
 import numpy as np
 
@@ -42,3 +43,14 @@ def OneWayANOVA(dataframe,
     print("degrees of freedom between groups:", str(int(test_results.df_num)))
     print("degrees of freedom across all groups:", str(int(test_results.df_denom)))
     print("f-statistic:", str(round(test_results.statistic, 3)))
+    print("\n")
+    
+    # Perform Tukey's test
+    tukey = pairwise_tukeyhsd(
+        endog=dataframe[outcome_column],
+        groups=dataframe[grouping_column],
+        alpha=signficance_level
+    )
+
+    #display results
+    print(tukey)
