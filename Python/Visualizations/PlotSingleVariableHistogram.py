@@ -2,8 +2,9 @@ import pandas as pd
 import os
 from matplotlib import pyplot as plt
 import seaborn as sns
-sns.set_style("white")
-sns.set_context("paper")
+sns.set(style="white",
+        font="Arial",
+        context="paper")
 
 # Create histogram function
 def PlotSingleVariableHistogram(dataframe,

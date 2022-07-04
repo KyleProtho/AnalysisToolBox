@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
 import seaborn as sns
-sns.set_style("white")
-sns.set_context("paper")
+sns.set(style="white",
+        font="Arial",
+        context="paper")
 
 def PlotCorrelationMatrix(dataframe,
                           list_of_columns,
