@@ -14,12 +14,12 @@ def PlotSingleVariableBarChart(dataframe,
     # Iterate through the list of categorical variables
     for categorical_variable in list_categorical_variables:
         # Generate bar chart
-        fig = plt.figure()
+        f, ax = plt.subplots(figsize=(6, 4.5))
         if fill_color == None:
             ax = sns.countplot(data=dataframe,
                                y=categorical_variable,
                                order=dataframe[categorical_variable].value_counts(ascending=False).index,
-                               palette="Set3")
+                               palette="Set1")
         else:
             ax = sns.countplot(data=dataframe,
                                y=categorical_variable,

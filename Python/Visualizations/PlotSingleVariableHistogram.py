@@ -12,38 +12,12 @@ def PlotSingleVariableHistogram(dataframe,
                                 fill_color="#3269a8"):
     # Iterate through the list of quantitative variables
     for quantitative_variable in list_quantitative_variables:
-        # Calculate best number of bins and bin width/size
-        sd_of_var = dataframe[quantitative_variable].std()
-        min_of_var = dataframe[quantitative_variable].min()
-        max_of_var = dataframe[quantitative_variable].max()
-        n = len(dataframe[quantitative_variable].index)
-        ## number of bins
-        numerator = (max_of_var - min_of_var) * (n ** (1/3))
-        denominator = 3.5 * sd_of_var
-        number_of_bins = numerator / denominator
-        try:
-            number_of_bins = round(number_of_bins, 0)
-            number_of_bins = int(number_of_bins)
-        except:
-            number_of_bins = 1
-        if number_of_bins < 1:
-            number_of_bins = 1
-        ## bin width 
-        numerator = 3.5 * sd_of_var
-        denominator = n ** (1/3)
-        bin_width = numerator / denominator
-        bin_width = round(bin_width, 2)
-        
-        # Set style theme
-        sns.set_style("whitegrid")
-        
         # Create histogram
-        fig = plt.figure()
+        f, ax = plt.subplots(figsize=(6, 4.5))
         ax = sns.histplot(data = dataframe,
                           x = quantitative_variable,
                           stat = "count",
-                          color = fill_color,
-                          bins = number_of_bins)
+                          color = fill_color)
         ax.set_xlabel(None)
         ax.tick_params(axis='x', which='major', labelsize=8)
         ax.set_ylabel(None)

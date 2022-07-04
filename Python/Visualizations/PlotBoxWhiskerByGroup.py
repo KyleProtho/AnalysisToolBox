@@ -13,7 +13,7 @@ def PlotBoxWhiskerByGroup(dataframe,
                           folder_to_save_plot=None,
                           fill_color=None):
     # Create boxplot
-    fig = plt.figure()
+    f, ax = plt.subplots(figsize=(6, 4.5))
     if group_variable_2 != None:
         if fill_color != None:
             ax = sns.boxplot(data=dataframe,
@@ -26,7 +26,7 @@ def PlotBoxWhiskerByGroup(dataframe,
                             x=group_variable_1,
                             y=outcome_variable, 
                             hue=group_variable_2, 
-                            palette="Set2")
+                            palette="Set1")
     else:
         if fill_color != None:
             ax = sns.boxplot(data=dataframe,
@@ -37,7 +37,7 @@ def PlotBoxWhiskerByGroup(dataframe,
             ax = sns.boxplot(data=dataframe,
                             x=group_variable_1,
                             y=outcome_variable, 
-                            palette="Set2")
+                            palette="Set1")
     ax.set_xlabel(None)
     ax.set_ylabel(None)
     ax.tick_params(axis='both', which='major', labelsize=8)
