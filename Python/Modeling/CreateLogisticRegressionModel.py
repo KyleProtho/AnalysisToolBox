@@ -32,17 +32,24 @@ def CreateLogisticRegressionModel(dataframe,
     # Create outcome/dependent variables
     Y = complete_case_dataframe[outcome_variable]
     
-    # Determine size of test dataset
-    test_size = round(len(complete_case_dataframe.index) * share_to_use_as_test_set, 0)
-    test_size = int(test_size)
-    
-    # Split the data into training/testing sets
-    X_train = X[:-test_size]
-    X_test = X[-test_size:]
-    
-    # Split the outcomes into training/testing sets
-    Y_train = Y[:-test_size]
-    Y_test = Y[-test_size:]
+    # Create test dataset if requested
+    if share_to_use_as_test_set > 0:
+        # Determine size of test dataset
+        test_size = round(len(complete_case_dataframe.index) * share_to_use_as_test_set, 0)
+        test_size = int(test_size)
+        
+        # Split the data into training/testing sets
+        X_train = X[:-test_size]
+        X_test = X[-test_size:]
+        
+        # Split the outcomes into training/testing sets
+        Y_train = Y[:-test_size]
+        Y_test = Y[-test_size:]
+    else:
+        X_train = X
+        Y_train = Y
+        X_test = None
+        Y_test = None
     
     # Create linear regression model
     model = sm.Logit(Y_train, X_train)

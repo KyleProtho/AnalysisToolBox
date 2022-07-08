@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 def AddLeadingZeros(dataframe,
                     column_name,
@@ -10,8 +11,21 @@ def AddLeadingZeros(dataframe,
     # If adding as new column, change the column name
     if add_as_new_column:
         new_column_name = column_name + ' - with leading 0s'
-        dataframe[new_column_name] = dataframe[column_name].astype(str).str.zfill(fixed_length)
+        dataframe[new_column_name] = np.where(
+            dataframe[column_name].isna(),
+            np.nan,
+            dataframe[column_name].astype(str).str.zfill(fixed_length)
+        )
+        dataframe[new_column_name] = dataframe[new_column_name].str.replace(".0", "",
+                                                                            regex=False)
     else:
-        dataframe[column_name] = dataframe[column_name].astype(str).str.zfill(fixed_length)
+        dataframe[column_name] = np.where(
+            dataframe[column_name].isna(),
+            np.nan,
+            dataframe[column_name].astype(str).str.zfill(fixed_length)
+        )
+        dataframe[column_name] = dataframe[column_name].str.replace(".0", "",
+                                                                    regex=False)
+    
     # Return updated dataframe
     return(dataframe)
