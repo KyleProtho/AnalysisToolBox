@@ -4,41 +4,45 @@ import statsmodels.api as sm
 from scipy import stats
 
 def TestLinearRegressionModelCI(model_dictionary,
-                                outcome_variable):
-    # Join outcome and predictors of test datasets
+                                confidence_interval = .95):
+    # Use model to generate prediction intervals
+    model = model_dictionary["Fitted Model"]
+    df_temp_test = model_dictionary["Predictor Test Dataset"]
+    predictions = model.get_prediction(df_temp_test)
+    predictions = predictions.summary_frame(alpha=1-confidence_interval)
+    
+    # Join predictions to observed outcomes of test datasets
     df_temp_test = model_dictionary["Outcome Test Dataset"].to_frame()
     df_temp_test = df_temp_test.merge(
-        model_dictionary["Predictor Test Dataset"],
+        predictions,
         how='left',
         left_index=True,
         right_index=True
     )
     
-    # Add 95% CI estimates of model based on predictors (y = m*x + b = predictor*beta coeff + constant)
-    for variable in model_dictionary["Predictor Test Dataset"].columns:
-        lower_bound = model_dictionary["Fitted Model"].conf_int()[0][variable]
-        upper_bound = model_dictionary["Fitted Model"].conf_int()[1][variable]
-        best_guess = model_dictionary["Fitted Model"].params[variable]
-        if variable == "const":
-            df_temp_test['Lower bound'] = lower_bound
-            df_temp_test['Upper bound'] = upper_bound
-            df_temp_test['Best guess'] = best_guess
-        else:
-            df_temp_test['Lower bound'] = df_temp_test['Lower bound'] + (lower_bound * df_temp_test[variable])
-            df_temp_test['Upper bound'] = df_temp_test['Upper bound'] + (upper_bound * df_temp_test[variable])
-            df_temp_test['Best guess'] = df_temp_test['Best guess'] + (best_guess * df_temp_test[variable])
+    # Derive column names
+    ci_lower_column_name = 'mean ' + str(round(confidence_interval * 100, 0)) + '% CI - lower bound'
+    ci_upper_column_name = 'mean ' + str(round(confidence_interval * 100, 0)) + '% CI - upper bound'
+    pi_lower_column_name = str(round(confidence_interval * 100, 0)) + '% PI - lower bound'
+    pi_upper_column_name = str(round(confidence_interval * 100, 0)) + '% PI - upper bound'
+    
+    # Rename columns
+    df_temp_test = df_temp_test.rename(columns={
+        'mean_se': 'mean standard error',
+        'mean_ci_lower': ci_lower_column_name,
+        'mean_ci_upper': ci_upper_column_name,
+        'obs_ci_lower': pi_lower_column_name,
+        'obs_ci_upper': pi_upper_column_name
+    })
     
     # Add flag show if observation falls within 95% confidence interval
-    df_temp_test['Is within CI'] = np.where(
-        (df_temp_test[outcome_variable] >= df_temp_test['Lower bound']) & (df_temp_test[outcome_variable] <= df_temp_test['Upper bound']),
+    outcome_variable = df_temp_test.columns[0]
+    df_temp_test['Is within PI'] = np.where(
+        (df_temp_test[outcome_variable] >= df_temp_test[pi_lower_column_name]) & (df_temp_test[outcome_variable] <= df_temp_test[pi_upper_column_name]),
         1,
         0
     )
     
-    # Calculate different (residual) between best guess and observed outcome
-    df_temp_test['Residual'] = df_temp_test[outcome_variable] - df_temp_test['Best guess']
-    
     # Return tested dataset
     return df_temp_test
-
 
