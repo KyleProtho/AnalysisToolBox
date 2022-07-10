@@ -45,4 +45,3 @@ def TestLinearRegressionModelCI(model_dictionary,
     
     # Return tested dataset
     return df_temp_test
-

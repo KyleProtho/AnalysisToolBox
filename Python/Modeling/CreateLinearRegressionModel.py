@@ -47,8 +47,8 @@ def CreateLinearRegressionModel(dataframe,
     else:
         X_train = X
         Y_train = Y
-        X_test = None
-        Y_test = None
+        X_test = X_train
+        Y_test = Y_train
     
     # Create linear regression model
     model = sm.OLS(Y_train, X_train)
