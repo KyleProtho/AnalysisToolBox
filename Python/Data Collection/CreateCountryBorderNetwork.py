@@ -2,7 +2,7 @@
 import pandas as pd
 import networkx as nx
 
-# Declare function
+# Declare function (be sure to run the GetCountryInfo function first)
 def CreateCountryBorderNetwork(dataframe_country_info):
     # Drop unnecessary columns
     df_borders = dataframe_country_info[[
