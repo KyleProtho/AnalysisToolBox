@@ -97,6 +97,44 @@ def GetCountryInfo():
             np.nan,
             df_countries[col]
         )
+        
+    # Split capital city lat and long coordinates
+    df_temp = df_countries[
+        df_countries['Capital City Center Coordinates'].notnull()
+    ].copy()
+    df_temp[['Capital City - Latitude', 'Capital City - Longitude']] = pd.DataFrame(
+        df_temp['Capital City Center Coordinates'].to_list(),
+        index=df_temp.index
+    )
+    df_temp = df_temp[[
+        'ISO3C',
+        'Capital City - Latitude',
+        'Capital City - Longitude'
+    ]]
+    df_countries = df_countries.merge(
+        df_temp,
+        how='left',
+        on=['ISO3C']
+    )
+    
+    # Split country lat and long coordinates
+    df_temp = df_countries[
+        df_countries['Country Center Coordinates'].notnull()
+    ].copy()
+    df_temp[['Country - Latitude', 'Country - Longitude']] = pd.DataFrame(
+        df_temp['Country Center Coordinates'].to_list(),
+        index=df_temp.index
+    )
+    df_temp = df_temp[[
+        'ISO3C',
+        'Country - Latitude',
+        'Country - Longitude'
+    ]]
+    df_countries = df_countries.merge(
+        df_temp,
+        how='left',
+        on=['ISO3C']
+    )
 
     # Return dataframe
     return(df_countries)
