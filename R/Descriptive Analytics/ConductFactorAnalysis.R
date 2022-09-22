@@ -38,7 +38,7 @@ ConductFactorAnalysis = function(dataframe,
   # Run Bartlett test
   bartlett_results = cortest.bartlett(dataframe_kmo)
   
-  # See if Bartlett test p-value is below threshold
+  # See if Bartlett test p-value is statistically significant
   if (bartlett_results$p.value > 0.05) {
     warning(paste0("The p-value of the Barlett test for sphericity above 0.05. Factor analysis is not recommended!"))
   }
@@ -108,7 +108,7 @@ ConductFactorAnalysis = function(dataframe,
   return(dataframe)
 }
 
-# Example
-df_survey = read.csv("https://raw.githubusercontent.com/housecricket/data/main/efa/sample1.csv")
-df_survey$ID = as.character(df_survey$ID)
-df_survey = ConductFactorAnalysis(dataframe = df_survey)
+# # Example
+# df_survey = read.csv("https://raw.githubusercontent.com/housecricket/data/main/efa/sample1.csv")
+# df_survey$ID = as.character(df_survey$ID)
+# df_survey = ConductFactorAnalysis(dataframe = df_survey)
