@@ -63,7 +63,3 @@ ConductKMeansClustering = function(dataframe,
   # Return dataframe
   return(dataframe)
 }
-
-# Set arguments
-mtcars = ConductKMeansClustering(dataframe = mtcars,
-                                 list_of_variables_to_create_clusters = c("mpg", "cyl", "hp", "wt"))
