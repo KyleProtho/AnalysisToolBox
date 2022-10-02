@@ -63,8 +63,10 @@ def ConductFactorAnalysis(dataframe,
     
     # Standardize columns if requested
     if standardize_variables:
-        df_for_fa = StandardScaler().fit_transform(df_for_fa)
-        df_for_fa = pd.DataFrame(df_for_fa)
+        df_transformed = StandardScaler().fit_transform(df_for_fa)
+        df_transformed = pd.DataFrame(df_transformed)
+        df_transformed.index = df_for_fa.index
+        df_for_fa = df_transformed.copy()
         df_for_fa.columns = list_of_eligible_variables
     
     # Conduct principal component analysis
@@ -105,7 +107,13 @@ def ConductFactorAnalysis(dataframe,
     # Filter to complete cases only
     df_factors = df_factors.dropna()
     
-    # Predict factors for observed values in originial dataset
+    # Predict factors for observed values in original dataset
+    if standardize_variables:
+        df_transformed = StandardScaler().fit_transform(df_factors)
+        df_transformed = pd.DataFrame(df_transformed)
+        df_transformed.index = df_factors.index
+        df_factors = df_transformed.copy()
+        df_factors.columns = list_of_eligible_variables
     df_predicted = fa.transform(df_factors)
     df_predicted = pd.DataFrame(
         df_predicted,
