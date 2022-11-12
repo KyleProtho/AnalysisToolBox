@@ -4,19 +4,23 @@ import numpy as np
 import pandas as pd
 from sklearn import datasets, linear_model
 from sklearn.model_selection import train_test_split
+import statsmodels.api as sm
 
 # Function to create linear regression model
 def CreateLinearRegressionModel(dataframe,
-                          outcome_variable,
-                          list_of_predictors,
-                          scale_predictors=False,
-                          test_size=0.2,
-                          random_seed=412):
+                                outcome_variable,
+                                list_of_predictors,
+                                scale_predictors=False,
+                                test_size=0.2,
+                                random_seed=412):
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictors + [outcome_variable]].copy()
     
     # Keep complete cases
     dataframe.dropna(inplace = True)
+    
+    # Add constant to predictors
+    dataframe = sm.add_constant(dataframe)
     
     # Scale the predictors, if requested
     if scale_predictors:
@@ -42,9 +46,10 @@ def CreateLinearRegressionModel(dataframe,
     # Train the model using the training sets
     regr.fit(train[list_of_predictors], train[outcome_variable])
     
-    # Show the coefficients
-    print("\nCoefficients: ", regr.coef_)
-    print("Intercept: ", regr.intercept_)
+    # Show summary of linear regression model
+    model_summary = sm.OLS(train[outcome_variable], train[['const'] + list_of_predictors]).fit()
+    model_summary = model_summary.summary()
+    print(model_summary)
     
     # Show the explained variance score: 
     print("Variance score: %.2f" % regr.score(train[list_of_predictors], train[outcome_variable]))
@@ -67,3 +72,9 @@ def CreateLinearRegressionModel(dataframe,
     # Return the model
     return regr
 
+# Test the function
+iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+linear_reg_model = CreateLinearRegressionModel(dataframe=iris,
+                                               outcome_variable='sepal length (cm)',
+                                               list_of_predictors=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+                                               scale_predictors=True)
