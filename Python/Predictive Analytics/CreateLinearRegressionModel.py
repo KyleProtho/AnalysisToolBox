@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 def CreateLinearRegressionModel(dataframe,
                                 outcome_variable,
                                 list_of_predictors,
-                                scale_predictors=False,
+                                scale_predictors=True,
                                 test_size=0.2,
                                 max_iterations=1000,
                                 learning_rate=0.0001,
@@ -21,11 +21,13 @@ def CreateLinearRegressionModel(dataframe,
     
     # Keep complete cases
     dataframe.dropna(inplace = True)
+    dataframe = dataframe[np.isfinite(dataframe).all(1)]
+    print("Count of examples eligible for inclusion in model training and testing:", len(dataframe.index))
     
     # Scale the predictors, if requested
     if scale_predictors:
         # Show the mean and standard deviation of each predictor
-        print("Mean of each predictor:")
+        print("\nMean of each predictor:")
         print(dataframe[list_of_predictors].mean())
         print("\nStandard deviation of each predictor:")
         print(dataframe[list_of_predictors].std())

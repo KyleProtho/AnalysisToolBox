@@ -1,0 +1,71 @@
+from matplotlib import pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+import statsmodels.api as sm
+
+def ConductLinearRegressionAnalysis(dataframe,
+                                    outcome_variable,
+                                    list_of_predictors,
+                                    scale_predictors=False,
+                                    show_diagnostic_plots_for_each_predictor=True,
+                                    show_help=True):
+    
+    # Select columns specified
+    dataframe = dataframe[list_of_predictors + [outcome_variable]]
+    
+    # Remove NAN and inf values
+    dataframe.dropna(inplace=True)
+    dataframe = dataframe[np.isfinite(dataframe).all(1)]
+
+    # Add constant
+    dataframe = sm.add_constant(dataframe)
+    
+    # Scale the predictors, if requested
+    if scale_predictors:
+        # Show the mean and standard deviation of each predictor
+        print("\nMean of each predictor:")
+        print(dataframe[list_of_predictors].mean())
+        print("\nStandard deviation of each predictor:")
+        print(dataframe[list_of_predictors].std())
+        
+        # Scale predictors
+        dataframe[list_of_predictors] = StandardScaler().fit_transform(dataframe[list_of_predictors])
+    
+    # Create linear regression model
+    model = sm.OLS(dataframe[outcome_variable], dataframe[['const'] + list_of_predictors])
+    model_res = model.fit()
+    model_summary = model_res.summary()
+    
+    # If requested, show diagnostic plots
+    if show_diagnostic_plots_for_each_predictor:
+        for variable in list_of_predictors:
+            fig = plt.figure(figsize=(12, 8))
+            fig = sm.graphics.plot_regress_exog(model_res, variable, fig=fig)
+    
+    # If requested, show help text
+    if show_help:
+        print(
+            "Quick guide on accessing output of ConductLinearRegressionAnalysis function:",
+            "\nThe ouput of the ConductLinearRegressionAnalysis function is a dictionary containing the regression results, a test dataset of predictors, and a test dataset of outcomes.",
+            "\n\t--To access the linear regression model, use the 'Fitted Model' key."
+            "\n\t--To view the model's statistical summary, use the 'Model Summary' key."
+        )
+    
+    # Create dictionary of objects to return
+    dict_return = {
+        "Fitted Model": model_res,
+        "Model Summary": model_summary
+    }
+    return dict_return
+
+
+# # Test the function
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# linear_reg_model = ConductLinearRegressionAnalysis(
+#     dataframe=iris,
+#     outcome_variable='sepal length (cm)',
+#     list_of_predictors=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
+# )
+# linear_reg_model['Model Summary']
