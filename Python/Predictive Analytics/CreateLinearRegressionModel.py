@@ -53,13 +53,15 @@ def CreateLinearRegressionModel(dataframe,
         fit_intercept=True,
     )
     
-    # Train the model using the training sets
+    # Train the model using the training sets and show fitting summary
     regr.fit(train[list_of_predictors], train[outcome_variable])
+    print(f"\nNumber of iterations completed: {regr.n_iter_}")
+    print(f"Number of weight updates: {regr.t_}")
     
     # Show parameters of the model
     b_norm = regr.intercept_
     w_norm = regr.coef_
-    print(f"\nModel parameters:                   w: {w_norm}, b:{b_norm}")
+    print(f"\nModel parameters:    w: {w_norm}, b:{b_norm}")
         
     # Show the explained variance score: 
     print("\nVariance score: %.2f" % regr.score(train[list_of_predictors], train[outcome_variable]))
