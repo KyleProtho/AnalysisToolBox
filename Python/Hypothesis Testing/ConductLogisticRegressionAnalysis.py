@@ -72,14 +72,14 @@ def ConductLogisticRegressionAnalysis(dataframe,
     return dict_return
 
 
-# Test the function
-from sklearn import datasets
-iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-iris['species'] = datasets.load_iris(as_frame=True).target
-iris = iris[iris['species'] != 2]
-logistic_reg_model = ConductLogisticRegressionAnalysis(
-    dataframe=iris,
-    outcome_variable='species',
-    list_of_predictors=['petal width (cm)']
-)
-logistic_reg_model['Model Summary']
+# # Test the function
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# iris['species'] = datasets.load_iris(as_frame=True).target
+# iris = iris[iris['species'] != 2]
+# logistic_reg_model = ConductLogisticRegressionAnalysis(
+#     dataframe=iris,
+#     outcome_variable='species',
+#     list_of_predictors=['petal width (cm)']
+# )
+# logistic_reg_model['Model Summary']
