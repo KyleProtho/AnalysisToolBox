@@ -13,7 +13,8 @@ def CreateLinearRegressionModel(dataframe,
                                 scale_predictor_variables=True,
                                 test_size=0.2,
                                 max_iterations=1000,
-                                learning_rate=0.0001,
+                                learning_rate=0.01,
+                                lambda_for_regularization=0.001,
                                 show_plot_of_residuals=True,
                                 random_seed=412):
     # Keep only the predictors and outcome variable
@@ -48,9 +49,10 @@ def CreateLinearRegressionModel(dataframe,
     
     # Create linear regression object
     regr = linear_model.SGDRegressor(
-        loss='squared_loss',
+        loss='squared_error',
         max_iter=max_iterations,
-        alpha=learning_rate,
+        eta0=learning_rate,
+        alpha=lambda_for_regularization,
         random_state=random_seed,
         fit_intercept=True,
     )

@@ -6,15 +6,14 @@ from sklearn import metrics
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.inspection import DecisionBoundaryDisplay
 
 def CreateLogisticRegressionModel(dataframe,
                                   outcome_variable,
                                   list_of_predictor_variables,
+                                  scale_predictor_variables=True,
                                   test_size=0.2,
                                   show_classification_plot=True,
-                                  show_decision_boundary_plot=True,
-                                  scale_predictor_variables=True,
+                                  lambda_for_regularization=0.001,
                                   max_iterations=1000,
                                   random_seed=412):
     # Keep only the predictors and outcome variable
@@ -50,7 +49,9 @@ def CreateLogisticRegressionModel(dataframe,
     # Create logistic regression model
     regr = LogisticRegression(
         max_iter=max_iterations, 
-        random_state=random_seed
+        random_state=random_seed,
+        C=1-lambda_for_regularization,
+        fit_intercept=True
     )
     
     # Train the model using the training sets and show fitting summary
