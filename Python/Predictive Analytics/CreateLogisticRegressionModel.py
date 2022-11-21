@@ -101,6 +101,7 @@ def CreateLogisticRegressionModel(dataframe,
 # from sklearn import datasets
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # iris['species'] = datasets.load_iris(as_frame=True).target
+# # iris = iris[iris['species'] != 2]
 # logistic_reg_model = CreateLogisticRegressionModel(
 #     dataframe=iris,
 #     outcome_variable='species',
