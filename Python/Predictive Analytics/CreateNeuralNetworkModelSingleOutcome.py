@@ -15,7 +15,7 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
                                       test_size=0.2,
                                       scale_predictor_variables=True,
                                       show_predictor_ranges=True,
-                                      learning_rate=0.01,
+                                      initial_learning_rate=0.01,
                                       number_of_steps_gradient_descent=100,
                                       random_seed=412):
     # Keep only the predictors and outcome variable
@@ -109,19 +109,19 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
         if len(dataframe[outcome_variable].unique()) == 2:
             model.compile(
                 loss=tf.keras.losses.BinaryCrossentropy(), 
-                optimizer=tf.keras.optimizers.Adam(learning_rate=learning_rate),
+                optimizer=tf.keras.optimizers.Adam(learning_rate=initial_learning_rate),
                 metrics=['accuracy']
             )
         else:
             model.compile(
                 loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), 
-                optimizer=tf.keras.optimizers.Adam(learning_rate=learning_rate),
+                optimizer=tf.keras.optimizers.Adam(learning_rate=initial_learning_rate),
                 metrics=['accuracy']
             )
     else:
         model.compile(
             loss=tf.keras.losses.MeanSquaredError(),
-            optimizer=tf.keras.optimizers.Adam(learning_rate=learning_rate),
+            optimizer=tf.keras.optimizers.Adam(learning_rate=initial_learning_rate),
             metrics=['mean_squared_error']
         )
     
