@@ -2,6 +2,7 @@
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 from sklearn import linear_model
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -15,7 +16,7 @@ def CreateLinearRegressionModel(dataframe,
                                 max_iterations=1000,
                                 learning_rate=0.01,
                                 lambda_for_regularization=0.001,
-                                show_plot_of_residuals=True,
+                                plot_residuals=True,
                                 random_seed=412):
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
@@ -66,37 +67,26 @@ def CreateLinearRegressionModel(dataframe,
     b_norm = regr.intercept_
     w_norm = regr.coef_
     print(f"\nModel parameters:    w: {w_norm}, b:{b_norm}")
+    
+    # Add predictions to test set
+    test['Predicted'] = regr.predict(test[list_of_predictor_variables])
         
     # Show the explained variance score: 
     print("\nVariance score: %.2f" % regr.score(train[list_of_predictor_variables], train[outcome_variable]))
     print("Note: 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
     
     # The mean squared error
-    print("\nMean squared error: %.2f" % np.mean((regr.predict(test[list_of_predictor_variables]) - test[outcome_variable]) ** 2))
+    print("\nMean squared error: %.2f" % np.mean((test['Predicted'] - test[outcome_variable]) ** 2))
     
     # Plot predicted and observed outputs if requested
-    if show_plot_of_residuals:
-        fig, ax = plt.subplots(
-            int(np.ceil(len(list_of_predictor_variables))), 
-            1,
-            figsize=(4, int(np.ceil(len(list_of_predictor_variables)))*4.5),
-            sharey=True
-        )
-        for i in range(len(ax)):
-            ax[i].scatter(
-                train[list_of_predictor_variables[i]],
-                train[outcome_variable], 
-                label="Observed"
+    if plot_residuals:
+        plt.figure(figsize=(9, 9))
+        sns.regplot(
+                data=test,
+                x=outcome_variable,
+                y='Predicted',
             )
-            ax[i].set_xlabel(list_of_predictor_variables[i])
-            ax[i].set_ylabel(outcome_variable)
-            ax[i].scatter(
-                train[list_of_predictor_variables[i]],
-                regr.predict(train[list_of_predictor_variables]),
-                label='Predicted'
-            ) 
-        ax[0].legend()
-        fig.suptitle("Observed and predicted outcome")
+        plt.title('Predicted vs. Observed Outcome', size = 15)
         plt.show()
     
     # Return the model

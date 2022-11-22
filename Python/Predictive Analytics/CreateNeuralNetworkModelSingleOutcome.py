@@ -140,7 +140,7 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
             x=range(1, number_of_steps_gradient_descent + 1),
             y=loss_history.history['loss']
         )
-        plt.title('Loss over epochs', size = 15)
+        plt.title('Loss Curve', size = 15)
         plt.xlabel('Epoch')
         plt.ylabel('Loss')
         plt.show()
@@ -182,7 +182,7 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
                 plt.ylabel('Actual label')
                 plt.xlabel('Predicted label')
         else:
-            sns.scatterplot(
+            sns.regplot(
                 data=test,
                 x=outcome_variable,
                 y='Predicted'
@@ -194,10 +194,10 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
     return(model)
 
 
-# # Test the function
-# from sklearn.datasets import load_iris
-# iris = pd.DataFrame(load_iris(as_frame=True).data)
-# iris['species'] = load_iris(as_frame=True).target
+# Test the function
+from sklearn.datasets import load_iris
+iris = pd.DataFrame(load_iris(as_frame=True).data)
+iris['species'] = load_iris(as_frame=True).target
 # # CATEGORICAL OUTCOME
 # # iris = iris[iris['species'] != 2]
 # species_neural_net_model = CreateNeuralNetwork_SingleOutcome(
@@ -208,12 +208,12 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
 #     number_of_hidden_layers=2,
 #     scale_predictor_variables=True
 # )
-# # # NUMERICAL OUTCOME
-# # sep_len_neural_net_model = CreateNeuralNetwork_SingleOutcome(
-# #     dataframe=iris,
-# #     outcome_variable='sepal length (cm)',
-# #     is_outcome_categorical=False,
-# #     list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-# #     number_of_hidden_layers=3,
-# #     scale_predictor_variables=True
-# # )
+# NUMERICAL OUTCOME
+sep_len_neural_net_model = CreateNeuralNetwork_SingleOutcome(
+    dataframe=iris,
+    outcome_variable='sepal length (cm)',
+    is_outcome_categorical=False,
+    list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+    number_of_hidden_layers=3,
+    scale_predictor_variables=True
+)
