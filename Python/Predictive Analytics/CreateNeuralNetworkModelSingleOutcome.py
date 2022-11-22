@@ -19,6 +19,7 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
                                       show_predictor_ranges=True,
                                       initial_learning_rate=0.01,
                                       number_of_steps_gradient_descent=100,
+                                      lambda_for_regularization=0.001,
                                       random_seed=412):
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
@@ -76,7 +77,8 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
         dict_layers[key_text] = tf.keras.layers.Dense(
             10 + ((number_of_hidden_layers - 1 - i) * 10), 
             activation='relu', 
-            name=layer_name
+            name=layer_name,
+            kernel_regularizer=tf.keras.regularizers.l2(lambda_for_regularization)
         )
         
     # Create output layer
@@ -84,13 +86,15 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
         dict_layers['Output layer'] = tf.keras.layers.Dense(
             len(dataframe[outcome_variable].unique()), 
             activation=activation_function, 
-            name='softmax_layer'
+            name='softmax_layer',
+            kernel_regularizer=tf.keras.regularizers.l2(lambda_for_regularization)
         )
     else:
         dict_layers['Output layer'] = tf.keras.layers.Dense(
             1, 
             activation=activation_function, 
-            name='final_layer'
+            name='final_layer',
+            kernel_regularizer=tf.keras.regularizers.l2(lambda_for_regularization)
         )
     
     # Create list of layers to be used in the neural network
