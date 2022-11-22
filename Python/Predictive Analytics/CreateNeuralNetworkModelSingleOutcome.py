@@ -14,6 +14,8 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
                                       is_outcome_categorical=True,
                                       test_size=0.2,
                                       scale_predictor_variables=True,
+                                      plot_loss=True,
+                                      plot_model_test_performance=True,
                                       show_predictor_ranges=True,
                                       initial_learning_rate=0.01,
                                       number_of_steps_gradient_descent=100,
@@ -126,11 +128,22 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
         )
     
     # Train the model
-    model.fit(
+    loss_history = model.fit(
         train[list_of_predictor_variables].values,
         train[outcome_variable].values,
         epochs=number_of_steps_gradient_descent,
+        verbose=0
     )
+    if plot_loss:
+        plt.figure(figsize=(9,9))
+        sns.lineplot(
+            x=range(1, number_of_steps_gradient_descent + 1),
+            y=loss_history.history['loss']
+        )
+        plt.title('Loss over epochs', size = 15)
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.show()
     
     # Test the model
     predictions = model.predict(test[list_of_predictor_variables].values)
@@ -140,42 +153,42 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
     test['Predicted'] = predictions
     
     # Plot results of model test
-    plt.figure(figsize=(9,9))
-    if is_outcome_categorical:
-        if len(dataframe[outcome_variable].unique()) == 2:
+    if plot_model_test_performance:
+        plt.figure(figsize=(9,9))
+        if is_outcome_categorical:
+            if len(dataframe[outcome_variable].unique()) == 2:
+                sns.scatterplot(
+                    data=test,
+                    x=outcome_variable,
+                    y='Predicted'
+                )
+                plt.title('Probability vs. Observed Outcome', size = 15)
+                plt.ylabel('Predicted probability')
+                plt.ylim(0, 1.05)
+            else:
+                confusion_matrix = metrics.confusion_matrix(
+                    test[outcome_variable], 
+                    test['Predicted']
+                )
+                sns.heatmap(
+                    confusion_matrix, 
+                    annot=True, 
+                    fmt=".3f", 
+                    linewidths=.5, 
+                    square=True, 
+                    cmap='Blues_r'
+                )
+                plt.title('Confusion Matrix', size = 15)
+                plt.ylabel('Actual label')
+                plt.xlabel('Predicted label')
+        else:
             sns.scatterplot(
                 data=test,
                 x=outcome_variable,
                 y='Predicted'
             )
-            plt.title('Probability vs. Observed Outcome', size = 15)
-            plt.ylabel('Predicted probability')
-            plt.ylim(0, 1.05)
-        else:
-            confusion_matrix = metrics.confusion_matrix(
-                test[outcome_variable], 
-                test['Predicted']
-            )
-            sns.heatmap(
-                confusion_matrix, 
-                annot=True, 
-                fmt=".3f", 
-                linewidths=.5, 
-                square=True, 
-                cmap='Blues_r'
-            )
-            plt.title('Confusion Matrix', size = 15)
-            plt.ylabel('Actual label')
-            plt.xlabel('Predicted label')
-            plt.show()
-    else:
-        sns.scatterplot(
-            data=test,
-            x=outcome_variable,
-            y='Predicted'
-        )
-        plt.title('Predicted vs. Observed Outcome', size = 15)
-    plt.show()
+            plt.title('Predicted vs. Observed Outcome', size = 15)
+        plt.show()
     
     # Return the model
     return(model)
@@ -187,20 +200,20 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
 # iris['species'] = load_iris(as_frame=True).target
 # # CATEGORICAL OUTCOME
 # # iris = iris[iris['species'] != 2]
-# # species_neural_net_model = CreateNeuralNetwork_SingleOutcome(
-# #     dataframe=iris,
-# #     outcome_variable='species',
-# #     is_outcome_categorical=True,
-# #     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-# #     number_of_hidden_layers=2,
-# #     scale_predictor_variables=True
-# # )
-# # NUMERICAL OUTCOME
-# sep_len_neural_net_model = CreateNeuralNetwork_SingleOutcome(
+# species_neural_net_model = CreateNeuralNetwork_SingleOutcome(
 #     dataframe=iris,
-#     outcome_variable='sepal length (cm)',
-#     is_outcome_categorical=False,
-#     list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-#     number_of_hidden_layers=3,
+#     outcome_variable='species',
+#     is_outcome_categorical=True,
+#     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+#     number_of_hidden_layers=2,
 #     scale_predictor_variables=True
 # )
+# # # NUMERICAL OUTCOME
+# # sep_len_neural_net_model = CreateNeuralNetwork_SingleOutcome(
+# #     dataframe=iris,
+# #     outcome_variable='sepal length (cm)',
+# #     is_outcome_categorical=False,
+# #     list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+# #     number_of_hidden_layers=3,
+# #     scale_predictor_variables=True
+# # )
