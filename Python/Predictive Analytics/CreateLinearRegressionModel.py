@@ -86,6 +86,7 @@ def CreateLinearRegressionModel(dataframe,
                 x=outcome_variable,
                 y='Predicted',
             )
+        plt.plot(test[outcome_variable], test[outcome_variable], color='black', alpha=0.35)
         plt.title('Predicted vs. Observed Outcome', size = 15)
         plt.show()
     

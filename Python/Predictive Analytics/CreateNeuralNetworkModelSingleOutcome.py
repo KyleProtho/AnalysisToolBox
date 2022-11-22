@@ -187,6 +187,7 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
                 x=outcome_variable,
                 y='Predicted'
             )
+            plt.plot(test[outcome_variable], test[outcome_variable], color='black', alpha=0.35)
             plt.title('Predicted vs. Observed Outcome', size = 15)
         plt.show()
     
@@ -194,26 +195,26 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
     return(model)
 
 
-# Test the function
-from sklearn.datasets import load_iris
-iris = pd.DataFrame(load_iris(as_frame=True).data)
-iris['species'] = load_iris(as_frame=True).target
-# # CATEGORICAL OUTCOME
-# # iris = iris[iris['species'] != 2]
-# species_neural_net_model = CreateNeuralNetwork_SingleOutcome(
+# # Test the function
+# from sklearn.datasets import load_iris
+# iris = pd.DataFrame(load_iris(as_frame=True).data)
+# iris['species'] = load_iris(as_frame=True).target
+# # # CATEGORICAL OUTCOME
+# # # iris = iris[iris['species'] != 2]
+# # species_neural_net_model = CreateNeuralNetwork_SingleOutcome(
+# #     dataframe=iris,
+# #     outcome_variable='species',
+# #     is_outcome_categorical=True,
+# #     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+# #     number_of_hidden_layers=2,
+# #     scale_predictor_variables=True
+# # )
+# # NUMERICAL OUTCOME
+# sep_len_neural_net_model = CreateNeuralNetwork_SingleOutcome(
 #     dataframe=iris,
-#     outcome_variable='species',
-#     is_outcome_categorical=True,
-#     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+#     outcome_variable='sepal length (cm)',
+#     is_outcome_categorical=False,
+#     list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
 #     number_of_hidden_layers=2,
 #     scale_predictor_variables=True
 # )
-# NUMERICAL OUTCOME
-sep_len_neural_net_model = CreateNeuralNetwork_SingleOutcome(
-    dataframe=iris,
-    outcome_variable='sepal length (cm)',
-    is_outcome_categorical=False,
-    list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-    number_of_hidden_layers=3,
-    scale_predictor_variables=True
-)
