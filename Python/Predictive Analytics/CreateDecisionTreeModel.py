@@ -4,17 +4,22 @@ import pandas as pd
 import seaborn as sns
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
-from xgboost import XGBClassifier, XGBRegressor
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor, plot_tree, export_text
 
-# Function that creates a boosted tree model
-def CreateBoostedTreeModel(dataframe,
-                           outcome_variable,
-                           list_of_predictor_variables,
-                           maximum_depth=None,
-                           is_outcome_categorical=True,
-                           plot_model_test_performance=True,
-                           test_size=0.2,
-                           random_seed=412):
+def CreateDecisionTreeModel(dataframe,
+                            outcome_variable,
+                            list_of_predictor_variables,
+                            is_outcome_categorical=True,
+                            categorical_splitting_criterion='entropy',
+                            numerical_splitting_criterion='mse',
+                            maximum_depth=None,
+                            minimum_impurity_decrease=0.0,
+                            plot_model_test_performance=True,
+                            plot_decision_tree=True,
+                            plot_decision_tree_size=(20, 20),
+                            print_decision_rules=False,
+                            test_size=0.2,
+                            random_seed=412):
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
     
@@ -25,27 +30,51 @@ def CreateBoostedTreeModel(dataframe,
         random_state=random_seed
     )
     
-    # Create boosted tree model
+    # Create decision tree model
     if is_outcome_categorical:
-        model = XGBClassifier(
+        model = DecisionTreeClassifier(
+            criterion=categorical_splitting_criterion,
             max_depth=maximum_depth,
+            min_impurity_decrease=minimum_impurity_decrease,
             random_state=random_seed
         )
     else:
-        model = XGBRegressor(
+        model = DecisionTreeRegressor(
+            criterion=numerical_splitting_criterion,
             max_depth=maximum_depth,
+            min_impurity_decrease=minimum_impurity_decrease,
             random_state=random_seed
         )
-    
+        
     # Fit the model
     model = model.fit(train[list_of_predictor_variables], train[outcome_variable])
     
     # Add predictions to test set
     test['Predicted'] = model.predict(test[list_of_predictor_variables])
-     
+    
+    # Print decision rules if requested
+    if print_decision_rules:
+        r = export_text(
+            model,
+            feature_names=list_of_predictor_variables
+        )
+        print(r)
+    
+    # Plot decision tree if requested
+    if plot_decision_tree:
+        plt.figure(figsize=plot_decision_tree_size)
+        plot_tree(
+            model, 
+            feature_names=list_of_predictor_variables,
+            filled=True,
+            rounded=True,
+            precision=3
+        )
+    
     # Print the confusion matrix if outcome is categorical
     if plot_model_test_performance:
         if is_outcome_categorical:
+            # Calculate the accuracy score if outcome is categorical
             score = model.score(test[list_of_predictor_variables], test[outcome_variable])
             confusion_matrix = metrics.confusion_matrix(
                 test[outcome_variable], 
@@ -84,18 +113,17 @@ def CreateBoostedTreeModel(dataframe,
 # from sklearn import datasets
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # iris['species'] = datasets.load_iris(as_frame=True).target
-# # # CATEGORICAL OUTCOME
-# # species_boosted_tree_model = CreateBoostedTreeModel(
-# #     dataframe=iris,
-# #     outcome_variable='species',
-# #     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-# #     # maximum_depth=5
-# # )
-# # NUMERICAL OUTCOME
-# sep_len_boosted_tree_model = CreateBoostedTreeModel(
+# # CATEGORICAL OUTCOME
+# species_desc_tree_model = CreateDecisionTreeModel(
 #     dataframe=iris,
-#     outcome_variable='sepal length (cm)',
-#     is_outcome_categorical=False,
-#     list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-#     maximum_depth=5
+#     outcome_variable='species',
+#     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
 # )
+# # # NUMERICAL OUTCOME
+# # sep_len_desc_tree_model = CreateDecisionTreeModel(
+# #     dataframe=iris,
+# #     outcome_variable='sepal length (cm)',
+# #     is_outcome_categorical=False,
+# #     list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+# #     maximum_depth=5
+# # )
