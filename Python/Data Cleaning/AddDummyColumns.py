@@ -4,7 +4,7 @@ import pandas as pd
 # Declare function
 def AddDummyColumns(dataframe,
                     categorical_variable_column_name,
-                    drop_first_group=True):
+                    drop_first_group=False):
     # Convert categorical variable to dummy variable
     df_temp = pd.get_dummies(dataframe[categorical_variable_column_name],
                              prefix="Is",
