@@ -47,7 +47,7 @@ def CreateLogisticRegressionModel(dataframe,
     )
     
     # Create logistic regression model
-    regr = LogisticRegression(
+    model = LogisticRegression(
         max_iter=max_iterations, 
         random_state=random_seed,
         C=1-lambda_for_regularization,
@@ -55,21 +55,20 @@ def CreateLogisticRegressionModel(dataframe,
     )
     
     # Train the model using the training sets and show fitting summary
-    regr.fit(train[list_of_predictor_variables], train[outcome_variable])
-    print(f"\nNumber of iterations completed: {regr.n_iter_}")
+    model.fit(train[list_of_predictor_variables], train[outcome_variable])
+    print(f"\nNumber of iterations completed: {model.n_iter_}")
     
     # Show parameters of the model
-    b_norm = regr.intercept_
-    w_norm = regr.coef_
+    b_norm = model.intercept_
+    w_norm = model.coef_
     print(f"\nModel parameters:    w: {w_norm}, b:{b_norm}")
     
     # Predict the test data
-    test['Predicted'] = regr.predict(test[list_of_predictor_variables])
+    test['Predicted'] = model.predict(test[list_of_predictor_variables])
     
-    # Print the accuracy
-    score = regr.score(test[list_of_predictor_variables], test[outcome_variable])
-    print('Accuracy of logistic regression classifier on test set: {:.2f}'.format(score))
-    
+    # Calculate the accuracy score
+    score = model.score(test[list_of_predictor_variables], test[outcome_variable])
+
     # Print the confusion matrix
     confusion_matrix = metrics.confusion_matrix(
         test[outcome_variable], 
@@ -95,7 +94,7 @@ def CreateLogisticRegressionModel(dataframe,
         print(confusion_matrix)
         
     # Return the model
-    return regr
+    return model
 
 # # Test the function
 # from sklearn import datasets

@@ -49,7 +49,7 @@ def CreateLinearRegressionModel(dataframe,
     )
     
     # Create linear regression object
-    regr = linear_model.SGDRegressor(
+    model = linear_model.SGDRegressor(
         loss='squared_error',
         max_iter=max_iterations,
         eta0=learning_rate,
@@ -59,20 +59,20 @@ def CreateLinearRegressionModel(dataframe,
     )
     
     # Train the model using the training sets and show fitting summary
-    regr.fit(train[list_of_predictor_variables], train[outcome_variable])
-    print(f"\nNumber of iterations completed: {regr.n_iter_}")
-    print(f"Number of weight updates: {regr.t_}")
+    model.fit(train[list_of_predictor_variables], train[outcome_variable])
+    print(f"\nNumber of iterations completed: {model.n_iter_}")
+    print(f"Number of weight updates: {model.t_}")
     
     # Show parameters of the model
-    b_norm = regr.intercept_
-    w_norm = regr.coef_
+    b_norm = model.intercept_
+    w_norm = model.coef_
     print(f"\nModel parameters:    w: {w_norm}, b:{b_norm}")
     
     # Add predictions to test set
-    test['Predicted'] = regr.predict(test[list_of_predictor_variables])
+    test['Predicted'] = model.predict(test[list_of_predictor_variables])
         
     # Show the explained variance score: 
-    print("\nVariance score: %.2f" % regr.score(train[list_of_predictor_variables], train[outcome_variable]))
+    print("\nVariance score: %.2f" % model.score(train[list_of_predictor_variables], train[outcome_variable]))
     print("Note: 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
     
     # The mean squared error
@@ -91,7 +91,7 @@ def CreateLinearRegressionModel(dataframe,
         plt.show()
     
     # Return the model
-    return regr
+    return model
 
 
 # # Test the function
