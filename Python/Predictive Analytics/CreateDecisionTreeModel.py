@@ -16,7 +16,7 @@ def CreateDecisionTreeModel(dataframe,
                             minimum_impurity_decrease=0.0,
                             plot_model_test_performance=True,
                             plot_decision_tree=True,
-                            plot_decision_tree_size=(20, 20),
+                            decision_tree_plot_size=(20, 20),
                             print_decision_rules=False,
                             test_size=0.2,
                             random_seed=412):
@@ -62,7 +62,7 @@ def CreateDecisionTreeModel(dataframe,
     
     # Plot decision tree if requested
     if plot_decision_tree:
-        plt.figure(figsize=plot_decision_tree_size)
+        plt.figure(figsize=decision_tree_plot_size)
         plot_tree(
             model, 
             feature_names=list_of_predictor_variables,

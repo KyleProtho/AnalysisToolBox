@@ -28,12 +28,6 @@ def CreateLinearRegressionModel(dataframe,
     
     # Scale the predictors, if requested
     if scale_predictor_variables:
-        # Show the mean and standard deviation of each predictor
-        print("\nMean of each predictor:")
-        print(dataframe[list_of_predictor_variables].mean())
-        print("\nStandard deviation of each predictor:")
-        print(dataframe[list_of_predictor_variables].std())
-        
         # Scale predictors
         dataframe[list_of_predictor_variables] = StandardScaler().fit_transform(dataframe[list_of_predictor_variables])
         
