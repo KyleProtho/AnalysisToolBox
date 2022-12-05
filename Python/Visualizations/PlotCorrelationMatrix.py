@@ -6,10 +6,10 @@ sns.set(style="white",
         context="paper")
 
 def PlotCorrelationMatrix(dataframe,
-                          list_of_columns,
+                          list_of_numeric_variables,
                           show_as_pairplot = True):
     # Select relevant variables, keep complete cases only
-    completed_df = dataframe[list_of_columns].dropna()
+    completed_df = dataframe[list_of_numeric_variables].dropna()
     
     # Drop Inf values
     completed_df = completed_df[np.isfinite(completed_df).all(1)]
@@ -34,4 +34,3 @@ def PlotCorrelationMatrix(dataframe,
         plt.clf()
     else:
         print(completed_df.corr())
-
