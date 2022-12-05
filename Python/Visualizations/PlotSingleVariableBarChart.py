@@ -9,11 +9,11 @@ sns.set(style="white",
 
 # Create histogram function
 def PlotSingleVariableBarChart(dataframe,
-                               list_categorical_variables,
+                               list_of_categorical_variables,
                                folder_to_save_plot=None,
                                fill_color=None):
     # Iterate through the list of categorical variables
-    for categorical_variable in list_categorical_variables:
+    for categorical_variable in list_of_categorical_variables:
         # Generate bar chart
         f, ax = plt.subplots(figsize=(6, 4.5))
         if fill_color == None:

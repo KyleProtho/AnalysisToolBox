@@ -8,11 +8,11 @@ sns.set(style="white",
 
 # Create histogram function
 def PlotSingleVariableHistogram(dataframe,
-                                list_quantitative_variables,
+                                list_of_numeric_variables,
                                 folder_to_save_plot=None,
                                 fill_color="#3269a8"):
     # Iterate through the list of quantitative variables
-    for quantitative_variable in list_quantitative_variables:
+    for quantitative_variable in list_of_numeric_variables:
         # Create histogram
         f, ax = plt.subplots(figsize=(6, 4.5))
         ax = sns.histplot(data = dataframe,
