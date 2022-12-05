@@ -196,7 +196,14 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
         plt.show()
     
     # Return the model
-    return(model)
+    if scale_predictor_variables:
+        dict_return = {
+            'scaler': normalizer,
+            'model': model
+        }
+        return(dict_return)
+    else:
+        return(model)
 
 
 # # Test the function

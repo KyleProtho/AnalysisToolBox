@@ -20,8 +20,8 @@ def SimulateNormalDistributionFromSample(dataframe,
     sim_param = stats.norm.fit(dataframe[outcome_variable])
     sim_param_mean = sim_param[0]
     sim_param_std = sim_param[1]
-    print("Mean (expected value) used in simualtion:", sim_param_mean)
-    print("Standard deviation used in simualtion:", sim_param_std)
+    print("Mean (expected value) of", outcome_variable, "used in simualtion:", sim_param_mean)
+    print("Standard deviation of", outcome_variable, "used in simualtion:", sim_param_std)
     
     # Conduct simulation
     arr_sim_results = np.random.normal(

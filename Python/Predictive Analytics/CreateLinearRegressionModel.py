@@ -29,7 +29,8 @@ def CreateLinearRegressionModel(dataframe,
     # Scale the predictors, if requested
     if scale_predictor_variables:
         # Scale predictors
-        dataframe[list_of_predictor_variables] = StandardScaler().fit_transform(dataframe[list_of_predictor_variables])
+        scaler = StandardScaler()
+        dataframe[list_of_predictor_variables] = scaler.fit_transform(dataframe[list_of_predictor_variables])
         
     # Show the peak-to-peak range of each predictor
     print("\nPeak-to-peak range of each predictor:")
@@ -85,7 +86,14 @@ def CreateLinearRegressionModel(dataframe,
         plt.show()
     
     # Return the model
-    return model
+    if scale_predictor_variables:
+        dict_return = {
+            'model': model,
+            'scaler': scaler
+        }
+        return(dict_return)
+    else:
+        return(model)
 
 
 # # Test the function

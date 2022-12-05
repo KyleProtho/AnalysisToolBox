@@ -26,14 +26,9 @@ def CreateLogisticRegressionModel(dataframe,
     
     # Scale the predictors, if requested
     if scale_predictor_variables:
-        # Show the mean and standard deviation of each predictor
-        print("\nMean of each predictor:")
-        print(dataframe[list_of_predictor_variables].mean())
-        print("\nStandard deviation of each predictor:")
-        print(dataframe[list_of_predictor_variables].std())
-        
         # Scale predictors
-        dataframe[list_of_predictor_variables] = StandardScaler().fit_transform(dataframe[list_of_predictor_variables])
+        scaler = StandardScaler()
+        dataframe[list_of_predictor_variables] = scaler.fit_transform(dataframe[list_of_predictor_variables])
         
     # Show the peak-to-peak range of each predictor
     print("\nPeak-to-peak range of each predictor:")
@@ -94,7 +89,14 @@ def CreateLogisticRegressionModel(dataframe,
         print(confusion_matrix)
         
     # Return the model
-    return model
+    if scale_predictor_variables:
+        dict_return = {
+            'model': model,
+            'scaler': scaler
+        }
+        return(dict_return)
+    else:
+        return(model)
 
 # # Test the function
 # from sklearn import datasets
