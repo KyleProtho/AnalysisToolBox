@@ -6,12 +6,12 @@ from mlxtend.preprocessing import TransactionEncoder
 
 # Declare function
 def CreateAssociationRules(dataframe,
-                           key_column,
+                           transaction_id_column,
                            items_column,
                            support_threshold = .20,
                            confidence_threshold = .50):
     # Group and summarize (as list) items to key column
-    dataframe = dataframe.groupby(key_column)[items_column].apply(list)
+    dataframe = dataframe.groupby(transaction_id_column)[items_column].apply(list)
     dataframe = dataframe.reset_index()
 
     # Create association rule mining-ready dataset of transactions
