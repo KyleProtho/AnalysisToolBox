@@ -19,7 +19,7 @@ def CreateSIPDataframe(name_of_items,
             name_of_items: item
         })
         # Append to SIP dataframe
-        df_sips = df_sips.append(df_temp)
+        df_sips = pd.concat([df_sips, df_temp])
         
     # Return SIP DataFrame
     return(df_sips)
