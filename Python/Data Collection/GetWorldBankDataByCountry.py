@@ -73,7 +73,7 @@ def GetWorldBankDataByCountry(dict_indicators={
     # Clean the year column
     data_countries["Year"] = data_countries["Year"].str.replace("YR", "").astype(int)
     
-    # Get the API key from the environment variable
+    # Return the dataframe
     return(data_countries)
 
 # # Test the function
