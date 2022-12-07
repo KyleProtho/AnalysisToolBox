@@ -14,7 +14,7 @@ def ImputeMissingValuesUsingRandomForest(dataframe,
                          max_depth=maximum_depth)
     
     # Fit the imputer
-    dataframe_imputed = imputer.fit_transform(dataframe)
+    dataframe_imputed = imputer.fit_transform(dataframe_imputed)
     
     # Add "- Imputed" to the variable names
     list_new_column_names = []
