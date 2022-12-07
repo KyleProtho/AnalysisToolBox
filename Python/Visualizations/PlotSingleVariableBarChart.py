@@ -17,11 +17,11 @@ def PlotSingleVariableBarChart(dataframe,
     number_of_plot_grid_rows = ceil(len(list_of_categorical_variables) / number_of_plot_grid_columns)
     
     # Set size of figure
-    size_of_figure = (number_of_plot_grid_columns * 6, number_of_plot_grid_rows * 6)
+    size_of_figure = (number_of_plot_grid_columns * 6, number_of_plot_grid_rows * 4)
     
     # Create grid
     fig = plt.figure(figsize=size_of_figure)
-    fig.subplots_adjust(hspace=0.4, wspace=0.4)
+    fig.subplots_adjust(hspace=0.2, wspace=1)
     
     # Iterate through the list of categorical variables
     for i in range(len(list_of_categorical_variables)):
