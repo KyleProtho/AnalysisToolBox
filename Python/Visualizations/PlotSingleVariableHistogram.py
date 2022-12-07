@@ -7,7 +7,6 @@ sns.set(style="white",
         font="Arial",
         context="paper")
 
-# Create histogram function
 def PlotSingleVariableHistogram(dataframe,
                                 list_of_numeric_variables,
                                 fill_color="#3269a8",
