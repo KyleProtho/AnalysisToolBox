@@ -11,15 +11,14 @@ sns.set(style="white",
 def PlotSingleVariableHistogram(dataframe,
                                 list_of_numeric_variables,
                                 folder_to_save_plot=None,
-                                fill_color="#3269a8"):
-    # Set number of column in grid based on length of list of variables
-    number_of_columns = 3
+                                fill_color="#3269a8",
+                                number_of_plot_grid_columns=4):
     
     # Set number of rows in grid based on length of list of variables
-    number_of_rows = ceil(len(list_of_numeric_variables) / number_of_columns)
+    number_of_plot_grid_rows = ceil(len(list_of_numeric_variables) / number_of_plot_grid_columns)
     
     # Set size of figure
-    size_of_figure = (number_of_columns * 3, number_of_rows * 3)
+    size_of_figure = (number_of_plot_grid_columns * 3, number_of_plot_grid_rows * 3)
     
     # Create grid
     fig = plt.figure(figsize=size_of_figure)
@@ -30,7 +29,7 @@ def PlotSingleVariableHistogram(dataframe,
         # Get variable name
         quantitative_variable = list_of_numeric_variables[i]
         # Create histogram
-        ax = fig.add_subplot(number_of_rows, number_of_columns, i+1)
+        ax = fig.add_subplot(number_of_plot_grid_rows, number_of_plot_grid_columns, i+1)
         ax = sns.histplot(data = dataframe,
                           x = quantitative_variable,
                           stat = "count",
