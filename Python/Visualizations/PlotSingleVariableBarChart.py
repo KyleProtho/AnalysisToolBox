@@ -14,7 +14,7 @@ def PlotSingleVariableBarChart(dataframe,
                                number_of_plot_grid_columns=2):
     
     # Set number of rows in grid based on length of list of variables
-    number_of_plot_grid_rows = ceil(len(list_of_numeric_variables) / number_of_plot_grid_columns)
+    number_of_plot_grid_rows = ceil(len(list_of_categorical_variables) / number_of_plot_grid_columns)
     
     # Set size of figure
     size_of_figure = (number_of_plot_grid_columns * 6, number_of_plot_grid_rows * 6)
@@ -40,19 +40,13 @@ def PlotSingleVariableBarChart(dataframe,
                                order=dataframe[categorical_variable].value_counts(ascending=False).index,
                                color=fill_color)
         ax.grid(False)
-        # String wrap the variable name
-        wrapped_variable_name = "\n".join(quantitative_variable[j:j+30] for j in range(0, len(quantitative_variable), 30))
+        wrapped_variable_name = "\n".join(categorical_variable[j:j+30] for j in range(0, len(categorical_variable), 30))  # String wrap the variable name
         ax.set_ylabel(wrapped_variable_name)
         ax.set_xlabel(None)
         ax.set(xticklabels=[])
         ax.tick_params(axis='y', which='major', labelsize=10)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
-        plt.suptitle("Distribution",
-                     x=0.125,
-                     horizontalalignment='left',
-                     verticalalignment='top',
-                     fontsize=14)
         
         # Add data labels
         abs_values = dataframe[categorical_variable].value_counts(ascending=False)
