@@ -10,12 +10,25 @@ sns.set(style="white",
 # Create histogram function
 def PlotSingleVariableBarChart(dataframe,
                                list_of_categorical_variables,
-                               folder_to_save_plot=None,
-                               fill_color=None):
+                               fill_color=None,
+                               number_of_plot_grid_columns=4):
+    
+    # Set number of rows in grid based on length of list of variables
+    number_of_plot_grid_rows = ceil(len(list_of_numeric_variables) / number_of_plot_grid_columns)
+    
+    # Set size of figure
+    size_of_figure = (number_of_plot_grid_columns * 6, number_of_plot_grid_rows * 6)
+    
+    # Create grid
+    fig = plt.figure(figsize=size_of_figure)
+    fig.subplots_adjust(hspace=0.4, wspace=0.4)
+    
     # Iterate through the list of categorical variables
-    for categorical_variable in list_of_categorical_variables:
+    for i in range(len(list_of_categorical_variables)):
+        # Get variable name
+        categorical_variable = list_of_categorical_variables[i]
         # Generate bar chart
-        f, ax = plt.subplots(figsize=(6, 4.5))
+        ax = fig.add_subplot(number_of_plot_grid_rows, number_of_plot_grid_columns, i+1)
         if fill_color == None:
             ax = sns.countplot(data=dataframe,
                                y=categorical_variable,
@@ -27,7 +40,9 @@ def PlotSingleVariableBarChart(dataframe,
                                order=dataframe[categorical_variable].value_counts(ascending=False).index,
                                color=fill_color)
         ax.grid(False)
-        ax.set_ylabel(None)
+        # String wrap the variable name
+        wrapped_variable_name = "\n".join(quantitative_variable[j:j+30] for j in range(0, len(quantitative_variable), 30))
+        ax.set_ylabel(wrapped_variable_name)
         ax.set_xlabel(None)
         ax.set(xticklabels=[])
         ax.tick_params(axis='y', which='major', labelsize=10)
@@ -38,9 +53,6 @@ def PlotSingleVariableBarChart(dataframe,
                      horizontalalignment='left',
                      verticalalignment='top',
                      fontsize=14)
-        plt.title(categorical_variable,
-                  loc='left',
-                  fontsize=10)
         
         # Add data labels
         abs_values = dataframe[categorical_variable].value_counts(ascending=False)
@@ -50,18 +62,9 @@ def PlotSingleVariableBarChart(dataframe,
                      labels=lbls,
                      padding=5)
         
-        # Save plot to folder if one is specified
-        if folder_to_save_plot != None:
-            try:
-                plot_filepath = str(folder_to_save_plot) + "Bar chart - " + categorical_variable + ".png"
-                plot_filepath = os.path.normpath(plot_filepath)
-                fig.savefig(plot_filepath)
-            except:
-                print("The filepath you entered to save your plot is invalid. Plot not saved.")
-        
-        # Show plot
-        plt.show()
-        
-        # Clear plot
-        plt.clf()
+    # Show plot
+    plt.show()
+    
+    # Clear plot
+    plt.clf()
 
