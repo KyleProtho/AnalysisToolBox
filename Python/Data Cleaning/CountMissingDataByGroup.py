@@ -2,7 +2,12 @@
 import pandas as pd
 
 def CountMissingDataByGroup(dataframe,
-                            list_of_grouping_variables):
+                            list_of_grouping_variables,
+                            list_of_variables_to_count=None):
+    # Select variables to count missing data for
+    if list_of_variables_to_count is not None:
+        dataframe = dataframe[list_of_grouping_variables + list_of_variables_to_count]
+    
     # Count missing data by group
     df_missing_by_group = dataframe.groupby(
         list_of_grouping_variables,
