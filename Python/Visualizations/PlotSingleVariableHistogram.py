@@ -10,7 +10,6 @@ sns.set(style="white",
 # Create histogram function
 def PlotSingleVariableHistogram(dataframe,
                                 list_of_numeric_variables,
-                                folder_to_save_plot=None,
                                 fill_color="#3269a8",
                                 number_of_plot_grid_columns=4):
     
@@ -30,26 +29,19 @@ def PlotSingleVariableHistogram(dataframe,
         quantitative_variable = list_of_numeric_variables[i]
         # Create histogram
         ax = fig.add_subplot(number_of_plot_grid_rows, number_of_plot_grid_columns, i+1)
-        ax = sns.histplot(data = dataframe,
-                          x = quantitative_variable,
-                          stat = "count",
-                          color = fill_color)
-        ax.set_xlabel(quantitative_variable)
+        ax = sns.histplot(data=dataframe,
+                          x=quantitative_variable,
+                          stat="count",
+                          color=fill_color)
+        # String wrap the variable name
+        wrapped_variable_name = "\n".join(quantitative_variable[j:j+30] for j in range(0, len(quantitative_variable), 30))
+        ax.set_xlabel(wrapped_variable_name)
         ax.tick_params(axis='x', which='major', labelsize=8)
         ax.set_ylabel(None)
         ax.set(yticklabels=[])
         ax.grid(False)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
-        
-    # Save plot to folder if one is specified
-    if folder_to_save_plot != None:
-        try:
-            plot_filepath = str(folder_to_save_plot) + "Histogram - " + quantitative_variable + ".png"
-            plot_filepath = os.path.normpath(plot_filepath)
-            fig.savefig(plot_filepath)
-        except:
-            print("The filpath you entered to save your plot is invalid. Plot not saved.")
     
     # Show plot
     plt.show()
