@@ -8,15 +8,13 @@ def ImputeMissingValuesUsingNearestNeighbors(dataframe,
                                              averaging_method='uniform'):
     # Select only the variables to impute
     dataframe_imputed = dataframe[list_of_variables].copy()
-    dataframe_imputed = dataframe_imputed.reset_index()
-    dataframe_imputed = dataframe_imputed[list_of_variables]
     
     # Impute missing values using nearest neighbors
     imputer = KNNImputer(n_neighbors=number_of_neighbors,
                          weights=averaging_method)
     
     # Fit the imputer
-    dataframe_imputed = imputer.fit_transform(dataframe)
+    dataframe_imputed = imputer.fit_transform(dataframe_imputed)
     
     # Add "- Imputed" to the variable names
     list_new_column_names = []
@@ -34,3 +32,9 @@ def ImputeMissingValuesUsingNearestNeighbors(dataframe,
     
     # Return the dataframe with imputed values
     return(dataframe)
+
+# # Test the function
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# iris = ImputeMissingValuesUsingNearestNeighbors(dataframe=iris,
+#                                                list_of_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'])
