@@ -8,7 +8,6 @@ sns.set(style="white",
         font="Arial",
         context="paper")
 
-# Create histogram function
 def PlotSingleVariableBarChart(dataframe,
                                list_of_categorical_variables,
                                fill_color=None,
