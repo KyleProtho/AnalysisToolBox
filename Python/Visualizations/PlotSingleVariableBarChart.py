@@ -12,7 +12,7 @@ sns.set(style="white",
 def PlotSingleVariableBarChart(dataframe,
                                list_of_categorical_variables,
                                fill_color=None,
-                               number_of_plot_grid_columns=4):
+                               number_of_plot_grid_columns=2):
     
     # Set number of rows in grid based on length of list of variables
     number_of_plot_grid_rows = ceil(len(list_of_numeric_variables) / number_of_plot_grid_columns)
