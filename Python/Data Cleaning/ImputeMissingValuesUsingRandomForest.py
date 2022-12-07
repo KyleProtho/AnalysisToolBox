@@ -27,7 +27,6 @@ def ImputeMissingValuesUsingRandomForest(dataframe,
                                      columns=list_new_column_names)
     
     # Bind the imputed dataframe to the original dataframe
-    dataframe_imputed = dataframe_imputed.reset_index()
     dataframe = pd.concat([dataframe, dataframe_imputed[list_new_column_names]], axis=1)
     del(dataframe_imputed)
     

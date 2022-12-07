@@ -8,6 +8,8 @@ def ImputeMissingValuesUsingNearestNeighbors(dataframe,
                                              averaging_method='uniform'):
     # Select only the variables to impute
     dataframe_imputed = dataframe[list_of_variables].copy()
+    dataframe_imputed = dataframe_imputed.reset_index()
+    dataframe_imputed = dataframe_imputed[list_of_variables]
     
     # Impute missing values using nearest neighbors
     imputer = KNNImputer(n_neighbors=number_of_neighbors,
@@ -27,7 +29,6 @@ def ImputeMissingValuesUsingNearestNeighbors(dataframe,
                                      columns=list_new_column_names)
     
     # Bind the imputed dataframe to the original dataframe
-    dataframe_imputed = dataframe_imputed.reset_index()
     dataframe = pd.concat([dataframe, dataframe_imputed[list_new_column_names]], axis=1)
     del(dataframe_imputed)
     
