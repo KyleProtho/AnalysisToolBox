@@ -41,6 +41,14 @@ def PlotBoxWhiskerByGroup(dataframe,
                             palette="Set1")
     ax.set_xlabel(None)
     ax.set_ylabel(None)
+    # String wrap group variable 1 tick labels
+    group_variable_1_tick_labels = ax.get_xticklabels()
+    group_variable_1_tick_labels = [label.get_text() for label in group_variable_1_tick_labels]
+    for label in group_variable_1_tick_labels:
+        label = "\n".join(label[j:j+30] for j in range(0, len(label), 30))
+    ax.set_xticklabels(group_variable_1_tick_labels,
+                       rotation=90,
+                       horizontalalignment='right')
     ax.tick_params(axis='both', which='major', labelsize=8)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -70,3 +78,12 @@ def PlotBoxWhiskerByGroup(dataframe,
     
     # Clear plot
     plt.clf()
+
+# # Test function
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# iris['species'] = datasets.load_iris(as_frame=True).target
+# PlotBoxWhiskerByGroup(
+#     dataframe=iris,
+#     outcome_variable='sepal length (cm)',
+#     group_variable_1='species')
