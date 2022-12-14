@@ -23,6 +23,12 @@ def CreateDecisionTreeModel(dataframe,
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
     
+    # Drop rows with infinite values
+    dataframe = dataframe.replace([np.inf, -np.inf], np.nan)
+    
+    # Drop rows with missing values
+    dataframe = dataframe.dropna()
+    
     # Split dataframe into training and test sets
     train, test = train_test_split(
         dataframe, 
