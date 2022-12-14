@@ -86,22 +86,22 @@ def CreateBoostedTreeModel(dataframe,
     # Return the model
     return model
 
-# Test the function
-from sklearn import datasets
-iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-iris['species'] = datasets.load_iris(as_frame=True).target
-# # CATEGORICAL OUTCOME
-# species_boosted_tree_model = CreateBoostedTreeModel(
+# # Test the function
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# iris['species'] = datasets.load_iris(as_frame=True).target
+# # # CATEGORICAL OUTCOME
+# # species_boosted_tree_model = CreateBoostedTreeModel(
+# #     dataframe=iris,
+# #     outcome_variable='species',
+# #     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+# #     # maximum_depth=5
+# # )
+# # NUMERICAL OUTCOME
+# sep_len_boosted_tree_model = CreateBoostedTreeModel(
 #     dataframe=iris,
-#     outcome_variable='species',
-#     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-#     # maximum_depth=5
+#     outcome_variable='sepal length (cm)',
+#     is_outcome_categorical=False,
+#     list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+#     maximum_depth=5
 # )
-# NUMERICAL OUTCOME
-sep_len_boosted_tree_model = CreateBoostedTreeModel(
-    dataframe=iris,
-    outcome_variable='sepal length (cm)',
-    is_outcome_categorical=False,
-    list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-    maximum_depth=5
-)
