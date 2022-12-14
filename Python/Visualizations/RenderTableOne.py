@@ -25,13 +25,13 @@ def RenderTableOne(dataframe,
     if return_table_object:
         return(table_one)
     
-# Test function
-from sklearn import datasets
-iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-iris['species'] = datasets.load_iris(as_frame=True).target
-RenderTableOne(
-    dataframe=iris,
-    outcome_variable='sepal length (cm)',
-    column_variable='species',
-    list_of_row_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
-)
+# # Test function
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# iris['species'] = datasets.load_iris(as_frame=True).target
+# RenderTableOne(
+#     dataframe=iris,
+#     outcome_variable='sepal length (cm)',
+#     column_variable='species',
+#     list_of_row_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
+# )
