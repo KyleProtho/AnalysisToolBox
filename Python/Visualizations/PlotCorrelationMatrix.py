@@ -17,7 +17,10 @@ def PlotCorrelationMatrix(dataframe,
     
     # Show pairplot if specified -- otherwise, print correlation matrix
     if show_as_pairplot:
-        ax = sns.pairplot(completed_df)
+        ax = sns.pairplot(
+            completed_df,
+            kind="reg"
+        )
         ax.fig.subplots_adjust(top=0.95)
         ax.fig.text(
             x=0.06, 
