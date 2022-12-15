@@ -8,7 +8,9 @@ sns.set(style="white",
 def PlotCorrelationMatrix(dataframe,
                           list_of_numeric_variables,
                           outcome_variable=None,
-                          show_as_pairplot=True):
+                          show_as_pairplot=True,
+                          scatter_fill_color="#3269a8",
+                          line_color="#cc4b5a"):
     # Select relevant variables, keep complete cases only
     if outcome_variable is None:
         completed_df = dataframe[list_of_numeric_variables].dropna()
@@ -22,16 +24,24 @@ def PlotCorrelationMatrix(dataframe,
     # Show pairplot if specified -- otherwise, print correlation matrix
     if show_as_pairplot:
         if outcome_variable is None:
-            ax = sns.pairplot(
-                completed_df,
-                kind="reg"
+            ax = sns.PairGrid(completed_df)
+            ax.map_lower(
+                sns.regplot,
+                lowess=True,
+                scatter_kws={'alpha':0.30}, 
+                line_kws={'color': line_color}
             )
         else:
-            ax = sns.pairplot(
+            ax = sns.PairGrid(
                 completed_df,
-                kind="reg",
                 x_vars=list_of_numeric_variables,
                 y_vars=outcome_variable
+            )
+            ax.map(
+                sns.regplot,
+                lowess=True,
+                scatter_kws={'alpha':0.30}, 
+                line_kws={'color': line_color}
             )
         ax.fig.subplots_adjust(top=0.95)
         ax.fig.text(
@@ -57,21 +67,21 @@ def PlotCorrelationMatrix(dataframe,
 # # Test the function
 # from sklearn import datasets
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# PlotCorrelationMatrix(
-#     dataframe=iris,
-#     list_of_numeric_variables=[
-#         'sepal length (cm)',
-#         'sepal width (cm)', 
-#         'petal length (cm)', 
-#         'petal width (cm)'
-#     ]
-# )
 # # PlotCorrelationMatrix(
-# #     dataframe=iris, 
+# #     dataframe=iris,
 # #     list_of_numeric_variables=[
+# #         'sepal length (cm)',
 # #         'sepal width (cm)', 
 # #         'petal length (cm)', 
 # #         'petal width (cm)'
-# #     ],
-# #     outcome_variable='sepal length (cm)',
+# #     ]
 # # )
+# PlotCorrelationMatrix(
+#     dataframe=iris, 
+#     list_of_numeric_variables=[
+#         'sepal width (cm)', 
+#         'petal length (cm)', 
+#         'petal width (cm)'
+#     ],
+#     outcome_variable='sepal length (cm)',
+# )

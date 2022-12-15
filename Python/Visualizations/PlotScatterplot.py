@@ -11,10 +11,10 @@ sns.set(style="white",
 def PlotScatterPlot(dataframe,
                     outcome_variable,
                     list_of_predictor_variables,
-                    grouping_variable = None,
-                    fitted_line_type = None,
-                    fill_color = "#3269a8",
-                    folder_to_save_plot = None):
+                    grouping_variable=None,
+                    fitted_line_type=None,
+                    fill_color="#3269a8",
+                    folder_to_save_plot=None):
     # Iterate through list of predictors 
     for predictor in list_of_predictor_variables:
         # Draw scatterplot
