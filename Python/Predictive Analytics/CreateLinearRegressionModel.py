@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from sklearn import linear_model
+from sklearn import linear_model, metrics
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
@@ -58,20 +58,18 @@ def CreateLinearRegressionModel(dataframe,
     print(f"\nNumber of iterations completed: {model.n_iter_}")
     print(f"Number of weight updates: {model.t_}")
     
-    # Show parameters of the model
-    b_norm = model.intercept_
-    w_norm = model.coef_
-    print(f"\nModel parameters:    w: {w_norm}, b:{b_norm}")
+    # # Show parameters of the model
+    # b_norm = model.intercept_
+    # w_norm = model.coef_
+    # print(f"\nModel parameters:    w: {w_norm}, b:{b_norm}")
     
     # Add predictions to test set
     test['Predicted'] = model.predict(test[list_of_predictor_variables])
-        
-    # Show the explained variance score: 
-    print("\nVariance score: %.2f" % model.score(train[list_of_predictor_variables], train[outcome_variable]))
-    print("Note: 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
     
-    # The mean squared error
-    print("\nMean squared error: %.2f" % np.mean((test['Predicted'] - test[outcome_variable]) ** 2))
+    # Show mean squared error if outcome is numerical
+    print('Mean Squared Error:', metrics.mean_squared_error(test[outcome_variable], test['Predicted']))
+    print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
+    print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
     
     # Plot predicted and observed outputs if requested
     if plot_residuals:

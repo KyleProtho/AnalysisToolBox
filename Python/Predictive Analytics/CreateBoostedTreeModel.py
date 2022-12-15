@@ -48,6 +48,12 @@ def CreateBoostedTreeModel(dataframe,
     
     # Add predictions to test set
     test['Predicted'] = model.predict(test[list_of_predictor_variables])
+    
+    # Show mean squared error and variance score if outcome is numerical
+    if is_outcome_categorical == False:
+        print('Mean Squared Error:', metrics.mean_squared_error(test[outcome_variable], test['Predicted']))
+        print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
+        print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
      
     # Print the confusion matrix if outcome is categorical
     if plot_model_test_performance:
@@ -85,6 +91,7 @@ def CreateBoostedTreeModel(dataframe,
         
     # Return the model
     return model
+
 
 # # Test the function
 # from sklearn import datasets

@@ -58,6 +58,12 @@ def CreateDecisionTreeModel(dataframe,
     # Add predictions to test set
     test['Predicted'] = model.predict(test[list_of_predictor_variables])
     
+    # Show mean squared error and variance if outcome is numerical
+    if is_outcome_categorical == False:
+        print('Mean Squared Error:', metrics.mean_squared_error(test[outcome_variable], test['Predicted']))
+        print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
+        print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
+    
     # Print decision rules if requested
     if print_decision_rules:
         r = export_text(
