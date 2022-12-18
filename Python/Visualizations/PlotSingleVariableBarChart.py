@@ -11,13 +11,20 @@ sns.set(style="white",
 def PlotSingleVariableBarChart(dataframe,
                                list_of_categorical_variables,
                                fill_color=None,
-                               number_of_plot_grid_columns=2):
+                               number_of_plot_grid_columns=2,
+                               add_rare_category_line=False,
+                               rare_category_line_color='#b5b3b3',
+                               rare_category_threshold=0.05):
     
     # Set number of rows in grid based on length of list of variables
     number_of_plot_grid_rows = ceil(len(list_of_categorical_variables) / number_of_plot_grid_columns)
     
     # Set size of figure
     size_of_figure = (number_of_plot_grid_columns * 6, number_of_plot_grid_rows * 4)
+    
+    # Ensure that rare category threshold is between 0 and 1
+    if rare_category_threshold < 0 or rare_category_threshold > 1:
+        raise ValueError("Rare category threshold must be between 0 and 1.")
     
     # Create grid
     fig = plt.figure(figsize=size_of_figure)
@@ -56,9 +63,28 @@ def PlotSingleVariableBarChart(dataframe,
                      labels=lbls,
                      padding=5)
         
+        # Add rare category threshold line
+        if add_rare_category_line:
+            ax.axvline(
+                x=rare_category_threshold * dataframe.shape[0],
+                color=rare_category_line_color,
+                alpha=0.5,
+                linestyle='--',
+                label='Rare category threshold'
+            )
+        
     # Show plot
     plt.show()
     
     # Clear plot
     plt.clf()
 
+# # Test the function
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# iris['species'] = datasets.load_iris(as_frame=True).target
+# iris['species'] = iris['species'].astype('category')
+# PlotSingleVariableBarChart(dataframe=iris,
+#                            list_of_categorical_variables=['species'],
+#                            number_of_plot_grid_columns=1,
+#                            add_rare_category_line=True)
