@@ -1,6 +1,10 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from textwrap import wrap
 
-def CreateDataOverview(dataframe):
+def CreateDataOverview(dataframe,
+                       plot_missingness=True):
     # Get data types in each column
     data_overview = pd.DataFrame(dataframe.dtypes, columns=['DataType'])
     data_overview = data_overview.reset_index()
@@ -59,6 +63,44 @@ def CreateDataOverview(dataframe):
         how='left',
         on='Variable')
     del(data_summary)
+    
+    # Generate missingness plot, if requested
+    if plot_missingness:
+        # Sort the data by missing percentage
+        data_overview_sorted = data_overview.sort_values(
+            by=['Missing Percentage', 'Variable'],
+            ascending=[False, True]
+        )
+        # Create the plot
+        fig, ax = plt.subplots(figsize=(8, len(data_overview_sorted.index)))
+        sns.barplot(
+            data=data_overview_sorted, 
+            y='Variable', 
+            x='Missing Percentage',
+            palette='Blues_d'
+        )
+        # Add data labels
+        lbls = [f"{x:.0%}" for x in data_overview_sorted['Missing Percentage']]
+        ax.bar_label(container=ax.containers[0],
+                     labels=lbls,
+                     padding=5)
+        # Set y-axis limits and hide ticks
+        plt.xlim(0, 1)
+        plt.xticks([])
+        # Hide the spines
+        plt.gca().spines['top'].set_visible(False)
+        plt.gca().spines['bottom'].set_visible(False)
+        plt.gca().spines['right'].set_visible(False)
+        # Format the x-axis labels and wrap them
+        plt.gca().yaxis.set_tick_params(labelsize=8)
+        y_labels = plt.gca().get_yticklabels()
+        wrapped_labels = []
+        for label in y_labels:
+            wrap_label = '\n'.join(wrap(label.get_text(), 30))
+            wrapped_labels.append(wrap_label)
+        plt.gca().set_yticklabels(wrapped_labels)
+        # Show the plot
+        plt.show()
     
     # Return the overview
     return(data_overview)
