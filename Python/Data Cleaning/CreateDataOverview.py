@@ -1,7 +1,6 @@
 import pandas as pd
 
-def CreateDataOverview(dataframe,
-                       return_data_overview=False):
+def CreateDataOverview(dataframe):
     # Get data types in each column
     data_overview = pd.DataFrame(dataframe.dtypes, columns=['DataType'])
     data_overview = data_overview.reset_index()
@@ -10,7 +9,27 @@ def CreateDataOverview(dataframe,
         'DataType': 'Data Type'
     })
     
-    # Show missing values and unique value counts in each column
+    # Count missing values in each column
+    data_missing = dataframe.isnull().sum().reset_index()
+    data_missing = data_missing.reset_index()
+    data_missing = data_missing.rename(columns={
+        'index': 'Variable',
+        0: 'Missing Count'
+    })
+    data_missing = data_missing[['Variable', 'Missing Count']]
+    
+    # Join missing count to the overview
+    data_overview = data_overview.merge(
+        data_missing,
+        how='left',
+        on='Variable'
+    )
+    del(data_missing)
+    
+    # Calculate missing percentage
+    data_overview['Missing Percentage'] = data_overview['Missing Count'] / len(dataframe)
+    
+    # Show range and frequency in each column
     data_summary = dataframe.describe(include='all').T
     data_summary = data_summary.reset_index()
     data_summary = data_summary.rename(columns={
@@ -18,8 +37,21 @@ def CreateDataOverview(dataframe,
     })
     try:
         data_summary = data_summary[['Variable', 'count', 'unique', 'top', 'freq', 'min', 'max']]
+        data_summary = data_summary.rename(columns={
+            'count': 'Non Missing Count',
+            'unique': 'Unique Value Count',
+            'top': 'Top Value',
+            'freq': 'Frequency of Top Value',
+            'min': 'Minimum',
+            'max': 'Maximum'
+        })
     except KeyError:
         data_summary = data_summary[['Variable', 'count', 'min', 'max']]
+        data_summary = data_summary.rename(columns={
+            'count': 'Non Missing Count',
+            'min': 'Minimum',
+            'max': 'Maximum'
+        })
     
     # Join the two dataframes
     data_overview = data_overview.merge(
@@ -28,12 +60,8 @@ def CreateDataOverview(dataframe,
         on='Variable')
     del(data_summary)
     
-    # Print the overview
-    print(data_overview)
-    
-    # Return the overview, if requested
-    if return_data_overview:
-        return(data_overview)
+    # Return the overview
+    return(data_overview)
 
 
 # # Test the function
