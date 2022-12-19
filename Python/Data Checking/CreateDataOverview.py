@@ -64,6 +64,9 @@ def CreateDataOverview(dataframe,
         on='Variable')
     del(data_summary)
     
+    # Calculate the range of each column
+    data_overview['Range'] = data_overview['Maximum'] - data_overview['Minimum']
+    
     # Generate missingness plot, if requested
     if plot_missingness:
         # Sort the data by missing percentage
@@ -110,5 +113,5 @@ def CreateDataOverview(dataframe,
 # from sklearn import datasets
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # iris['species'] = datasets.load_iris(as_frame=True).target
-# # iris['species'] = iris['species'].astype('category')
+# iris['species'] = iris['species'].astype('category')
 # CreateDataOverview(iris)
