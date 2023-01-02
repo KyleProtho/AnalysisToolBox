@@ -4,6 +4,7 @@ import os
 from math import ceil
 from matplotlib import pyplot as plt
 import seaborn as sns
+from textwrap import wrap
 sns.set(style="white",
         font="Arial",
         context="paper")
@@ -47,11 +48,21 @@ def PlotSingleVariableBarChart(dataframe,
                                order=dataframe[categorical_variable].value_counts(ascending=False).index,
                                color=fill_color)
         ax.grid(False)
+        # Wrap y axis label
         wrapped_variable_name = "\n".join(categorical_variable[j:j+30] for j in range(0, len(categorical_variable), 30))  # String wrap the variable name
         ax.set_ylabel(wrapped_variable_name)
+        
+        # Format and wrap y axis tick labels
+        y_tick_labels = ax.get_yticklabels()
+        wrapped_y_tick_labels = ['\n'.join(wrap(label.get_text(), 30)) for label in y_tick_labels]
+        ax.set_yticklabels(wrapped_y_tick_labels)
+        ax.tick_params(axis='y', which='major', labelsize=8)
+        
+        # Remove x axis label
         ax.set_xlabel(None)
         ax.set(xticklabels=[])
-        ax.tick_params(axis='y', which='major', labelsize=10)
+        
+        # Remove top and right spines
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         
@@ -80,11 +91,17 @@ def PlotSingleVariableBarChart(dataframe,
     plt.clf()
 
 # # Test the function
+# import numpy as np
 # from sklearn import datasets
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # iris['species'] = datasets.load_iris(as_frame=True).target
 # iris['species'] = iris['species'].astype('category')
+# iris['species long label'] = np.where(
+#     iris['species'] == 0,
+#     "This is a super long label for species 0 just to test the function",
+#     iris['species']
+# )
 # PlotSingleVariableBarChart(dataframe=iris,
-#                            list_of_categorical_variables=['species'],
+#                            list_of_categorical_variables=['species long label'],
 #                            number_of_plot_grid_columns=1,
 #                            add_rare_category_line=True)
