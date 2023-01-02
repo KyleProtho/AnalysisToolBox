@@ -50,12 +50,21 @@ def CreateDataOverview(dataframe,
             'max': 'Maximum'
         })
     except KeyError:
-        data_summary = data_summary[['Variable', 'count', 'min', 'max']]
-        data_summary = data_summary.rename(columns={
-            'count': 'Non Missing Count',
-            'min': 'Minimum',
-            'max': 'Maximum'
-        })
+        try:
+            data_summary = data_summary[['Variable', 'count', 'min', 'max']]
+            data_summary = data_summary.rename(columns={
+                'count': 'Non Missing Count',
+                'min': 'Minimum',
+                'max': 'Maximum'
+            })
+        except KeyError:
+            data_summary = data_summary[['Variable', 'count', 'unique', 'top', 'freq']]
+            data_summary = data_summary.rename(columns={
+                'count': 'Non Missing Count',
+                'unique': 'Unique Value Count',
+                'top': 'Top Value',
+                'freq': 'Frequency of Top Value'
+            })
     
     # Join the two dataframes
     data_overview = data_overview.merge(
@@ -65,7 +74,10 @@ def CreateDataOverview(dataframe,
     del(data_summary)
     
     # Calculate the range of each column
-    data_overview['Range'] = data_overview['Maximum'] - data_overview['Minimum']
+    try:
+        data_overview['Range'] = data_overview['Maximum'] - data_overview['Minimum']
+    except KeyError:
+        pass
     
     # Generate missingness plot, if requested
     if plot_missingness:
