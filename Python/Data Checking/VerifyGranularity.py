@@ -5,6 +5,15 @@ import pandas as pd
 def VerifyGranularity(dataframe,
                       list_of_key_columns,
                       set_key_as_index=True):
+    """_summary_
+    This function verifies that the granularity of the dataset is correct. It does this by creating a key column from the list of key columns and then checking to see if the number of rows in the dataset equals the number of distinct values in the key column. If the number of rows does not equal the number of distinct values, the function prints a warning message.
+
+    Args:
+        dataframe (_type_): Pandas dataframe
+        list_of_key_columns (_type_): List of columns to use to create key column
+        set_key_as_index (bool, optional): Sets the concatenation of the list of columns as the index. Defaults to True.
+    """
+    
     # Create key column from list of key columns
     first_col = list_of_key_columns[0]
     dataframe['Dataset Key'] = dataframe[first_col].astype(str)

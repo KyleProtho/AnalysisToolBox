@@ -4,7 +4,15 @@ import seaborn as sns
 from textwrap import wrap
 
 def CreateDataOverview(dataframe,
-                       plot_missingness=True):
+                       plot_missingness=False):
+    """_summary_
+    This function creates an overview of the data in a dataframe, showing the data type, missing count, missing percentage, and summary statistics for each variable.
+
+    Args:
+        dataframe (_type_): Pandas dataframe
+        plot_missingness (bool, optional): Generates a plot to show missingness in each variable. Defaults to False.
+    """
+    
     # Get data types in each column
     data_overview = pd.DataFrame(dataframe.dtypes, columns=['DataType'])
     data_overview = data_overview.reset_index()

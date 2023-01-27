@@ -4,6 +4,14 @@ import pandas as pd
 def CountMissingDataByGroup(dataframe,
                             list_of_grouping_variables,
                             list_of_variables_to_count=None):
+    """_summary_
+    This function counts the number of records with missing data by group.
+
+    Args:
+        dataframe (_type_): Pandas dataframe
+        list_of_grouping_variables (_type_): List of variables to group by
+        list_of_variables_to_count (_type_, optional): List of variables to count missing data in. Defaults to None. If None, all variables are counted.
+    """
     # Select variables to count missing data for
     if list_of_variables_to_count is not None:
         dataframe = dataframe[list_of_grouping_variables + list_of_variables_to_count]
@@ -28,4 +36,13 @@ def CountMissingDataByGroup(dataframe,
     
     # Return missing data by group summary
     return(df_missing_by_group)
-    
+
+
+# # Test function
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# iris['species'] = datasets.load_iris(as_frame=True).target
+# CountMissingDataByGroup(
+#     dataframe=iris, 
+#     list_of_grouping_variables=['species'],
+# )
