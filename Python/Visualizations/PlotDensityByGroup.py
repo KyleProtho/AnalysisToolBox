@@ -51,12 +51,13 @@ def PlotDensityByGroup(dataframe,
     # Show plot
     plt.show()
 
-# Test the function
-from sklearn import datasets
-iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-iris['species'] = datasets.load_iris(as_frame=True).target
-PlotDensityByGroup(
-    dataframe=iris, 
-    numeric_variable='sepal length (cm)', 
-    grouping_variable='species'
-)
+
+# # Test the function
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# iris['species'] = datasets.load_iris(as_frame=True).target
+# PlotDensityByGroup(
+#     dataframe=iris, 
+#     numeric_variable='sepal length (cm)', 
+#     grouping_variable='species'
+# )
