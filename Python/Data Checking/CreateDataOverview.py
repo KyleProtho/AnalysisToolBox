@@ -36,9 +36,7 @@ def CreateDataOverview(dataframe,
     # Show range and frequency in each column
     data_summary = dataframe.describe(include='all').T
     data_summary = data_summary.reset_index()
-    data_summary = data_summary.rename(columns={
-        'index': 'Variable'
-    })
+    data_summary.columns.values[0] = 'Variable'
     try:
         data_summary = data_summary[['Variable', 'count', 'unique', 'top', 'freq', 'min', 'max']]
         data_summary = data_summary.rename(columns={
