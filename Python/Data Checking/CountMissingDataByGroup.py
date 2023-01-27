@@ -11,6 +11,9 @@ def CountMissingDataByGroup(dataframe,
         dataframe (_type_): Pandas dataframe
         list_of_grouping_variables (list): List of variables to group by
         list_of_variables_to_count (list, optional): List of variables to count missing data in. Defaults to None. If None, all variables are counted.
+    
+    Returns:
+        _type_: A Pandas dataframe with the number of records with missing data by group.
     """
     # Select variables to count missing data for
     if list_of_variables_to_count is not None:

@@ -7,10 +7,14 @@ def CreateDataOverview(dataframe,
                        plot_missingness=False):
     """_summary_
     This function creates an overview of the data in a dataframe, showing the data type, missing count, missing percentage, and summary statistics for each variable.
+    Tip: This function is useful for creating a data dictionary.
 
     Args:
         dataframe (_type_): Pandas dataframe
         plot_missingness (bool, optional): Generates a plot to show missingness in each variable. Defaults to False.
+    
+    Returns:
+        _type_: A Pandas dataframe containing an overview of the data in the dataframe.
     """
     
     # Get data types in each column
