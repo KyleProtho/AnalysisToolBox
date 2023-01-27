@@ -5,6 +5,18 @@ def ImputeMissingValuesUsingRandomForest(dataframe,
                                          number_of_trees=100,
                                          maximum_depth=None,
                                          random_seed=412):
+    """_summary_
+    This function imputes missing values in a dataframe using random forest imputation.
+    
+    Args:
+        dataframe (_type_): Pandas dataframe
+        number_of_trees (int, optional): The number of trees in the forest. Defaults to 100.
+        maximum_depth (int, optional): The maximum depth of each tree. Defaults to None.
+        random_seed (int, optional): The random seed for reproducibility. Defaults to 412.
+        
+    Returns:
+        _type_: An updated Pandas dataframe with imputed values.
+    """
     # Select only the variables to impute
     dataframe_imputed = dataframe.copy()
     

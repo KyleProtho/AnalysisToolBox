@@ -10,7 +10,7 @@ def VerifyGranularity(dataframe,
 
     Args:
         dataframe (_type_): Pandas dataframe
-        list_of_key_columns (_type_): List of columns to use to create key column
+        list_of_key_columns (list): List of columns to use to create key column
         set_key_as_index (bool, optional): Sets the concatenation of the list of columns as the index. Defaults to True.
     """
     

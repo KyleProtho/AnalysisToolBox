@@ -7,6 +7,19 @@ def AddTPeriodColumn(dataframe,
                      date_column_name,
                      t_period_interval="days",
                      t_period_column_name=None):
+    """_summary_
+    This function adds a T-period column to a dataframe. The T-period column is the number of intervals (e.g., days or weeks) since the earliest date in the dataframe.
+
+    Args:
+        dataframe (_type_): Pandas dataframe
+        date_column_name (str): The name of the column containing the date. Options are "days", "weeks", "months", or "years"
+        t_period_interval (str, optional): The interval or time object to use for the T-period column. Defaults to "days".
+        t_period_column_name (str, optional): The name of the T-period column. Defaults to None. If None, the column name is "T Period in " + t_period_interval.
+    
+    Returns:
+        _type_: An updated Pandas dataframe with a T-period column.
+    """
+    
     # Ensure that column is a date datatype
     if dataframe[date_column_name].dtypes != "<M8[ns]":
         dataframe[date_column_name] = pd.to_datetime(dataframe[date_column_name])

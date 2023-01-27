@@ -3,6 +3,16 @@ import pandas as pd
 
 # Define function
 def CleanTextColumns(dataframe):
+    """_summary_
+    This function cleans string-type columns in a dataframe by removing leading and trailing spaces.
+
+    Args:
+        dataframe (_type_): Pandas dataframe
+        
+    Returns:
+        _type_: An updated Pandas dataframe with cleaned string-type columns.
+    """
+    
     # Iterate over columns, and clean string-type columns
     for col_name in dataframe.columns:
         if dataframe.dtypes[col_name] == 'O':
