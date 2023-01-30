@@ -9,12 +9,12 @@ def AddDummyColumns(dataframe,
     This function adds dummy columns to a dataset based on a categorical variable. The default is to add all dummy columns. If drop_first_group is set to True, the first dummy column is dropped.
     
     Args:
-        dataframe (_type_): Pandas dataframe
+        dataframe (Pandas dataframe): Pandas dataframe
         categorical_variable_column_name (str): Name of column containing categorical variable
         drop_first_group (bool, optional): Whether the dummy variable of the first group should be dropped. Defaults to False.
     
     Returns:
-        _type_: An updated Pandas dataframe with dummy columns.
+        Pandas dataframe: An updated Pandas dataframe with dummy columns.
     """
     
     # Convert categorical variable to dummy variable

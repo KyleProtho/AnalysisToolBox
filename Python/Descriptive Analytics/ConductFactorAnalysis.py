@@ -15,6 +15,22 @@ def ConductFactorAnalysis(dataframe,
                           bartlett_sphericity_significance_level = 0.05,
                           measure_of_sampling_adequacy_threshold = 0.6,
                           pca_eigenvalue_threshold = 1):
+    """_summary_
+    This function conducts factor analysis on a dataset.
+
+    Args:
+        dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
+        list_of_variables (list, optional): _description_. The list of variables to be analyzed. Defaults to None, which means all variables will be analyzed.
+        standardize_variables (bool, optional): _description_. Whether to standardize the variables prior to analysis. Defaults to True.
+        number_of_factors_to_create (int, optional): _description_. The number of factors to create. Defaults to None, which means the number of factors will be determined automatically.
+        bartlett_sphericity_significance_level (float, optional): _description_. The significance level for the Bartlett test for sphericity. Defaults to 0.05.
+        measure_of_sampling_adequacy_threshold (float, optional): _description_. The threshold for the Keiser-Meyer-Olkin (KMO) test. Defaults to 0.6.
+        pca_eigenvalue_threshold (int, optional): _description_. The threshold for the eigenvalue in the principal component analysis (PCA). Defaults to 1.
+        
+    Returns:
+        Pandas dataframe: An updated Pandas dataframe with factor analysis results joined to the original dataset.
+    """
+    
     # Select list of variables to consider
     if list_of_variables == None:
         list_of_variables = dataframe.columns

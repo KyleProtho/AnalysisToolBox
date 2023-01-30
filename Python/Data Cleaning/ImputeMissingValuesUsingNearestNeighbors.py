@@ -10,13 +10,13 @@ def ImputeMissingValuesUsingNearestNeighbors(dataframe,
     This function imputes missing values in a dataframe using nearest neighbors.
     
     Args:
-        dataframe (_type_): Pandas dataframe
+        dataframe (Pandas dataframe): Pandas dataframe
         list_of_variables (list): The list of variables to impute.
         number_of_neighbors (int, optional): The number of neighbors to use for imputation. Defaults to 3.
         averaging_method (str, optional): The weight function used in prediction. Defaults to 'uniform'.
     
     Returns:
-        _type_: An updated Pandas dataframe with imputed values.
+        Pandas dataframe: An updated Pandas dataframe with imputed values.
     """
     
     # Select only the variables to impute

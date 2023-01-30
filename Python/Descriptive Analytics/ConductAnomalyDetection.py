@@ -4,13 +4,26 @@ import pandas as pd
 from scipy.stats import norm
 import seaborn as sns
 
-# Function that conducts anomaly detection using gaussian distribution
 def ConductAnomalyDetection(dataframe, 
                             list_of_predictor_variables,
                             anomaly_threshold=0.95,
                             plot_detection_summary=True,
                             summary_plot_size=(20, 20),
                             column_name_for_anomaly_prob='Anomaly Probability'):
+    """_summary_
+    This function conducts anomaly detection on a dataset using the z-score method.
+    
+    Args:
+        dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
+        list_of_predictor_variables (list): List of predictor variables to be analyzed.
+        anomaly_threshold (float, optional): _description_. The threshold for the probability of an anomaly. Defaults to 0.95.
+        plot_detection_summary (bool, optional): _description_. Whether to plot a summary of the anomaly detection. Defaults to True.
+        summary_plot_size (tuple, optional): _description_. The size of the summary plot. Defaults to (20, 20).
+        column_name_for_anomaly_prob (str, optional): _description_. The name of the column for the anomaly probability. Defaults to 'Anomaly Probability'.
+        
+    Returns:
+        Pandas dataframe: Pandas dataframe containing the data to be analyzed with the anomaly probability and flag.
+    """
     # Keep only the predictor variables
     dataframe_anomaly = dataframe[list_of_predictor_variables].copy()
     

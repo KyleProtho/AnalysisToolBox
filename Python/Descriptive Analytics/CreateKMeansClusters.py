@@ -16,6 +16,24 @@ def CreateKMeansClusters(dataframe,
                          summary_plot_size=(20, 20),
                          random_seed=412,
                          maximum_iterations=300):
+    """_summary_
+    This function creates K-Means clusters on a dataset based on the variables specified.
+
+    Args:
+        dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
+        list_of_variables_to_base_clusters (list, optional): The list of variables to base the clusters on. Defaults to None, which will use all variables in the dataframe.
+        number_of_clusters (int, optional): The number of clusters to create. Defaults to None, which will use the elbow method to determine the optimal number of clusters.
+        column_name_for_clusters (str, optional): The name of the new column containing the clusters. Defaults to 'K-Means Cluster'.
+        scale_predictor_variables (bool, optional): Whether to scale the predictor variables prior to analysis. Defaults to True.
+        show_cluster_summary_plots (bool, optional): Whether to show cluster summary plots. Defaults to True.
+        summary_plot_size (tuple, optional): The size of the summary plots. Defaults to (20, 20).
+        random_seed (int, optional): The random seed to use for replication. Defaults to 412.
+        maximum_iterations (int, optional): The maximum number of iterations to use for the K-Means algorithm. Defaults to 300.
+    
+    Returns:
+        Pandas dataframe: An updated Pandas dataframe with the clusters joined to the original data.
+    """
+    
     # Keep complete cases only
     dataframe_clusters = dataframe.dropna(subset=list_of_variables_to_base_clusters)
 

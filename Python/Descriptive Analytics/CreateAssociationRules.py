@@ -10,6 +10,20 @@ def CreateAssociationRules(dataframe,
                            items_column,
                            support_threshold = .20,
                            confidence_threshold = .50):
+    """_summary_
+    This function creates association rules from a dataset.
+    
+    Args:
+        dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
+        transaction_id_column (str): The column name containing the transaction ID.
+        items_column (str): The column name containing the items.
+        support_threshold (float, optional): The threshold for the support for an association rule to be defined. Defaults to .20.
+        confidence_threshold (float, optional): The threshold for the confidence for an association rule to be defined. Defaults to .50.
+    
+    Returns:
+        Pandas dataframe: An updated Pandas dataframe with the association rules.
+    """
+    
     # Group and summarize (as list) items to key column
     dataframe = dataframe.groupby(transaction_id_column)[items_column].apply(list)
     dataframe = dataframe.reset_index()

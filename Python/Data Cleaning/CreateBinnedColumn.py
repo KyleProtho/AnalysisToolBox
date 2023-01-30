@@ -11,14 +11,14 @@ def CreateBinnedColumn(dataframe,
     This function creates a binned column in a dataframe based on a numeric variable. The default is to create 6 bins using the k-means binning strategy. The new column name is the name of the variable to bin with '- Binned' appended to it.
 
     Args:
-        dataframe (_type_): Pandas dataframe
-        variable_to_bin (_type_): The name of the variable to bin. Should be a numeric variable.
+        dataframe (Pandas dataframe): Pandas dataframe
+        variable_to_bin (str): The name of the variable to bin. Should be a numeric variable.
         number_of_bins (int, optional): The number of bins to create. Defaults to 6.
         binning_strategy (str, optional): The strategy to use to create the bins. Defaults to 'kmeans'.
-        new_column_name (_type_, optional): The name of the new column containing the bins. Defaults to None.
+        new_column_name (str, optional): The name of the new column containing the bins. Defaults to None.
 
     Returns:
-        _type_: An updated Pandas dataframe with the bins for the variable to bin
+        Pandas dataframe: An updated Pandas dataframe with the bins for the variable to bin
     """
     # Create new column name if not provided
     if new_column_name is None:
