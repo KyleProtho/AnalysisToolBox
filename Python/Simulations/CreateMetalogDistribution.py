@@ -4,7 +4,6 @@ import pandas as pd
 import pymetalog as pm
 import seaborn as sns
 
-# Function that fits a metalog distribution to a set of data
 def CreateMetalogDistribution(dataframe,
                               variable,
                               lower_bound=None,
@@ -13,6 +12,22 @@ def CreateMetalogDistribution(dataframe,
                               term_maximum=9,
                               term_minimum=2,
                               show_comparison_plot=True):
+    """_summary_
+    This function creates a metalog distribution from a dataset and variable.
+    
+    Args:
+        dataframe (_type_): Pandas dataframe containing the dataset.
+        variable (str): Name of the variable to create the metalog distribution from.
+        lower_bound (int or float, optional): The lower bound of the metalog distribution. Defaults to None.
+        upper_bound (int or float, optional): The upper bound of the metalog distribution. Defaults to None.
+        learning_rate (float, optional): The learning rate to use when creating the metalog distribution. Defaults to .01.
+        term_maximum (int, optional): The maximum number of terms to use when creating the metalog distribution. Defaults to 9.
+        term_minimum (int, optional): The minimum number of terms to use when creating the metalog distribution. Defaults to 2.
+        show_comparison_plot (bool, optional): _description_. Defaults to True.
+
+    Returns:
+        _type_: _description_
+    """
     # Create a metalog distribution
     if lower_bound is None and upper_bound is None:
         metalog_dist = pm.metalog(
@@ -24,25 +39,25 @@ def CreateMetalogDistribution(dataframe,
     elif lower_bound is not None and upper_bound is None:
         metalog_dist = pm.metalog(
             x=dataframe[variable].to_numpy(),
-            boundedness='lower',
-            bounds=[lower_bound, upper_bound],
+            boundedness='sl',
+            bounds=[lower_bound],
             step_len=learning_rate,
             term_lower_bound=term_minimum,
             term_limit=term_maximum
         )
     elif lower_bound is None and upper_bound is not None:
         metalog_dist = pm.metalog(
-            x=dataframe[variable].to_list(),
-            boundedness='upper',
-            bounds=[lower_bound, upper_bound],
+            x=dataframe[variable].to_numpy(),
+            boundedness='su',
+            bounds=[upper_bound],
             step_len=learning_rate,
             term_lower_bound=term_minimum,
             term_limit=term_maximum
         )
     else:
         metalog_dist = pm.metalog(
-            x=dataframe[variable].to_list(),
-            boundedness='both',
+            x=dataframe[variable].to_numpy(),
+            boundedness='b',
             bounds=[lower_bound, upper_bound],
             step_len=learning_rate,
             term_lower_bound=term_minimum,
@@ -101,3 +116,13 @@ def CreateMetalogDistribution(dataframe,
 #     dataframe=iris,
 #     variable='petal length (cm)',
 # )
+# # petal_legnth_dist = CreateMetalogDistribution(
+# #     dataframe=iris,
+# #     variable='petal length (cm)',
+# #     upper_bound=7,
+# # )
+# # petal_legnth_dist = CreateMetalogDistribution(
+# #     dataframe=iris,
+# #     variable='petal length (cm)',
+# #     lower_bound=0,
+# # )
