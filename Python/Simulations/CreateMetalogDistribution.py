@@ -28,17 +28,24 @@ def CreateMetalogDistribution(dataframe,
     Returns:
         _type_: _description_
     """
+    
+    # Filter NA from the dataframe
+    dataframe[variable] = dataframe[variable].dropna()
+    
+    # Extract values from the dataframe
+    arr_variable = dataframe[variable].values
+    
     # Create a metalog distribution
     if lower_bound is None and upper_bound is None:
         metalog_dist = pm.metalog(
-            x=dataframe[variable].to_numpy(),
+            x=arr_variable,
             step_len=learning_rate,
             term_lower_bound=term_minimum,
             term_limit=term_maximum
         )
     elif lower_bound is not None and upper_bound is None:
         metalog_dist = pm.metalog(
-            x=dataframe[variable].to_numpy(),
+            x=arr_variable,
             boundedness='sl',
             bounds=[lower_bound],
             step_len=learning_rate,
@@ -47,7 +54,7 @@ def CreateMetalogDistribution(dataframe,
         )
     elif lower_bound is None and upper_bound is not None:
         metalog_dist = pm.metalog(
-            x=dataframe[variable].to_numpy(),
+            x=arr_variable,
             boundedness='su',
             bounds=[upper_bound],
             step_len=learning_rate,
@@ -56,7 +63,7 @@ def CreateMetalogDistribution(dataframe,
         )
     else:
         metalog_dist = pm.metalog(
-            x=dataframe[variable].to_numpy(),
+            x=arr_variable,
             boundedness='b',
             bounds=[lower_bound, upper_bound],
             step_len=learning_rate,
@@ -106,6 +113,7 @@ def CreateMetalogDistribution(dataframe,
     
     # Return the metalog distribution
     return metalog_dist
+
 
 # # Test the function
 # from sklearn import datasets
