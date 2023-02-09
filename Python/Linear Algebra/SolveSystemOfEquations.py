@@ -16,6 +16,11 @@ def SolveSystemOfEquations(coefficients,
     # If constants are not provided, set them to 0
     if constants is None:
         constants = np.zeros(coefficients.shape[0])
+    else:
+        constants = np.array(constants)
+        
+    # Convert coefficients to a numpy array
+    coefficients = np.array(coefficients)
     
     # Calculate the determinant of the coefficient matrix
     determinant = np.linalg.det(coefficients)
@@ -44,7 +49,7 @@ def SolveSystemOfEquations(coefficients,
         
             # Create legend
             plt.legend()
-
+            
             # Show plot
             plt.show()
         
