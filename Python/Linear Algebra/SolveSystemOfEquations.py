@@ -12,19 +12,20 @@ def SolveSystemOfEquations(coefficients,
     Args:
         coefficients (list of lists): A matrix of coefficients for the system of equations
         constants (list): A 1D array of constants for the system of equations
-    """
+    """ 
+    
+    # Convert coefficients to a numpy array
+    coefficients = np.array(coefficients)
+    
     # If constants are not provided, set them to 0
     if constants is None:
         constants = np.zeros(coefficients.shape[0])
     else:
         constants = np.array(constants)
-        
-    # Convert coefficients to a numpy array
-    coefficients = np.array(coefficients)
     
     # Calculate the determinant of the coefficient matrix
     determinant = np.linalg.det(coefficients)
-    print("Determinant:", str(determinant))
+    print("Determinant:", '{:f}'.format(determinant))
     if determinant == 0:
         print("The system of equations is singular, and does not have a unique solution. At least two equations are linearly dependent.")
     else:
@@ -39,7 +40,7 @@ def SolveSystemOfEquations(coefficients,
         if coefficients.shape[1] == 2:
             # Plot the system of equations
             for i in range(len(constants)):
-                x = np.linspace(0, plot_boundary, 100)
+                x = np.linspace(-1*plot_boundary, plot_boundary, 100)
                 y = (constants[i] - coefficients[i, 0] * x) / coefficients[i, 1]
                 
                 # Generate name for the equation
