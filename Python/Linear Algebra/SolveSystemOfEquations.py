@@ -10,8 +10,8 @@ def SolveSystemOfEquations(coefficients,
     This function plots a system of equations.
     
     Args:
-        coefficients (np.array): A matrix of coefficients for the system of equations
-        constants (np.array): A 1D array of constants for the system of equations
+        coefficients (list of lists): A matrix of coefficients for the system of equations
+        constants (list): A 1D array of constants for the system of equations
     """
     # If constants are not provided, set them to 0
     if constants is None:
