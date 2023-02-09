@@ -44,7 +44,6 @@ def SolveSystemOfEquations(coefficients,
                 
                 # Generate name for the equation
                 equation_name = str(coefficients[i, 0]) + "x + " + str(coefficients[i, 1]) + "y = " + str(constants[i])
-                print(equation_name)
                 plt.plot(x, y, label=equation_name)
         
             # Create legend
