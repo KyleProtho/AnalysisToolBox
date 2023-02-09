@@ -29,8 +29,13 @@ def CreateMetalogDistribution(dataframe,
         _type_: _description_
     """
     
-    # Filter NA from the dataframe
-    dataframe[variable] = dataframe[variable].dropna()
+    # Select necessary columns from the dataframe
+    dataframe = dataframe[[variable]]
+    
+    # Filter NA, None, and infinite values from the dataframe
+    dataframe = dataframe[dataframe[variable].notna()]
+    dataframe = dataframe[dataframe[variable] != None]
+    dataframe = dataframe[dataframe[variable] != np.inf]
     
     # Extract values from the dataframe
     arr_variable = dataframe[variable].values
@@ -120,17 +125,17 @@ def CreateMetalogDistribution(dataframe,
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # iris['species'] = datasets.load_iris(as_frame=True).target
 # iris = iris[iris['species'] == 0]
-# petal_legnth_dist = CreateMetalogDistribution(
-#     dataframe=iris,
-#     variable='petal length (cm)',
-# )
+# # petal_legnth_dist = CreateMetalogDistribution(
+# #     dataframe=iris,
+# #     variable='petal length (cm)',
+# # )
 # # petal_legnth_dist = CreateMetalogDistribution(
 # #     dataframe=iris,
 # #     variable='petal length (cm)',
 # #     upper_bound=7,
 # # )
-# # petal_legnth_dist = CreateMetalogDistribution(
-# #     dataframe=iris,
-# #     variable='petal length (cm)',
-# #     lower_bound=0,
-# # )
+# petal_legnth_dist = CreateMetalogDistribution(
+#     dataframe=iris,
+#     variable='petal length (cm)',
+#     lower_bound=0,
+# )
