@@ -2,7 +2,7 @@
 library(rmetalog)
 
 # Declare function
-FitMetalogDistribution = function(dataframe,
+CreateMetalogDistribution = function(dataframe,
                                   column_name,
                                   boundary_setting = "u",
                                   upper_boundary = NULL,
@@ -37,5 +37,7 @@ FitMetalogDistribution = function(dataframe,
   return(metalog_dist)
 }
 
-MyMetalog = FitMetalogDistribution(dataframe = mtcars,
-                                   column_name = "mpg")
+# # Test function
+# MyMetalog = CreateMetalogDistribution(dataframe = mtcars,
+#                                    column_name = "mpg")
+
