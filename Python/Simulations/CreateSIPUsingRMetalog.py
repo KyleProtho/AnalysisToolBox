@@ -46,27 +46,27 @@ def CreateSIPUsingRMetalog(dataframe,
     return data_simulated
 
 
-# Test the function
-from sklearn.datasets import load_iris
-iris = load_iris()
-iris = pd.DataFrame(iris.data, columns=iris.feature_names)
-# petal_length = CreateSIPUsingRMetalog(
-#     dataframe=iris,
-#     variable_name="petal length (cm)"
-# )
+# # Test the function
+# from sklearn.datasets import load_iris
+# iris = load_iris()
+# iris = pd.DataFrame(iris.data, columns=iris.feature_names)
+# # petal_length = CreateSIPUsingRMetalog(
+# #     dataframe=iris,
+# #     variable_name="petal length (cm)"
+# # )
+# # petal_length = CreateSIPUsingRMetalog(
+# #     dataframe=iris,
+# #     variable_name="petal length (cm)",
+# #     upper_bound=9
+# # )
+# # petal_length = CreateSIPUsingRMetalog(
+# #     dataframe=iris,
+# #     variable_name="petal length (cm)",
+# #     lower_bound=1
+# # )
 # petal_length = CreateSIPUsingRMetalog(
 #     dataframe=iris,
 #     variable_name="petal length (cm)",
-#     upper_bound=9
-# )
-# petal_length = CreateSIPUsingRMetalog(
-#     dataframe=iris,
-#     variable_name="petal length (cm)",
+#     upper_bound=10,
 #     lower_bound=1
 # )
-petal_length = CreateSIPUsingRMetalog(
-    dataframe=iris,
-    variable_name="petal length (cm)",
-    upper_bound=10,
-    lower_bound=1
-)
