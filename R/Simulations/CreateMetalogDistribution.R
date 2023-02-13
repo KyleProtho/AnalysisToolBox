@@ -16,6 +16,14 @@ CreateMetalogDistribution = function(dataframe,
     lower_boundary = min(dataframe[[column_name]])
   }
   
+  # Convert to numeric (in case function called from Python)
+  if (!is.null(upper_boundary)) {
+    upper_boundary = as.numeric(upper_boundary)
+  }
+  if (!is.null(lower_boundary)) {
+    lower_boundary = as.numeric(lower_boundary)
+  }
+  
   # Fit metalog distribution
   if (boundary_setting == "u") {
     metalog_dist = metalog(
@@ -38,6 +46,23 @@ CreateMetalogDistribution = function(dataframe,
 }
 
 # # Test function
-# MyMetalog = CreateMetalogDistribution(dataframe = mtcars,
-#                                    column_name = "mpg")
-
+# # metalog_petal_length = CreateMetalogDistribution(
+# #   dataframe = iris,
+# #   column_name = "Petal.Length"
+# # )
+# # metalog_petal_length = CreateMetalogDistribution(
+# #   dataframe = iris,
+# #   column_name = "Petal.Length",
+# #   lower_boundary = 1
+# # )
+# # metalog_petal_length = CreateMetalogDistribution(
+# #   dataframe = iris,
+# #   column_name = "Petal.Length",
+# #   upper_boundary = 10
+# # )
+# metalog_petal_length = CreateMetalogDistribution(
+#   dataframe = iris,
+#   column_name = "Petal.Length",
+#   lower_boundary = 1,
+#   upper_boundary = 10
+# )
