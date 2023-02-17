@@ -4,6 +4,17 @@ import sympy as sp
 # Write a function that converts a matrix to row echelon form.
 def ConvertMatrixToRowEchelonForm(matrix,
                                   show_pivot_columns=False):
+    """_summary_
+    This function converts a matrix to row echelon form.
+    
+    Args:
+        matrix (np.array or list): Matrix to be converted to row echelon form.
+        show_pivot_columns (bool, optional): If True, the function will print the pivot columns. Defaults to False.
+
+    Returns:
+        np.array: Matrix in row echelon form.
+    """
+    
     # If matrix is list, convert it to a matrix
     if type(matrix) == list:
         matrix = np.array(matrix)
