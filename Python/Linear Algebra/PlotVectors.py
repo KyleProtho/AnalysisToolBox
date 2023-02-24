@@ -25,6 +25,7 @@ def PlotVectors(list_of_vectors,
     _, ax = plt.subplots(figsize=(10, 10))
     ax.tick_params(axis='x', labelsize=14)
     ax.tick_params(axis='y', labelsize=14)
+    
     # Set the x and y limits
     x_min = min([min(vector[0]) for vector in list_of_vectors])
     if x_min > 0:
@@ -59,10 +60,13 @@ def PlotVectors(list_of_vectors,
             fontsize=10,
             color=sns.color_palette()[i]
         )
+    
     # Add a grid
     plt.grid()
+    
     # Set aspect ratio to equal
     plt.gca().set_aspect("equal")
+    
     # Remove borders
     plt.gca().spines['top'].set_visible(False)
     plt.gca().spines['right'].set_visible(False)
