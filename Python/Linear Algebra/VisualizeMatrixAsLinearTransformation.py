@@ -11,6 +11,22 @@ def VisualizeMatrixAsLinearTransformation(two_by_two_matrix1,
                                           x_max=5,
                                           y_min=-5,
                                           y_max=5):
+    """_summary_
+    This function takes in two 2x2 matrices and plots the unit square and the transformed unit square. If a second matrix is provided, it will plot the transformed unit square twice, once for each matrix.
+    
+    Args:
+        two_by_two_matrix1 (list or np.array): A 2x2 matrix. If a list is provided, it will be converted to a numpy array.
+        two_by_two_matrix2 (list or np.array, optional): A 2x2 matrix. If a list is provided, it will be converted to a numpy array. Defaults to None.
+        plot_with_grid (bool, optional): Whether or not to plot a grid on plot. Defaults to False.
+        show_labels (bool, optional): Whether or not to show labels on plot. Defaults to True.
+        matrix1_color (str, optional): Color of the first matrix. Defaults to '#033dfc'.
+        matrix2_color (str, optional): Color of the second matrix. Defaults to '#03b1fc'.
+        x_min (int, optional): The minimum x value to plot. Defaults to -5.
+        x_max (int, optional): The maximum x value to plot. Defaults to 5.
+        y_min (int, optional): The minimum y value to plot. Defaults to -5.
+        y_max (int, optional): The maximum y value to plot. Defaults to 5.
+    """
+    
     # If matrix is list, convert to numpy array
     if type(two_by_two_matrix1) == list:
         two_by_two_matrix1 = np.array(two_by_two_matrix1)
@@ -101,31 +117,6 @@ def VisualizeMatrixAsLinearTransformation(two_by_two_matrix1,
             color=matrix1_color
         )
     
-    # Plot the basis vectors
-    plt.quiver(
-        [0,0],
-        [0,0],
-        [1,0],
-        [0,1],
-        angles='xy',
-        scale_units='xy',
-        scale=1,
-        color='black',
-        alpha=0.5
-    )
-    
-    # Plot the transformed basis vectors
-    plt.quiver(
-        [0,0],
-        [0,0],
-        two_by_two_matrix1[0,:],
-        two_by_two_matrix1[1,:],
-        angles='xy',
-        scale_units='xy',
-        scale=1,
-        color=[matrix1_color,matrix1_color]
-    )
-    
     # If a second matrix is provided, plot the transformed unit square
     if two_by_two_matrix2 is not None:
         # Plot the transformed unit square
@@ -153,34 +144,6 @@ def VisualizeMatrixAsLinearTransformation(two_by_two_matrix1,
                 va='center', 
                 color=matrix2_color
             )
-        
-        # Plot the first quiver using the first vector from the first matrix as the origin
-        first_line = np.dot(two_by_two_matrix2, two_by_two_matrix1[0,:])
-        first_line = first_line - two_by_two_matrix1[0,:]
-        plt.quiver(
-            two_by_two_matrix1[0,0],
-            two_by_two_matrix1[0,1],
-            first_line[0],
-            first_line[1],
-            angles='xy',
-            scale_units='xy',
-            scale=1,
-            color=[matrix2_color,matrix2_color]
-        )
-        
-        # Plot the second quiver using the second vector from the first matrix as the origin
-        second_line = np.dot(two_by_two_matrix2, two_by_two_matrix1[1,:])
-        second_line = second_line - two_by_two_matrix1[1,:]
-        plt.quiver(
-            two_by_two_matrix1[1,0],
-            two_by_two_matrix1[1,1],
-            second_line[0],
-            second_line[1],
-            angles='xy',
-            scale_units='xy',
-            scale=1,
-            color=[matrix2_color,matrix2_color]
-        )
     
     # Add title
     plt.title("Linear Transformation", fontsize=20, fontfamily='Arial')
