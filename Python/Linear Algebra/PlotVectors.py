@@ -7,8 +7,10 @@ def PlotVectors(list_of_vectors,
                 color_palette='Set2'):
     # Iterate through the list of vectors, and if the vector is a list, convert it to a numpy array
     for vector_index in range(len(list_of_vectors)):
+        # If the vector is a list, convert it to a numpy array
         if type(list_of_vectors[vector_index]) == list:
             list_of_vectors[vector_index] = np.array(list_of_vectors[vector_index])
+        # If the vector has more than 2 coordinates, raise an exception
         if len(list_of_vectors[vector_index].shape) > 2:
             raise Exception('Vector {} has more than 2 coordinates'.format(vector_index))
     
@@ -27,18 +29,12 @@ def PlotVectors(list_of_vectors,
     ax.tick_params(axis='y', labelsize=14)
     
     # Set the x and y limits
-    x_min = min([min(vector[0]) for vector in list_of_vectors])
-    if x_min > 0:
-        x_min = 0
-    x_max = max([max(vector[0]) for vector in list_of_vectors])
-    if x_max < 0:
-        x_max = 0
-    y_min = min([min(vector[1]) for vector in list_of_vectors])
-    if y_min > 0:
-        y_min = 0
-    y_max = max([max(vector[1]) for vector in list_of_vectors])
-    if y_max < 0:
-        y_max = 0
+    for vector in list_of_vectors:
+        print(vector.min())
+    x_min = min([0] + [vector.min() for vector in list_of_vectors])
+    x_max = max([0] + [vector.max() for vector in list_of_vectors])
+    y_min = min([0] + [vector.min()  for vector in list_of_vectors])
+    y_max = max([0] + [vector.max()  for vector in list_of_vectors])
     ax.set_xlim([x_min-1, x_max+1])
     ax.set_ylim([y_min-1, y_max+1])
         
@@ -82,7 +78,8 @@ def PlotVectors(list_of_vectors,
 
 
 # # Test the function
-# v = np.array([[1],[3]])
-# w = np.array([[4],[-1]])
-# v_plus_w = v + w
-# PlotVectors([v, w, v_plus_w])
+# # v = np.array([[1],[3]])
+# # w = np.array([[4],[-1]])
+# # v_plus_w = v + w
+# # PlotVectors([v, w, v_plus_w])
+# PlotVectors([[3, 1],[1, 2]])
