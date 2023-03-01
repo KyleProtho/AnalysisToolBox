@@ -10,7 +10,7 @@ def CalculateEigenvalues(matrix,
                          y_min=-1, 
                          y_max=5, 
                          show_labels=True, 
-                         plot_with_grid=False):
+                         plot_with_grid=True):
     
     # If matrix is list, convert to numpy array
     if type(matrix) == list:
@@ -99,31 +99,66 @@ def CalculateEigenvalues(matrix,
                     color=matrix_color
                 )
             
-            # Plot the eigenvectors
-            for i in range(len(eigenvectors)):
-                # Get the eigenvector
-                vector = eigenvectors[i]
+            # If eigenvalues are complex, print a warning
+            if ~np.iscomplex(eigenvalues).any():
                 # Plot the eigenvector
-                plt.plot(
-                    [0, vector[1]],
-                    [0, vector[0]],
-                    color=eigenvector_color,
-                    linewidth=3
-                )
-                plt.plot(
-                    [vector[1]*-1, 0],
-                    [vector[0]*-1, 0],
-                    color=eigenvector_color,
-                    linewidth=3
+                plt.quiver(
+                    [0, 0],
+                    [0, 0],
+                    [eigenvectors[0], eigenvectors[0]], 
+                    [eigenvectors[1], eigenvectors[1]], 
+                    color=eigenvector_color, 
+                    angles='xy', 
+                    scale_units='xy', 
+                    scale=1
                 )
                 
             # Show the plot
             plt.show()
     
-    # Return the eigenvalues and eigenvectors
-    return eigenvalues, eigenvectors
+    # Print the eigenvalues
+    print('Eigenvalues: {}'.format(eigenvalues))
+    
+    # Print the eigenvectors
+    print('Eigenvectors: {}'.format(eigenvectors))
+    
+    # If matrix is an identity matrix, print a warning
+    if np.array_equal(matrix, np.identity(2)):
+        print('Warning: Matrix is an identity matrix, meaning any vector is an eigenvector.')
+    
+    # If eigenvalues are complex, print a warning
+    if np.iscomplex(eigenvalues).any():
+        print('Warning: Eigenvalues are complex, meaning there are no real eigenvectors.')
+    
+    # If eignvectors are equivalent to identity matrix, print a warning
+    if np.array_equal(eigenvectors, np.identity(len(eigenvalues))):
+        print('Warning: Eigenvectors are equivalent to identity matrix, meaning any vector is an eigenvector.')
+    
+    # Calculate the determinant of the coefficient matrix
+    determinant = np.linalg.det(eigenvectors)
+    if determinant == 0:
+        print("The system of eigenvector equations is singular, and does not have a unique solution. At least two equations are linearly dependent.")
+    else:
+        print("The system of eigenvector equations is non-singular, and has a unique solution. The equations are linearly independent.")
+    
+    # Solve the system of equations
+    if determinant != 0:
+        for eigenvalue in eigenvalues:
+            # Create array same length as eigenvectors
+            constants = np.array([])
+            for i in range(len(eigenvectors)):
+                constants = np.append(constants, eigenvalue)
+            solution = np.linalg.solve(eigenvectors, constants)
+            print("Solution for eigenvalue:", str(eigenvalue) + ":", str(solution))
 
 
 # # Test the function
 # matrix = np.array([[3, 1], [0, 2]])
-# CalculateEigenvalues(matrix)
+# CalculateEigenvalues(matrix, y_max=3)
+# # shear_matrix = np.array([[1, 0.5], [0, 1]])
+# # CalculateEigenvalues(shear_matrix, y_max=3)
+# # y_rotation_matrix = np.array([[0, 1],[-1, 0]])
+# # CalculateEigenvalues(y_rotation_matrix, y_max=3)
+# # scaling_matrix = np.array([[2, 0], [0, 2]])
+# # CalculateEigenvalues(scaling_matrix, y_max=3)
+
