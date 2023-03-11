@@ -1,7 +1,5 @@
-import math
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
 
 # Define a function that finds the derivative of a function
 def FindDerivative(f_of_x, 
@@ -27,85 +25,91 @@ def FindDerivative(f_of_x,
         n (int, optional): The number of points to use when plotting the function. Defaults to 100.
         tangent_line_window (_type_, optional): The window to use when plotting the tangent line. Defaults to None, which will use 1/5 of the x range.
     """
+    # Create array of values based on the function
+    x = np.linspace(x_minimum, x_maximum, n)
+    y = np.zeros(len(x))
+    for i in range(len(x)):
+        y[i] = f_of_x(x[i])
+    
     # Calculate the derivative
+    y_derivative = np.gradient(y)
+    
+    # Calculate the limit at the point of interest
     try:
-        derivative = (f_of_x(point + step) - f_of_x(point)) / step
-    except ZeroDivisionError:
-        print("The derivative at x={0} is undefined.".format(point))
-        x = np.linspace(x_minimum, x_maximum, n)
-        try:
-            y = f_of_x(x)
-        except TypeError:
-            y = np.zeros(len(x))
-            for i in range(len(x)):
-                y[i] = f_of_x(x[i])
-        y_derivative = np.gradient(y)
+        limit = f_of_x(point)
+        print("The limit at x={0} is ~{1}".format(point, limit))
+        
+        # # Print the slope of the tangent line
+        rise = f_of_x(point) - f_of_x(point - 1)
+        # run = 1
+        # print("The slope of the tangent line is {0}/{1}".format(round(rise, 2), round(run, 2)))
+        
+        # # Create tangent line
+        # if tangent_line_window==None:
+        #     tangent_line_window_1 = (y.max() - y.min()) / 5
+        #     tangent_line_window_2 = (x.max() - x.min()) / 5
+        #     tangent_line_window = min(tangent_line_window_1, tangent_line_window_2)
+        # x_tangent = np.linspace(point - tangent_line_window, point + tangent_line_window, 3)
+        # y_tangent = limit * (x_tangent - point) + f_of_x(point)
+        # if rise < 0:
+        #     y_tangent = np.flip(y_tangent)
+        
+        # # Plot tangent line
+        # plt.plot(x_tangent, y_tangent, color="red")
+        
         # Plot the function if requested
         if plot_function:
-            plt.plot(x, y, color="black")
-            plt.show()
-            plt.clf()
-        # Plot the derivative function if requested
-        if plot_derivative_function:
-            plt.plot(x, y_derivative, color="red", alpha=0.25)
-            plt.title("Derivative of f(x)")
-            plt.show()
-        if return_derivative_values:
-            return(y_derivative)
-        else:
-            return None
-    print("The derivative at x={0} is {1}".format(point, derivative))
+            # Plot point at the point of interest
+            plt.plot(point, f_of_x(point), "ro")
+        
+    except ZeroDivisionError:
+        print("The limit at x={0} is undefined.".format(point))
     
-    # Plot the function 
-    x = np.linspace(x_minimum, x_maximum, n)
-    try:
-        y = f_of_x(x)
-    except TypeError:
-        y = np.zeros(len(x))
-        for i in range(len(x)):
-            y[i] = f_of_x(x[i])
-    y_derivative = np.gradient(y)
+    # Plot the function if requested
     if plot_function:
         # Plot the function
         plt.plot(x, y, color="black")
         
-        # Plot point at the point of interest
-        plt.plot(point, f_of_x(point), "ro")
+        # Add title
+        plt.title("f(x)")
         
-        # Create tangent line
-        if tangent_line_window==None:
-            tangent_line_window = (y.max() - y.min()) / 5
-        x_tangent = np.linspace(point - tangent_line_window, point + tangent_line_window, 3)
-        y_tangent = derivative * (x_tangent - point) + f_of_x(point)
-        plt.plot(x_tangent, y_tangent, color="red")
+        # Show plot
         plt.show()
         plt.clf()
-        
-        # Plot the derivative function
-        if plot_derivative_function:
-            plt.plot(x, y_derivative, color="red", alpha=0.25)
-            plt.title("Derivative of f(x)")
-            plt.show()
-        
-        # Return derivative values if requested
-        if return_derivative_values:
-            return(y_derivative)
+    
+    # Plot the derivative function if requested
+    if plot_derivative_function:
+        plt.plot(x, y_derivative, color="red", alpha=0.25)
+        plt.title("Derivative of f(x)")
+        plt.show()
+    
+    # Return derivative values if requested
+    if return_derivative_values:
+        return(y_derivative)
 
 
-# # Test the function
+# Test the function
 # FindDerivative(
-#     f_of_x=lambda x: x**2, 
+#     f_of_x=lambda x: np.power(x, 2),
 #     point=0
 # )
-# # FindDerivative(
-# #     f_of_x=lambda x: 1/x, 
-# #     point=0
-# # )
-# # FindDerivative(
-# #     f_of_x=lambda x: math.sin(x), 
-# #     point=0
-# # )
-# # FindDerivative(
-# #     f_of_x=lambda x: (1 + (1/x))**x, 
-# #     point=0
-# # )
+# FindDerivative(
+#     f_of_x=lambda x: 1/x, 
+#     point=0
+# )
+# FindDerivative(
+#     f_of_x=lambda x: math.sin(x), 
+#     point=0
+# )
+# FindDerivative(
+#     f_of_x=lambda x: np.exp(1) ** x, 
+#     point=1,
+#     x_minimum=0,
+#     x_maximum=10
+# )
+# FindDerivative(
+#     f_of_x=lambda x: np.log(x), 
+#     point=1,
+#     x_minimum=0,
+#     x_maximum=10
+# )

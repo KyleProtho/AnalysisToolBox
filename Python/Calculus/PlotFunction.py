@@ -1,7 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import math
-import seaborn as sns
 
 # Define a function that plots a function
 def PlotFunction(f_of_x, 
@@ -20,16 +18,14 @@ def PlotFunction(f_of_x,
     
     # Plot the function
     x = np.linspace(minimum_x, maximum_x, n)
-    try:
-        y = f_of_x(x)
-    except TypeError:
-        y = np.zeros(len(x))
-        for i in range(len(x)):
-            y[i] = f_of_x(x[i])
+    y = np.zeros(len(x))
+    for i in range(len(x)):
+        y[i] = f_of_x(x[i])
     plt.plot(x, y)
     
     # Show the plot
     plt.show()
+
 
 # # Test the function
 # PlotFunction(
