@@ -33,7 +33,12 @@ def FindDerivative(f_of_x,
     except ZeroDivisionError:
         print("The derivative at x={0} is undefined.".format(point))
         x = np.linspace(x_minimum, x_maximum, n)
-        y = f_of_x(x)
+        try:
+            y = f_of_x(x)
+        except TypeError:
+            y = np.zeros(len(x))
+            for i in range(len(x)):
+                y[i] = f_of_x(x[i])
         y_derivative = np.gradient(y)
         # Plot the function if requested
         if plot_function:
@@ -53,7 +58,12 @@ def FindDerivative(f_of_x,
     
     # Plot the function 
     x = np.linspace(x_minimum, x_maximum, n)
-    y = f_of_x(x)
+    try:
+        y = f_of_x(x)
+    except TypeError:
+        y = np.zeros(len(x))
+        for i in range(len(x)):
+            y[i] = f_of_x(x[i])
     y_derivative = np.gradient(y)
     if plot_function:
         # Plot the function
@@ -64,7 +74,7 @@ def FindDerivative(f_of_x,
         
         # Create tangent line
         if tangent_line_window==None:
-            tangent_line_window = (x_maximum - x_minimum) / 5
+            tangent_line_window = (y.max() - y.min()) / 5
         x_tangent = np.linspace(point - tangent_line_window, point + tangent_line_window, 3)
         y_tangent = derivative * (x_tangent - point) + f_of_x(point)
         plt.plot(x_tangent, y_tangent, color="red")
@@ -88,20 +98,14 @@ def FindDerivative(f_of_x,
 #     point=0
 # )
 # # FindDerivative(
-# #     f_of_x=lambda x: x**2, 
-# #     point=2
-# # )
-# # FindDerivative(
-# #     f_of_x=lambda x: x**3,
-# #     point=1,
-# #     x_minimum=-5,
-# #     x_maximum=5
-# # )
-# # FindDerivative(
 # #     f_of_x=lambda x: 1/x, 
-# #     point=1
+# #     point=0
 # # )
 # # FindDerivative(
-# #     f_of_x=lambda x: 1/x, 
+# #     f_of_x=lambda x: math.sin(x), 
+# #     point=0
+# # )
+# # FindDerivative(
+# #     f_of_x=lambda x: (1 + (1/x))**x, 
 # #     point=0
 # # )

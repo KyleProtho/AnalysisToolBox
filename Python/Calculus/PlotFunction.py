@@ -20,7 +20,12 @@ def PlotFunction(f_of_x,
     
     # Plot the function
     x = np.linspace(minimum_x, maximum_x, n)
-    y = f_of_x(x)
+    try:
+        y = f_of_x(x)
+    except TypeError:
+        y = np.zeros(len(x))
+        for i in range(len(x)):
+            y[i] = f_of_x(x[i])
     plt.plot(x, y)
     
     # Show the plot
@@ -30,3 +35,6 @@ def PlotFunction(f_of_x,
 # PlotFunction(
 #     f_of_x=lambda x: x**2
 # )
+# # PlotFunction(
+# #     f_of_x=lambda x: math.sin(x)
+# # )
