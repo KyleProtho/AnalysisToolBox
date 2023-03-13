@@ -12,7 +12,7 @@ def ConductLogisticRegressionAnalysis(dataframe,
                                       show_help=True):
     
     # Select columns specified
-    dataframe = dataframe[list_of_predictors + [outcome_variable]]
+    dataframe = dataframe[list_of_predictors + [outcome_variable]].copy()
     
     # Remove NAN and inf values
     dataframe.dropna(inplace=True)
@@ -32,20 +32,33 @@ def ConductLogisticRegressionAnalysis(dataframe,
         # Scale predictors
         dataframe[list_of_predictors] = StandardScaler().fit_transform(dataframe[list_of_predictors])
     
-    # Create linear regression model
-    model = sm.Logit(dataframe[outcome_variable], dataframe[['const'] + list_of_predictors])
-    try:
-        model_res = model.fit()
-    except:
-        model = sm.Logit(dataframe[outcome_variable], dataframe[list_of_predictors])
-        model_res = model.fit()
+    # Get number of unique outcomes
+    number_of_unique_outcomes = len(dataframe[outcome_variable].unique())
+    
+    # If there are more than two outcomes, conduct multinomial regression
+    if number_of_unique_outcomes > 2:
+        # Create multinomial regression model
+        model = sm.MNLogit(dataframe[outcome_variable], dataframe[['const'] + list_of_predictors])
+        try:
+            model_res = model.fit()
+        except:
+            model = sm.MNLogit(dataframe[outcome_variable], dataframe[list_of_predictors])
+            model_res = model.fit()
+    else:
+        # Create binomial regression model
+        model = sm.Logit(dataframe[outcome_variable], dataframe[['const'] + list_of_predictors])
+        try:
+            model_res = model.fit()
+        except:
+            model = sm.Logit(dataframe[outcome_variable], dataframe[list_of_predictors])
+            model_res = model.fit()
     model_summary = model_res.summary()
     
    # If requested, show diagnostic plots
     if show_diagnostic_plots_for_each_predictor:
         for variable in list_of_predictors:
             fig = plt.figure(figsize=(12, 8))
-            sns.lmplot(
+            sns.regplot(
                 x=variable, 
                 y=outcome_variable, 
                 data=dataframe,
@@ -76,10 +89,10 @@ def ConductLogisticRegressionAnalysis(dataframe,
 # from sklearn import datasets
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # iris['species'] = datasets.load_iris(as_frame=True).target
-# iris = iris[iris['species'] != 2]
+# # iris = iris[iris['species'] != 2]
 # logistic_reg_model = ConductLogisticRegressionAnalysis(
 #     dataframe=iris,
 #     outcome_variable='species',
-#     list_of_predictors=['petal width (cm)']
+#     list_of_predictors=['petal width (cm)', 'petal length (cm)']
 # )
 # logistic_reg_model['Model Summary']

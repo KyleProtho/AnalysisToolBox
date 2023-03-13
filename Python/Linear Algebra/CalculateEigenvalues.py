@@ -141,16 +141,6 @@ def CalculateEigenvalues(matrix,
     else:
         print("The system of eigenvector equations is non-singular, and has a unique solution. The equations are linearly independent.")
     
-    # Solve the system of equations
-    if determinant != 0:
-        for eigenvalue in eigenvalues:
-            # Create array same length as eigenvectors
-            constants = np.array([])
-            for i in range(len(eigenvectors)):
-                constants = np.append(constants, eigenvalue)
-            solution = np.linalg.solve(eigenvectors, constants)
-            print("Solution for eigenvalue:", str(eigenvalue) + ":", str(solution))
-
 
 # # Test the function
 # matrix = np.array([[3, 1], [0, 2]])
