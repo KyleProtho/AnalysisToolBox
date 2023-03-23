@@ -32,35 +32,26 @@ def FindDerivative(f_of_x,
         y[i] = f_of_x(x[i])
     
     # Calculate the derivative
-    y_derivative = np.gradient(y)
+    # y_derivative = np.gradient(y)
+    derivative = (f_of_x(point+step) - f_of_x(point-step)) / (2*step)
     
     # Calculate the limit at the point of interest
     try:
         limit = f_of_x(point)
         print("The limit at x={0} is ~{1}".format(point, limit))
-        
-        # # Print the slope of the tangent line
-        rise = f_of_x(point) - f_of_x(point - 1)
-        # run = 1
-        # print("The slope of the tangent line is {0}/{1}".format(round(rise, 2), round(run, 2)))
-        
-        # # Create tangent line
-        # if tangent_line_window==None:
-        #     tangent_line_window_1 = (y.max() - y.min()) / 5
-        #     tangent_line_window_2 = (x.max() - x.min()) / 5
-        #     tangent_line_window = min(tangent_line_window_1, tangent_line_window_2)
-        # x_tangent = np.linspace(point - tangent_line_window, point + tangent_line_window, 3)
-        # y_tangent = limit * (x_tangent - point) + f_of_x(point)
-        # if rise < 0:
-        #     y_tangent = np.flip(y_tangent)
-        
-        # # Plot tangent line
-        # plt.plot(x_tangent, y_tangent, color="red")
+        # Create the tangent line
+        y_derivative = f_of_x(point) + derivative*(x - point)
         
         # Plot the function if requested
         if plot_function:
             # Plot point at the point of interest
             plt.plot(point, f_of_x(point), "ro")
+            
+        # Plot the tangent line
+        if plot_derivative_function:
+            # plt.scatter(x0, my_function(x0), color='red')
+            plt.plot(x, y_derivative, label='Tangent line', color='red', alpha=0.5)
+            plt.scatter(point, f_of_x(point), color='red')
         
     except ZeroDivisionError:
         print("The limit at x={0} is undefined.".format(point))
@@ -68,27 +59,24 @@ def FindDerivative(f_of_x,
     # Plot the function if requested
     if plot_function:
         # Plot the function
-        plt.plot(x, y, color="black")
+        plt.plot(x, y, color="black", label='Function')
         
         # Add title
         plt.title("f(x)")
         
+        # Add legend
+        plt.legend()
+        
         # Show plot
         plt.show()
         plt.clf()
-    
-    # Plot the derivative function if requested
-    if plot_derivative_function:
-        plt.plot(x, y_derivative, color="red", alpha=0.25)
-        plt.title("Derivative of f(x)")
-        plt.show()
     
     # Return derivative values if requested
     if return_derivative_values:
         return(y_derivative)
 
 
-# Test the function
+# # Test the function
 # FindDerivative(
 #     f_of_x=lambda x: np.power(x, 2),
 #     point=0
@@ -98,7 +86,7 @@ def FindDerivative(f_of_x,
 #     point=0
 # )
 # FindDerivative(
-#     f_of_x=lambda x: math.sin(x), 
+#     f_of_x=lambda x: np.sin(x), 
 #     point=0
 # )
 # FindDerivative(
@@ -113,3 +101,4 @@ def FindDerivative(f_of_x,
 #     x_minimum=0,
 #     x_maximum=10
 # )
+
