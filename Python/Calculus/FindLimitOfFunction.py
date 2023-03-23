@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Define a function that finds the derivative of a function
-def FindDerivative(f_of_x, 
+def FindLimitOfFunction(f_of_x, 
                    point,
                    step=0.0001,
                    plot_function=True,
@@ -77,25 +77,25 @@ def FindDerivative(f_of_x,
 
 
 # # Test the function
-# FindDerivative(
+# FindLimitOfFunction(
 #     f_of_x=lambda x: np.power(x, 2),
 #     point=0
 # )
-# FindDerivative(
+# FindLimitOfFunction(
 #     f_of_x=lambda x: 1/x, 
 #     point=0
 # )
-# FindDerivative(
+# FindLimitOfFunction(
 #     f_of_x=lambda x: np.sin(x), 
 #     point=0
 # )
-# FindDerivative(
+# FindLimitOfFunction(
 #     f_of_x=lambda x: np.exp(1) ** x, 
 #     point=1,
 #     x_minimum=0,
 #     x_maximum=10
 # )
-# FindDerivative(
+# FindLimitOfFunction(
 #     f_of_x=lambda x: np.log(x), 
 #     point=1,
 #     x_minimum=0,
