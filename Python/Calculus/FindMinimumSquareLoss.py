@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
 sns.set(style="white",
         font="Arial",
@@ -21,45 +22,34 @@ def FindMinimumSquareLoss(observed_values,
     if len(observed_values) != len(predicted_values):
         raise ValueError("The number of observed values must be equal to the number of predicted values.")
     
+    # If values are passed as a list, convert them to a numpy array.
+    if type(observed_values) == list:
+        observed_values = np.array(observed_values)
+    if type(predicted_values) == list:
+        predicted_values = np.array(predicted_values)    
+    
     # Count the number of observed values.
     n = len(observed_values)
     
+    # Calculate the prediction error.
+    sq_prediction_error = (predicted_values - observed_values) ** 2
+    
     # Calculate the sum of squares.
-    sum_of_squares = 0
-    for i in range(n):
-        sum_of_squares += (observed_values[i] - predicted_values[i])**2
+    sum_of_squares = sum(sq_prediction_error)
     
     # Calculate the minimum square loss.
     FindMinimumSquareLoss = sum_of_squares / n
     
-    # Plot the observed and predicted values on a scatter plot, if requested.
+    # Plot the prediction errors in a plot, if requested.
     if show_plot:
-        sns.scatterplot(
-            x=observed_values, 
-            y=predicted_values, 
-            color="blue"
-        )
-        sns.lineplot(
-            x=observed_values, 
-            y=predicted_values,
-            color="blue",
-            alpha=0.25
-        )
-        # Plot "perfect" predictions.
-        sns.lineplot(
-            x=observed_values, 
-            y=observed_values,
-            color="black",
-            alpha=0.25
-        )
-        # Add plot labels.
-        plt.xlabel("Observed Values")
-        plt.ylabel("Predicted Values")
-        plt.title(
-            "Observed vs. Predicted Values", 
-            fontsize=14,
-            fontweight="bold"
-        )
+        sns.boxplot(y=sq_prediction_error, color="grey")
+        # Add the minimum square loss as a horizontal line.
+        plt.axhline(FindMinimumSquareLoss, color="r", linestyle="--")
+        # Add labels.
+        plt.title("Squared Prediction Errors", fontsize=14, fontweight="bold")
+        plt.text(0.5, FindMinimumSquareLoss + .01, "Min. Sq. Loss = " + str(round(FindMinimumSquareLoss, 2)))
+        # Remove borders from plot
+        sns.despine(bottom=True)
         # Show plot
         plt.show()
     
@@ -67,9 +57,9 @@ def FindMinimumSquareLoss(observed_values,
     return FindMinimumSquareLoss
 
 
-# Test the function.
-observed_values = [1, 2, 3, 4, 5]
-predicted_values = [1.5, 2.5, 3.5, 4.5, 5.5]
-min_loss = FindMinimumSquareLoss(observed_values, predicted_values)
-print(min_loss)
-
+# # Test the function.
+# observed_values = [1, 2, 3, 4, 5]
+# predicted_values = observed_values + np.random.normal(0, 0.5, 5)
+# # predicted_values = [1.5, 2.5, 3.5, 4.5, 8]
+# min_loss = FindMinimumSquareLoss(observed_values, predicted_values)
+# print(min_loss)
