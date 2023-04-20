@@ -40,10 +40,10 @@ def ExtractTextFromPDF(filepath_to_pdf,
     print("Text extracted and saved to " + filepath_for_exported_text + ".")
     
 
-# Test the function
-ExtractTextFromPDF(
-    filepath_to_pdf="C:/Users/oneno/Downloads/2023-QRS-Measure-Technical-Specifications-Updated-October-508-Final.pdf",
-    filepath_for_exported_text="C:/Users/oneno/Downloads/MY 2022 Measure Specifications.txt",
-    start_page=68,
-    end_page=200
-)
+# # Test the function
+# ExtractTextFromPDF(
+#     filepath_to_pdf="C:/Users/oneno/Downloads/2023-QRS-Measure-Technical-Specifications-Updated-October-508-Final.pdf",
+#     filepath_for_exported_text="C:/Users/oneno/Downloads/MY 2022 Measure Specifications.txt",
+#     start_page=68,
+#     end_page=200
+# )
