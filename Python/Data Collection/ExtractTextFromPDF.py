@@ -69,7 +69,10 @@ def ExtractTextFromPDF(filepath_to_pdf,
         word_count = len(final_text)
         # Get the number of tokens in the text
         number_of_tokens = word_count * (100/75)
-        print(f"Estimated token count: {round(number_of_tokens, 0)}")
+        print(f"Estimated token count: {int(round(number_of_tokens, 0))}")
+        # Print estimated cost of input into Chat GPT 3.5 Turbo model
+        estimated_cost = round(number_of_tokens * (0.002/1000), 2)
+        print(f"Estimated cost of input into Chat GPT 3.5 Turbo model: ${estimated_cost} ($0.002 per 1k tokens).")
 
 # # Test the function
 # ExtractTextFromPDF(
