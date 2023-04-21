@@ -1,9 +1,12 @@
 import PyPDF2
+import re
 
 def ExtractTextFromPDF(filepath_to_pdf,
                        filepath_for_exported_text,
                        start_page=1,
-                       end_page=None):
+                       end_page=None,
+                       show_word_count=True,
+                       show_estimated_token_count=True):
     # Ensure that filepath_to_pdf is a string ending in .pdf
     if not isinstance(filepath_to_pdf, str) or not filepath_to_pdf.endswith('.pdf'):
         raise TypeError("filepath_to_pdf must be a string ending in .pdf")  
@@ -32,18 +35,46 @@ def ExtractTextFromPDF(filepath_to_pdf,
 
                 # Extract the text from the current page
                 page_text = page_obj.extract_text()
-
+                
+                # Clean up the text
+                page_text = page_text.strip()
+                page_text = page_text.replace("  ", " ")
+                page_text = page_text.replace(" -", "-")
+                
+                # Use regex to replace all instances of a space and new line between to letters
+                page_text = re.sub(r'(?<=[a-zA-Z]) \n(?=[a-zA-Z])', '', page_text)
+                
                 # Write the text from the current page to the text file
                 text_file.write(f"Page {page_num + 1}:\n{page_text}\n")
 
     # Print a message to indicate that the text has been extracted and saved
     print("Text extracted and saved to " + filepath_for_exported_text + ".")
     
+    # Read the text file if word count or estimated token count is True
+    if show_word_count or show_estimated_token_count:
+        final_text = open(filepath_for_exported_text, 'r', encoding='utf-8').read()
+        
+    # Show the word count if show_word_count is True
+    if show_word_count:
+        # Split the text into a list of words
+        final_text = final_text.split()
+        # Get the number of words in the text
+        word_count = len(final_text)
+        # Print the number of words in the text
+        print(f"Word count: {word_count}")
+        
+    # Show the estimated token count if show_estimated_token_count is True
+    if show_estimated_token_count:
+        # Get the number of words in the text
+        word_count = len(final_text)
+        # Get the number of tokens in the text
+        number_of_tokens = word_count * (100/75)
+        print(f"Estimated token count: {round(number_of_tokens, 0)}")
 
 # # Test the function
 # ExtractTextFromPDF(
-#     filepath_to_pdf="C:/Users/oneno/Downloads/2023-QRS-Measure-Technical-Specifications-Updated-October-508-Final.pdf",
-#     filepath_for_exported_text="C:/Users/oneno/Downloads/MY 2022 Measure Specifications.txt",
-#     start_page=68,
-#     end_page=200
+#     filepath_to_pdf="C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/App/data/source/2023-QRS-Measure-Technical-Specifications-Updated-October-508-Final.pdf",
+#     filepath_for_exported_text="C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/App/data/source/MY 2022 Measure Specifications.txt",
+#     start_page=70,
+#     end_page=194
 # )
