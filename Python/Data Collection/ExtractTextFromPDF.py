@@ -7,6 +7,17 @@ def ExtractTextFromPDF(filepath_to_pdf,
                        end_page=None,
                        show_word_count=True,
                        show_estimated_token_count=True):
+    """This function extracts text from a PDF file, cleans it, then saves it to a text file.
+
+    Args:
+        filepath_to_pdf (str): The path to the PDF file that you want to extract text from.
+        filepath_for_exported_text (str): The path to the text file that you want to save the extracted text to.
+        start_page (int, optional): The page number of the PDF file that you want to start extracting text from. Defaults to 1.
+        end_page (int or None, optional): The page number of the PDF file that you want to stop extracting text from. If None, the function will extract text from all pages in the PDF file. Defaults to None.
+        show_word_count (bool, optional): Whether or not to show the word count of the extracted text. Defaults to True.
+        show_estimated_token_count (bool, optional): Whether or not to show the estimated token count of the extracted text. Defaults to True.
+    """
+    
     # Ensure that filepath_to_pdf is a string ending in .pdf
     if not isinstance(filepath_to_pdf, str) or not filepath_to_pdf.endswith('.pdf'):
         raise TypeError("filepath_to_pdf must be a string ending in .pdf")  
@@ -29,7 +40,7 @@ def ExtractTextFromPDF(filepath_to_pdf,
         # Create a new text file to write the extracted text to
         with open(filepath_for_exported_text, 'w', encoding='utf-8') as text_file:
             # Loop through each page in the PDF document
-            for page_num in range(start_page-1, end_page+1):
+            for page_num in range(start_page-1, end_page):
                 # Get the page object for the current page
                 page_obj = pdf_reader.pages[page_num]
 
@@ -45,7 +56,7 @@ def ExtractTextFromPDF(filepath_to_pdf,
                 page_text = re.sub(r'(?<=[a-zA-Z]) \n(?=[a-zA-Z])', '', page_text)
                 
                 # Write the text from the current page to the text file
-                text_file.write(f"Page {page_num + 1}:\n{page_text}\n")
+                text_file.write(page_text)
 
     # Print a message to indicate that the text has been extracted and saved
     print("Text extracted and saved to " + filepath_for_exported_text + ".")
@@ -71,13 +82,14 @@ def ExtractTextFromPDF(filepath_to_pdf,
         number_of_tokens = word_count * (100/75)
         print(f"Estimated token count: {int(round(number_of_tokens, 0))}")
         # Print estimated cost of input into Chat GPT 3.5 Turbo model
-        estimated_cost = round(number_of_tokens * (0.002/1000), 2)
-        print(f"Estimated cost of input into Chat GPT 3.5 Turbo model: ${estimated_cost} ($0.002 per 1k tokens).")
+        estimated_cost = round(number_of_tokens * (0.0300/1000), 2)
+        print(f"Estimated cost of input into DaVinci v3 model: ${estimated_cost} ($0.002 per 1k tokens).")
+
 
 # # Test the function
 # ExtractTextFromPDF(
-#     filepath_to_pdf="C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/App/data/source/2023-QRS-Measure-Technical-Specifications-Updated-October-508-Final.pdf",
-#     filepath_for_exported_text="C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/App/data/source/MY 2022 Measure Specifications.txt",
-#     start_page=70,
-#     end_page=194
+#     filepath_to_pdf="C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/App/data/source/QRS/2023/2023 QRS Technical Specifications.pdf",
+#     filepath_for_exported_text="C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/App/data/source/QRS/2023/2023 QRS Technical Specifications - Table of Contents.txt",
+#     start_page=19,
+#     end_page=20
 # )
