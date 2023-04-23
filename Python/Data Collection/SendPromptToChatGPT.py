@@ -1,8 +1,18 @@
+import openai
+
 def SendPromptToChatGPT(prompt,
-                        filepath_for_exported_csv,
                         openai_api_key,
                         print_api_cost=True,
                         temperature=0.4):
+    """This function sends a prompt to the OpenAI API and returns the response. It also prints the cost of the API call.
+
+    Args:
+        prompt (str): The prompt to send to the OpenAI API.
+        openai_api_key (str): The OpenAI API key.
+        print_api_cost (bool, optional): Whether to print the estimated cost of the API call. Defaults to True.
+        temperature (float, optional): The temperature of the response. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. Defaults to 0.4.
+    """
+    
     # Set the OpenAI API key
     openai.api_key = openai_api_key
     
@@ -17,7 +27,7 @@ def SendPromptToChatGPT(prompt,
 
     # Print the cost of the API usage, format as USD
     if print_api_cost:
-        cost = data_measure_csv['usage']['total_tokens']/1000 * 0.002
+        cost = response['usage']['total_tokens']/1000 * 0.002
         if cost < 0.01:
             print("Cost of API call: <$0.01")
         else:
@@ -29,3 +39,4 @@ def SendPromptToChatGPT(prompt,
     
     # Return the content
     return(content)
+
