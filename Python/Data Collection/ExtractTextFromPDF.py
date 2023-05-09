@@ -34,7 +34,7 @@ def ExtractTextFromPDF(filepath_to_pdf,
         # If end_page is not specified, set it to the number of pages in the PDF
         if end_page == None:
             # Get the number of pages in the PDF document
-            num_pages = pdf_reader.getNumPages()
+            num_pages = len(pdf_reader.pages)
             end_page = num_pages
 
         # Create a new text file to write the extracted text to
