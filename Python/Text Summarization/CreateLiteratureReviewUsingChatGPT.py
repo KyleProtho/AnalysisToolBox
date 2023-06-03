@@ -3,12 +3,12 @@ import PyPDF2
 import re
 import tempfile
 
-def CreateLiteratureReview(filepath_to_pdf,
-                           openai_api_key,
-                           start_page=1,
-                           end_page=None,
-                           print_api_cost=True,
-                           temperature=0.25):
+def CreateLiteratureReviewUsingChatGPT(filepath_to_pdf,
+                                       openai_api_key,
+                                       start_page=1,
+                                       end_page=None,
+                                       print_api_cost=True,
+                                       temperature=0.20):
     """This function sends a prompt to the OpenAI API and returns the response. It also prints the cost of the API call.
 
     Args:
@@ -114,7 +114,7 @@ def CreateLiteratureReview(filepath_to_pdf,
 # # Get OpenAI API key
 # my_openai_api_key = open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read()
 # # Create literature review
-# literature_review_json = CreateLiteratureReview(
+# literature_review_json = CreateLiteratureReviewUsingChatGPT(
 #     filepath_to_pdf="C:/Users/oneno/Downloads/pkaa059.pdf", 
 #     openai_api_key=my_openai_api_key,
 #     end_page=2
