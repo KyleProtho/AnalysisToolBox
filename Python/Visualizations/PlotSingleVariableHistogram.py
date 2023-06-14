@@ -74,6 +74,18 @@ def PlotSingleVariableHistogram(dataframe,
         transform=ax.transAxes
     )
     
+    # Set x-axis tick label font to Arial, size 9, and color #666666
+    ax.tick_params(
+        axis='x',
+        which='major',
+        labelsize=9,
+        labelcolor="#666666",
+        pad=2,
+        bottom=True,
+        labelbottom=True
+    )
+    plt.xticks(fontname='Arial')
+    
     # Show the mean if requested
     if show_mean:
         # Calculate the mean
