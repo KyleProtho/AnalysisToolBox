@@ -22,6 +22,25 @@ def PlotSingleVariableHistogram(dataframe,
                                 title_y_indent=1.1,
                                 subtitle_y_indent=1.05,
                                 caption_y_indent=-0.15):
+    """This function creates a histogram of a single quantitative variable.
+
+    Args:
+        dataframe (_type_): The dataframe containing the data to be plotted.
+        quantitative_variable (_type_): The name of the column in the dataframe to be plotted.
+        fill_color (str, optional): The color to fill the histogram bars. Defaults to "#3269a8".
+        fill_transparency (float, optional): The transparency of the histogram bars. Defaults to 0.6.
+        title_for_plot (_type_, optional): The title of the plot. Defaults to None.
+        subtitle_for_plot (_type_, optional): The subtitle of the plot. Defaults to None.
+        caption_for_plot (_type_, optional): The caption of the plot. Defaults to None.
+        data_source_for_plot (_type_, optional): The data source of the plot. Defaults to None.
+        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
+        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
+        figure_size (tuple, optional): The size of the plot. Defaults to (8, 6).
+        show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
+        title_y_indent (float, optional): The vertical indent of the title. Defaults to 1.1.
+        subtitle_y_indent (float, optional): The vertical indent of the subtitle. Defaults to 1.05.
+        caption_y_indent (float, optional): The vertical indent of the caption. Defaults to -0.15.
+    """
     
     # Check that the column exists in the dataframe.
     if quantitative_variable not in dataframe.columns:

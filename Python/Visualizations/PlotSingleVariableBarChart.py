@@ -26,6 +26,27 @@ def PlotSingleVariableBarChart(dataframe,
                                rare_category_line_color='#b5b3b3',
                                rare_category_threshold=0.05,
                                figure_size=(8, 6)):
+    """This function creates a bar chart for a single categorical variable. The function can be used to create a bar chart with a single color, or a bar chart with a different color for the top n categories. The function can also be used to add a line to the bar chart to indicate the threshold for rare categories.
+
+    Args:
+        dataframe (_type_): The dataframe containing the categorical variable.
+        categorical_variable (_type_): The categorical variable to plot.
+        fill_color (_type_, optional): The color to use for the bar chart. Defaults to None.
+        top_n_to_highlight (_type_, optional): The "top N" categories to highlight. Defaults to None.
+        highlight_color (str, optional): The color to use for the highlighted "top N" categories. Defaults to "#b0170c".
+        fill_transparency (float, optional): The transparency to use for the bar chart. Defaults to 0.8.
+        title_for_plot (_type_, optional): The title for the plot. Defaults to None.
+        subtitle_for_plot (_type_, optional): The subtitle for the plot. Defaults to None.
+        caption_for_plot (_type_, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (_type_, optional): The data source for the plot. Defaults to None.
+        title_y_indent (float, optional): The vertical indent for the title. Defaults to 1.15.
+        subtitle_y_indent (float, optional): The vertical indent for the subtitle. Defaults to 1.1.
+        caption_y_indent (float, optional): The vertical indent for the caption. Defaults to -0.15.
+        add_rare_category_line (bool, optional): Whether to add a line to the bar chart to indicate the threshold for rare categories. Defaults to False.
+        rare_category_line_color (str, optional): The color to use for the rare category line. Defaults to '#b5b3b3'.
+        rare_category_threshold (float, optional): The threshold for rare categories. Defaults to 0.05.
+        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
+    """
     
     # Check that the column exists in the dataframe.
     if categorical_variable not in dataframe.columns:
