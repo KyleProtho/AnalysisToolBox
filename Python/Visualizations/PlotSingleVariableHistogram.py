@@ -13,12 +13,15 @@ def PlotSingleVariableHistogram(dataframe,
                                 fill_transparency=0.6,
                                 title_for_plot=None,
                                 subtitle_for_plot=None,
+                                caption_for_plot=None,
+                                data_source_for_plot=None,
                                 show_mean=True,
                                 show_median=True,
                                 figure_size=(8, 6),
                                 show_y_axis=False,
                                 title_y_indent=1.1,
-                                subtitle_y_indent=1.05):
+                                subtitle_y_indent=1.05,
+                                caption_y_indent=-0.15):
     
     # Check that the column exists in the dataframe.
     if quantitative_variable not in dataframe.columns:
@@ -53,40 +56,6 @@ def PlotSingleVariableHistogram(dataframe,
     
     # Remove the x-axis label
     ax.set_xlabel(None)
-    
-    # Set the title with Arial font, size 14, and color #262626 at the top of the plot
-    ax.text(
-        x=x_indent,
-        y=title_y_indent,
-        s=title_for_plot,
-        fontname="Arial",
-        fontsize=14,
-        color="#262626",
-        transform=ax.transAxes
-    )
-    
-    # Set the subtitle with Arial font, size 11, and color #666666
-    ax.text(
-        x=x_indent,
-        y=subtitle_y_indent,
-        s=subtitle_for_plot,
-        fontname="Arial",
-        fontsize=11,
-        color="#666666",
-        transform=ax.transAxes
-    )
-    
-    # Set x-axis tick label font to Arial, size 9, and color #666666
-    ax.tick_params(
-        axis='x',
-        which='major',
-        labelsize=9,
-        labelcolor="#666666",
-        pad=2,
-        bottom=True,
-        labelbottom=True
-    )
-    plt.xticks(fontname='Arial')
     
     # Show the mean if requested
     if show_mean:
@@ -135,6 +104,79 @@ def PlotSingleVariableHistogram(dataframe,
             color="#262626",
             alpha=0.75
         )
+    
+    # Set the title with Arial font, size 14, and color #262626 at the top of the plot
+    ax.text(
+        x=x_indent,
+        y=title_y_indent,
+        s=title_for_plot,
+        fontname="Arial",
+        fontsize=14,
+        color="#262626",
+        transform=ax.transAxes
+    )
+    
+    # Set the subtitle with Arial font, size 11, and color #666666
+    ax.text(
+        x=x_indent,
+        y=subtitle_y_indent,
+        s=subtitle_for_plot,
+        fontname="Arial",
+        fontsize=11,
+        color="#666666",
+        transform=ax.transAxes
+    )
+    
+    # Set x-axis tick label font to Arial, size 9, and color #666666
+    ax.tick_params(
+        axis='x',
+        which='major',
+        labelsize=9,
+        labelcolor="#666666",
+        pad=2,
+        bottom=True,
+        labelbottom=True
+    )
+    plt.xticks(fontname='Arial')
+    
+    # Add a word-wrapped caption if one is provided
+    if caption_for_plot != None or data_source_for_plot != None:
+        if caption_for_plot != None:
+            # Word wrap the caption without splitting words
+            if len(caption_for_plot) > 120:
+                # Split the caption into words
+                words = caption_for_plot.split(" ")
+                # Initialize the wrapped caption
+                wrapped_caption = ""
+                # Initialize the line length
+                line_length = 0
+                # Iterate through the words
+                for word in words:
+                    # If the word is too long to fit on the current line, add a new line
+                    if line_length + len(word) > 120:
+                        wrapped_caption = wrapped_caption + "\n"
+                        line_length = 0
+                    # Add the word to the line
+                    wrapped_caption = wrapped_caption + word + " "
+                    # Update the line length
+                    line_length = line_length + len(word) + 1
+        else:
+            wrapped_caption = ""
+        
+        # Add the data source to the caption, if one is provided
+        if data_source_for_plot != None:
+            wrapped_caption = wrapped_caption + "\n\nSource: " + data_source_for_plot
+        
+        # Add the caption to the plot
+        ax.text(
+            x=x_indent,
+            y=caption_y_indent,
+            s=wrapped_caption,
+            fontname="Arial",
+            fontsize=8,
+            color="#666666",
+            transform=ax.transAxes
+        )
         
     # Show plot
     plt.show()
@@ -143,12 +185,20 @@ def PlotSingleVariableHistogram(dataframe,
     plt.clf()
 
 
-# # Test function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# Test function
+from sklearn import datasets
+iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # PlotSingleVariableHistogram(
 #     dataframe=iris,
 #     quantitative_variable="sepal length (cm)",
 #     title_for_plot="Sepal Length (cm)",
 #     subtitle_for_plot="Iris Dataset"
 # )
+PlotSingleVariableHistogram(
+    dataframe=iris,
+    quantitative_variable="sepal length (cm)",
+    title_for_plot="Sepal Length (cm)",
+    subtitle_for_plot="Iris Dataset",
+    caption_for_plot="This is a caption that is long enough to wrap onto multiple lines. This is a caption that is long enough to wrap onto multiple lines. This is a caption that is long enough to wrap onto multiple lines.",
+    data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris"
+)
