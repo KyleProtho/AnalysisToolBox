@@ -10,13 +10,15 @@ sns.set(style="white",
 def PlotSingleVariableHistogram(dataframe,
                                 quantitative_variable,
                                 fill_color="#3269a8",
+                                fill_transparency=0.6,
                                 title_for_plot=None,
                                 subtitle_for_plot=None,
                                 show_mean=True,
                                 show_median=True,
                                 figure_size=(8, 6),
-                                fill_transparency=0.5,
-                                show_y_axis=False):
+                                show_y_axis=False,
+                                title_y_indent=1.1,
+                                subtitle_y_indent=1.05):
     
     # Check that the column exists in the dataframe.
     if quantitative_variable not in dataframe.columns:
@@ -55,7 +57,7 @@ def PlotSingleVariableHistogram(dataframe,
     # Set the title with Arial font, size 14, and color #262626 at the top of the plot
     ax.text(
         x=x_indent,
-        y=1.1,
+        y=title_y_indent,
         s=title_for_plot,
         fontname="Arial",
         fontsize=14,
@@ -66,7 +68,7 @@ def PlotSingleVariableHistogram(dataframe,
     # Set the subtitle with Arial font, size 11, and color #666666
     ax.text(
         x=x_indent,
-        y=1.05,
+        y=subtitle_y_indent,
         s=subtitle_for_plot,
         fontname="Arial",
         fontsize=11,
