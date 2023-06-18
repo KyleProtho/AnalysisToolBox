@@ -10,7 +10,8 @@ sns.set(style="white",
         context="paper")
 
 def PlotSingleVariableBarChart(dataframe,
-                               categorical_variable,
+                               categorical_variable, 
+                               color_palette="Set1",
                                fill_color=None,
                                top_n_to_highlight=None,
                                highlight_color="#b0170c",
@@ -79,7 +80,7 @@ def PlotSingleVariableBarChart(dataframe,
             data=dataframe,
             y=categorical_variable,
             order=dataframe[categorical_variable].value_counts(ascending=False).index,
-            palette="Set1",
+            palette=color_palette,
             alpha=fill_transparency
         )
     else:
