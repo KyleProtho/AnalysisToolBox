@@ -204,20 +204,20 @@ def PlotSingleVariableHistogram(dataframe,
     plt.clf()
 
 
-# Test function
-from sklearn import datasets
-iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# # Test function
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# # PlotSingleVariableHistogram(
+# #     dataframe=iris,
+# #     quantitative_variable="sepal length (cm)",
+# #     title_for_plot="Sepal Length (cm)",
+# #     subtitle_for_plot="Iris Dataset"
+# # )
 # PlotSingleVariableHistogram(
 #     dataframe=iris,
 #     quantitative_variable="sepal length (cm)",
 #     title_for_plot="Sepal Length (cm)",
-#     subtitle_for_plot="Iris Dataset"
+#     subtitle_for_plot="Iris Dataset",
+#     caption_for_plot="This is a caption that is long enough to wrap onto multiple lines. This is a caption that is long enough to wrap onto multiple lines. This is a caption that is long enough to wrap onto multiple lines.",
+#     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris"
 # )
-PlotSingleVariableHistogram(
-    dataframe=iris,
-    quantitative_variable="sepal length (cm)",
-    title_for_plot="Sepal Length (cm)",
-    subtitle_for_plot="Iris Dataset",
-    caption_for_plot="This is a caption that is long enough to wrap onto multiple lines. This is a caption that is long enough to wrap onto multiple lines. This is a caption that is long enough to wrap onto multiple lines.",
-    data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris"
-)
