@@ -2,6 +2,7 @@
 import pandas as pd
 import os
 from matplotlib import pyplot as plt
+from matplotlib.patches import Rectangle
 import seaborn as sns
 sns.set(style="white",
         font="Arial",
@@ -11,19 +12,31 @@ sns.set(style="white",
 def PlotScatterplot(dataframe,
                     y_axis_variable,
                     x_axis_variable,
+                    # Dot formatting arguments
                     dot_fill_color="#999999",
                     grouping_variable=None,
-                    fitted_line_type=None,
                     group_color_palette="Set1",
+                    # Fitted line arguments
+                    fitted_line_type=None,
+                    line_color=None,
+                    # Text formatting arguments
                     title_for_plot=None,
                     subtitle_for_plot=None,
                     caption_for_plot=None,
                     data_source_for_plot=None,
-                    line_color=None,
                     x_indent=-0.128,
                     title_y_indent=1.125,
                     subtitle_y_indent=1.05,
                     caption_y_indent=-0.3,
+                    # Quadrant arguments
+                    upper_left_quadrant_label=None,
+                    upper_left_quadrant_fill_color=None,
+                    upper_right_quadrant_label=None,
+                    upper_right_quadrant_fill_color=None,
+                    lower_left_quadrant_label=None,
+                    lower_left_quadrant_fill_color=None,
+                    lower_right_quadrant_label=None,
+                    lower_right_quadrant_fill_color=None,
                     folder_to_save_plot=None):
     
     # Ensure that fitted_line_type is None, 'straight', or 'lowess'
@@ -33,6 +46,9 @@ def PlotScatterplot(dataframe,
     # If line color is not specified, use fill color
     if line_color == None:
         line_color = dot_fill_color
+        
+    # Create list of quadrant labels
+    quadrant_labels = [upper_left_quadrant_label, upper_right_quadrant_label, lower_left_quadrant_label, lower_right_quadrant_label]
     
     # Draw scatterplot
     if fitted_line_type == None:
@@ -62,8 +78,13 @@ def PlotScatterplot(dataframe,
                 data=dataframe,
                 x=x_axis_variable,
                 y=y_axis_variable,
-                color=dot_fill_color,
-                alpha=0.5,
+                marker='o',
+                scatter_kws={
+                    'color': dot_fill_color,
+                    'alpha': 0.5,
+                    'linewidth': 0.5,
+                    'edgecolor': dot_fill_color
+                },
                 linewidth=0.5,
                 edgecolor=dot_fill_color,
                 fit_reg=True,
@@ -76,6 +97,8 @@ def PlotScatterplot(dataframe,
                 y=y_axis_variable,
                 hue=grouping_variable,
                 palette=group_color_palette,
+                scatter_kws={'alpha': 0.5,
+                             'linewidth': 0.5},
                 fit_reg=True
             )
     elif fitted_line_type == 'lowess':
@@ -85,10 +108,12 @@ def PlotScatterplot(dataframe,
                 x=x_axis_variable,
                 y=y_axis_variable,
                 marker='o',
-                scatter_kws={'color': dot_fill_color,
-                                'alpha': 0.5,
-                                'linewidth': 0.5,
-                                'edgecolor': dot_fill_color},
+                scatter_kws={
+                    'color': dot_fill_color,
+                    'alpha': 0.5,
+                    'linewidth': 0.5,
+                    'edgecolor': dot_fill_color
+                },
                 lowess=True,
                 line_kws={'color': line_color}
             )
@@ -129,6 +154,267 @@ def PlotScatterplot(dataframe,
             labelsize=9, 
             color='#666666'
         )
+    
+    # If any of the quadrant labels are not None, find the middle of the x and y axes
+    if any(quadrant_labels):
+        try:
+            x_start = ax.get_xlim()[0]
+            x_end = ax.get_xlim()[1]
+            y_start = ax.get_ylim()[0]
+            y_end = ax.get_ylim()[1]
+        except AttributeError:
+            x_start = ax.ax.get_xlim()[0]
+            x_end = ax.ax.get_xlim()[1]
+            y_start = ax.ax.get_ylim()[0]
+            y_end = ax.ax.get_ylim()[1]
+        x_middle = x_start + (x_end - x_start) / 2
+        y_middle = y_start + (y_end - y_start) / 2
+        
+        # Add upper left quadrant
+        if upper_left_quadrant_label != None:
+            # Get coordinates for upper left quadrant label
+            upper_left_quadrant_label_x = x_start + (x_middle - x_start) / 2
+            upper_left_quadrant_label_x = upper_left_quadrant_label_x + (x_start - upper_left_quadrant_label_x) / 2
+            upper_left_quadrant_label_y = y_middle + (y_end - y_middle) / 2
+            upper_left_quadrant_label_y = upper_left_quadrant_label_y + (y_end - upper_left_quadrant_label_y) / 2
+            # If no fill color is specified, use dot fill color
+            if upper_left_quadrant_fill_color == None:
+                upper_left_quadrant_fill_color = dot_fill_color
+            # Write text in upper left quadrant
+            try:
+                ax.text(
+                    upper_left_quadrant_label_x, 
+                    upper_left_quadrant_label_y, 
+                    upper_left_quadrant_label, 
+                    fontsize=10,
+                    fontweight='bold',
+                    color=upper_left_quadrant_fill_color,
+                    alpha=0.8,
+                    ha='center', 
+                    va='center'
+                )
+            except AttributeError:
+                ax.ax.text(
+                    upper_left_quadrant_label_x, 
+                    upper_left_quadrant_label_y, 
+                    upper_left_quadrant_label, 
+                    fontsize=10,
+                    fontweight='bold',
+                    color=upper_left_quadrant_fill_color,
+                    alpha=0.8,
+                    ha='center', 
+                    va='center'
+                )
+            # Add a rectangle in the upper left quadrant, behind the dot plot
+            if fitted_line_type == None:
+                try:
+                    ax.add_patch(
+                        Rectangle(
+                            (x_start, y_middle),
+                            x_middle - x_start,
+                            y_end - y_middle,
+                            edgecolor='none',
+                            facecolor=upper_left_quadrant_fill_color,
+                            alpha=0.15
+                        )
+                    ).set_zorder(-1)
+                except AttributeError:
+                    ax.ax.add_patch(
+                        Rectangle(
+                            (x_start, y_middle),
+                            x_middle - x_start,
+                            y_end - y_middle,
+                            edgecolor='none',
+                            facecolor=upper_left_quadrant_fill_color,
+                            alpha=0.15
+                        )
+                    ).set_zorder(-1)
+        
+        # Add upper right quadrant
+        if upper_right_quadrant_label != None:
+            # Get coordinates for upper right quadrant label
+            upper_right_quadrant_label_x = x_middle + (x_end - x_middle) / 2
+            upper_right_quadrant_label_x = upper_right_quadrant_label_x + (x_end - upper_right_quadrant_label_x) / 2
+            upper_right_quadrant_label_y = y_middle + (y_end - y_middle) / 2
+            upper_right_quadrant_label_y = upper_right_quadrant_label_y + (y_end - upper_right_quadrant_label_y) / 2
+            # If no fill color is specified, use dot fill color
+            if upper_right_quadrant_fill_color == None:
+                upper_right_quadrant_fill_color = dot_fill_color
+            # Write text in upper right quadrant
+            try:
+                ax.text(
+                    upper_right_quadrant_label_x, 
+                    upper_right_quadrant_label_y, 
+                    upper_right_quadrant_label, 
+                    fontsize=10,
+                    fontweight='bold',
+                    color=upper_right_quadrant_fill_color,
+                    alpha=0.8,
+                    ha='center', 
+                    va='center'
+                )
+            except AttributeError:
+                ax.ax.text(
+                    upper_right_quadrant_label_x, 
+                    upper_right_quadrant_label_y, 
+                    upper_right_quadrant_label, 
+                    fontsize=10,
+                    fontweight='bold',
+                    color=upper_right_quadrant_fill_color,
+                    alpha=0.8,
+                    ha='center', 
+                    va='center'
+                )
+            # Add a rectangle in the upper right quadrant, behind the dot plot
+            if fitted_line_type == None:
+                try:
+                    ax.add_patch(
+                        Rectangle(
+                            (x_middle, y_middle),
+                            x_end - x_middle,
+                            y_end - y_middle,
+                            edgecolor='none',
+                            facecolor=upper_right_quadrant_fill_color,
+                            alpha=0.15
+                        )
+                    ).set_zorder(-1)
+                except AttributeError:
+                    ax.ax.add_patch(
+                        Rectangle(
+                            (x_middle, y_end),
+                            x_middle - x_end,
+                            y_end - y_middle,
+                            edgecolor='none',
+                            facecolor=upper_right_quadrant_fill_color,
+                            alpha=0.15
+                        )
+                    ).set_zorder(-1)
+                
+        # Add lower left quadrant
+        if lower_left_quadrant_label != None:
+            # Get coordinates for lower left quadrant label
+            lower_left_quadrant_label_x = x_start + (x_middle - x_start) / 2
+            lower_left_quadrant_label_x = lower_left_quadrant_label_x + (x_start - lower_left_quadrant_label_x) / 2
+            lower_left_quadrant_label_y = y_start + (y_middle - y_start) / 2
+            lower_left_quadrant_label_y = lower_left_quadrant_label_y - (y_middle - lower_left_quadrant_label_y) / 2
+            # If no fill color is specified, use dot fill color
+            if lower_left_quadrant_fill_color == None:
+                lower_left_quadrant_fill_color = dot_fill_color
+            # Write text in lower left quadrant
+            try:
+                ax.text(
+                    lower_left_quadrant_label_x, 
+                    lower_left_quadrant_label_y, 
+                    lower_left_quadrant_label, 
+                    fontsize=10,
+                    fontweight='bold',
+                    color=lower_left_quadrant_fill_color,
+                    alpha=0.8,
+                    ha='center', 
+                    va='center'
+                )
+            except AttributeError:
+                ax.ax.text(
+                    lower_left_quadrant_label_x, 
+                    lower_left_quadrant_label_y, 
+                    lower_left_quadrant_label, 
+                    fontsize=10,
+                    fontweight='bold',
+                    color=lower_left_quadrant_fill_color,
+                    alpha=0.8,
+                    ha='center', 
+                    va='center'
+                )
+            # Add a rectangle in the lower left quadrant, behind the dot plot
+            if fitted_line_type == None:
+                try:
+                    ax.add_patch(
+                        Rectangle(
+                            (x_start, y_start),
+                            x_middle - x_start,
+                            y_middle - y_start,
+                            edgecolor='none',
+                            facecolor=lower_left_quadrant_fill_color,
+                            alpha=0.15
+                        )
+                    ).set_zorder(-1)
+                except AttributeError:
+                    ax.ax.add_patch(
+                        Rectangle(
+                            (x_start, y_start),
+                            x_middle - x_start,
+                            y_middle - y_start,
+                            edgecolor='none',
+                            facecolor=lower_left_quadrant_fill_color,
+                            alpha=0.15
+                        )
+                    ).set_zorder(-1)
+                
+        # Add lower right quadrant
+        if lower_right_quadrant_label != None:
+            # Get coordinates for lower right quadrant label
+            lower_right_quadrant_label_x = x_middle + (x_end - x_middle) / 2
+            lower_right_quadrant_label_x = lower_right_quadrant_label_x + (x_end - lower_right_quadrant_label_x) / 2
+            lower_right_quadrant_label_y = y_start + (y_middle - y_start) / 2
+            lower_right_quadrant_label_y = lower_right_quadrant_label_y - (y_middle - lower_right_quadrant_label_y) / 2
+            # If no fill color is specified, use dot fill color
+            if lower_right_quadrant_fill_color == None:
+                lower_right_quadrant_fill_color = dot_fill_color
+            # Write text in lower right quadrant
+            try:
+                ax.text(
+                    lower_right_quadrant_label_x, 
+                    lower_right_quadrant_label_y, 
+                    lower_right_quadrant_label, 
+                    fontsize=10,
+                    fontweight='bold',
+                    color=lower_right_quadrant_fill_color,
+                    alpha=0.8,
+                    ha='center', 
+                    va='center'
+                )
+            except AttributeError:
+                ax.ax.text(
+                    lower_right_quadrant_label_x, 
+                    lower_right_quadrant_label_y, 
+                    lower_right_quadrant_label, 
+                    fontsize=10,
+                    fontweight='bold',
+                    color=lower_right_quadrant_fill_color,
+                    alpha=0.8,
+                    ha='center', 
+                    va='center'
+                )
+            # Add a rectangle in the lower right quadrant, behind the dot plot
+            if fitted_line_type == None:
+                try:
+                    ax.add_patch(
+                        Rectangle(
+                            (x_middle, y_start),
+                            x_end - x_middle,
+                            y_middle - y_start,
+                            edgecolor='none',
+                            facecolor=lower_right_quadrant_fill_color,
+                            alpha=0.15
+                        )
+                    ).set_zorder(-1)
+                except AttributeError:
+                    ax.ax.add_patch(
+                        Rectangle(
+                            (x_middle, y_start),
+                            x_end - x_middle,
+                            y_middle - y_start,
+                            edgecolor='none',
+                            facecolor=lower_right_quadrant_fill_color,
+                            alpha=0.15
+                        )
+                    ).set_zorder(-1)
+        
+        # Insert a vertical line at the middle of the x axis
+        plt.axvline(x_middle, color='#999999', linestyle='--', linewidth=1.5, alpha=0.5)
+        
+        # Insert a horizontal line at the middle of the y axis
+        plt.axhline(y_middle, color='#999999', linestyle='--', linewidth=1.5, alpha=0.5)
     
     # Set the title with Arial font, size 14, and color #262626 at the top of the plot
     try:
@@ -281,26 +567,15 @@ def PlotScatterplot(dataframe,
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # iris['species'] = datasets.load_iris(as_frame=True).target
 # iris['species'] = iris['species'].astype('category')
-# PlotScatterplot(
-#     dataframe=iris,
-#     y_axis_variable="sepal length (cm)",
-#     x_axis_variable="petal length (cm)",
-#     title_for_plot="Sepal Length vs. Petal Length",
-#     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
-#     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
-#     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris"
-# )
-# PlotScatterplot(
-#     dataframe=iris,
-#     y_axis_variable="sepal length (cm)",
-#     x_axis_variable="petal length (cm)",
-#     title_for_plot="Sepal Length vs. Petal Length",
-#     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
-#     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
-#     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-#     fitted_line_type="lowess",
-#     line_color="#d14a41",
-# )
+# # PlotScatterplot(
+# #     dataframe=iris,
+# #     y_axis_variable="sepal length (cm)",
+# #     x_axis_variable="petal length (cm)",
+# #     title_for_plot="Sepal Length vs. Petal Length",
+# #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
+# #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
+# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris"
+# # )
 # PlotScatterplot(
 #     dataframe=iris,
 #     y_axis_variable="sepal length (cm)",
@@ -309,16 +584,59 @@ def PlotScatterplot(dataframe,
 #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
 #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
 #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-#     grouping_variable="species",
+#     upper_left_quadrant_label="",
+#     upper_right_quadrant_label="UPPER RIGHT",
+#     upper_right_quadrant_fill_color="#32a852",
+#     lower_left_quadrant_label="LOWER LEFT",
+#     lower_left_quadrant_fill_color="#d14a41",
+#     lower_right_quadrant_label=""
 # )
-# PlotScatterplot(
-#     dataframe=iris,
-#     y_axis_variable="sepal length (cm)",
-#     x_axis_variable="petal length (cm)",
-#     title_for_plot="Sepal Length vs. Petal Length",
-#     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
-#     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
-#     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-#     fitted_line_type="lowess",
-#     grouping_variable="species",
-# )
+# # PlotScatterplot(
+# #     dataframe=iris,
+# #     y_axis_variable="sepal length (cm)",
+# #     x_axis_variable="petal length (cm)",
+# #     title_for_plot="Sepal Length vs. Petal Length",
+# #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
+# #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
+# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
+# #     fitted_line_type="lowess",
+# #     line_color="#d14a41",
+# # )
+# # PlotScatterplot(
+# #     dataframe=iris,
+# #     y_axis_variable="sepal length (cm)",
+# #     x_axis_variable="petal length (cm)",
+# #     title_for_plot="Sepal Length vs. Petal Length",
+# #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
+# #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
+# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
+# #     grouping_variable="species",
+# # )
+# # PlotScatterplot(
+# #     dataframe=iris,
+# #     y_axis_variable="sepal length (cm)",
+# #     x_axis_variable="petal length (cm)",
+# #     title_for_plot="Sepal Length vs. Petal Length",
+# #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
+# #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
+# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
+# #     fitted_line_type="lowess",
+# #     grouping_variable="species",
+# # )
+# # PlotScatterplot(
+# #     dataframe=iris,
+# #     y_axis_variable="sepal length (cm)",
+# #     x_axis_variable="petal length (cm)",
+# #     title_for_plot="Sepal Length vs. Petal Length",
+# #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
+# #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
+# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
+# #     fitted_line_type="lowess",
+# #     grouping_variable="species",
+# #     upper_left_quadrant_label="",
+# #     upper_right_quadrant_label="UPPER RIGHT",
+# #     upper_right_quadrant_fill_color="#999999",
+# #     lower_left_quadrant_label="LOWER LEFT",
+# #     lower_left_quadrant_fill_color="#999999",
+# #     lower_right_quadrant_label=""
+# # )
