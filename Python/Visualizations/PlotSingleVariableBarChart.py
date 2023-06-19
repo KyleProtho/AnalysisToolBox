@@ -32,6 +32,7 @@ def PlotSingleVariableBarChart(dataframe,
     Args:
         dataframe (_type_): The dataframe containing the categorical variable.
         categorical_variable (_type_): The categorical variable to plot.
+        color_palette (str, optional): The Seaborn color palette to use for the bar chart. Defaults to "Set1".
         fill_color (_type_, optional): The color to use for the bar chart. Defaults to None.
         top_n_to_highlight (_type_, optional): The "top N" categories to highlight. Defaults to None.
         highlight_color (str, optional): The color to use for the highlighted "top N" categories. Defaults to "#b0170c".
