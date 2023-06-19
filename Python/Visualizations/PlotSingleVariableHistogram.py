@@ -9,7 +9,7 @@ sns.set(style="white",
 
 def PlotSingleVariableHistogram(dataframe,
                                 quantitative_variable,
-                                fill_color="#3269a8",
+                                fill_color="#999999",
                                 fill_transparency=0.6,
                                 title_for_plot=None,
                                 subtitle_for_plot=None,
@@ -27,7 +27,7 @@ def PlotSingleVariableHistogram(dataframe,
     Args:
         dataframe (_type_): The dataframe containing the data to be plotted.
         quantitative_variable (_type_): The name of the column in the dataframe to be plotted.
-        fill_color (str, optional): The color to fill the histogram bars. Defaults to "#3269a8".
+        fill_color (str, optional): The color to fill the histogram bars. Defaults to "#999999".
         fill_transparency (float, optional): The transparency of the histogram bars. Defaults to 0.6.
         title_for_plot (_type_, optional): The title of the plot. Defaults to None.
         subtitle_for_plot (_type_, optional): The subtitle of the plot. Defaults to None.
@@ -57,11 +57,11 @@ def PlotSingleVariableHistogram(dataframe,
         alpha=fill_transparency,
     )
     
-    # Remove all spines
+    # Remove top, left, and right spines. Set bottom spine to dark gray.
     ax.spines['top'].set_visible(False)
-    ax.spines['bottom'].set_visible(False)
     ax.spines['left'].set_visible(False)
     ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_color("#262626")
     
     # Remove the y-axis, and adjust the indent of the plot titles
     if show_y_axis == False:
