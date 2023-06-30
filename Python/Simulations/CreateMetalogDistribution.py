@@ -79,63 +79,28 @@ def CreateMetalogDistribution(dataframe,
     # Show summary of the metalog distribution
     pm.summary(m = metalog_dist)
     
-    # Show plots of the metalog distribution terms
-    if show_comparison_plot:
-        pm.plot(metalog_dist)
-    
-    # # Show plots of the metalog distribution and original dataset
-    # ax, fig = plt.subplots()
-    # data_terms = pd.DataFrame()
-    # for i in range(term_minimum, term_maximum + 1):
-    #     term_dist = pm.rmetalog(metalog_dist, n=1000, term=i)
-    #     term_dist = pd.DataFrame(term_dist, columns=[variable])
-    #     term_dist['Metalog'] = str(i) + ' terms'
-    #     data_terms = pd.concat([data_terms, term_dist])
-    # sns.displot(
-    #     data=data_terms,
-    #     x=variable,
-    #     kind="kde",
-    #     hue='Metalog',
-    #     legend=True,
-    #     palette="crest",
-    #     fill=True,
-    #     alpha=.5, 
-    #     linewidth=0
-    # )
-    # sns.displot(
-    #     data=dataframe,
-    #     x=variable, 
-    #     kind="kde",
-    #     label=variable,
-    #     color='grey',
-    #     legend=False,
-    #     alpha=.3,
-    #     fill=True
-    # )
-    # sns.despine()
-    # plt.xlim(dataframe[variable].min(), dataframe[variable].max())
-    # plt.show()
+    # To-Do: Add a comparison plot of the metalog distribution and the data
     
     # Return the metalog distribution
     return metalog_dist
 
 
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# iris = iris[iris['species'] == 0]
-# # petal_legnth_dist = CreateMetalogDistribution(
-# #     dataframe=iris,
-# #     variable='petal length (cm)',
-# # )
-# # petal_legnth_dist = CreateMetalogDistribution(
-# #     dataframe=iris,
-# #     variable='petal length (cm)',
-# #     upper_bound=7,
-# # )
+# Test the function
+from sklearn import datasets
+iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+iris['species'] = datasets.load_iris(as_frame=True).target
+iris = iris[iris['species'] == 0]
 # petal_legnth_dist = CreateMetalogDistribution(
 #     dataframe=iris,
 #     variable='petal length (cm)',
-#     lower_bound=0,
 # )
+# petal_legnth_dist = CreateMetalogDistribution(
+#     dataframe=iris,
+#     variable='petal length (cm)',
+#     upper_bound=7,
+# )
+petal_legnth_dist = CreateMetalogDistribution(
+    dataframe=iris,
+    variable='petal length (cm)',
+    lower_bound=0,
+)
