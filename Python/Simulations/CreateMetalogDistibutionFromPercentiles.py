@@ -10,7 +10,7 @@ sns.set(style="white",
         context="paper")
 
 # Declare function
-def CreateMetalogDistributionFromPercentiles(list_of_scores,
+def CreateMetalogDistributionFromPercentiles(list_of_values,
                                              list_of_percentiles,
                                              return_simulated_data=False,
                                              boundedness="both",
@@ -30,13 +30,17 @@ def CreateMetalogDistributionFromPercentiles(list_of_scores,
                                              title_y_indent=1.1,
                                              subtitle_y_indent=1.05,
                                              caption_y_indent=-0.15):
-    # If term limit is not specified, then use the length of the scores
-    if term_limit is None:
-        term_limit = len(list_of_scores)
-        
+    # Ensure that the list of values and list of percentiles are the same length
+    if len(list_of_values) != len(list_of_percentiles):
+        raise ValueError("The list of values and list of percentiles must be the same length.")
+    
     # Ensure boundedness is a valid argument
     if boundedness not in ["both", "lower", "upper", "unbounded"]:
         raise ValueError("Boundedness must be one of the following: both, lower, upper, or unbounded.")
+    
+    # If term limit is not specified, then use the length of the scores
+    if term_limit is None:
+        term_limit = len(list_of_values)
         
     # Convert boundedness to the appropriate format
     if boundedness == "both":
@@ -49,7 +53,7 @@ def CreateMetalogDistributionFromPercentiles(list_of_scores,
         boundedness = "u"
 
     # Create the metalog distribution
-    metalog_dist = pm.metalog(x = list_of_scores,
+    metalog_dist = pm.metalog(x = list_of_values,
                         probs = list_of_percentiles,
                         term_limit = term_limit,
                         bounds = [0, 100],
@@ -234,7 +238,7 @@ def CreateMetalogDistributionFromPercentiles(list_of_scores,
     
 # # Test function
 # CreateMetalogDistributionFromPercentiles(
-#     list_of_scores=[20, 25, 30, 90],
+#     list_of_values=[20, 25, 30, 90],
 #     list_of_percentiles=[.10, .33, .66, .90],
 #     boundedness="both",
 #     variable_name="Estimated Scores in Survey",
