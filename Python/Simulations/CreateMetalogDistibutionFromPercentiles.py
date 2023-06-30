@@ -30,6 +30,34 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
                                              title_y_indent=1.1,
                                              subtitle_y_indent=1.05,
                                              caption_y_indent=-0.15):
+    """This function takes a list of values and a list of percentiles and creates a metalog distribution. It then takes a random sample from the metalog distribution and returns the sample as a dataframe. The function also plots the metalog distribution as a histogram.
+
+    Args:
+        list_of_values (list or numpy array): A list of values for each percentile.
+        list_of_percentiles (list or numpy array): A list of percentiles for each value.
+        return_simulated_data (bool, optional): Whether to return the simulated data. Defaults to False.
+        boundedness (str, optional): Whether the distribution is bounded on both side, on the lower side, on the upper side, or unbounded. Valid values are "both", "lower", "upper", or "unbounded". Defaults to "both".
+        term_limit (_type_, optional): The number of terms to use in the metalog distribution. Lower may result in underfitting, while higher may result in overfitting. Defaults to the length of the list of values.
+        variable_name (str, optional): The name of the variable to use in the dataframe. Defaults to "Simulated Value".
+        show_distribution_plot (bool, optional): Whether to show the distribution plot. Defaults to True.
+        fill_color (str, optional): The color to use for the fill of the histogram. Defaults to "#999999".
+        fill_transparency (float, optional): The transparency to use for the fill of the histogram. Defaults to 0.6.
+        title_for_plot (_type_, optional): The title to use for the plot. Defaults to None.
+        subtitle_for_plot (_type_, optional): The subtitle to use for the plot. Defaults to None.
+        caption_for_plot (_type_, optional): The caption to use for the plot. Defaults to None.
+        data_source_for_plot (_type_, optional): The data source to use for the plot. Defaults to None.
+        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
+        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
+        show_y_axis (bool, optional): Whether to show the y-axis on the plot. Defaults to False.
+        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
+        title_y_indent (float, optional): The vertical location of the title. Defaults to 1.1.
+        subtitle_y_indent (float, optional): The vertical location of the subtitle. Defaults to 1.05.
+        caption_y_indent (float, optional): The vertical location of the caption. Defaults to -0.15.
+
+    Returns:
+        Pandas dataframe: A dataframe containing the simulated data.
+    """
+    
     # Ensure that the list of values and list of percentiles are the same length
     if len(list_of_values) != len(list_of_percentiles):
         raise ValueError("The list of values and list of percentiles must be the same length.")
