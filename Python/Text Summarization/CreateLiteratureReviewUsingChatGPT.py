@@ -62,9 +62,6 @@ def CreateLiteratureReviewUsingChatGPT(filepath_to_pdf,
     extracted_text = open(filepath_for_exported_text, 'r', encoding='utf-8').read()
     temp_dir.cleanup()
     
-    # Set the OpenAI API key
-    openai.api_key = openai_api_key
-    
     # Set the prompt
     prompt = f"""
     Conduct a literature review of this academic paper, and write your response at an 8th grade reading level. 
@@ -85,9 +82,26 @@ def CreateLiteratureReviewUsingChatGPT(filepath_to_pdf,
     {extracted_text}
     """
     
+    # Estimate the number of tokens in the prompt
+    word_count = len(prompt.split())
+    word_count = word_count + (len(extracted_text) / 4.7)  # Avg. length of word is 4.7 characters
+    estimated_tokens = word_count * 1.33
+    print("Estimated number of tokens:", estimated_tokens)
+    
+    # If the estimated number of tokens is greater than 2000, use the 16k model
+    if estimated_tokens > 2700:
+        gpt_model = "gpt-3.5-turbo-16k"
+        cost_per_1k_tokens = 0.003
+    else:
+        gpt_model = "gpt-3.5-turbo"
+        cost_per_1k_tokens = 0.0015
+        
+    # Set the OpenAI API key
+    openai.api_key = openai_api_key
+    
     # Send the prompt to the OpenAI API 
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model=gpt_model,
         messages=[
             {"role": "user", "content": prompt},
         ],
@@ -96,7 +110,7 @@ def CreateLiteratureReviewUsingChatGPT(filepath_to_pdf,
 
     # Print the cost of the API usage, format as USD
     if print_api_cost:
-        cost = response['usage']['total_tokens']/1000 * 0.002
+        cost = response['usage']['total_tokens']/1000 * cost_per_1k_tokens
         if cost < 0.01:
             print("Cost of API call: <$0.01")
         else:
@@ -113,11 +127,21 @@ def CreateLiteratureReviewUsingChatGPT(filepath_to_pdf,
 # # Test the function
 # # Get OpenAI API key
 # my_openai_api_key = open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read()
+# # # Create literature review
+# # literature_review_json = CreateLiteratureReviewUsingChatGPT(
+# #     filepath_to_pdf="C:/Users/oneno/Downloads/TheRiskofUsingRiskMatrices.pdf", 
+# #     openai_api_key=my_openai_api_key,
+# #     start_page=2,
+# #     end_page=3
+# # )
+# # # Print the literature review JSON in a readable format
+# # print(literature_review_json)
 # # Create literature review
 # literature_review_json = CreateLiteratureReviewUsingChatGPT(
-#     filepath_to_pdf="C:/Users/oneno/Downloads/pkaa059.pdf", 
+#     filepath_to_pdf="C:/Users/oneno/Downloads/TheRiskofUsingRiskMatrices.pdf", 
 #     openai_api_key=my_openai_api_key,
-#     end_page=2
+#     start_page=2,
+#     end_page=5
 # )
 # # Print the literature review JSON in a readable format
 # print(literature_review_json)

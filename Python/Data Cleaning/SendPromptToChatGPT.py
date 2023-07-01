@@ -16,9 +16,21 @@ def SendPromptToChatGPT(prompt,
     # Set the OpenAI API key
     openai.api_key = openai_api_key
     
+    # Estimate the number of tokens in the prompt
+    word_count = len(prompt.split())
+    estimated_tokens = word_count * 1.33
+    
+    # If the estimated number of tokens is greater than 2000, use the 16k model
+    if estimated_tokens > 2700:
+        gpt_model = "gpt-3.5-turbo-16k"
+        cost_per_1k_tokens = 0.003
+    else:
+        gpt_model = "gpt-3.5-turbo"
+        cost_per_1k_tokens = 0.0015
+    
     # Send the prompt to the OpenAI API 
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model=gpt_model,
         messages=[
             {"role": "user", "content": prompt},
         ],
@@ -27,7 +39,7 @@ def SendPromptToChatGPT(prompt,
 
     # Print the cost of the API usage, format as USD
     if print_api_cost:
-        cost = response['usage']['total_tokens']/1000 * 0.002
+        cost = response['usage']['total_tokens']/1000 * cost_per_1k_tokens
         if cost < 0.01:
             print("Cost of API call: <$0.01")
         else:
