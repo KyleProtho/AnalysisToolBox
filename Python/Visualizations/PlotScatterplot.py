@@ -41,7 +41,7 @@ def PlotScatterplot(dataframe,
     
     # Ensure that fitted_line_type is None, 'straight', or 'lowess'
     if fitted_line_type not in [None, 'straight', 'lowess']:
-        raise ValueError("Invalied fitted_line_type argument. Please enter None, 'straight', or 'lowess'.")
+        raise ValueError("Invalid fitted_line_type argument. Please enter None, 'straight', or 'lowess'.")
     
     # If line color is not specified, use fill color
     if line_color == None:
