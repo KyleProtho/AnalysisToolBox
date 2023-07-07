@@ -9,6 +9,18 @@ def PerformSequentialChainUsingChatGPT(dict_of_prompts,
                                        openai_api_key,
                                        print_api_cost=True,
                                        temperture=.30):
+    """This function takes a dictionary of prompts that are then sent to OpenAI's ChatGPT API in sequential order. The outputs of the earlier prompts can be used as inputs for later prompts. It returns the response from the sequential chain.
+    
+    Keyword arguments:
+    - dict_of_prompts: A dictionary of prompts. The keys are the names of the outputs, and the values are the prompts. The first prompt should be the initial input.
+    - openai_api_key: The API key for OpenAI's API.
+    - print_api_cost: Whether to print the cost of the API usage. Defaults to True.
+    - temperture: The temperture, or "randomness", to use for the API call. Must be between 0 and 1. Defaults to .30.
+    
+    Return:
+    - response: The response from the sequential chain.
+    """
+    
     # Get number of prompts in the prompt dictionary
     prompt_count = len(dict_of_prompts)
 
