@@ -20,7 +20,6 @@ def ClassifyTextUsingChatGPT(text_to_classify,
         text_to_classify=text_to_classify,
         categories=categories
     )
-    print(messages)
       
     # Estimate the number of tokens in the prompt
     word_count = len(my_prompt_template.split())

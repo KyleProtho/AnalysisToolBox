@@ -1,3 +1,5 @@
+from langchain.prompts import ChatPromptTemplate
+from langchain.chat_models import ChatOpenAI
 import openai
 import PyPDF2
 import re
@@ -62,28 +64,35 @@ def CreateLiteratureReviewUsingChatGPT(filepath_to_pdf,
     extracted_text = open(filepath_for_exported_text, 'r', encoding='utf-8').read()
     temp_dir.cleanup()
     
-    # Set the prompt
-    prompt = f"""
+    # Set the chat prompt template
+    my_prompt_template = """
     Conduct a literature review of this academic paper, and write your response at an 8th grade reading level. 
     
     Be sure to include the following:
     - The title of the paper
+    - The authors of the paper
+    - The publication the paper was published in
+    - The research objective or question of the paper
     - The methodology used in the paper
-    - The results of the paper
-    - Potential future research ideas
+    - The results of the analysis or study
+    - Ideas for future research that could be done on this topic
     
     Format your response as a JSON object with the following keys:
     - title
+    - authors
+    - publication
+    - research_objective
     - methodology
-    - results
+    - key_findings
     - future_research
     
     Text from academic paper:
-    {extracted_text}
+    ```{extracted_text}```
     """
+    prompt_template = ChatPromptTemplate.from_template(my_prompt_template)
     
     # Estimate the number of tokens in the prompt
-    word_count = len(prompt.split())
+    word_count = len(my_prompt_template.split())
     word_count = word_count + (len(extracted_text) / 4.7)  # Avg. length of word is 4.7 characters
     estimated_tokens = word_count * 1.33
     print("Estimated number of tokens:", estimated_tokens)
@@ -96,32 +105,32 @@ def CreateLiteratureReviewUsingChatGPT(filepath_to_pdf,
         gpt_model = "gpt-3.5-turbo"
         cost_per_1k_tokens = 0.0015
         
-    # Set the OpenAI API key
-    openai.api_key = openai_api_key
-    
-    # Send the prompt to the OpenAI API 
-    response = openai.ChatCompletion.create(
-        model=gpt_model,
-        messages=[
-            {"role": "user", "content": prompt},
-        ],
-        temperature=temperature
-    )
-
     # Print the cost of the API usage, format as USD
     if print_api_cost:
-        cost = response['usage']['total_tokens']/1000 * cost_per_1k_tokens
+        cost = estimated_tokens/1000 * cost_per_1k_tokens
         if cost < 0.01:
             print("Cost of API call: <$0.01")
         else:
             cost = "${:,.2f}".format(cost)
             print("Cost of API call:", cost)
-            
-    # Extract the content from the response
-    content = response['choices'][0]['message']['content']
+        
+    # Set the model name and temperature
+    chatgpt_model = ChatOpenAI(
+        temperature=0.0, 
+        model_name=gpt_model,
+        openai_api_key=openai_api_key
+    )
     
-    # Return the content
-    return(content)
+    # Set the messages
+    messages = prompt_template.format_messages(
+        extracted_text=extracted_text
+    )
+    
+    # Send the prompt to the OpenAI API 
+    response = chatgpt_model(messages)
+    
+    # Return the response
+    return(response.content)
 
 
 # # Test the function
