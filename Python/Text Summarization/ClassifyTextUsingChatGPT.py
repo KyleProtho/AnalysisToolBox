@@ -27,7 +27,7 @@ def ClassifyTextUsingChatGPT(text_to_classify,
     estimated_tokens = word_count * 1.33
     
     # If the estimated number of tokens is greater than 2000, use the 16k model
-    if estimated_tokens > 2700:
+    if estimated_tokens > 3000:
         gpt_model = "gpt-3.5-turbo-16k"
         cost_per_1k_tokens = 0.003
     else:
