@@ -20,6 +20,7 @@ def FindContentInDocuments(question,
                            vectorstore_collection_name="collection",
                            return_vectorstore=False,
                            debug_mode=False,
+                           temperature=0.0,
                            splitter_mode="recursive_text",
                            splitter_chunk_size=1000,
                            splitter_chunk_overlap=100,
@@ -180,7 +181,7 @@ def FindContentInDocuments(question,
 
     # Wrap vectorstore in a compressor
     llm = OpenAI(
-        temperature=0,
+        temperature=temperature,
         openai_api_key=openai_api_key
     )
     compressor = LLMChainExtractor.from_llm(llm)
