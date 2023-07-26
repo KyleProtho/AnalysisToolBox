@@ -242,27 +242,14 @@ def ChatWithDocuments(list_of_questions,
         return(response)
 
 
-# Test the function
-response_items = ChatWithDocuments(
-    list_of_questions=[
-        """
-        What drugs are produced in each country?
-        Structure the response as and Markdown table with the columns: 
-        COUNTRY, DRUGS_PRODUCED.
-        """
-    ],
-    document_filepath_or_url="https://www.cia.gov/the-world-factbook/field/illicit-drugs/",
-    openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read(),
-    query_method="refine",
-    return_vectorstore=True
-)
-display(Markdown(response_items['Response']))
+# # Test the function
 # response_items = ChatWithDocuments(
 #     list_of_questions=[
-#         """What drugs are produced in each country?
-#         Structure the response as and Markdown table with the columns: COUNTRY, DRUGS_PRODUCED.
-#         """,
-#         """Which countries produce cocaine?"""
+#         """
+#         What drugs are produced in each country?
+#         Structure the response as and Markdown table with the columns: 
+#         COUNTRY, DRUGS_PRODUCED.
+#         """
 #     ],
 #     document_filepath_or_url="https://www.cia.gov/the-world-factbook/field/illicit-drugs/",
 #     openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read(),
@@ -270,3 +257,16 @@ display(Markdown(response_items['Response']))
 #     return_vectorstore=True
 # )
 # display(Markdown(response_items['Response']))
+# # response_items = ChatWithDocuments(
+# #     list_of_questions=[
+# #         """What drugs are produced in each country?
+# #         Structure the response as and Markdown table with the columns: COUNTRY, DRUGS_PRODUCED.
+# #         """,
+# #         """Which countries produce cocaine?"""
+# #     ],
+# #     document_filepath_or_url="https://www.cia.gov/the-world-factbook/field/illicit-drugs/",
+# #     openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read(),
+# #     query_method="refine",
+# #     return_vectorstore=True
+# # )
+# # display(Markdown(response_items['Response']))
