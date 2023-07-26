@@ -204,7 +204,7 @@ def ChatWithDocuments(list_of_questions,
             verbose=verbose
         )
         # Ask the question
-        response = query_retrieval.run(my_query)
+        response = query_retrieval.run(list_of_questions[0])
     else:
         # Create memory of conversation
         memory = ConversationBufferMemory(
