@@ -204,7 +204,8 @@ def ChatWithDocuments(list_of_questions,
             verbose=verbose
         )
         # Ask the question
-        response = query_retrieval.run(list_of_questions[0])
+        response = query_retrieval({'question': list_of_questions[0]})
+        response = response['answer']
     else:
         # Create memory of conversation
         memory = ConversationBufferMemory(
@@ -240,21 +241,6 @@ def ChatWithDocuments(list_of_questions,
 
 
 # # Test the function
-# # response = ChatWithDocuments(
-# #     document_filepath_or_url="C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/Documentation/QRS/Technical Specifications/2022_QRS_Measure_Technical_Specifications_508.pdf",
-# #     my_query="""
-# #     What is the list of measures? 
-# #     Include the measure name, the measure steward, and the NQF ID. 
-# #     If a measure is denoted with a caret (^), mark it as "1" in the MAY_BE_REMOVED column.
-# #     If a measure is denoted with an asterisk (*), mark it as "1" in the NOT_SCORED column.
-# #     Structure the reponse as a Markdown table the columns: MEASURE_NAME, MEASURE_STEWARD, NQF_ID, MAY_BE_REMOVED, and NOT_SCORED.
-# #     """,
-# #     openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read(),
-# #     query_method="map_reduce",
-# #     splitter_mode="token",
-# #     splitter_chunk_size=3000
-# # )
-# # display(Markdown(response))
 # response_items = ChatWithDocuments(
 #     list_of_questions=[
 #         """What drugs are produced in each country?
