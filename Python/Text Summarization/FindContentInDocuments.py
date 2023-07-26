@@ -15,7 +15,7 @@ import sys
 
 # Set arguments
 def FindContentInDocuments(question,
-                           folder_of_documents,
+                           folder_or_document_filepath,
                            openai_api_key,
                            vectorstore_collection_name="collection",
                            return_vectorstore=False,
@@ -42,14 +42,21 @@ def FindContentInDocuments(question,
         splitter_mode must be one of: character, recursive_text, token, or markdown.
         """
         raise ValueError(error_message)
+    
+    # See if filepath is a folder or a document
+    is_folder = os.path.isdir(folder_or_document_filepath)
 
     # Create list of documents from folder
-    list_of_documents = os.listdir(folder_of_documents)
+    if is_folder:
+        list_of_documents = os.listdir(folder_or_document_filepath)
+    else:
+        list_of_documents = [folder_or_document_filepath]
 
     # Create full path for each document
-    for doc in list_of_documents:
-        list_of_documents[list_of_documents.index(doc)] = folder_of_documents + "/" + doc
-    
+    if is_folder:
+        for doc in list_of_documents:
+            list_of_documents[list_of_documents.index(doc)] = folder_or_document_filepath + "/" + doc
+        
     # Create list to hold all splits
     all_splits = []
 
@@ -217,9 +224,13 @@ def FindContentInDocuments(question,
 
 
 # # Test function
+# # relevant_docs = FindContentInDocuments(
+# #     question="How do I calculate measure ratings from national benchmarks?",
+# #     folder_or_document_filepath = "C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/Documentation/NCQA/Methodology",
+# #     openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read()
+# # )
 # relevant_docs = FindContentInDocuments(
 #     question="How do I calculate measure ratings from national benchmarks?",
-#     folder_of_documents = "C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/Documentation/NCQA/Methodology",
+#     folder_or_document_filepath = "C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/Documentation/NCQA/Methodology/2024-HPR-Methodology_3.30.2023.pdf",
 #     openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read()
 # )
-
