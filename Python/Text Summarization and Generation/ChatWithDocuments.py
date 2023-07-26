@@ -19,6 +19,7 @@ def ChatWithDocuments(list_of_questions,
                       vectorstore_filepath=None,
                       query_method="stuff",
                       temperature=0.0,
+                      chat_model_name="gpt-3.5-turbo",
                       verbose=True,
                       json_field=None,
                       csv_source_column=None,
@@ -190,6 +191,7 @@ def ChatWithDocuments(list_of_questions,
 
     # Set the model name and temperature
     chatgpt_model = ChatOpenAI(
+        model_name=chat_model_name,
         temperature=temperature,
         openai_api_key=openai_api_key
     )
@@ -204,8 +206,8 @@ def ChatWithDocuments(list_of_questions,
             verbose=verbose
         )
         # Ask the question
-        response = query_retrieval({'question': list_of_questions[0]})
-        response = response['answer']
+        response = query_retrieval({'query': list_of_questions[0]})
+        response = response['result']
     else:
         # Create memory of conversation
         memory = ConversationBufferMemory(
@@ -240,7 +242,21 @@ def ChatWithDocuments(list_of_questions,
         return(response)
 
 
-# # Test the function
+# Test the function
+response_items = ChatWithDocuments(
+    list_of_questions=[
+        """
+        What drugs are produced in each country?
+        Structure the response as and Markdown table with the columns: 
+        COUNTRY, DRUGS_PRODUCED.
+        """
+    ],
+    document_filepath_or_url="https://www.cia.gov/the-world-factbook/field/illicit-drugs/",
+    openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read(),
+    query_method="refine",
+    return_vectorstore=True
+)
+display(Markdown(response_items['Response']))
 # response_items = ChatWithDocuments(
 #     list_of_questions=[
 #         """What drugs are produced in each country?

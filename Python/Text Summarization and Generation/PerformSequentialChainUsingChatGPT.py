@@ -8,7 +8,8 @@ import openai
 def PerformSequentialChainUsingChatGPT(dict_of_prompts,
                                        openai_api_key,
                                        print_api_cost=True,
-                                       temperture=.30):
+                                       temperture=.30,
+                                       chat_model_name="gpt-3.5-turbo"):
     """This function takes a dictionary of prompts that are then sent to OpenAI's ChatGPT API in sequential order. The outputs of the earlier prompts can be used as inputs for later prompts. It returns the response from the sequential chain.
     
     Keyword arguments:
@@ -39,29 +40,10 @@ def PerformSequentialChainUsingChatGPT(dict_of_prompts,
         my_prompt_template = dict_of_prompts["output_"+str(i)]
         prompt_template = ChatPromptTemplate.from_template(my_prompt_template)
         
-        # Estimate the number of tokens in the prompt
-        word_count = len(my_prompt_template.split())
-        if i == 0:
-            word_count = word_count + (len(dict_of_prompts["initial_input"]) / 4.7)  # Avg. length of word is 4.7 characters
-        estimated_tokens = word_count * 1.33
-        total_tokens = total_tokens + estimated_tokens
-        
-        # If the estimated number of tokens is greater than 2000, use the 16k model
-        if estimated_tokens > 2700:
-            gpt_model = "gpt-3.5-turbo-16k"
-            cost_per_1k_tokens = 0.003
-        else:
-            gpt_model = "gpt-3.5-turbo"
-            cost_per_1k_tokens = 0.0015
-            
-        # Calculate the cost of the API call
-        cost = estimated_tokens/1000 * cost_per_1k_tokens
-        total_cost = total_cost + cost
-        
         # Set the model name and temperature
         chatgpt_model = ChatOpenAI(
             temperature=temperture, 
-            model_name=gpt_model,
+            model_name=chat_model_name,
             openai_api_key=openai_api_key
         )
                 
@@ -90,14 +72,6 @@ def PerformSequentialChainUsingChatGPT(dict_of_prompts,
 
     # Run the sequential chain
     response = overall_chain(dict_of_prompts["initial_input"])
-
-    # Print the cost of the API usage, format as USD
-    if print_api_cost:
-        if total_cost < 0.01:
-            print("Total of API calls: <$0.01")
-        else:
-            total_cost = "${:,.2f}".format(total_cost)
-            print("Total of API calls:", total_cost)
             
     # Return the response
     return(response)

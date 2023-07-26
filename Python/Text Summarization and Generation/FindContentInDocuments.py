@@ -2,7 +2,7 @@ from langchain.chains.query_constructor.base import AttributeInfo
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.document_loaders import CSVLoader, Docx2txtLoader, JSONLoader, PyPDFLoader, SeleniumURLLoader, TextLoader, UnstructuredMarkdownLoader, UnstructuredPowerPointLoader, WebBaseLoader
 from langchain.indexes import VectorstoreIndexCreator
-from langchain.llms import OpenAI
+from langchain.llms import OpenAIChat
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import LLMChainExtractor
 from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTextSplitter, TokenTextSplitter, MarkdownHeaderTextSplitter, Language
@@ -21,6 +21,7 @@ def FindContentInDocuments(question,
                            return_vectorstore=False,
                            debug_mode=False,
                            temperature=0.0,
+                           chat_model_name="gpt-3.5-turbo",
                            splitter_mode="recursive_text",
                            splitter_chunk_size=1000,
                            splitter_chunk_overlap=100,
@@ -187,7 +188,8 @@ def FindContentInDocuments(question,
     ]
 
     # Wrap vectorstore in a compressor
-    llm = OpenAI(
+    llm = OpenAIChat(
+        model_name=chat_model_name,
         temperature=temperature,
         openai_api_key=openai_api_key
     )
@@ -223,12 +225,12 @@ def FindContentInDocuments(question,
         return(compressed_docs)
 
 
-# # Test function
-# # relevant_docs = FindContentInDocuments(
-# #     question="How do I calculate measure ratings from national benchmarks?",
-# #     folder_or_document_filepath = "C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/Documentation/NCQA/Methodology",
-# #     openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read()
-# # )
+# Test function
+# relevant_docs = FindContentInDocuments(
+#     question="How do I calculate measure ratings from national benchmarks?",
+#     folder_or_document_filepath = "C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/Documentation/NCQA/Methodology",
+#     openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read()
+# )
 # relevant_docs = FindContentInDocuments(
 #     question="How do I calculate measure ratings from national benchmarks?",
 #     folder_or_document_filepath = "C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/Documentation/NCQA/Methodology/2024-HPR-Methodology_3.30.2023.pdf",
