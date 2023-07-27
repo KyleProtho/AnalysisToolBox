@@ -7,6 +7,8 @@ from langchain.document_loaders import CSVLoader, Docx2txtLoader, JSONLoader, Py
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.memory import ConversationBufferMemory
+from langchain.retrievers import ContextualCompressionRetriever
+from langchain.retrievers.document_compressors import LLMChainExtractor
 from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTextSplitter, TokenTextSplitter, MarkdownHeaderTextSplitter, Language
 from langchain.vectorstores import FAISS, DocArrayInMemorySearch, Chroma
 import openai
@@ -186,23 +188,27 @@ def ChatWithDocuments(list_of_questions,
         #         collection_name=vectorstore_collection_name
         #     ).from_loaders([loader])
 
-    # Set the retrieval QA model
-    retriever = vectordb.as_retriever()
-
-    # Set the model name and temperature
-    chatgpt_model = ChatOpenAI(
+    # Wrap vectorstore in a compressor
+    llm = ChatOpenAI(
         model_name=chat_model_name,
         temperature=temperature,
         openai_api_key=openai_api_key
+    )
+    compressor = LLMChainExtractor.from_llm(llm)
+
+    # Create a compression retriever
+    compression_retriever = ContextualCompressionRetriever(
+        base_compressor=compressor,
+        base_retriever=vectordb.as_retriever()
     )
     
     # Iterate through the questions
     if len(list_of_questions)==1:
         # Create the model
         query_retrieval = RetrievalQA.from_chain_type(
-            llm=chatgpt_model, 
+            llm=llm, 
             chain_type=query_method, 
-            retriever=retriever,
+            retriever=compression_retriever,
             verbose=verbose
         )
         # Ask the question
@@ -218,8 +224,8 @@ def ChatWithDocuments(list_of_questions,
         list_of_responses = []
         # Create the model
         query_retrieval = ConversationalRetrievalChain.from_llm(
-            llm=chatgpt_model,
-            retriever=retriever,
+            llm=llm,
+            retriever=compression_retriever,
             verbose=verbose,
             memory=memory
         )
