@@ -235,7 +235,9 @@ def ChatWithDocuments(list_of_questions,
             list_of_responses.append(response['answer'])
         # Join the responses with each question
         response = "\n\n".join([f"**Question:** {list_of_questions[i]}\n\n**Answer:** {list_of_responses[i]}" for i in range(len(list_of_questions))])
-            
+    
+    # Turn off debugging
+    langchain.debug = False  
 
     # Return the response
     if return_vectorstore:
