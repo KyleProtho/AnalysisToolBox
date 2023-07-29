@@ -15,33 +15,33 @@ import openai
 import tiktoken
 
 # Declare the function
-def ChatWithDocuments(list_of_questions,
-                      openai_api_key,
-                      document_filepath_or_url=None,
-                      vectorstore_filepath=None,
-                      query_method="stuff",
-                      temperature=0.0,
-                      chat_model_name="gpt-3.5-turbo",
-                      verbose=True,
-                      json_field=None,
-                      csv_source_column=None,
-                      url_is_javascript_rendered=False,
-                      vectorstore_collection_name="collection",
-                      return_vectorstore=False,
-                      debug_mode=False,
-                      splitter_mode="recursive_text",
-                      splitter_chunk_size=1000,
-                      splitter_chunk_overlap=100,
-                      splitter_separators=["\n\n", "\n", "(?<=\. )", " ", ""],
-                      markdown_header_splitters=[
-                          ("#", "Header 1"),
-                          ("##", "Header 2"),
-                          ("###", "Header 3"),
-                          ("####", "Header 4"),
-                          ("#####", "Header 5"),
-                          ("######", "Header 6")
-                        ],
-                      chat_history_name="chat_history"):
+def ChatWithDocumentsUsingChatGPT(list_of_questions,
+                                  openai_api_key,
+                                  document_filepath_or_url=None,
+                                  vectorstore_filepath=None,
+                                  query_method="stuff",
+                                  temperature=0.0,
+                                  chat_model_name="gpt-3.5-turbo",
+                                  verbose=True,
+                                  json_field=None,
+                                  csv_source_column=None,
+                                  url_is_javascript_rendered=False,
+                                  vectorstore_collection_name="collection",
+                                  return_vectorstore=False,
+                                  debug_mode=False,
+                                  splitter_mode="recursive_text",
+                                  splitter_chunk_size=1000,
+                                  splitter_chunk_overlap=100,
+                                  splitter_separators=["\n\n", "\n", "(?<=\. )", " ", ""],
+                                  markdown_header_splitters=[
+                                    ("#", "Header 1"),
+                                    ("##", "Header 2"),
+                                    ("###", "Header 3"),
+                                    ("####", "Header 4"),
+                                    ("#####", "Header 5"),
+                                    ("######", "Header 6")
+                                  ],
+                                  chat_history_name="chat_history"):
     # Set debug mode
     langchain.debug = debug_mode
     
@@ -251,7 +251,7 @@ def ChatWithDocuments(list_of_questions,
 
 
 # # Test the function
-# response_items = ChatWithDocuments(
+# response_items = ChatWithDocumentsUsingChatGPT(
 #     list_of_questions=[
 #         """
 #         What drugs are produced in each country?
@@ -265,7 +265,7 @@ def ChatWithDocuments(list_of_questions,
 #     return_vectorstore=True
 # )
 # display(Markdown(response_items['Response']))
-# # response_items = ChatWithDocuments(
+# # response_items = ChatWithDocumentsUsingChatGPT(
 # #     list_of_questions=[
 # #         """What drugs are produced in each country?
 # #         Structure the response as and Markdown table with the columns: COUNTRY, DRUGS_PRODUCED.

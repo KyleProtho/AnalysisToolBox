@@ -1,25 +1,33 @@
+from langchain import PromptTemplate, LLMChain
+from langchain import debug as langchain_debug
 from langchain.chains import SequentialChain
-from langchain.chat_models import ChatOpenAI
+from langchain.llms import HuggingFaceHub
 from langchain.prompts import ChatPromptTemplate
-from langchain.chains import LLMChain
-import openai
+import requests 
+requests.adapters.DEFAULT_TIMEOUT = 60
+
+## To-do: Test with dictionary of models to use for each prompt
 
 # Set arguments
-def PerformSequentialChainUsingChatGPT(dict_of_prompts,
-                                       openai_api_key,
-                                       temperture=.30,
-                                       chat_model_name="gpt-3.5-turbo"):
+def PerformSequentialChainWithHuggingFaceLLM(dict_of_prompts,
+                                             huggingface_api_key,
+                                             temperature=.30,
+                                             max_token_length=1000,
+                                             model_repo_id="sshleifer/distilbart-cnn-12-6",
+                                             debug=False):
     """This function takes a dictionary of prompts that are then sent to OpenAI's ChatGPT API in sequential order. The outputs of the earlier prompts can be used as inputs for later prompts. It returns the response from the sequential chain.
     
     Keyword arguments:
     - dict_of_prompts: A dictionary of prompts. The keys are the names of the outputs, and the values are the prompts. The first prompt should be the initial input.
-    - openai_api_key: The API key for OpenAI's API.
-    - temperture: The temperture, or "randomness", to use for the API call. Must be between 0 and 1. Defaults to .30.
-    - chat_model_name: The name of the chat model to use. Defaults to "gpt-3.5-turbo".
+    - huggingface_api_key: The API key for HuggingFace's API.
+    - temperature: The temperature, or "randomness", to use for the API call. Must be between 0 and 1. Defaults to .30.
+    - model_repo_id: The name of the model to use. Defaults to "google/flan-t5-xxl".
     
     Return:
     - response: The response from the sequential chain.
     """
+    # Set the debug mode
+    langchain_debug = debug
     
     # Get number of prompts in the prompt dictionary
     prompt_count = len(dict_of_prompts)
@@ -38,16 +46,18 @@ def PerformSequentialChainUsingChatGPT(dict_of_prompts,
         my_prompt_template = dict_of_prompts["output_"+str(i)]
         prompt_template = ChatPromptTemplate.from_template(my_prompt_template)
         
-        # Set the model name and temperature
-        chatgpt_model = ChatOpenAI(
-            temperature=temperture, 
-            model_name=chat_model_name,
-            openai_api_key=openai_api_key
+        # Create the LLM to use
+        llm = HuggingFaceHub(
+            repo_id=model_repo_id, 
+            model_kwargs={
+                "temperature": temperature, 
+                "max_length": max_token_length
+            },
+            huggingfacehub_api_token=huggingface_api_key
         )
-                
         # Create the prompt chain
         prompt_chain = LLMChain(
-            llm=chatgpt_model, 
+            llm=llm, 
             prompt=prompt_template,
             output_key="output_"+str(i),
         )
@@ -70,13 +80,16 @@ def PerformSequentialChainUsingChatGPT(dict_of_prompts,
 
     # Run the sequential chain
     response = overall_chain(dict_of_prompts["initial_input"])
+    
+    # Turn off debug mode
+    langchain_debug = False
             
     # Return the response
     return(response)
 
 
 # # Test the function
-# PerformSequentialChainUsingChatGPT(dict_of_prompts={
+# PerformSequentialChainWithHuggingFaceLLM(dict_of_prompts={
 #     "initial_input": """
 #         Je trouve le goût médiocre. La mousse ne tient pas, c'est bizarre. 
 #         J'achète les mêmes dans le commerce et le goût est bien meilleur...
@@ -104,6 +117,7 @@ def PerformSequentialChainUsingChatGPT(dict_of_prompts,
 #         Language: {output_1}
 #     """
 #     },
-#     openai_api_key = open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read()
+#     huggingface_api_key=open("C:/Users/oneno/OneDrive/Desktop/HuggingFace key.txt", "r").read(),
+#     debug=True
 # )
 
