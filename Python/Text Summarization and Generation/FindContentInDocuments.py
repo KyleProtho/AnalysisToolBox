@@ -43,20 +43,23 @@ def FindContentInDocuments(question,
         splitter_mode must be one of: character, recursive_text, token, or markdown.
         """
         raise ValueError(error_message)
-    
-    # See if filepath is a folder or a document
-    is_folder = os.path.isdir(folder_or_document_filepath)
 
     # Create list of documents from folder
-    if is_folder:
-        list_of_documents = os.listdir(folder_or_document_filepath)
+    if os.path.isdir(folder_or_document_filepath):
+        # Get all documents from the folder and its subfolders
+        list_of_documents = []
+        for root, dirs, files in os.walk(folder_or_document_filepath):
+            for file in files:
+                # Check if the file is not a folder
+                if not os.path.isdir(file):
+                    # Create file path
+                    file_path = os.path.join(root, file)
+                    # Replace backslashes with forward slashes
+                    file_path = file_path.replace("\\", "/")
+                    # Append to list of documents
+                    list_of_documents.append(file_path)
     else:
         list_of_documents = [folder_or_document_filepath]
-
-    # Create full path for each document
-    if is_folder:
-        for doc in list_of_documents:
-            list_of_documents[list_of_documents.index(doc)] = folder_or_document_filepath + "/" + doc
         
     # Create list to hold all splits
     all_splits = []
@@ -207,9 +210,13 @@ def FindContentInDocuments(question,
     # Print documents in an easily readable format
     for doc in compressed_docs:
         print(f"Document: '{doc.metadata['source']}'")
-        print(f"Page: {doc.metadata['page']}")
         print(f"Relevant text: {doc.page_content}")
-        print("\n\n")
+        try:
+            print(f"Page: {doc.metadata['page']}")
+            print("\n\n")
+        except KeyError:
+            print("\n\n")
+            continue
 
     # Reset debug mode
     langchain_debug = False
