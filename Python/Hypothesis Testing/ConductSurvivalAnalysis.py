@@ -1,6 +1,6 @@
 # Load packages
 from lifelines import KaplanMeierFitter
-from lifelines.statistics import logrank_test
+from lifelines.statistics import logrank_test, multivariate_logrank_test
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -270,24 +270,25 @@ def ConductSurvivalAnalysis(dataframe,
     if conduct_log_rank_test:
         if group_column != None:
             groups = dataframe[group_column].unique()
-            for i in range(len(groups)):
-                group_a = groups[i]
-                for j in range(i+1, len(groups)):
-                    group_b = groups[j]
-                    results = logrank_test(
-                        dataframe[time_duration_column][dataframe[group_column] == group_a], 
-                        dataframe[time_duration_column][dataframe[group_column] == group_b], 
-                        dataframe[outcome_column][dataframe[group_column] == group_a], 
-                        dataframe[outcome_column][dataframe[group_column] == group_b], 
-                        alpha=significance_level
-                    )
-                    print("Log-rank test for groups " + str(group_a) + " vs. " + str(group_b))
-                    if results.p_value <= significance_level:
-                        print("p-value: " + str(round(results.p_value, 3)) + " - there is a statistically significant difference in survival curves between the two groups.")
-                    else:
-                        print("p-value: " + str(round(results.p_value, 3)) + " - there is not a statistically significant difference in survival curves between the two groups.")
-                    if print_log_rank_test_results:
-                        results.print_summary()
+            # If there are more than two groups, run a multivariate log-rank test
+            if len(groups) >= 3:
+                results = multivariate_logrank_test(
+                    dataframe[time_duration_column],
+                    dataframe[group_column],
+                    dataframe[outcome_column]
+                )
+                if print_log_rank_test_results:
+                    results.print_summary()
+            # If there are two groups, run a bivariate log-rank test
+            elif len(groups) == 2:
+                results = logrank_test(
+                    dataframe[dataframe[group_column] == groups[0]][time_duration_column],
+                    dataframe[dataframe[group_column] == groups[1]][time_duration_column],
+                    dataframe[dataframe[group_column] == groups[0]][outcome_column],
+                    dataframe[dataframe[group_column] == groups[1]][outcome_column]
+                )
+                if print_log_rank_test_results:
+                    results.print_summary()
     
     # Create a dictionary to return models and survival tables
     return_dict = {}
@@ -298,11 +299,17 @@ def ConductSurvivalAnalysis(dataframe,
     # Return the dictionary
     return return_dict
 
-# Test the function
-survival_analysis = ConductSurvivalAnalysis(
-    dataframe=pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/1. Survival Analysis/lung.csv"),
-    outcome_column="status",
-    time_duration_column="time",
-    group_column="ph.ecog",
-    print_log_rank_test_results=False
-)
+
+# # Test the function
+# # survival_analysis = ConductSurvivalAnalysis(
+# #     dataframe=pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/1. Survival Analysis/lung.csv"),
+# #     outcome_column="status",
+# #     time_duration_column="time",
+# #     group_column="sex"
+# # )
+# survival_analysis = ConductSurvivalAnalysis(
+#     dataframe=pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/1. Survival Analysis/lung.csv"),
+#     outcome_column="status",
+#     time_duration_column="time",
+#     group_column="ph.ecog"
+# )
