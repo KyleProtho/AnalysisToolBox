@@ -1,6 +1,5 @@
 # Load packages
 import pandas as pd
-import os
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
 import seaborn as sns
@@ -38,7 +37,6 @@ def PlotScatterplot(dataframe,
                     lower_right_quadrant_label=None,
                     lower_right_quadrant_fill_color=None,
                     folder_to_save_plot=None):
-    
     # Ensure that fitted_line_type is None, 'straight', or 'lowess'
     if fitted_line_type not in [None, 'straight', 'lowess']:
         raise ValueError("Invalid fitted_line_type argument. Please enter None, 'straight', or 'lowess'.")
@@ -546,15 +544,6 @@ def PlotScatterplot(dataframe,
                 transform=ax.ax.transAxes
             )
         
-    # Save plot to folder if one is specified
-    if folder_to_save_plot != None:
-        try:
-            plot_filepath = str(folder_to_save_plot) + "Scatterplot - " + categorical_variable + ".png"
-            plot_filepath = os.path.normpath(plot_filepath)
-            fig.savefig(plot_filepath)
-        except:
-            print("The filepath you entered to save your plot is invalid. Plot not saved.")
-    
     # Show plot
     plt.show()
     

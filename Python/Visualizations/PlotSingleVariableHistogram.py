@@ -9,19 +9,22 @@ sns.set(style="white",
 
 def PlotSingleVariableHistogram(dataframe,
                                 quantitative_variable,
+                                # Histogram formatting arguments
                                 fill_color="#999999",
                                 fill_transparency=0.6,
+                                show_mean=True,
+                                show_median=True,
+                                # Text formatting arguments
                                 title_for_plot=None,
                                 subtitle_for_plot=None,
                                 caption_for_plot=None,
                                 data_source_for_plot=None,
-                                show_mean=True,
-                                show_median=True,
-                                figure_size=(8, 6),
                                 show_y_axis=False,
                                 title_y_indent=1.1,
                                 subtitle_y_indent=1.05,
-                                caption_y_indent=-0.15):
+                                caption_y_indent=-0.15,
+                                # Plot formatting arguments
+                                figure_size=(8, 6)):
     """This function creates a histogram of a single quantitative variable.
 
     Args:
