@@ -38,6 +38,10 @@ def ConductEntityMatching(dataframe_1,
     if columns_to_compare is not None:
         dataframe_1 = dataframe_1[[dataframe_1_primary_key] + columns_to_compare].copy()
         dataframe_2 = dataframe_2[[dataframe_2_primary_key] + columns_to_compare].copy()
+        
+    # Remove duplicate rows from dataframe_1 and dataframe_2
+    dataframe_1.drop_duplicates(inplace=True)
+    dataframe_2.drop_duplicates(inplace=True)
     
     # Create placeholder dataframe to store results
     data_match_results = pd.DataFrame()
