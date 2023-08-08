@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+import textwrap
+
 sns.set(style="white",
         font="Arial",
         context="paper")
@@ -13,6 +15,7 @@ def PlotTimeSeries(dataframe,
                    line_color="#3269a8",
                    line_alpha=0.8,
                    color_palette="Set2",
+                   markers="o",
                    # Text formatting arguments
                    title_for_plot=None,
                    subtitle_for_plot=None,
@@ -35,6 +38,7 @@ def PlotTimeSeries(dataframe,
             y=numeric_variable,
             color=line_color,
             alpha=line_alpha,
+            marker=markers,
             ax=ax
         )
     else:
@@ -45,6 +49,7 @@ def PlotTimeSeries(dataframe,
             hue=group_variable,
             palette=color_palette,
             alpha=line_alpha,
+            marker=markers,
             ax=ax
         )
     
@@ -72,6 +77,9 @@ def PlotTimeSeries(dataframe,
         transform=ax.transAxes
     )
     
+    # Word wrap the subtitle without splitting words
+    if subtitle_for_plot != None:   
+        subtitle_for_plot = textwrap.fill(subtitle_for_plot, 100, break_long_words=False)
     # Set the subtitle with Arial font, size 11, and color #666666
     ax.text(
         x=x_indent,
@@ -103,27 +111,13 @@ def PlotTimeSeries(dataframe,
     
     # Add a word-wrapped caption if one is provided
     if caption_for_plot != None or data_source_for_plot != None:
+        # Create starting point for caption
+        wrapped_caption = ""
+        
+        # Add the caption to the plot, if one is provided
         if caption_for_plot != None:
             # Word wrap the caption without splitting words
-            if len(caption_for_plot) > 120:
-                # Split the caption into words
-                words = caption_for_plot.split(" ")
-                # Initialize the wrapped caption
-                wrapped_caption = ""
-                # Initialize the line length
-                line_length = 0
-                # Iterate through the words
-                for word in words:
-                    # If the word is too long to fit on the current line, add a new line
-                    if line_length + len(word) > 120:
-                        wrapped_caption = wrapped_caption + "\n"
-                        line_length = 0
-                    # Add the word to the line
-                    wrapped_caption = wrapped_caption + word + " "
-                    # Update the line length
-                    line_length = line_length + len(word) + 1
-        else:
-            wrapped_caption = ""
+            wrapped_caption = textwrap.fill(caption_for_plot, 120, break_long_words=False)
             
         # Add the data source to the caption, if one is provided
         if data_source_for_plot != None:
