@@ -1,8 +1,6 @@
 # Load packages
 from fuzzywuzzy import fuzz
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 
 # Declare function
 def ConductEntityMatching(dataframe_1, 
