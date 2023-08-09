@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler
 # Declare function
 def CreateGaussianMixtureClusters(dataframe,
                                   list_of_variables_to_base_clusters=None,
-                                  number_of_clusters=4,
+                                  number_of_clusters=None,
                                   column_name_for_clusters='Gaussian Mixture Cluster',
                                   scale_predictor_variables=False,
                                   show_cluster_summary_plots=True,
@@ -46,6 +46,28 @@ def CreateGaussianMixtureClusters(dataframe,
     # Show peak-to-peak range of each predictor
     print("\nPeak-to-peak range of each predictor:")
     print(np.ptp(dataframe_clusters[list_of_variables_to_base_clusters], axis=0))
+    
+    # If number_of_clusters is None, conduct clustering up to 12 times and plot the results
+    if number_of_clusters is None:
+        n_clusters = np.arange(1,13)
+        models = [GaussianMixture(n, random_state=random_seed).fit(dataframe_clusters[list_of_variables_to_base_clusters]) for n in n_clusters]
+        plt.plot(
+            n_clusters,
+            [m.bic(dataframe_clusters) for m in models],
+            label = 'BIC'
+        )
+        plt.plot(
+            n_clusters,
+            [m.aic(dataframe_clusters) for m in models],
+            label = 'AIC'
+        )
+        plt.legend()
+        plt.xlabel('Number of Clusters')
+        
+        # Find the optimal number of clusters based on the BIC and AIC
+        number_of_clusters = np.argmin([m.bic(dataframe_clusters) for m in models]) + 1
+        print("\nNumber of clusters based on minimum BIC: " + str(number_of_clusters))
+        print("But, be sure to check the AIC and BIC curves on the plot to ensure the optimal number of clusters makes sense for your purpose.")
         
     # Conduct Guassian Mixture clustering
     model = GaussianMixture(
@@ -97,5 +119,12 @@ def CreateGaussianMixtureClusters(dataframe,
 # iris = CreateGaussianMixtureClusters(
 #     dataframe=iris,
 #     list_of_variables_to_base_clusters=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-#     show_cluster_summary_plots=True
+#     show_cluster_summary_plots=True,
+#     number_of_clusters=3
 # )
+# # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# # iris = CreateGaussianMixtureClusters(
+# #     dataframe=iris,
+# #     list_of_variables_to_base_clusters=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+# #     show_cluster_summary_plots=True
+# # )
