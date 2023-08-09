@@ -1,26 +1,20 @@
 # Load packages
 from fuzzywuzzy import fuzz
+import Levenshtein
+import numpy as np
 import pandas as pd
 
 # Declare function
 def ConductEntityMatching(dataframe_1, 
                           dataframe_1_primary_key, 
                           dataframe_2, 
-                          dataframe_2_primary_key, 
-                          match_score_threshold=90,
+                          dataframe_2_primary_key,
+                          check_levenshtein_distance=False, 
+                          levenshtein_distance_threshold=4,
+                          match_score_threshold=95,
                           columns_to_compare=None,
                           match_methods=['Partial Token Set Ratio', 'Weighted Ratio'],
                           show_progress=True):
-    """
-    Perform entity matching between two dataframes.
-    
-    :param dataframe_1: First dataframe
-    :param dataframe_2: Second dataframe
-    :param dataframe_1_primary_key: Key column in first dataframe
-    :param dataframe_2_primary_key: Key column in second dataframe
-    :param match_score_threshold: match_score_threshold for cosine similarity (default=0.8)
-    :return: Dataframe with matched entities
-    """
     # Create list of valid match methods
     valid_match_methods = [
         'Ratio', 'Partial Ratio', 
@@ -46,104 +40,101 @@ def ConductEntityMatching(dataframe_1,
     # Create placeholder dataframe to store results
     data_match_results = pd.DataFrame()
     
-    # Iterate through each row in dataframe_1
-    for index_1, row_1 in dataframe_1.iterrows():
-        # Show progress based on number of rows
-        if show_progress:
-            if index_1 + 1 % 50 == 0:
-                print("Processing row " + str(index_1 + 1) + " of " + str(len(dataframe_1)))
-        
-        # Get the identifier of the row
-        entity_1_id = row_1[dataframe_1_primary_key]
-        # Create string to store concatenated values of columns to compare
-        entity_1 = row_1[columns_to_compare].str.cat(sep=' ')
-        
-        # Iterate through each row in dataframe_2
-        for index_2, row_2 in dataframe_2.iterrows():
-            # Get the identifier of the row
-            entity_2_id = row_2[dataframe_2_primary_key]
-            # Create string to store concatenated values of columns to compare
-            entity_2 = row_2[columns_to_compare].str.cat(sep=' ')
-            
-            # Calculate fuzz ratio, which calls difflib.ratio on the two input strings
-            if 'Ratio' in match_methods:
-                fuzz_ratio_score = fuzz.ratio(entity_1, entity_2)
-                # If score is above the threshold, then add the match to the dataframe
-                if fuzz_ratio_score >= match_score_threshold:
-                    df = pd.DataFrame({
-                        'Entity 1': entity_1_id, 'Entity 2': entity_2_id, 
-                        'Match Method': "Ratio", 'Match Score': fuzz_ratio_score
-                    }, index=[0])
-                    data_match_results = pd.concat([data_match_results, df], ignore_index=True)
-            
-            # Calculate partial ratio, which calls ratio using the shortest string (length n) against all n-length substrings of the larger string and returns the highest score
-            if 'Partial Ratio' in match_methods:
-                partial_ratio_score = fuzz.partial_ratio(entity_1, entity_2)
-                # If score is above the threshold, then add the match to the dataframe
-                if partial_ratio_score >= match_score_threshold:
-                    df = pd.DataFrame({
-                        'Entity 1': entity_1_id, 'Entity 2': entity_2_id, 
-                        'Match Method': "Patial Ratio", 'Match Score': partial_ratio_score
-                    }, index=[0])
-                    data_match_results = pd.concat([data_match_results, df], ignore_index=True)
-                
-            # Calculate token sort ratio, which tokenizes the strings and sorts them alphabetically before computing ratio
-            if 'Token Sort Ratio' in match_methods:
-                token_sort_ratio_score = fuzz.token_sort_ratio(entity_1, entity_2)
-                # If score is above the threshold, then add the match to the dataframe
-                df = pd.DataFrame({
-                        'Entity 1': entity_1_id, 'Entity 2': entity_2_id, 
-                        'Match Method': "Token Sort Ratio", 'Match Score': token_sort_ratio_score
-                    }, index=[0])
-                if token_sort_ratio_score >= match_score_threshold:
-                    data_match_results = pd.concat([data_match_results, df], ignore_index=True)
-            
-            # Calculate partial token sort ratio, which tokenizes the strings and sorts them alphabetically before computing ratio using the shortest string (length n) against all n-length substrings of the larger string and returns the highest score
-            if 'Partial Token Sort Ratio' in match_methods:
-                partial_token_sort_ratio_score = fuzz.partial_token_sort_ratio(entity_1, entity_2)
-                # If score is above the threshold, then add the match to the dataframe
-                df = pd.DataFrame({
-                        'Entity 1': entity_1_id, 'Entity 2': entity_2_id, 
-                        'Match Method': "Partial Token Sort Ratio", 'Match Score': partial_token_sort_ratio_score
-                    }, index=[0])
-                if partial_token_sort_ratio_score >= match_score_threshold:
-                    data_match_results = pd.concat([data_match_results, df], ignore_index=True)
-                
-            # Calculate token set ratio, which tokenizes the strings and computes ratio using the intersection of the two token sets
-            if 'Token Set Ratio' in match_methods:
-                token_set_ratio_score = fuzz.token_set_ratio(entity_1, entity_2)
-                # If score is above the threshold, then add the match to the dataframe
-                if token_set_ratio_score >= match_score_threshold:
-                    df = pd.DataFrame({
-                        'Entity 1': entity_1_id, 'Entity 2': entity_2_id, 
-                        'Match Method': "Token Set Ratio", 'Match Score': token_set_ratio_score
-                    }, index=[0])
-                    data_match_results = pd.concat([data_match_results, df], ignore_index=True)
-                
-            # Calculate partial token set ratio, which tokenizes the strings and computes ratio using the intersection of the two token sets using the shortest string (length n) against all n-length substrings of the larger string and returns the highest score
-            if 'Partial Token Set Ratio' in match_methods:
-                partial_token_set_ratio_score = fuzz.partial_token_set_ratio(entity_1, entity_2)
-                # If score is above the threshold, then add the match to the dataframe
-                if partial_token_set_ratio_score >= match_score_threshold:
-                    df = pd.DataFrame({
-                        'Entity 1': entity_1_id, 'Entity 2': entity_2_id, 
-                        'Match Method': "Partial Token Set Ratio", 'Match Score': partial_token_set_ratio_score
-                    }, index=[0])
-                    data_match_results = pd.concat([data_match_results, df], ignore_index=True)
-            
-            # Calculate weighted ratio, which is a weighted average of the above scores
-            if 'Weighted Ratio' in match_methods:
-                weighted_ratio_score = fuzz.WRatio(entity_1, entity_2)
-                # If score is above the threshold, then add the match to the dataframe
-                df = pd.DataFrame({
-                        'Entity 1': entity_1_id, 'Entity 2': entity_2_id, 
-                        'Match Method': "Weighted Ratio", 'Match Score': weighted_ratio_score
-                    }, index=[0])
-                if weighted_ratio_score >= match_score_threshold:
-                    data_match_results = pd.concat([data_match_results, df], ignore_index=True)
+    # Add string column to dataframe_1 to store concatenated values of columns to compare
+    dataframe_1['Entity'] = dataframe_1[columns_to_compare[0]].str.cat(dataframe_1[columns_to_compare[0:]], sep=' ')
     
+    # Add string column to dataframe_2 to store concatenated values of columns to compare
+    dataframe_2['Entity'] = dataframe_2[columns_to_compare[0]].str.cat(dataframe_2[columns_to_compare[0:]], sep=' ')
+    
+    # Create combination of each Entity 1 and Entity 2
+    entity_combinations = pd.merge(dataframe_1, dataframe_2, how='cross', suffixes=('_1', '_2'))
+    
+    # Calculate Levenshtein distance if specified
+    if check_levenshtein_distance:
+        entity_combinations['Levenshtein Distance'] = entity_combinations.apply(lambda row: Levenshtein.distance(row['Entity_1'], row['Entity_2']), axis=1)
+        # Filter out combinations that are not within the threshold
+        entity_combinations = entity_combinations[entity_combinations['Levenshtein Distance'] <= levenshtein_distance_threshold]
+    
+    # Calculate fuzz ratio, which calls difflib.ratio on the two input strings
+    if 'Ratio' in match_methods:
+        # Calculate fuzz ratio
+        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp['Match Method'] = 'Ratio'
+        df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.ratio(row['Entity_1'], row['Entity_2']), axis=1)
+        # Filter out combinations that are not within the threshold
+        df_temp = df_temp[df_temp['Match Score'] >= match_score_threshold]
+        # Add the matches to the dataframe
+        data_match_results = pd.concat([data_match_results, df_temp], ignore_index=True)
+    
+    # Calculate partial ratio, which calls ratio using the shortest string (length n) against all n-length substrings of the larger string and returns the highest score
+    if 'Partial Ratio' in match_methods:
+        # Calculate partial fuzz ratio
+        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp['Match Method'] = 'Partial Ratio'
+        df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.partial_ratio(row['Entity_1'], row['Entity_2']), axis=1)
+        # Filter out combinations that are not within the threshold
+        df_temp = df_temp[df_temp['Match Score'] >= match_score_threshold]
+        # Add the matches to the dataframe
+        data_match_results = pd.concat([data_match_results, df_temp], ignore_index=True)
+        
+    # Calculate token sort ratio, which tokenizes the strings and sorts them alphabetically before computing ratio
+    if 'Token Sort Ratio' in match_methods:
+        # Calculate token sort ratio
+        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp['Match Method'] = 'Token Sort Ratio'
+        df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.token_sort_ratio(row['Entity_1'], row['Entity_2']), axis=1)
+        # Filter out combinations that are not within the threshold
+        df_temp = df_temp[df_temp['Match Score'] >= match_score_threshold]
+        # Add the matches to the dataframe
+        data_match_results = pd.concat([data_match_results, df_temp], ignore_index=True)
+        
+    
+    # Calculate partial token sort ratio, which tokenizes the strings and sorts them alphabetically before computing ratio using the shortest string (length n) against all n-length substrings of the larger string and returns the highest score
+    if 'Partial Token Sort Ratio' in match_methods:
+        # Calculate partial token sort ratio
+        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp['Match Method'] = 'Partial Token Sort Ratio'
+        df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.partial_token_sort_ratio(row['Entity_1'], row['Entity_2']), axis=1)
+        # Filter out combinations that are not within the threshold
+        df_temp = df_temp[df_temp['Match Score'] >= match_score_threshold]
+        # Add the matches to the dataframe
+        data_match_results = pd.concat([data_match_results, df_temp], ignore_index=True)
+        
+    # Calculate token set ratio, which tokenizes the strings and computes ratio using the intersection of the two token sets
+    if 'Token Set Ratio' in match_methods:
+        # Calculate token set ratio
+        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp['Match Method'] = 'Token Set Ratio'
+        df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.token_set_ratio(row['Entity_1'], row['Entity_2']), axis=1)
+        # Filter out combinations that are not within the threshold
+        df_temp = df_temp[df_temp['Match Score'] >= match_score_threshold]
+        # Add the matches to the dataframe
+        data_match_results = pd.concat([data_match_results, df_temp], ignore_index=True)
+        
+    # Calculate partial token set ratio, which tokenizes the strings and computes ratio using the intersection of the two token sets using the shortest string (length n) against all n-length substrings of the larger string and returns the highest score
+    if 'Partial Token Set Ratio' in match_methods:
+        # Calculate partial token set ratio
+        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp['Match Method'] = 'Partial Token Set Ratio'
+        df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.partial_token_set_ratio(row['Entity_1'], row['Entity_2']), axis=1)
+        # Filter out combinations that are not within the threshold
+        df_temp = df_temp[df_temp['Match Score'] >= match_score_threshold]
+        # Add the matches to the dataframe
+        data_match_results = pd.concat([data_match_results, df_temp], ignore_index=True)
+    
+    # Calculate weighted ratio, which is a weighted average of the above scores
+    if 'Weighted Ratio' in match_methods:
+        # Calculate weighted ratio
+        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp['Match Method'] = 'Weighted Ratio'
+        df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.WRatio(row['Entity_1'], row['Entity_2']), axis=1)
+        # Filter out combinations that are not within the threshold
+        df_temp = df_temp[df_temp['Match Score'] >= match_score_threshold]
+        # Add the matches to the dataframe
+        data_match_results = pd.concat([data_match_results, df_temp], ignore_index=True)
+        
     # Convert to wide-form dataframe
-    data_match_results = data_match_results.pivot(index=['Entity 1', 'Entity 2'], columns='Match Method', values='Match Score')
+    data_match_results = data_match_results.pivot(index=['Entity_1', 'Entity_2'], columns='Match Method', values='Match Score')
     
     # # Reset index of dataframe
     data_match_results['Entity 1'] = data_match_results.index.get_level_values(0)
@@ -184,8 +175,8 @@ def ConductEntityMatching(dataframe_1,
 # dataframe['FIRST'] = dataframe['FIRST'].str.replace('\d+', '', regex=True)
 # dataframe['LAST'] = dataframe['LAST'].str.replace('\d+', '', regex=True)
 # # Split dataframe into two
-# dataframe_1 = dataframe.iloc[:int(len(dataframe)/3)]
-# dataframe_2 = dataframe.iloc[int(len(dataframe)/3):]
+# dataframe_1 = dataframe.iloc[:int(len(dataframe)/2)]
+# dataframe_2 = dataframe.iloc[int(len(dataframe)/2):]
 # # Perform entity matching
 # matches = ConductEntityMatching(
 #     dataframe_1, 'Id', 
@@ -194,3 +185,12 @@ def ConductEntityMatching(dataframe_1,
 #     match_score_threshold=86,
 #     match_methods=['Weighted Ratio', 'Token Sort Ratio']
 # )
+# # matches = ConductEntityMatching(
+# #     dataframe_1, 'Id', 
+# #     dataframe_2, 'Id', 
+# #     columns_to_compare=['FIRST', 'LAST'],
+# #     check_levenshtein_distance=True,
+# #     levenshtein_distance_threshold=6,
+# #     match_score_threshold=86,
+# #     match_methods=['Weighted Ratio', 'Token Sort Ratio']
+# # )
