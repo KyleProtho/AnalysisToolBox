@@ -9,8 +9,7 @@ def ConductEntityMatching(dataframe_1,
                           dataframe_1_primary_key, 
                           dataframe_2, 
                           dataframe_2_primary_key,
-                          check_levenshtein_distance=False, 
-                          levenshtein_distance_threshold=4,
+                          levenshtein_distance_threshold=None,
                           match_score_threshold=95,
                           columns_to_compare=None,
                           match_methods=['Partial Token Set Ratio', 'Weighted Ratio'],
@@ -27,6 +26,11 @@ def ConductEntityMatching(dataframe_1,
     for match_method in match_methods:
         if match_method not in valid_match_methods:
             raise ValueError('Invalid match method specified: ' + match_method + ". Valid match methods are: " + ', '.join(valid_match_methods))
+        
+    # Ensure that lev distance threshold is either int or None
+    if levenshtein_distance_threshold is not None:
+        if not isinstance(levenshtein_distance_threshold, int):
+            raise ValueError('Levenshtein distance threshold must be an integer or None')
 
     # Select columns to compare if specified
     if columns_to_compare is not None:
@@ -50,7 +54,7 @@ def ConductEntityMatching(dataframe_1,
     entity_combinations = pd.merge(dataframe_1, dataframe_2, how='cross', suffixes=('_1', '_2'))
     
     # Calculate Levenshtein distance if specified
-    if check_levenshtein_distance:
+    if levenshtein_distance_threshold is not None:
         entity_combinations['Levenshtein Distance'] = entity_combinations.apply(lambda row: Levenshtein.distance(row['Entity_1'], row['Entity_2']), axis=1)
         # Filter out combinations that are not within the threshold
         entity_combinations = entity_combinations[entity_combinations['Levenshtein Distance'] <= levenshtein_distance_threshold]
@@ -189,7 +193,6 @@ def ConductEntityMatching(dataframe_1,
 # #     dataframe_1, 'Id', 
 # #     dataframe_2, 'Id', 
 # #     columns_to_compare=['FIRST', 'LAST'],
-# #     check_levenshtein_distance=True,
 # #     levenshtein_distance_threshold=6,
 # #     match_score_threshold=86,
 # #     match_methods=['Weighted Ratio', 'Token Sort Ratio']
