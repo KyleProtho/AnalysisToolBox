@@ -1,4 +1,5 @@
 # Load packages
+from IPython.display import display, HTML, Markdown
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -10,7 +11,8 @@ from sklearn.preprocessing import MinMaxScaler
 def ConductPrincipalComponentAnalysis(dataframe,
                                       list_of_numeric_variables=None,
                                       number_of_components=None,
-                                      random_seed=412):
+                                      random_seed=412,
+                                      display_pca_as_markdown=True):
     # If list_of_numeric_variables is not specified, then use all numeric variables
     if list_of_numeric_variables is None:
         list_of_numeric_variables = dataframe.select_dtypes(include=[np.number]).columns.tolist()
@@ -58,7 +60,10 @@ def ConductPrincipalComponentAnalysis(dataframe,
 
     # Print principal components
     print("\nPrincipal components:")
-    print(data_pca)
+    if display_pca_as_markdown:
+        display(data_pca)
+    else:
+        print(data_pca)
 
     # Add principal components to original dataframe
     for i in range(1, number_of_components+1):
