@@ -45,10 +45,12 @@ def ConductEntityMatching(dataframe_1,
     data_match_results = pd.DataFrame()
     
     # Add string column to dataframe_1 to store concatenated values of columns to compare
-    dataframe_1['Entity'] = dataframe_1[columns_to_compare[0]].str.cat(dataframe_1[columns_to_compare[0:]], sep=' ')
-    
-    # Add string column to dataframe_2 to store concatenated values of columns to compare
-    dataframe_2['Entity'] = dataframe_2[columns_to_compare[0]].str.cat(dataframe_2[columns_to_compare[0:]], sep=' ')
+    if len(columns_to_compare) == 1:
+        dataframe_1['Entity'] = dataframe_1[columns_to_compare[0]]
+        dataframe_2['Entity'] = dataframe_2[columns_to_compare[0]]
+    else:
+        dataframe_1['Entity'] = dataframe_1[columns_to_compare[0]].str.cat(dataframe_1[columns_to_compare[1:]], sep=' ')
+        dataframe_2['Entity'] = dataframe_2[columns_to_compare[0]].str.cat(dataframe_2[columns_to_compare[1:]], sep=' ')
     
     # Create combination of each Entity 1 and Entity 2
     entity_combinations = pd.merge(dataframe_1, dataframe_2, how='cross', suffixes=('_1', '_2'))
@@ -59,10 +61,24 @@ def ConductEntityMatching(dataframe_1,
         # Filter out combinations that are not within the threshold
         entity_combinations = entity_combinations[entity_combinations['Levenshtein Distance'] <= levenshtein_distance_threshold]
     
+    # If dataframe_1_primary_key is not in entity_combinations, add _1 to the end of the column name
+    if dataframe_1_primary_key not in entity_combinations.columns:
+        dataframe_1_primary_key = dataframe_1_primary_key + '_1'
+    
+    # If dataframe_2_primary_key is not in entity_combinations, add _2 to the end of the column name
+    if dataframe_2_primary_key not in entity_combinations.columns:
+        dataframe_2_primary_key = dataframe_2_primary_key + '_2'
+    
+    # Create list of columns to select
+    list_columns_to_select = [
+        'Entity_1', 
+        'Entity_2'
+    ]
+    
     # Calculate fuzz ratio, which calls difflib.ratio on the two input strings
     if 'Ratio' in match_methods:
         # Calculate fuzz ratio
-        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp = entity_combinations[list_columns_to_select].copy()
         df_temp['Match Method'] = 'Ratio'
         df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.ratio(row['Entity_1'], row['Entity_2']), axis=1)
         # Filter out combinations that are not within the threshold
@@ -73,7 +89,7 @@ def ConductEntityMatching(dataframe_1,
     # Calculate partial ratio, which calls ratio using the shortest string (length n) against all n-length substrings of the larger string and returns the highest score
     if 'Partial Ratio' in match_methods:
         # Calculate partial fuzz ratio
-        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp = entity_combinations[list_columns_to_select].copy()
         df_temp['Match Method'] = 'Partial Ratio'
         df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.partial_ratio(row['Entity_1'], row['Entity_2']), axis=1)
         # Filter out combinations that are not within the threshold
@@ -84,7 +100,7 @@ def ConductEntityMatching(dataframe_1,
     # Calculate token sort ratio, which tokenizes the strings and sorts them alphabetically before computing ratio
     if 'Token Sort Ratio' in match_methods:
         # Calculate token sort ratio
-        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp = entity_combinations[list_columns_to_select].copy()
         df_temp['Match Method'] = 'Token Sort Ratio'
         df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.token_sort_ratio(row['Entity_1'], row['Entity_2']), axis=1)
         # Filter out combinations that are not within the threshold
@@ -92,11 +108,10 @@ def ConductEntityMatching(dataframe_1,
         # Add the matches to the dataframe
         data_match_results = pd.concat([data_match_results, df_temp], ignore_index=True)
         
-    
     # Calculate partial token sort ratio, which tokenizes the strings and sorts them alphabetically before computing ratio using the shortest string (length n) against all n-length substrings of the larger string and returns the highest score
     if 'Partial Token Sort Ratio' in match_methods:
         # Calculate partial token sort ratio
-        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp = entity_combinations[list_columns_to_select].copy()
         df_temp['Match Method'] = 'Partial Token Sort Ratio'
         df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.partial_token_sort_ratio(row['Entity_1'], row['Entity_2']), axis=1)
         # Filter out combinations that are not within the threshold
@@ -107,7 +122,7 @@ def ConductEntityMatching(dataframe_1,
     # Calculate token set ratio, which tokenizes the strings and computes ratio using the intersection of the two token sets
     if 'Token Set Ratio' in match_methods:
         # Calculate token set ratio
-        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp = entity_combinations[list_columns_to_select].copy()
         df_temp['Match Method'] = 'Token Set Ratio'
         df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.token_set_ratio(row['Entity_1'], row['Entity_2']), axis=1)
         # Filter out combinations that are not within the threshold
@@ -118,7 +133,7 @@ def ConductEntityMatching(dataframe_1,
     # Calculate partial token set ratio, which tokenizes the strings and computes ratio using the intersection of the two token sets using the shortest string (length n) against all n-length substrings of the larger string and returns the highest score
     if 'Partial Token Set Ratio' in match_methods:
         # Calculate partial token set ratio
-        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp = entity_combinations[list_columns_to_select].copy()
         df_temp['Match Method'] = 'Partial Token Set Ratio'
         df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.partial_token_set_ratio(row['Entity_1'], row['Entity_2']), axis=1)
         # Filter out combinations that are not within the threshold
@@ -129,7 +144,7 @@ def ConductEntityMatching(dataframe_1,
     # Calculate weighted ratio, which is a weighted average of the above scores
     if 'Weighted Ratio' in match_methods:
         # Calculate weighted ratio
-        df_temp = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        df_temp = entity_combinations[list_columns_to_select].copy()
         df_temp['Match Method'] = 'Weighted Ratio'
         df_temp['Match Score'] = entity_combinations.apply(lambda row: fuzz.WRatio(row['Entity_1'], row['Entity_2']), axis=1)
         # Filter out combinations that are not within the threshold
@@ -142,8 +157,7 @@ def ConductEntityMatching(dataframe_1,
     
     # Convert to wide-form dataframe
     data_match_results = data_match_results.pivot(index=['Entity_1', 'Entity_2'], columns='Match Method', values='Match Score')
-    
-    # # Reset index of dataframe
+    # Reset index of dataframe
     data_match_results['Entity 1'] = data_match_results.index.get_level_values(0)
     data_match_results['Entity 2'] = data_match_results.index.get_level_values(1)
     data_match_results.reset_index(drop=True, inplace=True)
@@ -155,19 +169,23 @@ def ConductEntityMatching(dataframe_1,
     data_match_results.columns.name = None
     
     # Left join columns to compare from dataframe 1
+    if dataframe_1_primary_key not in dataframe_1.columns:
+        dataframe_1_primary_key = dataframe_1_primary_key.replace('_1', '')
     data_match_results = data_match_results.merge(
-        dataframe_1[[dataframe_1_primary_key] + columns_to_compare], 
+        dataframe_1[[dataframe_1_primary_key, 'Entity'] + columns_to_compare], 
         how='left', 
         left_on='Entity 1', 
-        right_on=dataframe_1_primary_key
+        right_on='Entity',
     )
     
     # Left join columns to compare from dataframe 2
+    if dataframe_2_primary_key not in dataframe_2.columns:
+        dataframe_2_primary_key = dataframe_2_primary_key.replace('_2', '')
     data_match_results = data_match_results.merge(
-        dataframe_2[[dataframe_2_primary_key] + columns_to_compare],
+        dataframe_2[[dataframe_2_primary_key, 'Entity'] + columns_to_compare],
         how='left',
         left_on='Entity 2',
-        right_on=dataframe_2_primary_key,
+        right_on='Entity',
         suffixes=('_Entity 1', '_Entity 2')
     )
     
@@ -195,7 +213,7 @@ def ConductEntityMatching(dataframe_1,
 # matches = ConductEntityMatching(
 #     dataframe_1, 'Id', 
 #     dataframe_2, 'Id', 
-#     columns_to_compare=['LAST'],
+#     columns_to_compare=['FIRST', 'LAST'],
 #     levenshtein_distance_threshold=10,
 #     match_score_threshold=86,
 #     match_methods=['Weighted Ratio', 'Token Sort Ratio']
