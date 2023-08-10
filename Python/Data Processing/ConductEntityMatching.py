@@ -136,7 +136,10 @@ def ConductEntityMatching(dataframe_1,
         df_temp = df_temp[df_temp['Match Score'] >= match_score_threshold]
         # Add the matches to the dataframe
         data_match_results = pd.concat([data_match_results, df_temp], ignore_index=True)
-        
+    
+    # Drop duplicates
+    data_match_results.drop_duplicates(inplace=True)
+    
     # Convert to wide-form dataframe
     data_match_results = data_match_results.pivot(index=['Entity_1', 'Entity_2'], columns='Match Method', values='Match Score')
     
@@ -182,18 +185,18 @@ def ConductEntityMatching(dataframe_1,
 # dataframe_1 = dataframe.iloc[:int(len(dataframe)/2)]
 # dataframe_2 = dataframe.iloc[int(len(dataframe)/2):]
 # # Perform entity matching
-# matches = ConductEntityMatching(
-#     dataframe_1, 'Id', 
-#     dataframe_2, 'Id', 
-#     columns_to_compare=['FIRST', 'LAST'],
-#     match_score_threshold=86,
-#     match_methods=['Weighted Ratio', 'Token Sort Ratio']
-# )
 # # matches = ConductEntityMatching(
 # #     dataframe_1, 'Id', 
 # #     dataframe_2, 'Id', 
 # #     columns_to_compare=['FIRST', 'LAST'],
-# #     levenshtein_distance_threshold=6,
 # #     match_score_threshold=86,
 # #     match_methods=['Weighted Ratio', 'Token Sort Ratio']
 # # )
+# matches = ConductEntityMatching(
+#     dataframe_1, 'Id', 
+#     dataframe_2, 'Id', 
+#     columns_to_compare=['LAST'],
+#     levenshtein_distance_threshold=10,
+#     match_score_threshold=86,
+#     match_methods=['Weighted Ratio', 'Token Sort Ratio']
+# )
