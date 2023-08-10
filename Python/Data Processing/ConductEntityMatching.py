@@ -199,6 +199,9 @@ def ConductEntityMatching(dataframe_1,
         dataframe_2_primary_key = dataframe_2_primary_key + '_Entity 2'
     data_match_results = data_match_results[[dataframe_1_primary_key, dataframe_2_primary_key] + [col for col in data_match_results.columns if col not in [dataframe_1_primary_key, dataframe_2_primary_key]]]
     
+    # Drop duplicate matches using primary keys of each dataframe
+    data_match_results.drop_duplicates(subset=[dataframe_1_primary_key, dataframe_2_primary_key], inplace=True, keep='last')
+    
     # Return results
     return(data_match_results)
 
