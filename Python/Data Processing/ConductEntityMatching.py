@@ -189,6 +189,16 @@ def ConductEntityMatching(dataframe_1,
         suffixes=('_Entity 1', '_Entity 2')
     )
     
+    # Drop entity columns
+    data_match_results.drop(columns=['Entity_Entity 1', 'Entity_Entity 2'], inplace=True)
+    
+    # Move identifier columns to front
+    if dataframe_1_primary_key not in data_match_results.columns:
+        dataframe_1_primary_key = dataframe_1_primary_key + '_Entity 1'
+    if dataframe_2_primary_key not in data_match_results.columns:
+        dataframe_2_primary_key = dataframe_2_primary_key + '_Entity 2'
+    data_match_results = data_match_results[[dataframe_1_primary_key, dataframe_2_primary_key] + [col for col in data_match_results.columns if col not in [dataframe_1_primary_key, dataframe_2_primary_key]]]
+    
     # Return results
     return(data_match_results)
 
