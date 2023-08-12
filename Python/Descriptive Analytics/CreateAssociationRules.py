@@ -13,7 +13,7 @@ def CreateAssociationRules(dataframe,
                            transaction_id_column,
                            items_column,
                            support_threshold=.01,
-                           confidence_threshold=.01,
+                           confidence_threshold=.05,
                            # Plotting parameters
                            plot_lift=True,
                            dot_fill_color="#999999",
