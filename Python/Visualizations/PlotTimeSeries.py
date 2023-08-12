@@ -117,7 +117,7 @@ def PlotTimeSeries(dataframe,
         # Add the caption to the plot, if one is provided
         if caption_for_plot != None:
             # Word wrap the caption without splitting words
-            wrapped_caption = textwrap.fill(caption_for_plot, 120, break_long_words=False)
+            wrapped_caption = textwrap.fill(caption_for_plot, 110, break_long_words=False)
             
         # Add the data source to the caption, if one is provided
         if data_source_for_plot != None:
