@@ -1,8 +1,8 @@
+# Load packages
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import textwrap
-
 sns.set(style="white",
         font="Arial",
         context="paper")
