@@ -249,6 +249,9 @@ def CreateAssociationRules(dataframe,
                 color="#666666",
                 transform=ax.transAxes
             )
+            
+    # Reformat column names to title case
+    df_association_rules.columns = df_association_rules.columns.str.title()
 
     # Return association rules
     return(df_association_rules)
@@ -256,7 +259,7 @@ def CreateAssociationRules(dataframe,
 
 # # Test function
 # data_groceries = pd.read_excel("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/6. Association Rule Learning/Groceries.xlsx")
-# arules_groceries  =CreateAssociationRules(
+# arules_groceries = CreateAssociationRules(
 #     dataframe=data_groceries,
 #     transaction_id_column="Index",
 #     items_column="Value"
