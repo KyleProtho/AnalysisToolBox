@@ -4,29 +4,31 @@ import os
 from math import ceil
 from matplotlib import pyplot as plt
 import seaborn as sns
-from textwrap import wrap
+import textwrap
 sns.set(style="white",
         font="Arial",
         context="paper")
 
 def PlotSingleVariableBarChart(dataframe,
                                categorical_variable, 
+                               # Plot formatting arguments
                                color_palette="Set1",
                                fill_color=None,
                                top_n_to_highlight=None,
                                highlight_color="#b0170c",
                                fill_transparency=0.8,
+                               add_rare_category_line=False,
+                               rare_category_line_color='#b5b3b3',
+                               rare_category_threshold=0.05,
+                               figure_size=(8, 6),
+                               # Text formatting arguments
                                title_for_plot=None,
                                subtitle_for_plot=None,
                                caption_for_plot=None,
                                data_source_for_plot=None,
                                title_y_indent=1.15,
                                subtitle_y_indent=1.1,
-                               caption_y_indent=-0.15,
-                               add_rare_category_line=False,
-                               rare_category_line_color='#b5b3b3',
-                               rare_category_threshold=0.05,
-                               figure_size=(8, 6)):
+                               caption_y_indent=-0.15):
     """This function creates a bar chart for a single categorical variable. The function can be used to create a bar chart with a single color, or a bar chart with a different color for the top n categories. The function can also be used to add a line to the bar chart to indicate the threshold for rare categories.
 
     Args:
@@ -171,28 +173,14 @@ def PlotSingleVariableBarChart(dataframe,
         
     # Add a word-wrapped caption if one is provided
     if caption_for_plot != None or data_source_for_plot != None:
+        # Create starting point for caption
+        wrapped_caption = ""
+        
+        # Add the caption to the plot, if one is provided
         if caption_for_plot != None:
             # Word wrap the caption without splitting words
-            if len(caption_for_plot) > 120:
-                # Split the caption into words
-                words = caption_for_plot.split(" ")
-                # Initialize the wrapped caption
-                wrapped_caption = ""
-                # Initialize the line length
-                line_length = 0
-                # Iterate through the words
-                for word in words:
-                    # If the word is too long to fit on the current line, add a new line
-                    if line_length + len(word) > 120:
-                        wrapped_caption = wrapped_caption + "\n"
-                        line_length = 0
-                    # Add the word to the line
-                    wrapped_caption = wrapped_caption + word + " "
-                    # Update the line length
-                    line_length = line_length + len(word) + 1
-        else:
-            wrapped_caption = ""
-        
+            wrapped_caption = textwrap.fill(caption_for_plot, 110, break_long_words=False)
+            
         # Add the data source to the caption, if one is provided
         if data_source_for_plot != None:
             wrapped_caption = wrapped_caption + "\n\nSource: " + data_source_for_plot
@@ -221,25 +209,25 @@ def PlotSingleVariableBarChart(dataframe,
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # iris['species'] = datasets.load_iris(as_frame=True).target
 # iris['species'] = iris['species'].astype('category')
-# PlotSingleVariableBarChart(
-#     dataframe=iris,
-#     categorical_variable='species',
-#     title_for_plot='Species',
-#     subtitle_for_plot='This is a subtitle',
-#     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",
-#     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris"
-# )
-# # iris['species long label'] = np.where(
-# #     iris['species'] == 0,
-# #     "Longish label for 0",
-# #     iris['species']
-# # )
 # # PlotSingleVariableBarChart(
 # #     dataframe=iris,
-# #     categorical_variable='species long label',
+# #     categorical_variable='species',
 # #     title_for_plot='Species',
 # #     subtitle_for_plot='This is a subtitle',
 # #     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",
-# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-# #     top_n_to_highlight=1
+# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris"
 # # )
+# iris['species long label'] = np.where(
+#     iris['species'] == 0,
+#     "Longish label for 0",
+#     iris['species']
+# )
+# PlotSingleVariableBarChart(
+#     dataframe=iris,
+#     categorical_variable='species long label',
+#     title_for_plot='Species',
+#     subtitle_for_plot='This is a subtitle',
+#     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",
+#     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
+#     top_n_to_highlight=1
+# )
