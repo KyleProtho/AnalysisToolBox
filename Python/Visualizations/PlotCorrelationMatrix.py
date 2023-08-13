@@ -15,6 +15,8 @@ def PlotCorrelationMatrix(dataframe,
                           # Pairplot formatting options
                           pairplot_size=(20, 20),
                           scatter_fill_color="#3269a8",
+                          # Line formatting options
+                          fit_lowess_line=True,
                           line_color="#cc4b5a",
                           # Text formatting arguments
                           title_for_plot="Pairplot of Numeric Variables",
@@ -52,6 +54,7 @@ def PlotCorrelationMatrix(dataframe,
                     'alpha': 0.80
                 },
                 plot_kws={
+                    'lowess': fit_lowess_line,
                     'line_kws': {
                         'color': line_color,
                         'alpha': 0.80
@@ -70,11 +73,13 @@ def PlotCorrelationMatrix(dataframe,
                 y_vars=list_of_numeric_variables,
                 kind='reg',
                 markers='o',
+                lowess=lowess,
                 diag_kws={
                     'color': scatter_fill_color,
                     'alpha': 0.80
                 },
                 plot_kws={
+                    'lowess': fit_lowess_line,
                     'line_kws': {
                         'color': line_color,
                         'alpha': 0.80
@@ -156,27 +161,27 @@ def PlotCorrelationMatrix(dataframe,
         print(completed_df.corr())
 
 
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# Test the function
+from sklearn import datasets
+iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+PlotCorrelationMatrix(
+    dataframe=iris,
+    list_of_numeric_variables=[
+        'sepal length (cm)',
+        'sepal width (cm)', 
+        'petal length (cm)', 
+        'petal width (cm)'
+    ],
+    caption_for_plot="This is a caption for the plot. Just using this to test the word wrapping functionality."
+)
 # PlotCorrelationMatrix(
-#     dataframe=iris,
+#     dataframe=iris, 
 #     list_of_numeric_variables=[
-#         'sepal length (cm)',
 #         'sepal width (cm)', 
 #         'petal length (cm)', 
 #         'petal width (cm)'
 #     ],
+#     outcome_variable='sepal length (cm)',
+#     x_indent=-0.3,
 #     caption_for_plot="This is a caption for the plot. Just using this to test the word wrapping functionality.",
 # )
-# # PlotCorrelationMatrix(
-# #     dataframe=iris, 
-# #     list_of_numeric_variables=[
-# #         'sepal width (cm)', 
-# #         'petal length (cm)', 
-# #         'petal width (cm)'
-# #     ],
-# #     outcome_variable='sepal length (cm)',
-# #     x_indent=-0.3,
-# #     caption_for_plot="This is a caption for the plot. Just using this to test the word wrapping functionality.",
-# # )
