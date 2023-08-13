@@ -5,21 +5,40 @@ import seaborn as sns
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor, plot_tree, export_text
+import textwrap
+sns.set(style="white",
+        font="Arial",
+        context="paper")
 
 def CreateDecisionTreeModel(dataframe,
                             outcome_variable,
                             list_of_predictor_variables,
                             is_outcome_categorical=True,
+                            # Model training arguments
+                            test_size=0.2,
                             categorical_splitting_criterion='entropy',
                             numerical_splitting_criterion='mse',
                             maximum_depth=None,
                             minimum_impurity_decrease=0.0,
+                            random_seed=412,
+                            # Model performance plot arguments
                             plot_model_test_performance=True,
+                            # Feature importance plot arguments
+                            plot_feature_importance=True,
+                            top_n_to_highlight=3,
+                            highlight_color="#b0170c",
+                            fill_transparency=0.8,
+                            figure_size_for_feature_importance_plot=(8, 6),
+                            title_for_feature_importance_plot="Feauture Importance",
+                            subtitle_for_feature_importance_plot="Shows the predictive power of each feature in the model.",
+                            caption__feature_importance_plot=None,
+                            title_y_indent_for_feature_importance_plot=1.15,
+                            subtitle_y_indent_for_feature_importance_plot=1.1,
+                            caption_y_indent_for_feature_importance_plot=-0.15,
+                            # Decision tree plot arguments
                             plot_decision_tree=True,
                             decision_tree_plot_size=(20, 20),
-                            print_decision_rules=False,
-                            test_size=0.2,
-                            random_seed=412):
+                            print_decision_rules=False):
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
     
@@ -71,6 +90,103 @@ def CreateDecisionTreeModel(dataframe,
             feature_names=list_of_predictor_variables
         )
         print(r)
+        
+    # Plot feature importance if requested
+    if plot_feature_importance:
+        # Create dataframe of feature importance
+        data_feauture_importance = pd.DataFrame(
+            data={
+                'Feature': model.feature_names_in_,
+                'Importance': model.feature_importances_
+            }
+        )
+        
+        # Sort dataframe by importance
+        data_feauture_importance = data_feauture_importance.sort_values(by='Importance', ascending=False)
+        
+        # Highlight top n features
+        data_feauture_importance['Highlighted'] = np.where(
+            data_feauture_importance['Feature'].isin(data_feauture_importance['Feature'].head(top_n_to_highlight)),
+            True,
+            False
+        )
+        
+        # Plot feature importance with seaborn, using a horizontal barplot
+        plt.figure(figsize=figure_size_for_feature_importance_plot)
+        ax = sns.barplot(
+            data=data_feauture_importance,
+            x='Importance',
+            y='Feature',
+            hue='Highlighted',
+            palette={True: highlight_color, False: "#b8b8b8"},
+            alpha=fill_transparency,
+            dodge=False
+        )
+        
+        # Remove the legend
+        ax.legend_.remove()
+        
+        # Format and wrap y axis tick labels using textwrap
+        y_tick_labels = ax.get_yticklabels()
+        wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 50)) for label in y_tick_labels]
+        ax.set_yticklabels(wrapped_y_tick_labels, fontsize=10, fontname="Arial", color="#262626")
+        
+        # Remove a-axis tick labels
+        ax.get_xaxis().set_ticks([])
+        
+        # Format x-axis label
+        ax.set_xlabel("Importance", fontsize=10, fontname="Arial", color="#262626")
+        
+        # Remove spines
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['left'].set_color('#b8b8b8')
+        ax.spines['bottom'].set_visible(False)
+        
+        # Add data labels
+        for container in ax.containers:
+            ax.bar_label(
+                container, 
+                fmt='%.3f', 
+                label_type='edge', 
+                padding=5,
+                fontsize=10, 
+                fontname="Arial", 
+                color="#262626"
+            )
+        
+        # Add space between the title and the plot
+        plt.subplots_adjust(top=0.85)
+        
+        # Set the x indent of the plot titles and captions
+        # Get longest y tick label
+        longest_y_tick_label = max(wrapped_y_tick_labels, key=len)
+        if len(longest_y_tick_label) >= 30:
+            x_indent = -0.3
+        else:
+            x_indent = -0.005 - (len(longest_y_tick_label) * 0.011)
+        
+        # Set the title with Arial font, size 14, and color #262626 at the top of the plot
+        ax.text(
+            x=x_indent,
+            y=title_y_indent_for_feature_importance_plot,
+            s=title_for_feature_importance_plot,
+            fontname="Arial",
+            fontsize=14,
+            color="#262626",
+            transform=ax.transAxes
+        )
+        
+        # Set the subtitle with Arial font, size 11, and color #666666
+        ax.text(
+            x=x_indent,
+            y=subtitle_y_indent_for_feature_importance_plot,
+            s=subtitle_for_feature_importance_plot,
+            fontname="Arial",
+            fontsize=11,
+            color="#666666",
+            transform=ax.transAxes
+        )
     
     # Plot decision tree if requested
     if plot_decision_tree:
@@ -121,16 +237,16 @@ def CreateDecisionTreeModel(dataframe,
     # Return the model
     return model
 
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# # CATEGORICAL OUTCOME
-# species_desc_tree_model = CreateDecisionTreeModel(
-#     dataframe=iris,
-#     outcome_variable='species',
-#     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
-# )
+# Test the function
+from sklearn import datasets
+iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+iris['species'] = datasets.load_iris(as_frame=True).target
+# CATEGORICAL OUTCOME
+species_desc_tree_model = CreateDecisionTreeModel(
+    dataframe=iris,
+    outcome_variable='species',
+    list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
+)
 # # # NUMERICAL OUTCOME
 # # sep_len_desc_tree_model = CreateDecisionTreeModel(
 # #     dataframe=iris,

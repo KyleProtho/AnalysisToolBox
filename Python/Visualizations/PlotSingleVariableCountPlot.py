@@ -9,7 +9,7 @@ sns.set(style="white",
         font="Arial",
         context="paper")
 
-def PlotSingleVariableBarChart(dataframe,
+def PlotSingleVariableCountPlot(dataframe,
                                categorical_variable, 
                                # Plot formatting arguments
                                color_palette="Set1",
@@ -65,7 +65,6 @@ def PlotSingleVariableBarChart(dataframe,
         if top_n_to_highlight < 0 or top_n_to_highlight > len(dataframe[categorical_variable].value_counts()):
             raise ValueError("top_n_to_highlight must be a positive integer, and less than the number of categories.")
     
-    
     # Create figure and axes
     fig, ax = plt.subplots(figsize=figure_size)
 
@@ -98,13 +97,13 @@ def PlotSingleVariableBarChart(dataframe,
     # Add space between the title and the plot
     plt.subplots_adjust(top=0.85)
     
-    # Wrap y axis label
-    wrapped_variable_name = "\n".join(categorical_variable[j:j+30] for j in range(0, len(categorical_variable), 30))  # String wrap the variable name
+    # Wrap y axis label using textwrap
+    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_variable, 30))  # String wrap the variable name
     ax.set_ylabel(wrapped_variable_name)
     
-    # Format and wrap y axis tick labels
+    # Format and wrap y axis tick labels using textwrap
     y_tick_labels = ax.get_yticklabels()
-    wrapped_y_tick_labels = ['\n'.join(wrap(label.get_text(), 30)) for label in y_tick_labels]
+    wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 30)) for label in y_tick_labels]
     ax.set_yticklabels(wrapped_y_tick_labels, fontsize=10, fontname="Arial", color="#262626")
     
     # Move x-axis to the top
@@ -209,7 +208,7 @@ def PlotSingleVariableBarChart(dataframe,
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # iris['species'] = datasets.load_iris(as_frame=True).target
 # iris['species'] = iris['species'].astype('category')
-# # PlotSingleVariableBarChart(
+# # PlotSingleVariableCountPlot(
 # #     dataframe=iris,
 # #     categorical_variable='species',
 # #     title_for_plot='Species',
@@ -222,7 +221,7 @@ def PlotSingleVariableBarChart(dataframe,
 #     "Longish label for 0",
 #     iris['species']
 # )
-# PlotSingleVariableBarChart(
+# PlotSingleVariableCountPlot(
 #     dataframe=iris,
 #     categorical_variable='species long label',
 #     title_for_plot='Species',
