@@ -21,22 +21,35 @@ def CreateDecisionTreeModel(dataframe,
                             maximum_depth=None,
                             minimum_impurity_decrease=0.0,
                             random_seed=412,
+                            # All plot arguments
+                            data_source_for_plot=None,
                             # Model performance plot arguments
                             plot_model_test_performance=True,
+                            dot_fill_color="#999999",
+                            fitted_line_type=None,
+                            line_color=None,
+                            figure_size_for_model_test_performance_plot=(8, 6),
+                            title_for_model_test_performance_plot="Model Performance",
+                            subtitle_for_model_test_performance_plot="The predicted values vs. the actual values in the test dataset.",
+                            caption_for_model_test_performance_plot="The colored line shows the predicted values vs. the actual values in the test dataset. The grey straight line shows where the predicted values would be if the model was perfect.",
+                            title_y_indent_for_model_test_performance_plot=1.09,
+                            subtitle_y_indent_for_model_test_performance_plot=1.05,
+                            caption_y_indent_for_model_test_performance_plot=-0.215,
+                            x_indent_for_model_test_performance_plot=-0.115,
                             # Feature importance plot arguments
                             plot_feature_importance=True,
                             top_n_to_highlight=3,
                             highlight_color="#b0170c",
                             fill_transparency=0.8,
                             figure_size_for_feature_importance_plot=(8, 6),
-                            title_for_feature_importance_plot="Feauture Importance",
+                            title_for_feature_importance_plot="Feature Importance",
                             subtitle_for_feature_importance_plot="Shows the predictive power of each feature in the model.",
-                            caption__feature_importance_plot=None,
+                            caption_for_feature_importance_plot=None,
                             title_y_indent_for_feature_importance_plot=1.15,
                             subtitle_y_indent_for_feature_importance_plot=1.1,
                             caption_y_indent_for_feature_importance_plot=-0.15,
                             # Decision tree plot arguments
-                            plot_decision_tree=True,
+                            plot_decision_tree=False,
                             decision_tree_plot_size=(20, 20),
                             print_decision_rules=False):
     # Keep only the predictors and outcome variable
@@ -187,6 +200,35 @@ def CreateDecisionTreeModel(dataframe,
             color="#666666",
             transform=ax.transAxes
         )
+        
+        # Add a word-wrapped caption if one is provided
+        if caption_for_feature_importance_plot != None or data_source_for_plot != None:
+            # Create starting point for caption
+            wrapped_caption = ""
+            
+            # Add the caption to the plot, if one is provided
+            if caption_for_feature_importance_plot != None:
+                # Word wrap the caption without splitting words
+                wrapped_caption = textwrap.fill(caption_for_feature_importance_plot, 110, break_long_words=False)
+                
+            # Add the data source to the caption, if one is provided
+            if data_source_for_plot != None:
+                wrapped_caption = wrapped_caption + "\n\nSource: " + data_source_for_plot
+            
+            # Add the caption to the plot
+                ax.text(
+                    x=x_indent,
+                    y=caption_y_indent,
+                    s=wrapped_caption,
+                    fontname="Arial",
+                    fontsize=8,
+                    color="#666666",
+                    transform=ax.transAxes
+                )
+            
+        # Show the plot
+        plt.show()
+        plt.clf()
     
     # Plot decision tree if requested
     if plot_decision_tree:
@@ -224,29 +266,128 @@ def CreateDecisionTreeModel(dataframe,
             plt.show()
         # Plot the residuals if outcome is numerical
         else:
-            plt.figure(figsize=(9, 9))
-            sns.regplot(
-                    data=test,
-                    x=outcome_variable,
-                    y='Predicted',
+            # Generate a scatterplot of the predicted vs. observed outcome
+            plt.figure(figsize=figure_size_for_model_test_performance_plot)
+            ax = sns.regplot(
+                data=test,
+                x=outcome_variable,
+                y='Predicted',
+                marker='o',
+                scatter_kws={
+                    'color': dot_fill_color,
+                    'alpha': 0.5,
+                    'linewidth': 0.5,
+                    'edgecolor': dot_fill_color
+                },
+                lowess=True,
+                line_kws={'color': line_color}
+            )
+            
+            # Add a "perfect prediction" line
+            plt.plot(
+                test[outcome_variable], 
+                test[outcome_variable], 
+                color='black', 
+                alpha=0.35, 
+                linewidth=0.5, 
+                linestyle='--'
+            )
+            
+            # Remove top and right spines, and set bottom and left spines to gray
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.spines['bottom'].set_color('#666666')
+            ax.spines['left'].set_color('#666666')
+            
+            # Format tick labels to be Arial, size 9, and color #666666
+            ax.tick_params(
+                which='major',
+                labelsize=9,
+                color='#666666'
+            )
+            
+            # Set the title with Arial font, size 14, and color #262626 at the top of the plot
+            ax.text(
+                x=x_indent_for_model_test_performance_plot,
+                y=title_y_indent_for_model_test_performance_plot,
+                s=title_for_model_test_performance_plot,
+                fontname="Arial",
+                fontsize=14,
+                color="#262626",
+                transform=ax.transAxes
+            )
+            
+            # Set the subtitle with Arial font, size 11, and color #666666
+            ax.text(
+                x=x_indent_for_model_test_performance_plot,
+                y=subtitle_y_indent_for_model_test_performance_plot,
+                s=subtitle_for_model_test_performance_plot,
+                fontname="Arial",
+                fontsize=11,
+                color="#666666",
+                transform=ax.transAxes
+            )
+            
+            # Move the y-axis label to the top of the y-axis, and set the font to Arial, size 9, and color #666666
+            ax.yaxis.set_label_coords(-0.1, 0.92)
+            ax.yaxis.set_label_text(
+                'Predicted',
+                fontname="Arial",
+                fontsize=10,
+                color="#666666"
+            )
+            
+            # Move the x-axis label to the right of the x-axis, and set the font to Arial, size 9, and color #666666
+            ax.xaxis.set_label_coords(0.9, -0.1)
+            ax.xaxis.set_label_text(
+                outcome_variable,
+                fontname="Arial",
+                fontsize=10,
+                color="#666666"
+            )
+            
+            # Add a word-wrapped caption if one is provided
+            if caption_for_model_test_performance_plot != None or data_source_for_plot != None:
+                # Create starting point for caption
+                wrapped_caption = ""
+                
+                # Add the caption to the plot, if one is provided
+                if caption_for_model_test_performance_plot != None:
+                    # Word wrap the caption without splitting words
+                    wrapped_caption = textwrap.fill(caption_for_model_test_performance_plot, 130, break_long_words=False)
+                    
+                # Add the data source to the caption, if one is provided
+                if data_source_for_plot != None:
+                    wrapped_caption = wrapped_caption + "\n\nSource: " + data_source_for_plot
+                
+                # Add the caption to the plot
+                ax.text(
+                    x=x_indent_for_model_test_performance_plot,
+                    y=caption_y_indent_for_model_test_performance_plot,
+                    s=wrapped_caption,
+                    fontname="Arial",
+                    fontsize=8,
+                    color="#666666",
+                    transform=ax.transAxes
                 )
-            plt.plot(test[outcome_variable], test[outcome_variable], color='black', alpha=0.35)
-            plt.title('Predicted vs. Observed Outcome', size = 15)
+                
+            # Show the plot
             plt.show()
         
     # Return the model
     return model
 
-# Test the function
-from sklearn import datasets
-iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-iris['species'] = datasets.load_iris(as_frame=True).target
-# CATEGORICAL OUTCOME
-species_desc_tree_model = CreateDecisionTreeModel(
-    dataframe=iris,
-    outcome_variable='species',
-    list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
-)
+
+# # Test the function
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# iris['species'] = datasets.load_iris(as_frame=True).target
+# # CATEGORICAL OUTCOME
+# species_desc_tree_model = CreateDecisionTreeModel(
+#     dataframe=iris,
+#     outcome_variable='species',
+#     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
+# )
 # # # NUMERICAL OUTCOME
 # # sep_len_desc_tree_model = CreateDecisionTreeModel(
 # #     dataframe=iris,
