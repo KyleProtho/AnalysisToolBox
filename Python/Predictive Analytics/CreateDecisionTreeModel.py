@@ -143,7 +143,8 @@ def CreateDecisionTreeModel(dataframe,
                 rownames=['Predicted'],
                 colnames=['Actual'],
                 margins=True,
-                margins_name='Total'
+                margins_name='Total',
+                dropna=False
             )
             
             # Display as a markdown table
