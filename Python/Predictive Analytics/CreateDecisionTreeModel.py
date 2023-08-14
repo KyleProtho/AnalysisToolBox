@@ -99,16 +99,8 @@ def CreateDecisionTreeModel(dataframe,
         print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
     # Show accuracy if outcome is categorical
     else:
-        print('Accuracy:', metrics.accuracy_score(test[outcome_variable], test['Predicted']))
-        print('Balanced Accuracy:', metrics.balanced_accuracy_score(test[outcome_variable], test['Predicted']))
-        if len(np.unique(test[outcome_variable])) == 2:
-            print('F1 Score (binary):', metrics.f1_score(test[outcome_variable], test['Predicted'], average='binary'))
-            print('Precision (binary):', metrics.precision_score(test[outcome_variable], test['Predicted'], average='binary'))
-            print('AUROC (binary):', metrics.roc_auc_score(test[outcome_variable], test['Predicted'], average='binary'))
-        else:
-            print('F1 Score (weighted):', metrics.f1_score(test[outcome_variable], test['Predicted'], average='weighted'))
-            print('Precision (weighted):', metrics.precision_score(test[outcome_variable], test['Predicted'], average='weighted'))
-            # print('AUROC (weighted, one-versus-rest):', metrics.roc_auc_score(test[outcome_variable], test['Predicted'], average='weighted', multi_class='ovo'))
+        classifcation_report = metrics.classification_report(test[outcome_variable], test['Predicted'])
+        print("Classification Report:\n", classifcation_report, sep="")
     
     # Print decision rules if requested
     if print_decision_rules:
@@ -431,12 +423,12 @@ def CreateDecisionTreeModel(dataframe,
 #     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
 #     caption_for_model_test_performance_plot="Each square shows the percentage of observations in the test dataset that are predicted to be in that category. The denominator the total number of actual outcomes in each category."
 # )
-# # # # NUMERICAL OUTCOME
-# # # sep_len_desc_tree_model = CreateDecisionTreeModel(
-# # #     dataframe=iris,
-# # #     outcome_variable='sepal length (cm)',
-# # #     is_outcome_categorical=False,
-# # #     list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-# # #     maximum_depth=5,
-# # #     caption_for_model_test_performance_plot="The colored line shows the predicted values vs. the actual values in the test dataset. The grey straight line shows where the predicted values would be if the model was perfect."
-# # # )
+# # # NUMERICAL OUTCOME
+# # sep_len_desc_tree_model = CreateDecisionTreeModel(
+# #     dataframe=iris,
+# #     outcome_variable='sepal length (cm)',
+# #     is_outcome_categorical=False,
+# #     list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+# #     maximum_depth=5,
+# #     caption_for_model_test_performance_plot="The colored line shows the predicted values vs. the actual values in the test dataset. The grey straight line shows where the predicted values would be if the model was perfect."
+# # )
