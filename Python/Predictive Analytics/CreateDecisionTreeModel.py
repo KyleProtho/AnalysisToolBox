@@ -151,9 +151,6 @@ def CreateDecisionTreeModel(dataframe,
             # Transpose the confusion matrix
             confusion_matrix = confusion_matrix.transpose()
             
-            # Vertically flip the confusion matrix
-            confusion_matrix = np.flip(confusion_matrix, 0)
-            
             # Convert the confusion matrix to a percentage using the column sums
             confusion_matrix = confusion_matrix / confusion_matrix.sum(axis=0)
             
@@ -167,7 +164,6 @@ def CreateDecisionTreeModel(dataframe,
                 linewidths=.5, 
                 square=True, 
                 cmap=heatmap_color_palette,
-                yticklabels=list(reversed(list(set(test[outcome_variable])))),
             )
             
             # Remove the color bar
