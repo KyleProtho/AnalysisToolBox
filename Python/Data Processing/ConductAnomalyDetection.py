@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm
 import seaborn as sns
+import textwrap
 
 def ConductAnomalyDetection(dataframe, 
                             list_of_predictor_variables,
@@ -72,11 +73,19 @@ def ConductAnomalyDetection(dataframe,
     
     # Show pairplot of the data
     if plot_detection_summary:
+        # Generate a pairplot of the data
         plt.figure(figsize=summary_plot_size)
         sns.pairplot(
             data=dataframe[list_of_predictor_variables + [column_name_for_anomaly_flag]],
             hue=column_name_for_anomaly_flag
         )
+        
+        # Word wrap the axis labels
+        for ax in plt.gcf().axes:
+            ax.set_xlabel(textwrap.fill(ax.get_xlabel(), 40))
+            ax.set_ylabel(textwrap.fill(ax.get_ylabel(), 40))
+        
+        # Show the plot
         plt.show()
     
     # Return the dataframe
