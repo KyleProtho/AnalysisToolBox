@@ -10,7 +10,7 @@ sns.set(style="white",
 
 def PlotCorrelationMatrix(dataframe,
                           list_of_numeric_variables,
-                          outcome_variable=None,
+                          list_of_outcome_variables=None,
                           show_as_pairplot=True,
                           # Pairplot formatting options
                           pairplot_size=(20, 20),
@@ -23,19 +23,15 @@ def PlotCorrelationMatrix(dataframe,
                           subtitle_for_plot="Shows the linear relationship between numeric variables",
                           caption_for_plot=None,
                           data_source_for_plot=None,
-                          x_indent=-0.85,
+                          x_indent=-0.7,
                           title_y_indent=1.12,
-                          subtitle_y_indent=1.09,
+                          subtitle_y_indent=1.03,
                           caption_y_indent=-0.35):
     # Select relevant variables, keep complete cases only
-    if outcome_variable is None:
+    if list_of_outcome_variables is None:
         completed_df = dataframe[list_of_numeric_variables].dropna()
     else:
-        completed_df = dataframe[[outcome_variable] + list_of_numeric_variables].dropna()
-    
-    # Update the x_indent value if an outcome variable is specified
-    if outcome_variable is None:
-        x_indent = x_indent*len(list_of_numeric_variables)
+        completed_df = dataframe[list_of_outcome_variables + list_of_numeric_variables].dropna()
 
     # Drop Inf values
     completed_df = completed_df[np.isfinite(completed_df).all(1)]
@@ -44,7 +40,7 @@ def PlotCorrelationMatrix(dataframe,
     # Show pairplot if specified -- otherwise, print correlation matrix
     if show_as_pairplot:
         plt.figure(figsize=pairplot_size)
-        if outcome_variable is None:
+        if list_of_outcome_variables is None:
             ax = sns.pairplot(
                 data=completed_df,
                 kind='reg',
@@ -69,11 +65,10 @@ def PlotCorrelationMatrix(dataframe,
         else:
             ax = sns.pairplot(
                 data=completed_df,
-                x_vars=outcome_variable,
-                y_vars=list_of_numeric_variables,
+                x_vars=list_of_numeric_variables,
+                y_vars=list_of_outcome_variables,
                 kind='reg',
                 markers='o',
-                lowess=lowess,
                 diag_kws={
                     'color': scatter_fill_color,
                     'alpha': 0.80
@@ -107,10 +102,18 @@ def PlotCorrelationMatrix(dataframe,
             color='#666666'
         )
         
+        # Adjust y-indents for title and subtitle
+        if list_of_outcome_variables is None:
+            title_y_indent = title_y_indent*len(list_of_numeric_variables)
+            subtitle_y_indent = subtitle_y_indent*len(list_of_numeric_variables)
+        else:
+            title_y_indent = title_y_indent*len(list_of_outcome_variables)
+            subtitle_y_indent = subtitle_y_indent*len(list_of_outcome_variables)
+        
         # Set the title with Arial font, size 14, and color #262626 at the top of the plot
         ax.text(
-            x=x_indent,
-            y=title_y_indent*len(list_of_numeric_variables),
+            x=x_indent*len(list_of_numeric_variables),
+            y=title_y_indent,
             s=title_for_plot,
             fontname="Arial",
             fontsize=14,
@@ -120,8 +123,8 @@ def PlotCorrelationMatrix(dataframe,
         
         # Set the subtitle with Arial font, size 11, and color #666666
         ax.text(
-            x=x_indent,
-            y=subtitle_y_indent*len(list_of_numeric_variables),
+            x=x_indent*len(list_of_numeric_variables),
+            y=subtitle_y_indent,
             s=subtitle_for_plot,
             fontname="Arial",
             fontsize=11,
@@ -137,7 +140,7 @@ def PlotCorrelationMatrix(dataframe,
             # Add the caption to the plot, if one is provided
             if caption_for_plot != None:
                 # Word wrap the caption without splitting words
-                if outcome_variable is None:
+                if list_of_outcome_variables is None:
                     wrapped_caption = textwrap.fill(caption_for_plot, 110, break_long_words=False)
                 else:
                     wrapped_caption = textwrap.fill(caption_for_plot, 60, break_long_words=False)
@@ -148,7 +151,7 @@ def PlotCorrelationMatrix(dataframe,
             
             # Add the caption to the plot
             ax.text(
-                x=x_indent,
+                x=x_indent*len(list_of_numeric_variables),
                 y=caption_y_indent,
                 s=wrapped_caption,
                 fontname="Arial",
@@ -161,19 +164,19 @@ def PlotCorrelationMatrix(dataframe,
         print(completed_df.corr())
 
 
-# Test the function
-from sklearn import datasets
-iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-PlotCorrelationMatrix(
-    dataframe=iris,
-    list_of_numeric_variables=[
-        'sepal length (cm)',
-        'sepal width (cm)', 
-        'petal length (cm)', 
-        'petal width (cm)'
-    ],
-    caption_for_plot="This is a caption for the plot. Just using this to test the word wrapping functionality."
-)
+# # Test the function
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# # PlotCorrelationMatrix(
+# #     dataframe=iris,
+# #     list_of_numeric_variables=[
+# #         'sepal length (cm)',
+# #         'sepal width (cm)', 
+# #         'petal length (cm)', 
+# #         'petal width (cm)'
+# #     ],
+# #     caption_for_plot="This is a caption for the plot. Just using this to test the word wrapping functionality."
+# # )
 # PlotCorrelationMatrix(
 #     dataframe=iris, 
 #     list_of_numeric_variables=[
@@ -181,7 +184,6 @@ PlotCorrelationMatrix(
 #         'petal length (cm)', 
 #         'petal width (cm)'
 #     ],
-#     outcome_variable='sepal length (cm)',
-#     x_indent=-0.3,
+#     list_of_outcome_variables=['sepal length (cm)'],
 #     caption_for_plot="This is a caption for the plot. Just using this to test the word wrapping functionality.",
 # )
