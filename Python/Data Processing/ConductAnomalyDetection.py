@@ -9,7 +9,8 @@ def ConductAnomalyDetection(dataframe,
                             anomaly_threshold=0.95,
                             plot_detection_summary=True,
                             summary_plot_size=(20, 20),
-                            column_name_for_anomaly_prob='Anomaly Probability'):
+                            column_name_for_anomaly_prob='Anomaly Probability',
+                            column_name_for_anomaly_flag='Anomaly Detected'):
     """_summary_
     This function conducts anomaly detection on a dataset using the z-score method.
     
@@ -54,7 +55,7 @@ def ConductAnomalyDetection(dataframe,
     )
     
     # Add flag for anomaly if probability is below threshold
-    dataframe['Anomaly detected'] = np.where(
+    dataframe[column_name_for_anomaly_flag] = np.where(
         dataframe[column_name_for_anomaly_prob] > anomaly_threshold,
         True,
         False
@@ -64,29 +65,24 @@ def ConductAnomalyDetection(dataframe,
     if plot_detection_summary:
         plt.figure(figsize=summary_plot_size)
         sns.pairplot(
-            data=dataframe[list_of_predictor_variables + ['Anomaly detected']],
-            hue='Anomaly detected'
+            data=dataframe[list_of_predictor_variables + [column_name_for_anomaly_flag]],
+            hue=column_name_for_anomaly_flag
         )
-        plt.suptitle("Anomaly Summary Plots", fontsize=15)
         plt.show()
     
     # Return the dataframe
     return(dataframe)
 
+
 # # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# anomalies = pd.DataFrame(
-#     [
-#         np.random.randint(low=0, high=10, size=4),
-#         np.random.randint(low=5, high=15, size=4),
-#         np.random.randint(low=5, high=15, size=4),
-#         np.random.randint(low=10, high=20, size=4),
-#         np.random.randint(low=10, high=20, size=4)
-#     ],
-#     columns=iris.columns)
-# iris = pd.concat([iris, anomalies], ignore_index=True, sort=False)
-# iris = ConductAnomalyDetection(
-#     dataframe=iris,
-#     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
+# # dataset = ConductAnomalyDetection(
+# #     dataframe=pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/5. Dimension Reduction/houses_to_rent.csv"),
+# #     list_of_predictor_variables=['area', 'floor', 'parking spaces']
+# # )
+# dataset = pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/5. Dimension Reduction/houses_to_rent.csv")
+# # Mask some values in the dataset
+# dataset = dataset.mask(np.random.random(dataset.shape) < .1)
+# dataset = ConductAnomalyDetection(
+#     dataframe=dataset,
+#     list_of_predictor_variables=['area', 'floor', 'parking spaces']
 # )
