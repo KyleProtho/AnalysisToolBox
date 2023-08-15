@@ -25,10 +25,19 @@ def ConductAnomalyDetection(dataframe,
     Returns:
         Pandas dataframe: Pandas dataframe containing the data to be analyzed with the anomaly probability and flag.
     """
+    # If column_name_for_anomaly_prob is in the dataframe, drop it
+    if column_name_for_anomaly_prob in dataframe.columns:
+        dataframe = dataframe.drop(column_name_for_anomaly_prob, axis=1)
+        
+    # If column_name_for_anomaly_flag is in the dataframe, drop it
+    if column_name_for_anomaly_flag in dataframe.columns:
+        dataframe = dataframe.drop(column_name_for_anomaly_flag, axis=1)
+    
     # Keep only the predictor variables
     dataframe_anomaly = dataframe[list_of_predictor_variables].copy()
     
     # Keep complete cases
+    dataframe_anomaly = dataframe_anomaly.replace([np.inf, -np.inf], np.nan)
     dataframe_anomaly = dataframe_anomaly.dropna()
     
     # Get z-score from probability
