@@ -1,6 +1,7 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
+import textwrap
 sns.set(style="white",
         font="Arial",
         context="paper")
@@ -11,9 +12,19 @@ def PlotBoxWhiskerByGroup(dataframe,
                           group_variable_1,
                           group_variable_2=None,
                           fill_color=None,
-                          color_palette='Set1',
+                          color_palette='Set2',
+                          # Text formatting arguments
                           title_for_plot=None,
-                          subtitle_for_plot=None):
+                          subtitle_for_plot=None,
+                          caption_for_plot=None,
+                          data_source_for_plot=None,
+                          show_y_axis=False,
+                          title_y_indent=1.1,
+                          subtitle_y_indent=1.05,
+                          caption_y_indent=-0.15,
+                          x_indent=-0.128,
+                          # Plot formatting arguments
+                          figure_size=(8, 6)):
     """_summary_
     This function generates a box whisker plot of an outcome variable by up to two grouping variables.
 
@@ -38,64 +49,128 @@ def PlotBoxWhiskerByGroup(dataframe,
     if subtitle_for_plot == None and group_variable_2 != None:
         subtitle_for_plot = ' by ' + group_variable_1 + ' and ' + group_variable_2
     
-    # Create boxplot using seaborn
-    f, ax = plt.subplots(figsize=(6, 4.5))
+    # Create figure and axes
+    fig, ax = plt.subplots(figsize=figure_size)
+    
+    # Generate box whisker plot
     if group_variable_2 != None:
         if fill_color != None:
-            ax = sns.boxplot(data=dataframe,
-                            x=group_variable_1,
-                            y=outcome_variable, 
-                            hue=group_variable_2, 
-                            color=fill_color)
+            ax = sns.boxplot(
+                data=dataframe,
+                x=group_variable_1,
+                y=outcome_variable, 
+                hue=group_variable_2, 
+                color=fill_color
+            )
         else:
-            ax = sns.boxplot(data=dataframe,
-                            x=group_variable_1,
-                            y=outcome_variable, 
-                            hue=group_variable_2, 
-                            palette=color_palette)
+            ax = sns.boxplot(
+                data=dataframe,
+                x=group_variable_1,
+                y=outcome_variable, 
+                hue=group_variable_2, 
+                palette=color_palette
+            )
     else:
         if fill_color != None:
-            ax = sns.boxplot(data=dataframe,
-                            x=group_variable_1,
-                            y=outcome_variable, 
-                            color=fill_color)
+            ax = sns.boxplot(
+                data=dataframe,
+                x=group_variable_1,
+                y=outcome_variable, 
+                color=fill_color
+            )
         else:
-            ax = sns.boxplot(data=dataframe,
-                            x=group_variable_1,
-                            y=outcome_variable, 
-                            palette=color_palette)
-            
-    # Remove x and y axis labels
-    ax.set_xlabel(None)
-    ax.set_ylabel(None)
+            ax = sns.boxplot(
+                data=dataframe,
+                x=group_variable_1,
+                y=outcome_variable, 
+                palette=color_palette
+            )
+    
+    # Remove top, and right spines. Set bottom and left spine to dark gray.
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_color("#262626")
+    ax.spines['left'].set_color("#262626")
+    
+    # Add space between the title and the plot
+    plt.subplots_adjust(top=0.85)
+    
+    # Set the title with Arial font, size 14, and color #262626 at the top of the plot
+    ax.text(
+        x=x_indent,
+        y=title_y_indent,
+        s=title_for_plot,
+        fontname="Arial",
+        fontsize=14,
+        color="#262626",
+        transform=ax.transAxes
+    )
+    
+    # Set the subtitle with Arial font, size 11, and color #666666
+    ax.text(
+        x=x_indent,
+        y=subtitle_y_indent,
+        s=subtitle_for_plot,
+        fontname="Arial",
+        fontsize=11,
+        color="#666666",
+        transform=ax.transAxes
+    )
     
     # String wrap group variable 1 tick labels
     group_variable_1_tick_labels = ax.get_xticklabels()
     group_variable_1_tick_labels = [label.get_text() for label in group_variable_1_tick_labels]
     for label in group_variable_1_tick_labels:
-        label = "\n".join(label[j:j+30] for j in range(0, len(label), 30))
+        label = textwrap.fill(label, 30, break_long_words=False)
     ax.set_xticklabels(group_variable_1_tick_labels)
-    ax.tick_params(axis='both', which='major', labelsize=8)
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
     
-    # Add a title, with bold formatting
-    plt.suptitle(
-        title_for_plot,
-        x=0.125,
-        y=.965,
-        horizontalalignment='left',
-        verticalalignment='top',
-        fontsize=12,
-        fontweight='bold'
+    # Set x-axis tick label font to Arial, size 9, and color #666666
+    ax.tick_params(
+        axis='x',
+        which='major',
+        labelsize=9,
+        labelcolor="#666666",
+        pad=2,
+        bottom=True,
+        labelbottom=True
     )
+    plt.xticks(fontname='Arial')
     
-    # Add a subtitle, with normal formatting
-    if group_variable_2 != None:
-        plt.title(
-            subtitle_for_plot,
-            loc='left',
-            fontsize=9
+    # Set y-axis tick label font to Arial, size 9, and color #666666
+    ax.tick_params(
+        axis='y',
+        which='major',
+        labelsize=9,
+        labelcolor="#666666",
+        pad=2,
+        bottom=True,
+        labelbottom=True
+    )
+    plt.yticks(fontname='Arial')
+    
+    # Add a word-wrapped caption if one is provided
+    if caption_for_plot != None or data_source_for_plot != None:
+        # Create starting point for caption
+        wrapped_caption = ""
+        
+        # Add the caption to the plot, if one is provided
+        if caption_for_plot != None:
+            # Word wrap the caption without splitting words
+            wrapped_caption = textwrap.fill(caption_for_plot, 110, break_long_words=False)
+            
+        # Add the data source to the caption, if one is provided
+        if data_source_for_plot != None:
+            wrapped_caption = wrapped_caption + "\n\nSource: " + data_source_for_plot
+        
+        # Add the caption to the plot
+        ax.text(
+            x=x_indent,
+            y=caption_y_indent,
+            s=wrapped_caption,
+            fontname="Arial",
+            fontsize=8,
+            color="#666666",
+            transform=ax.transAxes
         )
     
     # Show plot
@@ -104,6 +179,7 @@ def PlotBoxWhiskerByGroup(dataframe,
     # Clear plot
     plt.clf()
 
+
 # # Test function
 # from sklearn import datasets
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
@@ -111,5 +187,7 @@ def PlotBoxWhiskerByGroup(dataframe,
 # PlotBoxWhiskerByGroup(
 #     dataframe=iris,
 #     outcome_variable='sepal length (cm)',
-#     group_variable_1='species'
+#     group_variable_1='species',
+#     title_for_plot='Sepal Length by Species',
+#     subtitle_for_plot='A test visulaization using the iris dataset',
 # )
