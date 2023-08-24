@@ -59,7 +59,8 @@ def ConductAnomalyDetection(dataframe,
     
     # Join anomaly probability to original dataset
     dataframe = dataframe.merge(
-        dataframe_anomaly[[column_name_for_anomaly_prob]], 
+        dataframe_anomaly[[column_name_for_anomaly_prob]],
+        how='left', 
         left_index=True, 
         right_index=True
     )
