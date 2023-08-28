@@ -21,7 +21,6 @@ def CreateBoostedTreeModel(dataframe,
                            # Model performance plot arguments
                            plot_model_test_performance=True,
                            dot_fill_color="#999999",
-                           fitted_line_type=None,
                            line_color=None,
                            heatmap_color_palette="Blues",
                            figure_size_for_model_test_performance_plot=(8, 6),
@@ -360,7 +359,7 @@ def CreateBoostedTreeModel(dataframe,
             # Add the caption to the plot
                 ax.text(
                     x=x_indent,
-                    y=caption_y_indent,
+                    y=caption_y_indent_for_feature_importance_plot,
                     s=wrapped_caption,
                     fontname="Arial",
                     fontsize=8,
