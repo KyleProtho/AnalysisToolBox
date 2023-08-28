@@ -15,6 +15,7 @@ def CreateBoostedTreeModel(dataframe,
                            is_outcome_categorical=True,
                            test_size=0.2,
                            random_seed=412,
+                           filter_nulls=False,
                            # All plot arguments
                            data_source_for_plot=None,
                            # Model performance plot arguments
@@ -49,8 +50,9 @@ def CreateBoostedTreeModel(dataframe,
     # Drop rows with infinite values
     dataframe = dataframe.replace([np.inf, -np.inf], np.nan)
     
-    # Drop rows with missing values
-    dataframe = dataframe.dropna()
+    # Drop rows with missing values if filter_nulls is True
+    if filter_nulls:
+        dataframe = dataframe.dropna()
     
     # Split dataframe into training and test sets
     train, test = train_test_split(
