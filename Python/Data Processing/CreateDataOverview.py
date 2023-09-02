@@ -46,7 +46,7 @@ def CreateDataOverview(dataframe,
     data_overview['Missing Percentage'] = data_overview['Missing Count'] / len(dataframe)
     
     # Show range and frequency in each column
-    data_summary = dataframe.describe(include='all').T
+    data_summary = dataframe.describe(include='all', datetime_is_numeric=True).T
     data_summary = data_summary.reset_index()
     data_summary.columns.values[0] = 'Variable'
     try:
