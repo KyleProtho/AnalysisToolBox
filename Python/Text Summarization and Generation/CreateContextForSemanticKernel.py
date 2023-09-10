@@ -24,12 +24,12 @@ def CreateContextForKernel(kernel,
 # threats = [ "Competition from cheaper pizza businesses nearby","There's nearby street construction that will impact foot traffic","Rising cost of cheese will increase the cost of pizzas","No immediate local regulatory changes but it's election season" ]
 # my_context = CreateContextForKernel(
 #     kernel=my_kernel,
-#     dict_context={
-#         "input": "makes pizzas",
-#         "strengths": ", ".join(strengths),
-#         "weaknesses": ", ".join(weaknesses),
-#         # "opportunities": ", ".join(opportunities),
-#         "threats": ", ".join(threats),
-#     }
+    # dict_context={
+    #     "input": "makes pizzas",
+    #     "strengths": ", ".join(strengths),
+    #     "weaknesses": ", ".join(weaknesses),
+    #     # "opportunities": ", ".join(opportunities),
+    #     "threats": ", ".join(threats),
+    # }
 # )
 
