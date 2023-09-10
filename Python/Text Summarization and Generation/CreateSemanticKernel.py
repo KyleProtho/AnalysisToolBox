@@ -44,5 +44,5 @@ def CreateSemanticKernel(kernel_platform="openai",
 # my_kernel = CreateSemanticKernel(
 #     kernel_platform="openai",
 #     openai_api_key=my_openai_api_key,
-#     openai_org_id=my_openai_org_id,
+#     openai_org_id=my_openai_org_id
 # )
