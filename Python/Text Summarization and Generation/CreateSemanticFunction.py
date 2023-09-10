@@ -1,4 +1,5 @@
 # Load packages
+import os
 import semantic_kernel as sk
 
 # Declare function
@@ -7,7 +8,10 @@ def CreateSemanticFunction(kernel,
                            function_description=None,
                            max_tokens=2000,
                            temperature=0.1,
-                           top_p=0.5):
+                           top_p=0.5,
+                           export_as_plugin=False,
+                           plugin_name=None,
+                           plugin_folder=None):
     # Create the semantic function
     semantic_function = kernel.create_semantic_function(
         prompt_template=prompt_template,
@@ -17,6 +21,30 @@ def CreateSemanticFunction(kernel,
         top_p=top_p
     )
     print("A semantic function for summarization has been registered to your kernel.")
+    
+    # # Export the semantic function as a plugin if requested
+    # if export_as_plugin:
+    #     # Check if plugin name is provided
+    #     if plugin_name is None:
+    #         raise Exception("Please provide a plug-in name.")
+        
+    #     # Check if plugin folder is provided
+    #     if plugin_folder is None:
+    #         raise Exception("Please provide a plug-in folder.")
+        
+    #     # Create a directory for the plugin
+    #     plugin_directory = os.path.join(plugin_folder, plugin_name)
+    #     if not os.path.exists(plugin_directory):
+    #         os.makedirs(plugin_directory)
+        
+    #     # Export the prompt template as a txt file
+    #     prompt_template_file = os.path.join(plugin_directory, "prompt_template.txt")
+    #     with open(prompt_template_file, "w") as f:
+    #         f.write(prompt_template)
+    #         f.close()
+        
+    #     # Export the kernel settings as a JSON file
+    #     kernel_settings_file = os.path.join(plugin_directory, "config.json")
     
     # Return the semantic function
     return(semantic_function)

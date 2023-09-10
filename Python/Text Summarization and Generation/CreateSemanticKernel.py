@@ -30,7 +30,7 @@ def CreateSemanticKernel(kernel_platform="openai",
         elif kernel_platform == "huggingface":
             kernel.add_text_completion_service("huggingface", HuggingFaceTextCompletion(platform_model_name, task="text-generation"))
             print("You made an open source kernel using an open source AI model on Hugging Face")
-
+        
     # Return the kernel
     return(kernel)
 
