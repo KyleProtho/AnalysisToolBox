@@ -18,11 +18,21 @@ def ImportSemanticKernelPlugin(kernel,
 #     plugin_directory="C:/Users/oneno/OneDrive/Creations/Semantic Kernel Plugins/AnalysisToolBox-Plugins",
 #     plugin_name="IntelligenceAnalysis"
 # )
-# # Run plugin as test
-# swot_opportunities_result = await my_kernel.run_async(
-#     plugin_IntelligenceAnalysis["SWOTAnalysisOpportunityStrategies"],
+
+# # # Run Opportunities SWOT plugin as test
+# # swot_opportunities_result = await my_kernel.run_async(
+# #     plugin_IntelligenceAnalysis["SWOTAnalysisOpportunityStrategies"],
+# #     input_context=my_context
+# # )
+# # # Display result
+# # from IPython.display import display, Markdown
+# # display(Markdown(str(swot_opportunities_result)))
+
+# # Run Threats SWOT plugin as test
+# swot_threats_result = await my_kernel.run_async(
+#     plugin_IntelligenceAnalysis["SWOTAnalysisThreatStrategies"],
 #     input_context=my_context
 # )
 # # Display result
 # from IPython.display import display, Markdown
-# display(Markdown(str(swot_opportunities_result)))
+# display(Markdown(str(swot_threats_result)))

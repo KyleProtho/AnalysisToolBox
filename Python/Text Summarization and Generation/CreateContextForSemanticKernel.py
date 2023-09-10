@@ -21,13 +21,15 @@ def CreateContextForKernel(kernel,
 # strengths = [ "Unique garlic pizza recipe that wins top awards","Owner trained in Sicily at some of the best pizzerias","Strong local reputation","Prime location on university campus" ]
 # weaknesses = [ "High staff turnover","Floods in the area damaged the seating areas that are in need of repair","Absence of popular calzones from menu","Negative reviews from younger demographic for lack of hip ingredients" ]
 # opportunities = [ "Untapped catering potential","Growing local tech startup community","Unexplored online presence and order capabilities","Upcoming annual food fair" ]
+# threats = [ "Competition from cheaper pizza businesses nearby","There's nearby street construction that will impact foot traffic","Rising cost of cheese will increase the cost of pizzas","No immediate local regulatory changes but it's election season" ]
 # my_context = CreateContextForKernel(
 #     kernel=my_kernel,
 #     dict_context={
 #         "input": "makes pizzas",
 #         "strengths": ", ".join(strengths),
 #         "weaknesses": ", ".join(weaknesses),
-#         "opportunities": ", ".join(opportunities),
+#         # "opportunities": ", ".join(opportunities),
+#         "threats": ", ".join(threats),
 #     }
 # )
 
