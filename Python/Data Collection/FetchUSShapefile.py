@@ -1,8 +1,8 @@
 # Load packages
 import folium 
+import geopandas as gp
 import mapclassify
 import matplotlib.pyplot as plt 
-import geopandas as gp
 import pygris
 
 # Define function to fetch shapefile
