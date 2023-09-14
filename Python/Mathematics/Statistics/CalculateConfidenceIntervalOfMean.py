@@ -10,44 +10,63 @@ sns.set(style="white",
         font="Arial",
         context="paper")
 
-
 # Declare function
-def CalculateConfidenceIntervalOfProportion(sample_proportion, 
-                                            sample_size, 
-                                            confidence_level=.95,
-                                            plot_confidence_interval=True,
-                                            name_of_variable='Proportion',
-                                            # Histogram formatting arguments
-                                            color_palette="Set2",
-                                            fill_transparency=0.6,
-                                            show_mean=True,
-                                            # Text formatting arguments
-                                            title_for_plot="Distribution of Sample Proportion",
-                                            subtitle_for_plot=None,
-                                            caption_for_plot=None,
-                                            data_source_for_plot=None,
-                                            show_y_axis=False,
-                                            title_y_indent=1.1,
-                                            subtitle_y_indent=1.05,
-                                            caption_y_indent=-0.15,
-                                            # Plot formatting arguments
-                                            figure_size=(8, 6)):
-    # Calculate the standard error
-    standard_error = math.sqrt((sample_proportion * (1 - sample_proportion)) / sample_size)
-    
-    # Calculate the margin of error
-    margin_of_error = stats.norm.ppf(1 - ((1 - confidence_level) / 2)) * standard_error
-    
-    # Calculate the confidence interval
-    lower_bound = sample_proportion - margin_of_error
-    upper_bound = sample_proportion + margin_of_error
+def CalculateConfidenceIntervalOfMean(sample_mean,
+                                      standard_error,
+                                      sample_size, 
+                                      confidence_level=.95,
+                                      plot_confidence_interval=True,
+                                      name_of_variable='Mean',
+                                      # Histogram formatting arguments
+                                      color_palette="Set2",
+                                      fill_transparency=0.6,
+                                      show_mean=True,
+                                      # Text formatting arguments
+                                      title_for_plot="Distribution of Sample Mean",
+                                      subtitle_for_plot=None,
+                                      caption_for_plot=None,
+                                      data_source_for_plot=None,
+                                      show_y_axis=False,
+                                      title_y_indent=1.1,
+                                      subtitle_y_indent=1.05,
+                                      aption_y_indent=-0.15,
+                                      # Plot formatting arguments
+                                      figure_size=(8, 6)):
+    # Calculate the confidence interval, using the t-distibution if the sample size is less than 30, and the normal distribution if the sample size is greater than or equal to 30
+    if sample_size < 30:
+        # Calculate the degrees of freedom
+        degrees_of_freedom = sample_size - 1
+        
+        # Calculate the critical value
+        critical_value = stats.t.ppf(q=confidence_level, df=degrees_of_freedom)
+        
+        # Calculate the margin of error
+        margin_of_error = critical_value * standard_error
+        
+        # Calculate the lower bound of the confidence interval
+        lower_bound = sample_mean - margin_of_error
+        
+        # Calculate the upper bound of the confidence interval
+        upper_bound = sample_mean + margin_of_error
+    else:
+        # Calculate the critical value
+        critical_value = stats.norm.ppf(q=confidence_level)
+        
+        # Calculate the margin of error
+        margin_of_error = critical_value * standard_error
+        
+        # Calculate the lower bound of the confidence interval
+        lower_bound = sample_mean - margin_of_error
+        
+        # Calculate the upper bound of the confidence interval
+        upper_bound = sample_mean + margin_of_error
     
     # Generate plot if user requests it
     if plot_confidence_interval:
         # Generate normal distribution of proportions
-        dataframe = pd.DataFrame(np.random.normal(loc=sample_proportion,
-                                                  scale = standard_error,
-                                                  size = 10000),
+        dataframe = pd.DataFrame(np.random.normal(loc=sample_mean,
+                                                  scale=standard_error,
+                                                  size=10000),
                                     columns=[name_of_variable])
         
         # Add flag for whether the proportion is within the confidence interval
@@ -89,7 +108,7 @@ def CalculateConfidenceIntervalOfProportion(sample_proportion,
         
         # Show the sample proportion as a vertical line with a label
         ax.axvline(
-            x=sample_proportion,
+            x=sample_mean,
             ymax=0.97-.02,
             color="#262626",
             linestyle="--",
@@ -97,9 +116,9 @@ def CalculateConfidenceIntervalOfProportion(sample_proportion,
             alpha=0.5
         )
         ax.text(
-            x=sample_proportion, 
+            x=sample_mean, 
             y=plt.ylim()[1] * 0.97, 
-            s='Sample proportion: {:.1%}'.format(sample_proportion),
+            s='Sample mean: ' + str(round(sample_mean, 1)),
             horizontalalignment='center',
             fontname="Arial",
             fontsize=9,
@@ -119,7 +138,7 @@ def CalculateConfidenceIntervalOfProportion(sample_proportion,
         ax.text(
             x=lower_bound, 
             y=plt.ylim()[1] * 0.22, 
-            s='Lower bound: {:.1%}'.format(lower_bound),
+            s='Lower bound: ' + str(round(lower_bound, 1)),
             horizontalalignment='right',
             fontname="Arial",
             fontsize=9,
@@ -139,7 +158,7 @@ def CalculateConfidenceIntervalOfProportion(sample_proportion,
         ax.text(
             x=upper_bound, 
             y=plt.ylim()[1] * 0.22, 
-            s='Upper bound: {:.1%}'.format(upper_bound),
+            s='Upper bound: ' + str(round(upper_bound, 1)),
             horizontalalignment='left',
             fontname="Arial",
             fontsize=9,
@@ -213,14 +232,27 @@ def CalculateConfidenceIntervalOfProportion(sample_proportion,
         plt.clf()
         
     # Print the results
-    print("Sample proportion: {:.1%}".format(sample_proportion))
-    print("Standard error: {:.4f}".format(standard_error))
-    print("Margin of error: {:.4f}".format(margin_of_error))
-    print("Confidence interval: {:.1%} to {:.1%}".format(lower_bound, upper_bound))
+    print("Sample mean: " + str(round(sample_mean, 2)))
+    print("Standard error: " + str(round(standard_error, 2)))
+    print("Sample size: " + str(sample_size))
+    print("Critical value: " + str(round(critical_value, 2)))
+    print("Margin of error: " + str(round(margin_of_error, 2)))
+    print("Confidence interval: " + str(round(lower_bound, 2)) + " to " + str(round(upper_bound, 2)))
 
 
-# Test the function
-CalculateConfidenceIntervalOfProportion(sample_proportion=.37,
-                                        sample_size=411,
-                                        confidence_level=.95,
-                                        subtitle_for_plot="Shows the sample proportion and its 95% confidence interval")
+# # Test the function
+# CalculateConfidenceIntervalOfMean(sample_mean=0,
+#                                   standard_error=1,
+#                                   sample_size=8,
+#                                   confidence_level=.95,
+#                                   subtitle_for_plot="Shows the sample mean and its 95% confidence interval")
+# CalculateConfidenceIntervalOfMean(sample_mean=0,
+#                                   standard_error=1,
+#                                   sample_size=100,
+#                                   confidence_level=.95,
+#                                   subtitle_for_plot="Shows the sample mean and its 95% confidence interval")
+# CalculateConfidenceIntervalOfMean(sample_mean=51,
+#                                   standard_error=2,
+#                                   sample_size=100,
+#                                   confidence_level=.95,
+#                                   subtitle_for_plot="Shows the sample mean and its 95% confidence interval")
