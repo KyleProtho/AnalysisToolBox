@@ -16,7 +16,7 @@ def CreateLinearRegressionModel(dataframe,
                                 outcome_variable,
                                 list_of_predictor_variables,
                                 # Model parameters
-                                scale_predictor_variables=True,
+                                scale_predictor_variables=False,
                                 test_size=0.2,
                                 max_iterations=1000,
                                 learning_rate=0.01,
@@ -363,11 +363,11 @@ def CreateLinearRegressionModel(dataframe,
         return(model)
 
 
-# Test the function
-from sklearn import datasets
-iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-linear_reg_model = CreateLinearRegressionModel(dataframe=iris,
-                                               outcome_variable='sepal length (cm)',
-                                               list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-                                               scale_predictor_variables=False)
+# # Test the function
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# linear_reg_model = CreateLinearRegressionModel(dataframe=iris,
+#                                                outcome_variable='sepal length (cm)',
+#                                                list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+#                                                scale_predictor_variables=True)
 

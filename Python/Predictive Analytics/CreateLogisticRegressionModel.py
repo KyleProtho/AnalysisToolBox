@@ -10,7 +10,7 @@ from sklearn.preprocessing import StandardScaler
 def CreateLogisticRegressionModel(dataframe,
                                   outcome_variable,
                                   list_of_predictor_variables,
-                                  scale_predictor_variables=True,
+                                  scale_predictor_variables=False,
                                   test_size=0.2,
                                   show_classification_plot=True,
                                   lambda_for_regularization=0.001,
