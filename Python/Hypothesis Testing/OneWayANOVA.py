@@ -8,9 +8,9 @@ import numpy as np
 def OneWayANOVA(dataframe,
                 outcome_column,
                 grouping_column,
-                signficance_level = 0.05,
-                homogeneity_of_variance = True,
-                use_welch_correction = False):
+                signficance_level=0.05,
+                homogeneity_of_variance=True,
+                use_welch_correction=False):
     # Show pivot table summary
     table_groups = pd.pivot_table(dataframe, 
         values=[outcome_column], 

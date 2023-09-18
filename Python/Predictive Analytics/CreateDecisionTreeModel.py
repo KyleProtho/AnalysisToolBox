@@ -64,6 +64,7 @@ def CreateDecisionTreeModel(dataframe,
     # Drop rows with missing values if filter_nulls is True
     if filter_nulls:
         dataframe = dataframe.dropna()
+    print("Count of examples eligible for inclusion in model training and testing:", len(dataframe.index))
     
     # Split dataframe into training and test sets
     train, test = train_test_split(

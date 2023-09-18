@@ -22,6 +22,7 @@ def CreateLinearRegressionModel(dataframe,
                                 learning_rate=0.01,
                                 lambda_for_regularization=0.001,
                                 random_seed=412,
+                                print_peak_to_peak_range_of_each_predictor=False,
                                 # All plot arguments
                                 data_source_for_plot=None,
                                 # Model performance plot arguments
@@ -63,8 +64,9 @@ def CreateLinearRegressionModel(dataframe,
         dataframe[list_of_predictor_variables] = scaler.fit_transform(dataframe[list_of_predictor_variables])
         
     # Show the peak-to-peak range of each predictor
-    print("\nPeak-to-peak range of each predictor:")
-    print(np.ptp(dataframe[list_of_predictor_variables], axis=0))
+    if print_peak_to_peak_range_of_each_predictor:
+        print("\nPeak-to-peak range of each predictor:")
+        print(np.ptp(dataframe[list_of_predictor_variables], axis=0))
     
     # Split dataframe into training and test sets
     train, test = train_test_split(
