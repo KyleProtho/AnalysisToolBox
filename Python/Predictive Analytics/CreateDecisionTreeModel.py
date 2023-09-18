@@ -394,7 +394,7 @@ def CreateDecisionTreeModel(dataframe,
             # Add the caption to the plot
             ax.text(
                 x=x_indent,
-                y=caption_y_indent,
+                y=caption_y_indent_for_feature_importance_plot,
                 s=wrapped_caption,
                 fontname="Arial",
                 fontsize=8,
