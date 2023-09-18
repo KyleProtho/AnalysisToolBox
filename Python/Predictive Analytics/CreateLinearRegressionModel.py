@@ -52,9 +52,9 @@ def CreateLinearRegressionModel(dataframe,
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
     
-    # Keep complete cases
+    # Drop inf and nan values
+    dataframe = dataframe.replace([np.inf, -np.inf], np.nan, inplace=True)
     dataframe.dropna(inplace = True)
-    dataframe = dataframe[np.isfinite(dataframe).all(1)]
     print("Count of examples eligible for inclusion in model training and testing:", len(dataframe.index))
     
     # Scale the predictors, if requested
