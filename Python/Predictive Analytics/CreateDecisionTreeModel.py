@@ -392,15 +392,15 @@ def CreateDecisionTreeModel(dataframe,
                 wrapped_caption = wrapped_caption + "\n\nSource: " + data_source_for_plot
             
             # Add the caption to the plot
-                ax.text(
-                    x=x_indent,
-                    y=caption_y_indent,
-                    s=wrapped_caption,
-                    fontname="Arial",
-                    fontsize=8,
-                    color="#666666",
-                    transform=ax.transAxes
-                )
+            ax.text(
+                x=x_indent,
+                y=caption_y_indent,
+                s=wrapped_caption,
+                fontname="Arial",
+                fontsize=8,
+                color="#666666",
+                transform=ax.transAxes
+            )
             
         # Show the plot
         plt.show()
