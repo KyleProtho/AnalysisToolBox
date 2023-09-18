@@ -52,9 +52,9 @@ def CreateLinearRegressionModel(dataframe,
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
     
-    # Drop inf and nan values
-    dataframe = dataframe.replace([np.inf, -np.inf], np.nan, inplace=True)
-    dataframe.dropna(inplace = True)
+    # Replace inf with nan, and drop rows with nan
+    dataframe.replace([np.inf, -np.inf], np.nan, inplace=True)
+    dataframe.dropna(inplace=True)
     print("Count of examples eligible for inclusion in model training and testing:", len(dataframe.index))
     
     # Scale the predictors, if requested
@@ -363,11 +363,11 @@ def CreateLinearRegressionModel(dataframe,
         return(model)
 
 
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# linear_reg_model = CreateLinearRegressionModel(dataframe=iris,
-#                                                outcome_variable='sepal length (cm)',
-#                                                list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-#                                                scale_predictor_variables=False)
+# Test the function
+from sklearn import datasets
+iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+linear_reg_model = CreateLinearRegressionModel(dataframe=iris,
+                                               outcome_variable='sepal length (cm)',
+                                               list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+                                               scale_predictor_variables=False)
 
