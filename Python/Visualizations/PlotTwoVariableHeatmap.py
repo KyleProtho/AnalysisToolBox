@@ -1,6 +1,8 @@
+# Load packages
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
+import textwrap
 sns.set(style="white",
         font="Arial",
         context="paper")
@@ -8,8 +10,19 @@ sns.set(style="white",
 def PlotTwoVariableHeatmap(dataframe,
                            categorical_variable_1,
                            categorical_variable_2,
+                           # Plot formatting arguments
                            color_palette="Blues",
-                           show_legend=False):
+                           show_legend=False,
+                           figure_size=(8, 6),
+                           # Text formatting arguments
+                           data_label_format=".1%",
+                           title_for_plot=None,
+                           subtitle_for_plot=None,
+                           caption_for_plot=None,
+                           data_source_for_plot=None,
+                           title_y_indent=1.15,
+                           subtitle_y_indent=1.1,
+                           caption_y_indent=-0.15):
     # Create contingency table
     contingency_table = pd.crosstab(
         dataframe[categorical_variable_1],
@@ -17,18 +30,113 @@ def PlotTwoVariableHeatmap(dataframe,
         normalize="columns"
     )
     
+    # Create figure and axes
+    fig, ax = plt.subplots(figsize=figure_size)
+    
     # Plot contingency table in a heatmap using seaborn
-    sns.heatmap(
+    ax = sns.heatmap(
         contingency_table,
         cmap=color_palette,
         annot=True,
-        fmt=".2f",
+        fmt=data_label_format,
         linewidths=0.5,
         cbar=show_legend
     )
     
-    # Set title of plot
-    plt.title("Contingency Table for " + categorical_variable_1 + " and " + categorical_variable_2)
+    # Wrap y axis label using textwrap
+    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_variable_1, 30))  # String wrap the variable name
+    ax.set_ylabel(wrapped_variable_name)
     
+    # Format and wrap y axis tick labels using textwrap
+    y_tick_labels = ax.get_yticklabels()
+    wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 30)) for label in y_tick_labels]
+    ax.set_yticklabels(wrapped_y_tick_labels, fontsize=10, fontname="Arial", color="#262626")
+    
+    # Wrap x axis label using textwrap
+    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_variable_2, 30))  # String wrap the variable name
+    ax.set_xlabel(wrapped_variable_name)
+    
+    # Format and wrap x axis tick labels using textwrap
+    x_tick_labels = ax.get_xticklabels()
+    wrapped_x_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 30)) for label in x_tick_labels]
+    ax.set_xticklabels(wrapped_x_tick_labels, fontsize=10, fontname="Arial", color="#262626")
+    
+    # Set the x indent of the plot titles and captions
+    # Get longest y tick label
+    longest_y_tick_label = max(wrapped_y_tick_labels, key=len)
+    if len(longest_y_tick_label) >= 30:
+        x_indent = -0.3
+    else:
+        x_indent = -0.005 - (len(longest_y_tick_label) * 0.011)
+        
+    # Set the title with Arial font, size 14, and color #262626 at the top of the plot
+    ax.text(
+        x=x_indent,
+        y=title_y_indent,
+        s=title_for_plot,
+        fontname="Arial",
+        fontsize=14,
+        color="#262626",
+        transform=ax.transAxes
+    )
+    
+    # Set the subtitle with Arial font, size 11, and color #666666
+    ax.text(
+        x=x_indent,
+        y=subtitle_y_indent,
+        s=subtitle_for_plot,
+        fontname="Arial",
+        fontsize=11,
+        color="#666666",
+        transform=ax.transAxes
+    )
+    
+        
+    # Add a word-wrapped caption if one is provided
+    if caption_for_plot != None or data_source_for_plot != None:
+        # Create starting point for caption
+        wrapped_caption = ""
+        
+        # Add the caption to the plot, if one is provided
+        if caption_for_plot != None:
+            # Word wrap the caption without splitting words
+            wrapped_caption = textwrap.fill(caption_for_plot, 110, break_long_words=False)
+            
+        # Add the data source to the caption, if one is provided
+        if data_source_for_plot != None:
+            wrapped_caption = wrapped_caption + "\n\nSource: " + data_source_for_plot
+        
+        # Add the caption to the plot
+        ax.text(
+            x=x_indent,
+            y=caption_y_indent,
+            s=wrapped_caption,
+            fontname="Arial",
+            fontsize=8,
+            color="#666666",
+            transform=ax.transAxes
+        )
+        
     # Show plot
     plt.show()
+    
+    # Clear plot
+    plt.clf()
+
+
+# # Test function
+# # Generate dataframe with two categorical variables
+# dataframe = pd.DataFrame({
+#     "Category 1": ["A", "A", "A", "B", "A", "A", "A", "B", "A", "B"],
+#     "Category 2": ["X", "X", "X", "X", "Y", "Y", "Y", "Y", "Z", "Z"]
+# })
+# # Plot heatmap
+# PlotTwoVariableHeatmap(dataframe,
+#                        "Category 1",
+#                        "Category 2",
+#                        color_palette="Blues",
+#                        show_legend=False,
+#                        figure_size=(8, 6),
+#                        title_for_plot="Heatmap of Two Categorical Variables",
+#                        subtitle_for_plot="Just testing out the function")
+
