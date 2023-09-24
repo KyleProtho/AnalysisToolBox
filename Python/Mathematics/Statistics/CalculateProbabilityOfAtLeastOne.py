@@ -27,6 +27,10 @@ def CalculateProbabilityOfAtLeastOne(number_of_attempts,
                                      caption_y_indent=-0.3,
                                      # Plot formatting arguments
                                      figure_size=(8, 5)):
+    # Ensure that probability of event is between 0 and 1
+    if probability_of_event < 0 or probability_of_event > 1:
+        raise ValueError("Probability of event must be between 0 and 1")
+    
     # Calculate probability of at least one success
     probability = 1 - (1 - probability_of_event) ** number_of_attempts
     
@@ -196,5 +200,5 @@ def CalculateProbabilityOfAtLeastOne(number_of_attempts,
 # # Test function
 # # CalculateProbabilityOfAtLeastOne(number_of_attempts=10, 
 # #                                  probability_of_event=0.1)
-# CalculateProbabilityOfAtLeastOne(number_of_attempts=7, 
-#                                  probability_of_event=0.33)
+# CalculateProbabilityOfAtLeastOne(number_of_attempts=10, 
+#                                  probability_of_event=0.15)
