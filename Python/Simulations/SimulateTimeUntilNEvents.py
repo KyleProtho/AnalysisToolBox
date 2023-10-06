@@ -11,29 +11,29 @@ sns.set(style="white",
         context="paper")
 
 # Declare function
-def SimulateGammaDistribution(number_of_events=1,
-                              expected_time_between_events=1,
-                              # Simulation parameters
-                              number_of_trials=10000,
-                              random_seed=412,
-                              return_format='dataframe',
-                              simulated_variable_name='Time Until N Events',
-                              # Plotting parameters
-                              plot_simulation_results=True,
-                              fill_color="#999999",
-                              fill_transparency=0.6,
-                              figure_size=(8, 6),
-                              show_mean=True,
-                              show_median=True,
-                              # Text formatting arguments
-                              title_for_plot="Simulation Results",
-                              subtitle_for_plot="Showing the distribution of time until n events occur",
-                              caption_for_plot=None,
-                              data_source_for_plot=None,
-                              show_y_axis=False,
-                              title_y_indent=1.1,
-                              subtitle_y_indent=1.05,
-                              caption_y_indent=-0.15):
+def SimulateTimeUntilNEvents(number_of_events=1,
+                             expected_time_between_events=1,
+                             # Simulation parameters
+                             number_of_trials=10000,
+                             random_seed=412,
+                             return_format='dataframe',
+                             simulated_variable_name='Time Until N Events',
+                             # Plotting parameters
+                             plot_simulation_results=True,
+                             fill_color="#999999",
+                             fill_transparency=0.6,
+                             figure_size=(8, 6),
+                             show_mean=True,
+                             show_median=True,
+                             # Text formatting arguments
+                             title_for_plot="Simulation Results",
+                             subtitle_for_plot="Showing the distribution of time until n events occur",
+                             caption_for_plot=None,
+                             data_source_for_plot=None,
+                             show_y_axis=False,
+                             title_y_indent=1.1,
+                             subtitle_y_indent=1.05,
+                             caption_y_indent=-0.15):
     """
     Gamma distributions are continuous distributions that model the amount of time needed 
     before a specified number of events happen.
@@ -222,5 +222,5 @@ def SimulateGammaDistribution(number_of_events=1,
 
 
 # # Test function
-# SimulateGammaDistribution(number_of_events=3,
+# SimulateTimeUntilNEvents(number_of_events=3,
 #                           expected_time_between_events=10)
