@@ -10,6 +10,7 @@ sns.set(style="white",
         font="Arial",
         context="paper")
 
+# Declare function
 def SimulateCountUntilFirstSuccess(probability_of_success,
                                    # Simulation parameters
                                    number_of_trials=10000,

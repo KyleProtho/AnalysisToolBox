@@ -1,11 +1,14 @@
 # Load packages
-import random
-import pandas as pd
-import numpy as np
+from math import ceil
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import random
 import seaborn as sns
-sns.set_style("white")
-sns.set_context("paper")
+import textwrap
+sns.set(style="white",
+        font="Arial",
+        context="paper")
 
 # Delcare function
 def SimulateNormallyDistributedOutcome(expected_outcome=0,
@@ -70,7 +73,9 @@ def SimulateNormallyDistributedOutcome(expected_outcome=0,
         if min_max_of_outcome is None:
             raise ValueError("Please specify either standard_deviation_of_outcome or min_max_of_outcome.")
         else:
-            standard_deviation_of_outcome = (min_max_of_outcome[1] - min_max_of_outcome[0]) / 3.29
+            # This formula is known as the "range rule" and it is based on the empirical finding that the range 
+            # of a normal distribution is typically equal to 3.29 times its standard deviation.
+            standard_deviation_of_outcome = (min_max_of_outcome[1] - min_max_of_outcome[0]) / 3.29  
         
     # Simulate normally distributed outcome
     list_sim_results = np.random.normal(
