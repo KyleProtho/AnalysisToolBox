@@ -58,7 +58,7 @@ def SimulateCountOutcome(expected_count,
         
     # Simulate count outcome
     list_sim_results = np.random.poisson(lam=expected_count,
-                                         size = number_of_trials)
+                                         size=number_of_trials)
     
     # Convert results to a dataframe
     df_simulation = pd.DataFrame(list_sim_results,
