@@ -21,12 +21,13 @@ def CreateMetalogDistribution(dataframe,
                               term_minimum=2,
                               term_for_random_sample=None,
                               number_of_samples=10000,
-                              show_comparison_plot=True,
                               show_summary=True,
-                              sample_format='dataframe',
+                              return_format='dataframe',
                               # Histogram formatting arguments
+                              plot_metalog_distribution=True,
                               fill_color="#999999",
                               fill_transparency=0.6,
+                              figure_size=(8, 6),
                               show_mean=True,
                               show_median=True,
                               # Text formatting arguments
@@ -37,9 +38,7 @@ def CreateMetalogDistribution(dataframe,
                               show_y_axis=False,
                               title_y_indent=1.1,
                               subtitle_y_indent=1.05,
-                              caption_y_indent=-0.15,
-                              # Plot formatting arguments
-                              figure_size=(8, 6)):
+                              caption_y_indent=-0.15):
     """_summary_
     This function creates a metalog distribution from a dataset and variable.
     
@@ -51,15 +50,15 @@ def CreateMetalogDistribution(dataframe,
         learning_rate (float, optional): The learning rate to use when creating the metalog distribution. Defaults to .01.
         term_maximum (int, optional): The maximum number of terms to use when creating the metalog distribution. Defaults to 9.
         term_minimum (int, optional): The minimum number of terms to use when creating the metalog distribution. Defaults to 2.
-        show_comparison_plot (bool, optional): _description_. Defaults to True.
+        plot_metalog_distribution (bool, optional): _description_. Defaults to True.
 
     Returns:
         _type_: _description_
     """
     
-    # Ensure that sample_format is either 'dataframe' or 'array'
-    if sample_format not in ['dataframe', 'array']:
-        raise ValueError("sample_format must be either 'dataframe' or 'array'.")
+    # Ensure that return_format is either 'dataframe' or 'array'
+    if return_format not in ['dataframe', 'array']:
+        raise ValueError("return_format must be either 'dataframe' or 'array'.")
     
     # Select necessary columns from the dataframe
     dataframe = dataframe[[variable]]
@@ -128,7 +127,7 @@ def CreateMetalogDistribution(dataframe,
     metalog_df = pd.DataFrame(arr_metalog, columns=[variable])
     
     # # To-Do: Add a comparison plot of the metalog distribution and the data
-    if show_comparison_plot:
+    if plot_metalog_distribution:
         # Create figure and axes
         fig, ax = plt.subplots(figsize=figure_size)
         
@@ -273,7 +272,7 @@ def CreateMetalogDistribution(dataframe,
         plt.clf()
         
     # Return the metalog distribution
-    if sample_format == 'dataframe':
+    if return_format == 'dataframe':
         return metalog_df
     else:
         return arr_metalog

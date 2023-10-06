@@ -5,6 +5,7 @@ import pymetalog as pm
 from math import ceil
 from matplotlib import pyplot as plt
 import seaborn as sns
+import textwrap
 sns.set(style="white",
         font="Arial",
         context="paper")
@@ -12,93 +13,102 @@ sns.set(style="white",
 # Declare function
 def CreateMetalogDistributionFromPercentiles(list_of_values,
                                              list_of_percentiles,
-                                             return_simulated_data=False,
-                                             boundedness="both",
-                                             term_limit=None,
+                                             # Metalog distribution parameters
+                                             lower_bound=None,
+                                             upper_bound=None,
+                                             learning_rate=.01,
+                                             term_maximum=None,
+                                             term_minimum=2,
+                                             term_for_random_sample=None,
+                                             number_of_samples=10000,
                                              variable_name="Simulated Value",
+                                             show_summary=True,
+                                             return_format='dataframe',
+                                             # Plot parameters
                                              show_distribution_plot=True,
+                                             figure_size=(8, 6),
                                              fill_color="#999999",
                                              fill_transparency=0.6,
+                                             show_mean=True,
+                                             show_median=True,
+                                             show_y_axis=False,
+                                             # Plot text parameters
                                              title_for_plot=None,
                                              subtitle_for_plot=None,
                                              caption_for_plot=None,
                                              data_source_for_plot=None,
-                                             show_mean=True,
-                                             show_median=True,
-                                             show_y_axis=False,
-                                             figure_size=(8, 6),
                                              title_y_indent=1.1,
                                              subtitle_y_indent=1.05,
                                              caption_y_indent=-0.15):
-    """This function takes a list of values and a list of percentiles and creates a metalog distribution. It then takes a random sample from the metalog distribution and returns the sample as a dataframe. The function also plots the metalog distribution as a histogram.
-
-    Args:
-        list_of_values (list or numpy array): A list of values for each percentile.
-        list_of_percentiles (list or numpy array): A list of percentiles for each value.
-        return_simulated_data (bool, optional): Whether to return the simulated data. Defaults to False.
-        boundedness (str, optional): Whether the distribution is bounded on both side, on the lower side, on the upper side, or unbounded. Valid values are "both", "lower", "upper", or "unbounded". Defaults to "both".
-        term_limit (_type_, optional): The number of terms to use in the metalog distribution. Lower may result in underfitting, while higher may result in overfitting. Defaults to the length of the list of values.
-        variable_name (str, optional): The name of the variable to use in the dataframe. Defaults to "Simulated Value".
-        show_distribution_plot (bool, optional): Whether to show the distribution plot. Defaults to True.
-        fill_color (str, optional): The color to use for the fill of the histogram. Defaults to "#999999".
-        fill_transparency (float, optional): The transparency to use for the fill of the histogram. Defaults to 0.6.
-        title_for_plot (_type_, optional): The title to use for the plot. Defaults to None.
-        subtitle_for_plot (_type_, optional): The subtitle to use for the plot. Defaults to None.
-        caption_for_plot (_type_, optional): The caption to use for the plot. Defaults to None.
-        data_source_for_plot (_type_, optional): The data source to use for the plot. Defaults to None.
-        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
-        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
-        show_y_axis (bool, optional): Whether to show the y-axis on the plot. Defaults to False.
-        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
-        title_y_indent (float, optional): The vertical location of the title. Defaults to 1.1.
-        subtitle_y_indent (float, optional): The vertical location of the subtitle. Defaults to 1.05.
-        caption_y_indent (float, optional): The vertical location of the caption. Defaults to -0.15.
-
-    Returns:
-        Pandas dataframe: A dataframe containing the simulated data.
-    """
-    
     # Ensure that the list of values and list of percentiles are the same length
     if len(list_of_values) != len(list_of_percentiles):
         raise ValueError("The list of values and list of percentiles must be the same length.")
     
-    # Ensure boundedness is a valid argument
-    if boundedness not in ["both", "lower", "upper", "unbounded"]:
-        raise ValueError("Boundedness must be one of the following: both, lower, upper, or unbounded.")
+    # Ensure that return_format is a valid argument
+    if return_format not in ["dataframe", "array"]:
+        raise ValueError("return_format must be one of the following: dataframe or array.")
     
-    # If term limit is not specified, then use the length of the scores
-    if term_limit is None:
-        term_limit = len(list_of_values)
+    # If term_maximum is not provided, set it to the length of the list of values
+    if term_maximum is None:
+        term_maximum = len(list_of_values)
         
-    # Convert boundedness to the appropriate format
-    if boundedness == "both":
-        boundedness = "b"
-    elif boundedness == "lower":
-        boundedness = "sl"
-    elif boundedness == "upper":
-        boundedness = "su"
+    # Create a metalog distribution
+    if lower_bound is None and upper_bound is None:
+        metalog_dist = pm.metalog(
+            x=list_of_values,
+            probs=list_of_percentiles,
+            step_len=learning_rate,
+            term_lower_bound=term_minimum,
+            term_limit=term_maximum
+        )
+    elif lower_bound is not None and upper_bound is None:
+        metalog_dist = pm.metalog(
+            x=list_of_values,
+            probs=list_of_percentiles,
+            boundedness='sl',
+            bounds=[lower_bound],
+            step_len=learning_rate,
+            term_lower_bound=term_minimum,
+            term_limit=term_maximum
+        )
+    elif lower_bound is None and upper_bound is not None:
+        metalog_dist = pm.metalog(
+            x=list_of_values,
+            probs=list_of_percentiles,
+            boundedness='su',
+            bounds=[upper_bound],
+            step_len=learning_rate,
+            term_lower_bound=term_minimum,
+            term_limit=term_maximum
+        )
     else:
-        boundedness = "u"
-
-    # Create the metalog distribution
-    metalog_dist = pm.metalog(x = list_of_values,
-                        probs = list_of_percentiles,
-                        term_limit = term_limit,
-                        bounds = [0, 100],
-                        boundedness = "b")
+        metalog_dist = pm.metalog(
+            x=list_of_values,
+            probs=list_of_percentiles,
+            boundedness='b',
+            bounds=[lower_bound, upper_bound],
+            step_len=learning_rate,
+            term_lower_bound=term_minimum,
+            term_limit=term_maximum
+        )
 
     # Show summary of the metalog distribution
-    pm.summary(m = metalog_dist)
+    if show_summary:
+        pm.summary(m = metalog_dist)
+        
+    # Get the maximum number of terms used in the metalog distribution that is valid
+    if term_for_random_sample is None:
+        term_for_random_sample = metalog_dist.term_limit
 
     # Take a random sample from the metalog distribution
-    array_random_sample = pm.rmetalog(
+    arr_metalog = pm.rmetalog(
         m=metalog_dist, 
-        n=10000,
-        term=term_limit
+        n=number_of_samples,
+        term=term_for_random_sample
     )
     
     # Convert the array to a dataframe
-    df_random_sample = pd.DataFrame(array_random_sample, columns=[variable_name])
+    metalog_df = pd.DataFrame(arr_metalog, columns=[variable_name])
     
     # Plot the metalog distribution
     if show_distribution_plot:
@@ -107,7 +117,7 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
         
         # Create histogram using seaborn
         sns.histplot(
-            data=df_random_sample,
+            data=metalog_df,
             x=variable_name,
             color=fill_color,
             alpha=fill_transparency,
@@ -135,7 +145,7 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
         # Show the mean if requested
         if show_mean:
             # Calculate the mean
-            mean = df_random_sample[variable_name].mean()
+            mean = metalog_df[variable_name].mean()
             # Show the mean as a vertical line with a label
             ax.axvline(
                 x=mean,
@@ -159,7 +169,7 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
         # Show the median if requested
         if show_median:
             # Calculate the median
-            median = df_random_sample[variable_name].median()
+            median = metalog_df[variable_name].median()
             # Show the median as a vertical line with a label
             ax.axvline(
                 x=median,
@@ -216,28 +226,14 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
         
         # Add a word-wrapped caption if one is provided
         if caption_for_plot != None or data_source_for_plot != None:
+            # Create starting point for caption
+            wrapped_caption = ""
+            
+            # Add the caption to the plot, if one is provided
             if caption_for_plot != None:
                 # Word wrap the caption without splitting words
-                if len(caption_for_plot) > 120:
-                    # Split the caption into words
-                    words = caption_for_plot.split(" ")
-                    # Initialize the wrapped caption
-                    wrapped_caption = ""
-                    # Initialize the line length
-                    line_length = 0
-                    # Iterate through the words
-                    for word in words:
-                        # If the word is too long to fit on the current line, add a new line
-                        if line_length + len(word) > 120:
-                            wrapped_caption = wrapped_caption + "\n"
-                            line_length = 0
-                        # Add the word to the line
-                        wrapped_caption = wrapped_caption + word + " "
-                        # Update the line length
-                        line_length = line_length + len(word) + 1
-            else:
-                wrapped_caption = ""
-            
+                wrapped_caption = textwrap.fill(caption_for_plot, 110, break_long_words=False)
+                
             # Add the data source to the caption, if one is provided
             if data_source_for_plot != None:
                 wrapped_caption = wrapped_caption + "\n\nSource: " + data_source_for_plot
@@ -252,23 +248,26 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
                 color="#666666",
                 transform=ax.transAxes
             )
-            
+                
         # Show plot
         plt.show()
         
         # Clear plot
         plt.clf()
     
-    # Return the simulated data if requested
-    if return_simulated_data:
-        return df_random_sample
+    # Return the metalog distribution
+    if return_format == 'dataframe':
+        return metalog_df
+    else:
+        return arr_metalog
     
     
 # # Test function
 # CreateMetalogDistributionFromPercentiles(
 #     list_of_values=[20, 25, 30, 90],
 #     list_of_percentiles=[.10, .33, .66, .90],
-#     boundedness="both",
+#     lower_bound=0,
+#     upper_bound=100,
 #     variable_name="Estimated Scores in Survey",
 #     title_for_plot="Estimated Scores in Survey",
 #     subtitle_for_plot="Based on observed scores for the 10th, 33rd, 66th, and 90th percentiles."
