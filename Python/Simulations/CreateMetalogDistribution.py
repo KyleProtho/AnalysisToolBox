@@ -39,23 +39,6 @@ def CreateMetalogDistribution(dataframe,
                               title_y_indent=1.1,
                               subtitle_y_indent=1.05,
                               caption_y_indent=-0.15):
-    """_summary_
-    This function creates a metalog distribution from a dataset and variable.
-    
-    Args:
-        dataframe (_type_): Pandas dataframe containing the dataset.
-        variable (str): Name of the variable to create the metalog distribution from.
-        lower_bound (int or float, optional): The lower bound of the metalog distribution. Defaults to None.
-        upper_bound (int or float, optional): The upper bound of the metalog distribution. Defaults to None.
-        learning_rate (float, optional): The learning rate to use when creating the metalog distribution. Defaults to .01.
-        term_maximum (int, optional): The maximum number of terms to use when creating the metalog distribution. Defaults to 9.
-        term_minimum (int, optional): The minimum number of terms to use when creating the metalog distribution. Defaults to 2.
-        plot_metalog_distribution (bool, optional): _description_. Defaults to True.
-
-    Returns:
-        _type_: _description_
-    """
-    
     # Ensure that return_format is either 'dataframe' or 'array'
     if return_format not in ['dataframe', 'array']:
         raise ValueError("return_format must be either 'dataframe' or 'array'.")
@@ -115,7 +98,7 @@ def CreateMetalogDistribution(dataframe,
     if term_for_random_sample is None:
         term_for_random_sample = metalog_dist.term_limit
         
-    # Randomly select 10000 values from the metalog distribution
+    # Randomly select values from the metalog distribution
     arr_metalog = pm.rmetalog(
         metalog_dist, 
         n=number_of_samples, 
@@ -126,7 +109,7 @@ def CreateMetalogDistribution(dataframe,
     # Convert the metalog distribution to a dataframe
     metalog_df = pd.DataFrame(arr_metalog, columns=[variable])
     
-    # # To-Do: Add a comparison plot of the metalog distribution and the data
+    # Plot the metalog distribution, if requested
     if plot_metalog_distribution:
         # Create figure and axes
         fig, ax = plt.subplots(figsize=figure_size)
