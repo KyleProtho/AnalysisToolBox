@@ -62,7 +62,7 @@ def SimulateTimeBetweenEvents(expected_time_between_events,
     
     # Convert results to a dataframe
     df_simulation = pd.DataFrame(list_sim_results,
-                                 columns = [simulated_variable_name])
+                                 columns=[simulated_variable_name])
     
     # Generate plot if user requests it
     if plot_simulation_results == True:
