@@ -41,6 +41,10 @@ def PlotRiskTolerance(sip,
     if observed_value != None and not isinstance(observed_value, (int, float)):
         raise ValueError("Observed value must be numeric.")
     
+    # If sip is a pandas series, convert it to a numpy array
+    if isinstance(sip, pd.Series):
+        sip = sip.to_numpy()
+    
     # Create dataframe with only the outcome variable and the SIP
     dataframe = pd.DataFrame(sip, columns=[variable_name])
     
