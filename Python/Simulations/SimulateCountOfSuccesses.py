@@ -1,14 +1,4 @@
 
-'''
-The binomial distribution can be used to describe the number of successes 'p' in 'n' total events
-
-Conditions:
-- Discrete data
-- Two possible outcomes for each trial
-- Each trial is independent
-- The probability of success/failure is the same in each trial
-'''
-
 # Load packages
 import random
 import pandas as pd
@@ -22,6 +12,15 @@ def SimulateCountOfSuccesses(probability_of_success,
                              simulated_variable_name = 'Count of Successes',
                              random_seed = None,
                              plot_simulation_results = False):
+    """
+    The binomial distribution can be used to describe the number of successes 'p' in 'n' total events
+
+    Conditions:
+    - Discrete data
+    - Two possible outcomes for each trial
+    - Each trial is independent
+    - The probability of success/failure is the same in each trial
+    """
     
     # Ensure arguments are valid
     if probability_of_success >= 1:
