@@ -9,6 +9,7 @@ sns.set(style="white",
         font="Arial",
         context="paper")
 
+# Declare function
 def PlotSingleVariableHistogram(dataframe,
                                 quantitative_variable,
                                 # Histogram formatting arguments
