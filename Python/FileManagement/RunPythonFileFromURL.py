@@ -2,7 +2,8 @@
 import requests
 
 # Declare function
-def RunPythonFileFromURL(python_url):
+def RunPythonFileFromURL(python_url,
+                         show_success_message=False):
     """This function will run a python file from a URL. This is useful for running python files from GitHub.
 
     Args:
@@ -28,7 +29,8 @@ def RunPythonFileFromURL(python_url):
         
         # Make function within the file.py available outside of this function
         globals().update(locals())
-        print('Successfully ran ' + file_name + ' from URL!')
+        if show_success_message:
+            print('Successfully ran ' + file_name + ' from URL!')
 
 
 # # Test function
