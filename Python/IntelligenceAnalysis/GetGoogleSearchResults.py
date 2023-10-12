@@ -37,8 +37,8 @@ def GetGoogleSearchResults(query,
     
     # Get the response from the API
     response = requests.request(
-        "POST", 
-        url, 
+        method="POST", 
+        url=url, 
         headers=headers, 
         data=payload
     )
