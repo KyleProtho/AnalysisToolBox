@@ -9,7 +9,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 # Declare function
 def SummarizeTextWithChatGPT(text_to_summarize,
-                             openai_api_key,
+                             openai_api_key=None,
                              # LLM parameters
                              summarization_objective="Summarize the main points and key arguments of the given text.",
                              query_method="map_reduce",
@@ -20,6 +20,14 @@ def SummarizeTextWithChatGPT(text_to_summarize,
                              splitter_chunk_size=None,
                              splitter_chunk_overlap=None,
                              splitter_separators=[".  ", "\n", "\n\n"]):
+    # If OpenAI API key is not provided, then try to load from .env file
+    if openai_api_key is None:
+        load_dotenv()
+        try:
+            openai_api_key = os.environ['OPENAI_API_KEY']
+        except:
+            raise ValueError("No API key provided and no .env file found. If you need a OpenAI API key, visit https://platform.openai.com/")
+    
     # If chunk size is not provided, then set defaults
     if splitter_chunk_size is None:
         if "gpt-3.5-turbo-16k" in chat_model_name:
