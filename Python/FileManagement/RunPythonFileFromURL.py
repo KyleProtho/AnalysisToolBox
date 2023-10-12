@@ -23,7 +23,7 @@ def RunPythonFileFromURL(python_url):
     if response.status_code == 200:
         with open('file.py', 'wb') as f:
             f.write(response.content)
-        exec(open('file.py').read())
+        exec(open('file.py', encoding="utf-8").read())
         os.remove('file.py')
         
         # Make function within the file.py available outside of this function
