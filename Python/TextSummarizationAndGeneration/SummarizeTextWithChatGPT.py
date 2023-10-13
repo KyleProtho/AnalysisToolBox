@@ -104,8 +104,6 @@ def SummarizeTextWithChatGPT(text_to_summarize,
     
     TEXT:
     "{text}"
-    
-    SUMMARY:
     """
     map_prompt_template = PromptTemplate(
         template=map_prompt,
