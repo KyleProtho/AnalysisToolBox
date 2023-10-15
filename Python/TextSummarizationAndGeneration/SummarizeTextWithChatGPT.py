@@ -95,7 +95,7 @@ def SummarizeTextWithChatGPT(text_to_summarize,
         docs = splitter.create_documents([text])
     
     # Set up the LLM
-    llm = ChatOpenAI(api_key=openai_api_key,
+    llm = ChatOpenAI(openai_api_key=openai_api_key,
                      model_name=chat_model_name)
     
     # Set up the prompt template

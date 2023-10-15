@@ -22,7 +22,7 @@ def SendPromptToChatGPT(user_prompt,
             raise ValueError("No API key provided and no .env file found. If you need a OpenAI API key, visit https://platform.openai.com/")
     
     # Create an instance of the ChatGPT chat model
-    chat_model = ChatOpenAI(api_key=openai_api_key)
+    chat_model = ChatOpenAI(openai_api_key=openai_api_key)
 
     # Define the system and user messages
     system_msg = SystemMessage(content=system_message)
