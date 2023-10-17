@@ -212,25 +212,25 @@ def PlotBulletChart(dataframe,
     plt.clf()
 
 
-# Test the function
-# Sample data
-data = {
-    'Group': ['Pittsburgh', 'Denver', 'Tampa'],
-    'Current Performance': [75, 50, 90],
-    'Target': [76, 55, 92],
-    'Level 1': [30, 20, 40],
-    'Level 2': [50, 40, 60],
-    'Level 3': [80, 70, 90]
-}
-data = pd.DataFrame(data)
-# Generate the bullet chart with specified columns
-PlotBulletChart(
-    dataframe=data, 
-    group_column='Group', 
-    value_column='Current Performance', 
-    target_value_column='Target',
-    list_of_limit_columns=['Level 1', 'Level 2', 'Level 3'],
-    value_maximum=100,
-    title_for_plot="Current Performance",
-    subtitle_for_plot="Shown with target and performance levels",
-)
+# # Test the function
+# # Sample data
+# data = {
+#     'Group': ['Pittsburgh', 'Denver', 'Tampa'],
+#     'Current Performance': [75, 50, 90],
+#     'Target': [76, 55, 92],
+#     'Level 1': [30, 20, 40],
+#     'Level 2': [50, 40, 60],
+#     'Level 3': [80, 70, 90]
+# }
+# data = pd.DataFrame(data)
+# # Generate the bullet chart with specified columns
+# PlotBulletChart(
+#     dataframe=data, 
+#     group_column='Group', 
+#     value_column='Current Performance', 
+#     target_value_column='Target',
+#     list_of_limit_columns=['Level 1', 'Level 2', 'Level 3'],
+#     value_maximum=100,
+#     title_for_plot="Current Performance",
+#     subtitle_for_plot="Shown with target and performance levels",
+# )
