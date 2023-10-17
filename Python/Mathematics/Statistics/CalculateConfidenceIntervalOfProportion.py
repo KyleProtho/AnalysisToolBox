@@ -219,8 +219,9 @@ def CalculateConfidenceIntervalOfProportion(sample_proportion,
     print("Confidence interval: {:.1%} to {:.1%}".format(lower_bound, upper_bound))
 
 
-# Test the function
-CalculateConfidenceIntervalOfProportion(sample_proportion=.37,
-                                        sample_size=411,
-                                        confidence_level=.95,
-                                        subtitle_for_plot="Shows the sample proportion and its 95% confidence interval")
+# # Test the function
+# CalculateConfidenceIntervalOfProportion(sample_proportion=.37,
+#                                         sample_size=411,
+#                                         confidence_level=.95,
+#                                         subtitle_for_plot="Shows the sample proportion and its 95% confidence interval")
+
