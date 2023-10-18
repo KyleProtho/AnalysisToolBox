@@ -1,8 +1,9 @@
 # Load packages
-import pandas as pd
-import os
 from math import ceil
 from matplotlib import pyplot as plt
+import numpy as np
+import os
+import pandas as pd
 import seaborn as sns
 import textwrap
 sns.set(style="white",
@@ -86,22 +87,26 @@ def PlotBulletChart(dataframe,
             for i in range(len(list_of_limit_columns)):
                 # Plot the limit column value as a bar
                 sorted_row_value = sorted_row[i]
-                if i == 0:
+                if i == 0 and np.isnan(sorted_row_value) == False:
                     ax.barh(
-                    y=group, 
-                    width=value_maximum-value_minimum, 
-                    color=colors[i], 
-                    height=0.8
-                )
-                ax.barh(
-                    y=group, 
-                    width=sorted_row_value-value_minimum, 
-                    color=colors[i+1], 
-                    height=0.8,
-                    edgecolor='white',
-                    linewidth=2,
-                    alpha=background_alpha,
-                )
+                        y=group, 
+                        width=value_maximum-value_minimum, 
+                        color=colors[i], 
+                        height=0.8
+                    )
+                # If the limit column value is not null plot the limit column value as a bar:
+                if np.isnan(sorted_row_value) == False:
+                    ax.barh(
+                        y=group, 
+                        width=sorted_row_value-value_minimum, 
+                        color=colors[i+1], 
+                        height=0.8,
+                        edgecolor='white',
+                        linewidth=2,
+                        alpha=background_alpha,
+                    )
+                else:
+                    continue
         
         # Plot the target value as a line in the group
         if target_value_column != None:
@@ -223,9 +228,9 @@ def PlotBulletChart(dataframe,
 #     'Group': ['Pittsburgh', 'Denver', 'Tampa'],
 #     'Current Performance': [75, 50, 90],
 #     'Target': [76, 55, 92],
-#     'Level 1': [30, 20, 40],
-#     'Level 2': [50, 40, 60],
-#     'Level 3': [80, 70, 90]
+#     'Level 1': [30, 20, np.nan],
+#     'Level 2': [50, 40, np.nan],
+#     'Level 3': [80, 70, np.nan]
 # }
 # data = pd.DataFrame(data)
 # # Generate the bullet chart with specified columns
