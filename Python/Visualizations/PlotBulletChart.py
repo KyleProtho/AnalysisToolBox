@@ -19,8 +19,7 @@ def PlotBulletChart(dataframe,
                     value_minimum=0,
                     # Bullet chart formatting arguments
                     null_background_color='#dbdbdb',
-                    background_color_palette="Blues_r",
-                    background_color_palette_reverse=False,
+                    background_color_palette=None,
                     background_alpha=0.8,
                     value_dot_size=200,
                     value_dot_color="#383838",
@@ -72,7 +71,13 @@ def PlotBulletChart(dataframe,
         # If limit columns are specified, plot the limit columns
         if list_of_limit_columns != None:
             # Get the colors from the specified color palette, using the number of limit columns
-            colors = sns.color_palette(background_color_palette, len(list_of_limit_columns) + 2)
+            if background_color_palette == None:
+                # Create a greyscale palette
+                colors = sns.light_palette("#acacad", len(list_of_limit_columns) + 1)
+                # Reverse the palette
+                colors = colors[::-1]
+            else:
+                colors = sns.color_palette(background_color_palette, len(list_of_limit_columns) + 1)
 
             # Rearrange the limit columns in descending order according to each of their values
             sorted_row = row[list_of_limit_columns].sort_values(ascending=False)
@@ -234,3 +239,15 @@ def PlotBulletChart(dataframe,
 #     title_for_plot="Current Performance",
 #     subtitle_for_plot="Shown with target and performance levels",
 # )
+
+# # PlotBulletChart(
+# #     dataframe=data, 
+# #     group_column='Group', 
+# #     value_column='Current Performance', 
+# #     target_value_column='Target',
+# #     list_of_limit_columns=['Level 1', 'Level 2', 'Level 3'],
+# #     background_color_palette="RdYlGn_r",
+# #     value_maximum=100,
+# #     title_for_plot="Current Performance",
+# #     subtitle_for_plot="Shown with target and performance levels",
+# # )
