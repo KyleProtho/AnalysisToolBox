@@ -125,7 +125,7 @@ def PlotBarChart(dataframe,
     ax.spines['left'].set_visible(False)
     
     # Add data labels
-    abs_values = dataframe[value_variable].round(decimal_places_for_data_label).astype(str)
+    abs_values = dataframe.sort_values(value_variable, ascending=True)[value_variable].round(decimal_places_for_data_label).astype(str)
     lbls = [f'{p[0]}' for p in zip(abs_values)]
     lbls = lbls[::-1]
     ax.bar_label(container=ax.containers[0],
@@ -206,24 +206,24 @@ def PlotBarChart(dataframe,
 
 
 # # Test the function
-# # import numpy as np
-# # from sklearn import datasets
-# # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# # iris['species'] = datasets.load_iris(as_frame=True).target
-# # iris['species'] = iris['species'].astype('category')
-# # # Group and summarize average petal length by species
-# # iris = iris.groupby('species').agg({'petal length (cm)': np.mean}).reset_index()
-# # PlotBarChart(
-# #     dataframe=iris,
-# #     categorical_variable='species',
-# #     value_variable='petal length (cm)',
-# #     title_for_plot='Species',
-# #     subtitle_for_plot='This is a subtitle',
-# #     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",
-# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-# #     # top_n_to_highlight=1
-# #     # add_rare_category_line=True,
-# # )
+# import numpy as np
+# from sklearn import datasets
+# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# iris['species'] = datasets.load_iris(as_frame=True).target
+# iris['species'] = iris['species'].astype('category')
+# # Group and summarize average petal length by species
+# iris = iris.groupby('species').agg({'petal length (cm)': np.mean}).reset_index()
+# PlotBarChart(
+#     dataframe=iris,
+#     categorical_variable='species',
+#     value_variable='petal length (cm)',
+#     title_for_plot='Species',
+#     subtitle_for_plot='This is a subtitle',
+#     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",
+#     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
+#     # top_n_to_highlight=1
+#     # add_rare_category_line=True,
+# )
 
 # data = {
 #     'Group': ['Pittsburgh', 'Denver', 'Tampa'],
