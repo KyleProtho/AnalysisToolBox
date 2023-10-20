@@ -68,9 +68,6 @@ def PlotBarChart(dataframe,
         if top_n_to_highlight < 0 or top_n_to_highlight > len(dataframe[categorical_variable].value_counts()):
             raise ValueError("top_n_to_highlight must be a positive integer, and less than the number of categories.")
     
-    # Sort dataframe by value variable
-    dataframe = dataframe.sort_values(by=value_variable, ascending=False)
-    
     # Create figure and axes
     fig, ax = plt.subplots(figsize=figure_size)
 
@@ -80,8 +77,8 @@ def PlotBarChart(dataframe,
             data=dataframe,
             y=categorical_variable,
             x=value_variable,
-            order=dataframe[value_variable].index,
-            palette=["#b8b8b8" if x not in dataframe[value_variable].index[:top_n_to_highlight] else highlight_color for x in dataframe[value_variable].index],
+            palette=[highlight_color if x in dataframe.sort_values(value_variable, ascending=False)[value_variable].nlargest(top_n_to_highlight).index else "#b8b8b8" for x in dataframe.sort_values(value_variable, ascending=False).index],
+            order=dataframe.sort_values(value_variable, ascending=False)[categorical_variable],
             alpha=fill_transparency
         )
     elif fill_color == None:
@@ -89,8 +86,8 @@ def PlotBarChart(dataframe,
             data=dataframe,
             y=categorical_variable,
             x=value_variable,
-            order=dataframe[value_variable].index,
             palette=color_palette,
+            order=dataframe.sort_values(value_variable, ascending=False)[categorical_variable],
             alpha=fill_transparency
         )
     else:
@@ -98,8 +95,8 @@ def PlotBarChart(dataframe,
             data=dataframe,
             y=categorical_variable,
             x=value_variable,
-            order=dataframe[value_variable].index,
             color=fill_color,
+            order=dataframe.sort_values(value_variable, ascending=False)[categorical_variable],
             alpha=fill_transparency
         )
     
@@ -130,6 +127,7 @@ def PlotBarChart(dataframe,
     # Add data labels
     abs_values = dataframe[value_variable].round(decimal_places_for_data_label).astype(str)
     lbls = [f'{p[0]}' for p in zip(abs_values)]
+    lbls = lbls[::-1]
     ax.bar_label(container=ax.containers[0],
                  labels=lbls,
                  padding=5)
@@ -208,21 +206,37 @@ def PlotBarChart(dataframe,
 
 
 # # Test the function
-# import numpy as np
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# iris['species'] = iris['species'].astype('category')
-# # Group and summarize average petal length by species
-# iris = iris.groupby('species').agg({'petal length (cm)': np.mean}).reset_index()
+# # import numpy as np
+# # from sklearn import datasets
+# # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# # iris['species'] = datasets.load_iris(as_frame=True).target
+# # iris['species'] = iris['species'].astype('category')
+# # # Group and summarize average petal length by species
+# # iris = iris.groupby('species').agg({'petal length (cm)': np.mean}).reset_index()
+# # PlotBarChart(
+# #     dataframe=iris,
+# #     categorical_variable='species',
+# #     value_variable='petal length (cm)',
+# #     title_for_plot='Species',
+# #     subtitle_for_plot='This is a subtitle',
+# #     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",
+# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
+# #     # top_n_to_highlight=1
+# #     # add_rare_category_line=True,
+# # )
+
+# data = {
+#     'Group': ['Pittsburgh', 'Denver', 'Tampa'],
+#     'Current Performance': [.7997, .6933, .9339]
+# }
+# data = pd.DataFrame(data)
 # PlotBarChart(
-#     dataframe=iris,
-#     categorical_variable='species',
-#     value_variable='petal length (cm)',
-#     title_for_plot='Species',
+#     dataframe=data,
+#     categorical_variable='Group',
+#     value_variable='Current Performance',
+#     title_for_plot='Test',
 #     subtitle_for_plot='This is a subtitle',
 #     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",
 #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-#     # top_n_to_highlight=1
-#     # add_rare_category_line=True,
+#     top_n_to_highlight=1
 # )
