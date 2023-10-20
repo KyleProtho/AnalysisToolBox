@@ -18,9 +18,6 @@ def PlotBarChart(dataframe,
                  top_n_to_highlight=None,
                  highlight_color="#b0170c",
                  fill_transparency=0.8,
-                 add_rare_category_line=False,
-                 rare_category_line_color='#b5b3b3',
-                 rare_category_threshold=0.05,
                  figure_size=(8, 6),
                  # Text formatting arguments
                  title_for_plot=None,
@@ -31,7 +28,7 @@ def PlotBarChart(dataframe,
                  subtitle_y_indent=1.1,
                  caption_y_indent=-0.15,
                  decimal_places_for_data_label=2):
-    """This function creates a bar chart for a single categorical variable. The function can be used to create a bar chart with a single color, or a bar chart with a different color for the top n categories. The function can also be used to add a line to the bar chart to indicate the threshold for rare categories.
+    """This function creates a bar chart for a single categorical variable. The function can be used to create a bar chart with a single color, or a bar chart with a different color for the top n categories.
 
     Args:
         dataframe (_type_): The dataframe containing the categorical variable.
@@ -49,9 +46,6 @@ def PlotBarChart(dataframe,
         title_y_indent (float, optional): The vertical indent for the title. Defaults to 1.15.
         subtitle_y_indent (float, optional): The vertical indent for the subtitle. Defaults to 1.1.
         caption_y_indent (float, optional): The vertical indent for the caption. Defaults to -0.15.
-        add_rare_category_line (bool, optional): Whether to add a line to the bar chart to indicate the threshold for rare categories. Defaults to False.
-        rare_category_line_color (str, optional): The color to use for the rare category line. Defaults to '#b5b3b3'.
-        rare_category_threshold (float, optional): The threshold for rare categories. Defaults to 0.05.
         figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
     """
     
@@ -131,16 +125,6 @@ def PlotBarChart(dataframe,
     ax.bar_label(container=ax.containers[0],
                  labels=lbls,
                  padding=5)
-    
-    # Add rare category threshold line
-    if add_rare_category_line:
-        ax.axvline(
-            x=rare_category_threshold * dataframe.shape[0],
-            color=rare_category_line_color,
-            alpha=0.5,
-            linestyle='--',
-            label='Rare category threshold'
-        )
         
     # Set the x indent of the plot titles and captions
     # Get longest y tick label
