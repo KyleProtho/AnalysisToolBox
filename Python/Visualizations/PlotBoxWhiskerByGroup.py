@@ -25,17 +25,29 @@ def PlotBoxWhiskerByGroup(dataframe,
                           x_indent=-0.128,
                           # Plot formatting arguments
                           figure_size=(8, 6)):
-    """_summary_
-    This function generates a box whisker plot of an outcome variable by up to two grouping variables.
+    """
+    Function to create a box and whisker plot for a given outcome variable, grouped by one or two categorical variables. 
 
-    Args:
-        dataframe (_type_): Pandas dataframe
-        outcome_variable (str): _description_
-        group_variable_1 (str): _description_
-        group_variable_2 (str, optional): _description_. Defaults to None.
-        fill_color (str, optional): The color to fill the box whisker plot. Defaults to None. If None, the default seaborn color palette will be used.
-        title_for_plot (str, optional): The title text for the plot. Defaults to None. If None, the title will be generated automatically (outcome_variable + ' by ' + group_variable_1).
-        subtitle_for_plot (str, optional): The subtitle text for the plot. Defaults to None. If None, the subtitle will be generated automatically (group_variable_2).
+    Parameters:
+    dataframe (pandas.DataFrame): The input dataframe.
+    outcome_variable (str): The name of the outcome variable.
+    group_variable_1 (str): The name of the first group variable.
+    group_variable_2 (str, optional): The name of the second group variable. Defaults to None.
+    fill_color (str, optional): The color to fill the box plot with. Defaults to None.
+    color_palette (str, optional): The color palette to use for the box plot. Defaults to 'Set2'.
+    title_for_plot (str, optional): The title for the plot. Defaults to None.
+    subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
+    caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+    data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+    show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
+    title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
+    subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
+    caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
+    x_indent (float, optional): The x-indent for the plot. Defaults to -0.128.
+    figure_size (tuple, optional): The size of the plot. Defaults to (8, 6).
+
+    Returns:
+    None
     """
     
     # If no plot title is specified, generate one
