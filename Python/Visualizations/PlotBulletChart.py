@@ -41,6 +41,48 @@ def PlotBulletChart(dataframe,
                     title_y_indent=1.15,
                     subtitle_y_indent=1.1,
                     caption_y_indent=-0.15):
+    """
+    This function plots a bullet chart using the specified dataframe, value column, and group column.
+    The bullet chart is a variation of a bar chart that is used to display a single value in relation to a target value and a set of limit values.
+    The function allows for customization of the bullet chart formatting and text formatting.
+    
+    Parameters:
+    dataframe: pandas dataframe. The dataframe containing the data to be plotted.
+    value_column: str. The name of the column in the dataframe containing the values to be plotted.
+    group_column: str. The name of the column in the dataframe containing the groups to be plotted.
+    target_value_column: str, default None. The name of the column in the dataframe containing the target values to be plotted.
+    list_of_limit_columns: list of str, default None. A list of the names of the columns in the dataframe containing the limit values to be plotted.
+    value_maximum: float, default None. The maximum value to be plotted on the chart. If None, the maximum value among the limit columns is used.
+    value_minimum: float, default 0. The minimum value to be plotted on the chart.
+    null_background_color: str, default '#dbdbdb'. The color of the background area of the chart where there is no data.
+    background_color_palette: str, default None. The color palette to be used for the limit columns. If None, a greyscale palette is used.
+    background_alpha: float, default 0.8. The alpha value of the limit column colors.
+    value_dot_size: int, default 200. The size of the dot representing the value on the chart.
+    value_dot_color: str, default "#383838". The color of the dot representing the value on the chart.
+    value_dot_outline_color: str, default "#ffffff". The color of the outline of the dot representing the value on the chart.
+    value_dot_outline_width: int, default 2. The width of the outline of the dot representing the value on the chart.
+    target_line_color: str, default '#bf3228'. The color of the line representing the target value on the chart.
+    target_line_width: int, default 4. The width of the line representing the target value on the chart.
+    figure_size: tuple of int, default (8, 6). The size of the figure containing the chart.
+    show_value_labels: bool, default True. Whether or not to show data labels for the value on the chart.
+    value_label_color: str, default "#262626". The color of the data labels for the value on the chart.
+    value_label_format: str, default "{:.0f}". The format string for the data labels for the value on the chart.
+    value_label_font_size: int, default 12. The font size of the data labels for the value on the chart.
+    title_for_plot: str, default None. The title of the chart.
+    subtitle_for_plot: str, default None. The subtitle of the chart.
+    caption_for_plot: str, default None. The caption of the chart.
+    data_source_for_plot: str, default None. The data source of the chart.
+    title_y_indent: float, default 1.15. The y-indent of the title of the chart.
+    subtitle_y_indent: float, default 1.1. The y-indent of the subtitle of the chart.
+    caption_y_indent: float, default -0.15. The y-indent of the caption of the chart.
+    
+    Returns:
+    None
+    """
+    # Ensure that the number of unique values in the group column is equal to the number of rows in the dataframe
+    if len(dataframe[group_column].unique()) != len(dataframe):
+        raise ValueError("The number of unique values in the group column must be equal to the number of rows in the dataframe.")
+    
     # If value_maximum is not specified, use the maximum value among the limit columns
     if value_maximum is None:
         value_maximum = dataframe[list_of_limit_columns].max().max()
