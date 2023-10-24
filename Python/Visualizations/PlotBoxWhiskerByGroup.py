@@ -49,18 +49,6 @@ def PlotBoxWhiskerByGroup(dataframe,
     Returns:
     None
     """
-    
-    # If no plot title is specified, generate one
-    if title_for_plot == None:
-        if group_variable_2 == None:
-            title_for_plot = outcome_variable + ' by ' + group_variable_1
-        else:
-            title_for_plot = outcome_variable
-            
-    # If no plot subtitle is specified, generate one
-    if subtitle_for_plot == None and group_variable_2 != None:
-        subtitle_for_plot = ' by ' + group_variable_1 + ' and ' + group_variable_2
-    
     # Create figure and axes
     fig, ax = plt.subplots(figsize=figure_size)
     
@@ -200,6 +188,6 @@ def PlotBoxWhiskerByGroup(dataframe,
 #     dataframe=iris,
 #     outcome_variable='sepal length (cm)',
 #     group_variable_1='species',
-#     title_for_plot='Sepal Length by Species',
-#     subtitle_for_plot='A test visulaization using the iris dataset',
+#     # title_for_plot='Sepal Length by Species',
+#     # subtitle_for_plot='A test visulaization using the iris dataset',
 # )
