@@ -9,6 +9,7 @@ sns.set(style="white",
         font="Arial",
         context="paper")
 
+# Declare function
 def PlotBarChart(dataframe,
                  categorical_variable, 
                  value_variable,
@@ -28,25 +29,32 @@ def PlotBarChart(dataframe,
                  subtitle_y_indent=1.1,
                  caption_y_indent=-0.15,
                  decimal_places_for_data_label=2):
-    """This function creates a bar chart for a single categorical variable. The function can be used to create a bar chart with a single color, or a bar chart with a different color for the top n categories.
+    """
+    This function generates a bar chart using the seaborn library. 
+    The function takes in a pandas dataframe, a categorical variable, and a value variable. 
+    The function also takes in optional arguments for plot formatting, text formatting, and data labels.
 
-    Args:
-        dataframe (_type_): The dataframe containing the categorical variable.
-        categorical_variable (_type_): The categorical variable on the y-axis.
-        value_variable: The value variable on the x-axis.
-        color_palette (str, optional): The Seaborn color palette to use for the bar chart. Defaults to "Set1".
-        fill_color (_type_, optional): The color to use for the bar chart. Defaults to None.
-        top_n_to_highlight (_type_, optional): The "top N" categories to highlight. Defaults to None.
-        highlight_color (str, optional): The color to use for the highlighted "top N" categories. Defaults to "#b0170c".
-        fill_transparency (float, optional): The transparency to use for the bar chart. Defaults to 0.8.
-        title_for_plot (_type_, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (_type_, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (_type_, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (_type_, optional): The data source for the plot. Defaults to None.
-        title_y_indent (float, optional): The vertical indent for the title. Defaults to 1.15.
-        subtitle_y_indent (float, optional): The vertical indent for the subtitle. Defaults to 1.1.
-        caption_y_indent (float, optional): The vertical indent for the caption. Defaults to -0.15.
-        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
+    Parameters:
+    dataframe (pandas dataframe): The dataframe containing the data to be plotted.
+    categorical_variable (str): The name of the column in the dataframe containing the categorical variable.
+    value_variable (str): The name of the column in the dataframe containing the value variable.
+    color_palette (str or list, optional): The seaborn color palette to use for the plot. Defaults to "Set1".
+    fill_color (str, optional): The color to use for the bars in the plot. If None, the color palette will be used. Defaults to None.
+    top_n_to_highlight (int, optional): The number of top categories to highlight in the plot. Defaults to None.
+    highlight_color (str, optional): The color to use for the highlighted categories. Defaults to "#b0170c".
+    fill_transparency (float, optional): The transparency of the bars in the plot. Defaults to 0.8.
+    figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
+    title_for_plot (str, optional): The title of the plot. Defaults to None.
+    subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to None.
+    caption_for_plot (str, optional): The caption of the plot. Defaults to None.
+    data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
+    title_y_indent (float, optional): The y-axis indent for the plot title. Defaults to 1.15.
+    subtitle_y_indent (float, optional): The y-axis indent for the plot subtitle. Defaults to 1.1.
+    caption_y_indent (float, optional): The y-axis indent for the plot caption. Defaults to -0.15.
+    decimal_places_for_data_label (int, optional): The number of decimal places to round the data labels to. Defaults to 2.
+
+    Returns:
+    None
     """
     
     # Check that the column exists in the dataframe.
