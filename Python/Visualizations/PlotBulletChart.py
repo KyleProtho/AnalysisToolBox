@@ -91,7 +91,8 @@ def PlotBulletChart(dataframe,
     
     # Sort the dataframe by the by the grouping column
     if group_order != None:
-        dataframe[group_column] = pd.Categorical(dataframe[group_column], categories=group_order, ordered=True)
+        dataframe['Order'] = dataframe[group_column].apply(lambda x: group_order.index(x))
+        dataframe = dataframe.sort_values(by='Order', ascending=True)
     else:
         dataframe = dataframe.sort_values(by=group_column, ascending=False)
 
