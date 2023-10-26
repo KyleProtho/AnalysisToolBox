@@ -87,8 +87,8 @@ def PlotBulletChart(dataframe,
     if value_maximum is None:
         value_maximum = dataframe[list_of_limit_columns].max().max()
     
-    # Sort the dataframe by the by the grouping column
-    dataframe = dataframe.sort_values(by=group_column, ascending=False)
+    # # Sort the dataframe by the by the grouping column
+    # dataframe = dataframe.sort_values(by=group_column, ascending=False)
 
     # Create a figure and axis
     fig, ax = plt.subplots(figsize=(10, 6))
