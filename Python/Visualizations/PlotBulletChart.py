@@ -19,6 +19,7 @@ def PlotBulletChart(dataframe,
                     value_maximum=None,
                     value_minimum=0,
                     # Bullet chart formatting arguments
+                    group_order=None,
                     null_background_color='#dbdbdb',
                     background_color_palette=None,
                     background_alpha=0.8,
@@ -54,6 +55,7 @@ def PlotBulletChart(dataframe,
     list_of_limit_columns: list of str, default None. A list of the names of the columns in the dataframe containing the limit values to be plotted.
     value_maximum: float, default None. The maximum value to be plotted on the chart. If None, the maximum value among the limit columns is used.
     value_minimum: float, default 0. The minimum value to be plotted on the chart.
+    group_order: list of str, default None. A list of the groups in the dataframe in the order they should be plotted.
     null_background_color: str, default '#dbdbdb'. The color of the background area of the chart where there is no data.
     background_color_palette: str, default None. The color palette to be used for the limit columns. If None, a greyscale palette is used.
     background_alpha: float, default 0.8. The alpha value of the limit column colors.
@@ -87,8 +89,11 @@ def PlotBulletChart(dataframe,
     if value_maximum is None:
         value_maximum = dataframe[list_of_limit_columns].max().max()
     
-    # # Sort the dataframe by the by the grouping column
-    # dataframe = dataframe.sort_values(by=group_column, ascending=False)
+    # Sort the dataframe by the by the grouping column
+    if group_order != None:
+        dataframe[group_column] = pd.Categorical(dataframe[group_column], categories=group_order, ordered=True)
+    else:
+        dataframe = dataframe.sort_values(by=group_column, ascending=False)
 
     # Create a figure and axis
     fig, ax = plt.subplots(figsize=(10, 6))
