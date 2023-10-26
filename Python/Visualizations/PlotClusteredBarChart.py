@@ -38,7 +38,8 @@ def PlotClusteredBarChart(dataframe,
         palette=color_palette, 
         alpha=fill_transparency, 
         height=figure_size[1],
-        aspect=figure_size[0] / figure_size[1]
+        aspect=figure_size[0] / figure_size[1],
+        errorbar=None
     )
     
     # Add space between the title and the plot
@@ -79,7 +80,7 @@ def PlotClusteredBarChart(dataframe,
         value_label = "{:,.{decimal_places}f}".format(height, decimal_places=decimal_places_for_data_label)
         ax.ax.text(
             x=p.get_x() + p.get_width() / 2.,
-            y=height + (min_value * 0.1),
+            y=height + (min_value * 0.05),
             s=value_label,
             ha="center",
             fontname="Arial",
@@ -151,22 +152,22 @@ def PlotClusteredBarChart(dataframe,
 #     "value_small": [0.1, 0.2, 0.3, 0.1]
 # }
 # data = pd.DataFrame(data)
-# PlotClusteredBarChart(
-#     dataframe=data,
-#     categorical_variable="category", 
-#     group_variable="group",
-#     value_variable="value",
-#     title_for_plot="Clustered Bar Chart",
-#     subtitle_for_plot="Using totally made-up data",
-# )
-# PlotClusteredBarChart(
-#     dataframe=data,
-#     categorical_variable="category", 
-#     group_variable="group",
-#     value_variable="value_big",
-#     title_for_plot="Clustered Bar Chart",
-#     subtitle_for_plot="Using totally made-up data",
-# )
+# # PlotClusteredBarChart(
+# #     dataframe=data,
+# #     categorical_variable="category", 
+# #     group_variable="group",
+# #     value_variable="value",
+# #     title_for_plot="Clustered Bar Chart",
+# #     subtitle_for_plot="Using totally made-up data",
+# # )
+# # PlotClusteredBarChart(
+# #     dataframe=data,
+# #     categorical_variable="category", 
+# #     group_variable="group",
+# #     value_variable="value_big",
+# #     title_for_plot="Clustered Bar Chart",
+# #     subtitle_for_plot="Using totally made-up data",
+# # )
 # PlotClusteredBarChart(
 #     dataframe=data,
 #     categorical_variable="category", 
