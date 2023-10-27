@@ -1,3 +1,4 @@
+# Load packages
 from langchain.chains.query_constructor.base import AttributeInfo
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.document_loaders import CSVLoader, Docx2txtLoader, JSONLoader, PyPDFLoader, SeleniumURLLoader, TextLoader, UnstructuredMarkdownLoader, UnstructuredPowerPointLoader, WebBaseLoader
@@ -6,14 +7,14 @@ from langchain.llms import OpenAIChat
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import LLMChainExtractor
 from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTextSplitter, TokenTextSplitter, MarkdownHeaderTextSplitter, Language
-from langchain.vectorstores import Chroma
+from langchain.vectorstores import Chroma, DocArrayInMemorySearch
 from langchain import debug as langchain_debug
 import os
 import openai
 import sys
 
 
-# Set arguments
+# Declare function
 def FindContentInDocuments(question,
                            folder_or_document_filepath,
                            openai_api_key,
@@ -167,7 +168,7 @@ def FindContentInDocuments(question,
         
     # Embed the documents
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    vectordb = Chroma.from_documents(
+    vectorstore = Chroma.from_documents(
         all_splits, 
         embeddings,
         collection_name=vectorstore_collection_name
@@ -201,7 +202,7 @@ def FindContentInDocuments(question,
     # Create a compression retriever
     compression_retriever = ContextualCompressionRetriever(
         base_compressor=compressor,
-        base_retriever=vectordb.as_retriever()
+        base_retriever=vectorstore.as_retriever()
     )
 
     # Get relevant documents based on question
@@ -224,7 +225,7 @@ def FindContentInDocuments(question,
     # Return the list of documents, and vectorstore if requested
     if return_vectorstore:
         dict_to_return = {
-            'VectorStore': vectordb,
+            'VectorStore': vectorstore,
             'RelevantDocuments': compressed_docs
         }
         return(dict_to_return)
@@ -232,14 +233,15 @@ def FindContentInDocuments(question,
         return(compressed_docs)
 
 
-# Test function
+# # Test function
 # relevant_docs = FindContentInDocuments(
 #     question="How do I calculate measure ratings from national benchmarks?",
 #     folder_or_document_filepath = "C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/Documentation/NCQA/Methodology",
-#     openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read()
+#     openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read(),
+#     return_vectorstore=True
 # )
-# relevant_docs = FindContentInDocuments(
-#     question="How do I calculate measure ratings from national benchmarks?",
-#     folder_or_document_filepath = "C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/Documentation/NCQA/Methodology/2024-HPR-Methodology_3.30.2023.pdf",
-#     openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read()
-# )
+# # relevant_docs = FindContentInDocuments(
+# #     question="How do I calculate measure ratings from national benchmarks?",
+# #     folder_or_document_filepath = "C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/Documentation/NCQA/Methodology/2024-HPR-Methodology_3.30.2023.pdf",
+# #     openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read()
+# # )

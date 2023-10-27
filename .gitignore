@@ -5,3 +5,4 @@ R/Descriptive Analytics/.Rhistory
 *.pkl
 *.bin
 .env
+TextSummarizationAndGeneration/.chroma
