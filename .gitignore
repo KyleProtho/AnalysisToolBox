@@ -4,3 +4,4 @@ R/Modeling/.Rhistory
 R/Descriptive Analytics/.Rhistory
 *.pkl
 *.bin
+.env
