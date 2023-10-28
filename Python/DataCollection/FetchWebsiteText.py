@@ -44,6 +44,9 @@ def FetchWebsiteText(url,
     else:
         raise ValueError("Error fetching website contents. Status code: " + str(response.status_code))
     
+    # Replace 4 or more newlines with 3 newlines
+    text = re.sub(r'\n{4,}', '\n\n\n', text)
+    
     # Return the text
     return text
 
