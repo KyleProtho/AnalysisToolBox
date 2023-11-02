@@ -1,21 +1,23 @@
+# Load packages
 import pandas as pd
 import numpy as np
 
+# Declare function
 def AddLeadingZeros(dataframe,
                     column_name,
                     fixed_length=None,
                     add_as_new_column=False):
-    """_summary_
+    """
     This function adds leading zeros to a column. If fixed_length is not specified, the longest string in the column is used as the fixed length. If add_as_new_column is set to True, the new column is added to the dataframe. Otherwise, the original column is updated.
     
     Args:
-        dataframe (Pandas dataframe): Pandas dataframe
-        column_name (str): Name of column to add leading zeros to
-        fixed_length (int, optional): The length each value in the column should be. Defaults to None.
-        add_as_new_column (bool, optional): Whether the updated values with leading zeros should be added as a new column. Defaults to False.
-    
+    dataframe (Pandas dataframe): Pandas dataframe
+    column_name (str): Name of column to add leading zeros to
+    fixed_length (int, optional): The length each value in the column should be. Defaults to None.
+    add_as_new_column (bool, optional): Whether the updated values with leading zeros should be added as a new column. Defaults to False.
+
     Returns:
-        Pandas dataframe: An updated Pandas dataframe with leading zeros added to the specified column.
+    Pandas dataframe: An updated Pandas dataframe with leading zeros added to the specified column.
     """
     
     # If fixed length not specified, set the longest string as the fixed length
@@ -43,3 +45,4 @@ def AddLeadingZeros(dataframe,
     
     # Return updated dataframe
     return(dataframe)
+

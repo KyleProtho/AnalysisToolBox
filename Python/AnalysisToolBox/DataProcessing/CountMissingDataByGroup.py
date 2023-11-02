@@ -1,33 +1,35 @@
 # Load packages
 import pandas as pd
 
+# Declare function
 def CountMissingDataByGroup(dataframe,
-                            list_of_grouping_variables,
-                            list_of_variables_to_count=None):
-    """_summary_
+                            list_of_grouping_columns,
+                            list_of_columns_to_analyze=None):
+    """
     This function counts the number of records with missing data by group.
 
     Args:
-        dataframe (Pandas dataframe): Pandas dataframe
-        list_of_grouping_variables (list): List of variables to group by
-        list_of_variables_to_count (list, optional): List of variables to count missing data in. Defaults to None. If None, all variables are counted.
-    
+    dataframe (Pandas dataframe): Pandas dataframe
+    list_of_grouping_columns (list): List of variables to group by
+    list_of_columns_to_analyze (list, optional): List of variables to count missing data in. Defaults to None. If None, all variables are counted.
+
     Returns:
-        Pandas dataframe: A Pandas dataframe with the number of records with missing data by group.
+    Pandas dataframe: A Pandas dataframe with the number of records with missing data by group.
     """
+    
     # Select variables to count missing data for
-    if list_of_variables_to_count is not None:
-        dataframe = dataframe[list_of_grouping_variables + list_of_variables_to_count]
+    if list_of_columns_to_analyze is not None:
+        dataframe = dataframe[list_of_grouping_columns + list_of_columns_to_analyze]
     
     # Count missing data by group
     df_missing_by_group = dataframe.groupby(
-        list_of_grouping_variables,
+        list_of_grouping_columns,
         dropna=False).apply(lambda x: x.isnull().sum()
     )
         
     # Get row count by group
     df_row_count_by_group = dataframe.groupby(
-        list_of_grouping_variables,
+        list_of_grouping_columns,
         dropna=False
     ).size()
     df_missing_by_group['Row count'] = df_row_count_by_group
@@ -47,5 +49,5 @@ def CountMissingDataByGroup(dataframe,
 # iris['species'] = datasets.load_iris(as_frame=True).target
 # CountMissingDataByGroup(
 #     dataframe=iris, 
-#     list_of_grouping_variables=['species'],
+#     list_of_grouping_columns=['species'],
 # )

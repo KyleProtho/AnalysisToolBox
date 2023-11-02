@@ -9,11 +9,10 @@ def ConductEntityMatching(dataframe_1,
                           dataframe_1_primary_key, 
                           dataframe_2, 
                           dataframe_2_primary_key,
-                          levenshtein_distance_threshold=None,
+                          levenshtein_distance_filter=None,
                           match_score_threshold=95,
                           columns_to_compare=None,
-                          match_methods=['Partial Token Set Ratio', 'Weighted Ratio'],
-                          show_progress=True):
+                          match_methods=['Partial Token Set Ratio', 'Weighted Ratio']):
     # Create list of valid match methods
     valid_match_methods = [
         'Ratio', 'Partial Ratio', 
@@ -28,8 +27,8 @@ def ConductEntityMatching(dataframe_1,
             raise ValueError('Invalid match method specified: ' + match_method + ". Valid match methods are: " + ', '.join(valid_match_methods))
         
     # Ensure that lev distance threshold is either int or None
-    if levenshtein_distance_threshold is not None:
-        if not isinstance(levenshtein_distance_threshold, int):
+    if levenshtein_distance_filter is not None:
+        if not isinstance(levenshtein_distance_filter, int):
             raise ValueError('Levenshtein distance threshold must be an integer or None')
 
     # Select columns to compare if specified
@@ -56,10 +55,10 @@ def ConductEntityMatching(dataframe_1,
     entity_combinations = pd.merge(dataframe_1, dataframe_2, how='cross', suffixes=('_1', '_2'))
     
     # Calculate Levenshtein distance if specified
-    if levenshtein_distance_threshold is not None:
+    if levenshtein_distance_filter is not None:
         entity_combinations['Levenshtein Distance'] = entity_combinations.apply(lambda row: Levenshtein.distance(row['Entity_1'], row['Entity_2']), axis=1)
         # Filter out combinations that are not within the threshold
-        entity_combinations = entity_combinations[entity_combinations['Levenshtein Distance'] <= levenshtein_distance_threshold]
+        entity_combinations = entity_combinations[entity_combinations['Levenshtein Distance'] <= levenshtein_distance_filter]
     
     # If dataframe_1_primary_key is not in entity_combinations, add _1 to the end of the column name
     if dataframe_1_primary_key not in entity_combinations.columns:
@@ -227,7 +226,7 @@ def ConductEntityMatching(dataframe_1,
 #     dataframe_1, 'Id', 
 #     dataframe_2, 'Id', 
 #     columns_to_compare=['FIRST', 'LAST'],
-#     levenshtein_distance_threshold=10,
+#     levenshtein_distance_filter=10,
 #     match_score_threshold=86,
 #     match_methods=['Weighted Ratio', 'Token Sort Ratio']
 # )

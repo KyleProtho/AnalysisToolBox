@@ -1,3 +1,4 @@
+# Load packages
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
@@ -5,8 +6,9 @@ from scipy.stats import norm
 import seaborn as sns
 import textwrap
 
+# Declare function
 def ConductAnomalyDetection(dataframe, 
-                            list_of_predictor_variables,
+                            list_of_columns_to_analyze,
                             anomaly_threshold=0.95,
                             plot_detection_summary=True,
                             summary_plot_size=(20, 20),
@@ -16,16 +18,17 @@ def ConductAnomalyDetection(dataframe,
     This function conducts anomaly detection on a dataset using the z-score method.
     
     Args:
-        dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
-        list_of_predictor_variables (list): List of predictor variables to be analyzed.
-        anomaly_threshold (float, optional): _description_. The threshold for the probability of an anomaly. Defaults to 0.95.
-        plot_detection_summary (bool, optional): _description_. Whether to plot a summary of the anomaly detection. Defaults to True.
-        summary_plot_size (tuple, optional): _description_. The size of the summary plot. Defaults to (20, 20).
-        column_name_for_anomaly_prob (str, optional): _description_. The name of the column for the anomaly probability. Defaults to 'Anomaly Probability'.
-        
+    dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
+    list_of_columns_to_analyze (list): List of predictor variables to be analyzed.
+    anomaly_threshold (float, optional): _description_. The threshold for the probability of an anomaly. Defaults to 0.95.
+    plot_detection_summary (bool, optional): _description_. Whether to plot a summary of the anomaly detection. Defaults to True.
+    summary_plot_size (tuple, optional): _description_. The size of the summary plot. Defaults to (20, 20).
+    column_name_for_anomaly_prob (str, optional): _description_. The name of the column for the anomaly probability. Defaults to 'Anomaly Probability'.
+    
     Returns:
-        Pandas dataframe: Pandas dataframe containing the data to be analyzed with the anomaly probability and flag.
+    Pandas dataframe: Pandas dataframe containing the data to be analyzed with the anomaly probability and flag.
     """
+    
     # If column_name_for_anomaly_prob is in the dataframe, drop it
     if column_name_for_anomaly_prob in dataframe.columns:
         dataframe = dataframe.drop(column_name_for_anomaly_prob, axis=1)
@@ -35,7 +38,7 @@ def ConductAnomalyDetection(dataframe,
         dataframe = dataframe.drop(column_name_for_anomaly_flag, axis=1)
     
     # Keep only the predictor variables
-    dataframe_anomaly = dataframe[list_of_predictor_variables].copy()
+    dataframe_anomaly = dataframe[list_of_columns_to_analyze].copy()
     
     # Keep complete cases
     dataframe_anomaly = dataframe_anomaly.replace([np.inf, -np.inf], np.nan)
@@ -46,7 +49,7 @@ def ConductAnomalyDetection(dataframe,
     
     # Iterate through each predictor variable
     dataframe_anomaly[column_name_for_anomaly_prob] = 1
-    for predictor_variable in list_of_predictor_variables:
+    for predictor_variable in list_of_columns_to_analyze:
         # Get the mean and standard deviation of the predictor variable
         variable_mean = dataframe_anomaly[predictor_variable].mean()
         variable_std = dataframe_anomaly[predictor_variable].std()
@@ -77,7 +80,7 @@ def ConductAnomalyDetection(dataframe,
         # Generate a pairplot of the data
         plt.figure(figsize=summary_plot_size)
         sns.pairplot(
-            data=dataframe[list_of_predictor_variables + [column_name_for_anomaly_flag]],
+            data=dataframe[list_of_columns_to_analyze + [column_name_for_anomaly_flag]],
             hue=column_name_for_anomaly_flag
         )
         
@@ -96,12 +99,12 @@ def ConductAnomalyDetection(dataframe,
 # # Test the function
 # # dataset = ConductAnomalyDetection(
 # #     dataframe=pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/5. Dimension Reduction/houses_to_rent.csv"),
-# #     list_of_predictor_variables=['area', 'floor', 'parking spaces']
+# #     list_of_columns_to_analyze=['area', 'floor', 'parking spaces']
 # # )
 # dataset = pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/5. Dimension Reduction/houses_to_rent.csv")
 # # Mask some values in the dataset
 # dataset = dataset.mask(np.random.random(dataset.shape) < .1)
 # dataset = ConductAnomalyDetection(
 #     dataframe=dataset,
-#     list_of_predictor_variables=['area', 'floor', 'parking spaces']
+#     list_of_columns_to_analyze=['area', 'floor', 'parking spaces']
 # )

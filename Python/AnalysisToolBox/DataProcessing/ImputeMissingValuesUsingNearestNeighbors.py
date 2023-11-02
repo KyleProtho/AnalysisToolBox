@@ -1,9 +1,11 @@
 # Load packages
+import numpy as np
 import pandas as pd
 from sklearn.impute import KNNImputer
 
+# Declare function
 def ImputeMissingValuesUsingNearestNeighbors(dataframe,
-                                             list_of_variables,
+                                             list_of_numeric_columns_to_impute,
                                              number_of_neighbors=3,
                                              averaging_method='uniform'):
     """_summary_
@@ -11,7 +13,7 @@ def ImputeMissingValuesUsingNearestNeighbors(dataframe,
     
     Args:
         dataframe (Pandas dataframe): Pandas dataframe
-        list_of_variables (list): The list of variables to impute.
+        list_of_numeric_columns_to_impute (list): The list of variables to impute.
         number_of_neighbors (int, optional): The number of neighbors to use for imputation. Defaults to 3.
         averaging_method (str, optional): The weight function used in prediction. Defaults to 'uniform'.
     
@@ -20,7 +22,7 @@ def ImputeMissingValuesUsingNearestNeighbors(dataframe,
     """
     
     # Select only the variables to impute
-    dataframe_imputed = dataframe[list_of_variables].copy()
+    dataframe_imputed = dataframe[list_of_numeric_columns_to_impute].copy()
     
     # Impute missing values using nearest neighbors
     imputer = KNNImputer(n_neighbors=number_of_neighbors,
@@ -31,7 +33,7 @@ def ImputeMissingValuesUsingNearestNeighbors(dataframe,
     
     # Add "- Imputed" to the variable names
     list_new_column_names = []
-    for variable in list_of_variables:
+    for variable in list_of_numeric_columns_to_impute:
         variable_imputed = variable + " - Imputed"
         list_new_column_names.append(variable_imputed)
     
@@ -46,8 +48,11 @@ def ImputeMissingValuesUsingNearestNeighbors(dataframe,
     # Return the dataframe with imputed values
     return(dataframe)
 
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris = ImputeMissingValuesUsingNearestNeighbors(dataframe=iris,
-#                                                list_of_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'])
+# Test the function
+from sklearn import datasets
+iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
+# Randomly set 10% of the values in the dataframe to NaN
+iris = iris.mask(np.random.random(iris.shape) < .1)
+# Impute the missing values
+iris = ImputeMissingValuesUsingNearestNeighbors(dataframe=iris,
+                                               list_of_numeric_columns_to_impute=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'])
