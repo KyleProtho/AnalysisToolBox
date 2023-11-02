@@ -11,8 +11,8 @@ sns.set(style="white",
 
 # Declare function
 def PlotBarChart(dataframe,
-                 categorical_column_name, 
-                 value_column_name,
+                 categorical_column, 
+                 value_column,
                  # Plot formatting arguments
                  color_palette="Set1",
                  fill_color=None,
@@ -36,8 +36,8 @@ def PlotBarChart(dataframe,
 
     Parameters:
     dataframe (pandas dataframe): The dataframe containing the data to be plotted.
-    categorical_column_name (str): The name of the column in the dataframe containing the categorical variable.
-    value_column_name (str): The name of the column in the dataframe containing the value variable.
+    categorical_column (str): The name of the column in the dataframe containing the categorical variable.
+    value_column (str): The name of the column in the dataframe containing the value variable.
     color_palette (str or list, optional): The seaborn color palette to use for the plot. Defaults to "Set1".
     fill_color (str, optional): The color to use for the bars in the plot. If None, the color palette will be used. Defaults to None.
     top_n_to_highlight (int, optional): The number of top categories to highlight in the plot. Defaults to None.
@@ -58,12 +58,12 @@ def PlotBarChart(dataframe,
     """
     
     # Check that the column exists in the dataframe.
-    if categorical_column_name not in dataframe.columns:
-        raise ValueError("Column {} does not exist in dataframe.".format(categorical_column_name))
+    if categorical_column not in dataframe.columns:
+        raise ValueError("Column {} does not exist in dataframe.".format(categorical_column))
     
     # Make sure that the top_n_to_highlight is a positive integer, and less than the number of categories
     if top_n_to_highlight != None:
-        if top_n_to_highlight < 0 or top_n_to_highlight > len(dataframe[categorical_column_name].value_counts()):
+        if top_n_to_highlight < 0 or top_n_to_highlight > len(dataframe[categorical_column].value_counts()):
             raise ValueError("top_n_to_highlight must be a positive integer, and less than the number of categories.")
     
     # Create figure and axes
@@ -73,28 +73,28 @@ def PlotBarChart(dataframe,
     if top_n_to_highlight != None:
         ax = sns.barplot(
             data=dataframe,
-            y=categorical_column_name,
-            x=value_column_name,
-            palette=[highlight_color if x in dataframe.sort_values(value_column_name, ascending=False)[value_column_name].nlargest(top_n_to_highlight).index else "#b8b8b8" for x in dataframe.sort_values(value_column_name, ascending=False).index],
-            order=dataframe.sort_values(value_column_name, ascending=False)[categorical_column_name],
+            y=categorical_column,
+            x=value_column,
+            palette=[highlight_color if x in dataframe.sort_values(value_column, ascending=False)[value_column].nlargest(top_n_to_highlight).index else "#b8b8b8" for x in dataframe.sort_values(value_column, ascending=False).index],
+            order=dataframe.sort_values(value_column, ascending=False)[categorical_column],
             alpha=fill_transparency
         )
     elif fill_color == None:
         ax = sns.barplot(
             data=dataframe,
-            y=categorical_column_name,
-            x=value_column_name,
+            y=categorical_column,
+            x=value_column,
             palette=color_palette,
-            order=dataframe.sort_values(value_column_name, ascending=False)[categorical_column_name],
+            order=dataframe.sort_values(value_column, ascending=False)[categorical_column],
             alpha=fill_transparency
         )
     else:
         ax = sns.barplot(
             data=dataframe,
-            y=categorical_column_name,
-            x=value_column_name,
+            y=categorical_column,
+            x=value_column,
             color=fill_color,
-            order=dataframe.sort_values(value_column_name, ascending=False)[categorical_column_name],
+            order=dataframe.sort_values(value_column, ascending=False)[categorical_column],
             alpha=fill_transparency
         )
     
@@ -102,7 +102,7 @@ def PlotBarChart(dataframe,
     plt.subplots_adjust(top=0.85)
     
     # Wrap y axis label using textwrap
-    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column_name, 30))  # String wrap the variable name
+    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column, 30))  # String wrap the variable name
     ax.set_ylabel(wrapped_variable_name)
     
     # Format and wrap y axis tick labels using textwrap
@@ -123,7 +123,7 @@ def PlotBarChart(dataframe,
     ax.spines['left'].set_visible(False)
     
     # Add data labels
-    abs_values = dataframe.sort_values(value_column_name, ascending=True)[value_column_name].round(decimal_places_for_data_label).astype(str)
+    abs_values = dataframe.sort_values(value_column, ascending=True)[value_column].round(decimal_places_for_data_label).astype(str)
     lbls = [f'{p[0]}' for p in zip(abs_values)]
     lbls = lbls[::-1]
     ax.bar_label(container=ax.containers[0],
@@ -203,8 +203,8 @@ def PlotBarChart(dataframe,
 # iris = iris.groupby('species').agg({'petal length (cm)': np.mean}).reset_index()
 # PlotBarChart(
 #     dataframe=iris,
-#     categorical_column_name='species',
-#     value_column_name='petal length (cm)',
+#     categorical_column='species',
+#     value_column='petal length (cm)',
 #     title_for_plot='Species',
 #     subtitle_for_plot='This is a subtitle',
 #     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",
@@ -220,8 +220,8 @@ def PlotBarChart(dataframe,
 # data = pd.DataFrame(data)
 # PlotBarChart(
 #     dataframe=data,
-#     categorical_column_name='Group',
-#     value_column_name='Current Performance',
+#     categorical_column='Group',
+#     value_column='Current Performance',
 #     title_for_plot='Test',
 #     subtitle_for_plot='This is a subtitle',
 #     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",

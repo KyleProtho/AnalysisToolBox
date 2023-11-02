@@ -11,7 +11,7 @@ sns.set(style="white",
 
 # Declare function
 def PlotSingleVariableHistogram(dataframe,
-                                value_column_name,
+                                value_column,
                                 # Histogram formatting arguments
                                 fill_color="#999999",
                                 fill_transparency=0.6,
@@ -33,7 +33,7 @@ def PlotSingleVariableHistogram(dataframe,
 
     Parameters:
     dataframe (pandas.DataFrame): The dataframe containing the data to be plotted.
-    value_column_name (str): The name of the column in the dataframe to be plotted.
+    value_column (str): The name of the column in the dataframe to be plotted.
     fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
     fill_transparency (float, optional): The transparency of the fill color. Defaults to 0.6.
     show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
@@ -53,8 +53,8 @@ def PlotSingleVariableHistogram(dataframe,
     """
     
     # Check that the column exists in the dataframe.
-    if value_column_name not in dataframe.columns:
-        raise ValueError("Column {} does not exist in dataframe.".format(value_column_name))
+    if value_column not in dataframe.columns:
+        raise ValueError("Column {} does not exist in dataframe.".format(value_column))
 
     # Create figure and axes
     fig, ax = plt.subplots(figsize=figure_size)
@@ -62,7 +62,7 @@ def PlotSingleVariableHistogram(dataframe,
     # Create histogram using seaborn
     sns.histplot(
         data=dataframe,
-        x=value_column_name,
+        x=value_column,
         color=fill_color,
         alpha=fill_transparency,
     )
@@ -89,7 +89,7 @@ def PlotSingleVariableHistogram(dataframe,
     # Show the mean if requested
     if show_mean:
         # Calculate the mean
-        mean = dataframe[value_column_name].mean()
+        mean = dataframe[value_column].mean()
         # Show the mean as a vertical line with a label
         ax.axvline(
             x=mean,
@@ -113,7 +113,7 @@ def PlotSingleVariableHistogram(dataframe,
     # Show the median if requested
     if show_median:
         # Calculate the median
-        median = dataframe[value_column_name].median()
+        median = dataframe[value_column].median()
         # Show the median as a vertical line with a label
         ax.axvline(
             x=median,
@@ -205,13 +205,13 @@ def PlotSingleVariableHistogram(dataframe,
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # # PlotSingleVariableHistogram(
 # #     dataframe=iris,
-# #     value_column_name="sepal length (cm)",
+# #     value_column="sepal length (cm)",
 # #     title_for_plot="Sepal Length (cm)",
 # #     subtitle_for_plot="Iris Dataset"
 # # )
 # PlotSingleVariableHistogram(
 #     dataframe=iris,
-#     value_column_name="sepal length (cm)",
+#     value_column="sepal length (cm)",
 #     title_for_plot="Sepal Length (cm)",
 #     subtitle_for_plot="Iris Dataset",
 #     caption_for_plot="This is a caption that is long enough to wrap onto multiple lines. This is a caption that is long enough to wrap onto multiple lines. This is a caption that is long enough to wrap onto multiple lines.",

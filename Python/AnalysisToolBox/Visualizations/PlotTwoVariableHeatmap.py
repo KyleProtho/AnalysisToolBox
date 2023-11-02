@@ -9,8 +9,8 @@ sns.set(style="white",
 
 # Declare function
 def PlotTwoVariableHeatmap(dataframe,
-                           categorical_column_name_1,
-                           categorical_column_name_2,
+                           categorical_column_1,
+                           categorical_column_2,
                            # Plot formatting arguments
                            color_palette="Blues",
                            show_legend=False,
@@ -29,8 +29,8 @@ def PlotTwoVariableHeatmap(dataframe,
 
     Parameters:
     dataframe (pandas.DataFrame): The dataframe containing the data.
-    categorical_column_name_1 (str): The name of the first categorical column in the dataframe.
-    categorical_column_name_2 (str): The name of the second categorical column in the dataframe.
+    categorical_column_1 (str): The name of the first categorical column in the dataframe.
+    categorical_column_2 (str): The name of the second categorical column in the dataframe.
     color_palette (str, optional): The color palette to use for the heatmap. Defaults to "Blues".
     show_legend (bool, optional): Whether to show the legend on the plot. Defaults to False.
     figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
@@ -49,8 +49,8 @@ def PlotTwoVariableHeatmap(dataframe,
     
     # Create contingency table
     contingency_table = pd.crosstab(
-        dataframe[categorical_column_name_1],
-        dataframe[categorical_column_name_2],
+        dataframe[categorical_column_1],
+        dataframe[categorical_column_2],
         normalize="columns"
     )
     
@@ -68,7 +68,7 @@ def PlotTwoVariableHeatmap(dataframe,
     )
     
     # Wrap y axis label using textwrap
-    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column_name_1, 30))  # String wrap the variable name
+    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column_1, 30))  # String wrap the variable name
     ax.set_ylabel(wrapped_variable_name)
     
     # Format and wrap y axis tick labels using textwrap
@@ -77,7 +77,7 @@ def PlotTwoVariableHeatmap(dataframe,
     ax.set_yticklabels(wrapped_y_tick_labels, fontsize=10, fontname="Arial", color="#262626")
     
     # Wrap x axis label using textwrap
-    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column_name_2, 30))  # String wrap the variable name
+    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column_2, 30))  # String wrap the variable name
     ax.set_xlabel(wrapped_variable_name)
     
     # Format and wrap x axis tick labels using textwrap
@@ -157,8 +157,8 @@ def PlotTwoVariableHeatmap(dataframe,
 # # Plot heatmap
 # PlotTwoVariableHeatmap(
 #     dataframe=dataframe,
-#     categorical_column_name_1="Category 1",
-#     categorical_column_name_2="Category 2",
+#     categorical_column_1="Category 1",
+#     categorical_column_2="Category 2",
 #     color_palette="Blues",
 #     show_legend=False,
 #     figure_size=(8, 6),

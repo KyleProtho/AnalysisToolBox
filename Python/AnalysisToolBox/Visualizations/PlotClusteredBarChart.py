@@ -11,9 +11,9 @@ sns.set(style="white",
 
 # Declare function
 def PlotClusteredBarChart(dataframe,
-                          grouping_column_name_1, 
-                          grouping_column_name_2,
-                          value_column_name,
+                          grouping_column_1, 
+                          grouping_column_2,
+                          value_column,
                           # Plot formatting arguments
                           color_palette="Set1",
                           fill_transparency=0.8,
@@ -34,9 +34,9 @@ def PlotClusteredBarChart(dataframe,
 
     Args:
     dataframe (pd.DataFrame): The data to plot.
-    grouping_column_name_1 (str): The name of the first grouping column.
-    grouping_column_name_2 (str): The name of the second grouping column.
-    value_column_name (str): The name of the value column.
+    grouping_column_1 (str): The name of the first grouping column.
+    grouping_column_2 (str): The name of the second grouping column.
+    value_column (str): The name of the value column.
     color_palette (str, optional): The color palette to use for the plot. Defaults to "Set1".
     fill_transparency (float, optional): The transparency of the bars. Defaults to 0.8.
     figure_size (tuple, optional): The size of the figure. Defaults to (6, 6).
@@ -57,9 +57,9 @@ def PlotClusteredBarChart(dataframe,
     ax = sns.catplot(
         data=dataframe, 
         kind="bar",
-        x=grouping_column_name_1, 
-        y=value_column_name, 
-        hue=grouping_column_name_2,
+        x=grouping_column_1, 
+        y=value_column, 
+        hue=grouping_column_2,
         palette=color_palette, 
         alpha=fill_transparency, 
         height=figure_size[1],
@@ -71,7 +71,7 @@ def PlotClusteredBarChart(dataframe,
     plt.subplots_adjust(top=0.85)
     
     # Wrap x axis label using textwrap
-    wrapped_variable_name = "\n".join(textwrap.wrap(grouping_column_name_1, 30))  # String wrap the variable name
+    wrapped_variable_name = "\n".join(textwrap.wrap(grouping_column_1, 30))  # String wrap the variable name
     ax.ax.set_xlabel(wrapped_variable_name)
     
     # Format and wrap x axis tick labels using textwrap
@@ -93,7 +93,7 @@ def PlotClusteredBarChart(dataframe,
     
     # Add data labels to each bar in the plot
     # Get minimum value absolute value of the data
-    min_value = dataframe[value_column_name].abs().min()
+    min_value = dataframe[value_column].abs().min()
     for p in ax.ax.patches:
         # Get the height of each bar
         height = p.get_height()
@@ -179,25 +179,25 @@ def PlotClusteredBarChart(dataframe,
 # data = pd.DataFrame(data)
 # # PlotClusteredBarChart(
 # #     dataframe=data,
-# #     grouping_column_name_1="category", 
-# #     grouping_column_name_2="group",
-# #     value_column_name="value",
+# #     grouping_column_1="category", 
+# #     grouping_column_2="group",
+# #     value_column="value",
 # #     title_for_plot="Clustered Bar Chart",
 # #     subtitle_for_plot="Using totally made-up data",
 # # )
 # # PlotClusteredBarChart(
 # #     dataframe=data,
-# #     grouping_column_name_1="category", 
-# #     grouping_column_name_2="group",
-# #     value_column_name="value_big",
+# #     grouping_column_1="category", 
+# #     grouping_column_2="group",
+# #     value_column="value_big",
 # #     title_for_plot="Clustered Bar Chart",
 # #     subtitle_for_plot="Using totally made-up data",
 # # )
 # PlotClusteredBarChart(
 #     dataframe=data,
-#     grouping_column_name_1="category", 
-#     grouping_column_name_2="group",
-#     value_column_name="value_small",
+#     grouping_column_1="category", 
+#     grouping_column_2="group",
+#     value_column="value_small",
 #     title_for_plot="Clustered Bar Chart",
 #     subtitle_for_plot="Using totally made-up data",
 #     decimal_places_for_data_label=1

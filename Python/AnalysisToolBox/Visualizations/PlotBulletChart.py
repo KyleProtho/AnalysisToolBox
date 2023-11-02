@@ -12,9 +12,9 @@ sns.set(style="white",
 
 # Declare function
 def PlotBulletChart(dataframe, 
-                    value_column_name, 
-                    grouping_column_name,
-                    target_value_column_name=None,
+                    value_column, 
+                    grouping_column,
+                    target_value_column=None,
                     list_of_limit_columns=None,
                     value_maximum=None,
                     value_minimum=0,
@@ -49,9 +49,9 @@ def PlotBulletChart(dataframe,
     
     Parameters:
     dataframe: pandas dataframe. The dataframe containing the data to be plotted.
-    value_column_name: str. The name of the column in the dataframe containing the values to be plotted.
-    grouping_column_name: str. The name of the column in the dataframe containing the groups to be plotted.
-    target_value_column_name: str, default None. The name of the column in the dataframe containing the target values to be plotted.
+    value_column: str. The name of the column in the dataframe containing the values to be plotted.
+    grouping_column: str. The name of the column in the dataframe containing the groups to be plotted.
+    target_value_column: str, default None. The name of the column in the dataframe containing the target values to be plotted.
     list_of_limit_columns: list of str, default None. A list of the names of the columns in the dataframe containing the limit values to be plotted.
     value_maximum: float, default None. The maximum value to be plotted on the chart. If None, the maximum value among the limit columns is used.
     value_minimum: float, default 0. The minimum value to be plotted on the chart.
@@ -82,7 +82,7 @@ def PlotBulletChart(dataframe,
     None
     """
     # Ensure that the number of unique values in the group column is equal to the number of rows in the dataframe
-    if len(dataframe[grouping_column_name].unique()) != len(dataframe):
+    if len(dataframe[grouping_column].unique()) != len(dataframe):
         raise ValueError("The number of unique values in the group column must be equal to the number of rows in the dataframe.")
     
     # If value_maximum is not specified, use the maximum value among the limit columns
@@ -92,20 +92,20 @@ def PlotBulletChart(dataframe,
     # Sort the dataframe by the by the grouping column
     if group_order != None:
         group_order.reverse()
-        dataframe['Order'] = dataframe[grouping_column_name].apply(lambda x: group_order.index(x))
+        dataframe['Order'] = dataframe[grouping_column].apply(lambda x: group_order.index(x))
         dataframe = dataframe.sort_values(by='Order', ascending=True)
     else:
-        dataframe = dataframe.sort_values(by=grouping_column_name, ascending=False)
+        dataframe = dataframe.sort_values(by=grouping_column, ascending=False)
 
     # Create a figure and axis
     fig, ax = plt.subplots(figsize=(10, 6))
 
     # Iterate over each row in the dataframe
     for index, row in dataframe.iterrows():
-        group = row[grouping_column_name]
-        value = row[value_column_name]
-        if target_value_column_name != None:
-            target = row[target_value_column_name]
+        group = row[grouping_column]
+        value = row[value_column]
+        if target_value_column != None:
+            target = row[target_value_column]
             
         # Plot the background area color
         bars = ax.barh(
@@ -158,7 +158,7 @@ def PlotBulletChart(dataframe,
                     continue
         
         # Plot the target value as a line in the group
-        if target_value_column_name != None:
+        if target_value_column != None:
             ax.plot(
                 [target, target], 
                 [y_position+0.2, y_position+0.6], 
@@ -285,9 +285,9 @@ def PlotBulletChart(dataframe,
 # # Generate the bullet chart with specified columns
 # PlotBulletChart(
 #     dataframe=data, 
-#     grouping_column_name='Group', 
-#     value_column_name='Current Performance', 
-#     target_value_column_name='Target',
+#     grouping_column='Group', 
+#     value_column='Current Performance', 
+#     target_value_column='Target',
 #     list_of_limit_columns=['Level 1', 'Level 2', 'Level 3'],
 #     value_maximum=100,
 #     title_for_plot="Current Performance",
@@ -296,9 +296,9 @@ def PlotBulletChart(dataframe,
 
 # # PlotBulletChart(
 # #     dataframe=data, 
-# #     grouping_column_name='Group', 
-# #     value_column_name='Current Performance', 
-# #     target_value_column_name='Target',
+# #     grouping_column='Group', 
+# #     value_column='Current Performance', 
+# #     target_value_column='Target',
 # #     list_of_limit_columns=['Level 1', 'Level 2', 'Level 3'],
 # #     background_color_palette="RdYlGn_r",
 # #     value_maximum=100,

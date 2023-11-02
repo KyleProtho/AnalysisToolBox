@@ -9,9 +9,9 @@ sns.set(style="white",
 
 # Declare function
 def PlotBoxWhiskerByGroup(dataframe,
-                          value_column_name,
-                          grouping_column_name_1,
-                          grouping_column_name_2=None,
+                          value_column,
+                          grouping_column_1,
+                          grouping_column_2=None,
                           fill_color=None,
                           color_palette='Set2',
                           # Text formatting arguments
@@ -31,9 +31,9 @@ def PlotBoxWhiskerByGroup(dataframe,
 
     Parameters:
     dataframe (pandas.DataFrame): The input dataframe.
-    value_column_name (str): The name of the outcome variable.
-    grouping_column_name_1 (str): The name of the first group variable.
-    grouping_column_name_2 (str, optional): The name of the second group variable. Defaults to None.
+    value_column (str): The name of the outcome variable.
+    grouping_column_1 (str): The name of the first group variable.
+    grouping_column_2 (str, optional): The name of the second group variable. Defaults to None.
     fill_color (str, optional): The color to fill the box plot with. Defaults to None.
     color_palette (str, optional): The color palette to use for the box plot. Defaults to 'Set2'.
     title_for_plot (str, optional): The title for the plot. Defaults to None.
@@ -54,36 +54,36 @@ def PlotBoxWhiskerByGroup(dataframe,
     fig, ax = plt.subplots(figsize=figure_size)
     
     # Generate box whisker plot
-    if grouping_column_name_2 != None:
+    if grouping_column_2 != None:
         if fill_color != None:
             ax = sns.boxplot(
                 data=dataframe,
-                x=grouping_column_name_1,
-                y=value_column_name, 
-                hue=grouping_column_name_2, 
+                x=grouping_column_1,
+                y=value_column, 
+                hue=grouping_column_2, 
                 color=fill_color,
             )
         else:
             ax = sns.boxplot(
                 data=dataframe,
-                x=grouping_column_name_1,
-                y=value_column_name, 
-                hue=grouping_column_name_2, 
+                x=grouping_column_1,
+                y=value_column, 
+                hue=grouping_column_2, 
                 palette=color_palette
             )
     else:
         if fill_color != None:
             ax = sns.boxplot(
                 data=dataframe,
-                x=grouping_column_name_1,
-                y=value_column_name, 
+                x=grouping_column_1,
+                y=value_column, 
                 color=fill_color
             )
         else:
             ax = sns.boxplot(
                 data=dataframe,
-                x=grouping_column_name_1,
-                y=value_column_name, 
+                x=grouping_column_1,
+                y=value_column, 
                 palette=color_palette
             )
     
@@ -187,8 +187,8 @@ def PlotBoxWhiskerByGroup(dataframe,
 # iris['species'] = datasets.load_iris(as_frame=True).target
 # PlotBoxWhiskerByGroup(
 #     dataframe=iris,
-#     value_column_name='sepal length (cm)',
-#     grouping_column_name_1='species',
+#     value_column='sepal length (cm)',
+#     grouping_column_1='species',
 #     title_for_plot='Sepal Length by Species',
 #     subtitle_for_plot='A test visulaization using the iris dataset',
 # )

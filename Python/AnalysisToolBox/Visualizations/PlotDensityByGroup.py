@@ -9,8 +9,8 @@ sns.set(style="white",
 
 # Declare function
 def PlotDensityByGroup(dataframe,
-                       value_column_name,
-                       grouping_column_name,
+                       value_column,
+                       grouping_column,
                        color_palette='Set2',
                        # Text formatting arguments
                        title_for_plot=None,
@@ -29,8 +29,8 @@ def PlotDensityByGroup(dataframe,
 
     Parameters:
     dataframe (pandas.DataFrame): The dataframe to plot.
-    value_column_name (str): The name of the column in the dataframe to use for the x-axis values.
-    grouping_column_name (str): The name of the column in the dataframe to use for grouping data.
+    value_column (str): The name of the column in the dataframe to use for the x-axis values.
+    grouping_column (str): The name of the column in the dataframe to use for grouping data.
     color_palette (str, optional): The color palette to use for the plot. Defaults to 'Set2'.
     title_for_plot (str, optional): The title for the plot. Defaults to None.
     subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
@@ -52,8 +52,8 @@ def PlotDensityByGroup(dataframe,
     # Generate density plot using seaborn
     sns.kdeplot(
         data=dataframe,
-        x=value_column_name,
-        hue=grouping_column_name,
+        x=value_column,
+        hue=grouping_column,
         fill=True,
         common_norm=False,
         alpha=.4,
@@ -146,8 +146,8 @@ def PlotDensityByGroup(dataframe,
 # iris['species'] = datasets.load_iris(as_frame=True).target
 # PlotDensityByGroup(
 #     dataframe=iris, 
-#     value_column_name='sepal length (cm)', 
-#     grouping_column_name='species',
+#     value_column='sepal length (cm)', 
+#     grouping_column='species',
 #     title_for_plot='Sepal Length by Species',
 #     subtitle_for_plot="Shows the distribution of sepal length by species.",
 #     data_source_for_plot='Iris Data Set',

@@ -5,8 +5,8 @@ from tableone import TableOne
 
 # Declare function
 def RenderTableOne(dataframe,
-                   value_column_name,
-                   grouping_column_name,
+                   value_column,
+                   grouping_column,
                    list_of_row_variables,
                    table_format='html',
                    show_p_value=True,
@@ -16,8 +16,8 @@ def RenderTableOne(dataframe,
 
     Parameters:
     dataframe (pandas.DataFrame): The DataFrame that contains the data.
-    value_column_name (str): The name of the column in the DataFrame to be used as the outcome variable.
-    grouping_column_name (str): The name of the column in the DataFrame to be used as the grouping variable.
+    value_column (str): The name of the column in the DataFrame to be used as the outcome variable.
+    grouping_column (str): The name of the column in the DataFrame to be used as the grouping variable.
     list_of_row_variables (list): A list of column names to be included as rows in the table.
     table_format (str, optional): The format of the table. Defaults to 'html'.
     show_p_value (bool, optional): Whether to include p-values in the table. Defaults to True.
@@ -29,12 +29,12 @@ def RenderTableOne(dataframe,
     """
     
     # Select the columns to be included in the table
-    dataframe = dataframe[[value_column_name, grouping_column_name] + list_of_row_variables]
+    dataframe = dataframe[[value_column, grouping_column] + list_of_row_variables]
     
     # Create table 1 object
     table_one = TableOne(dataframe, 
                          columns=list_of_row_variables,
-                         groupby=grouping_column_name, 
+                         groupby=grouping_column, 
                          pval=show_p_value)
     
     # Render the table
@@ -77,7 +77,7 @@ def RenderTableOne(dataframe,
 # iris['species'] = datasets.load_iris(as_frame=True).target
 # RenderTableOne(
 #     dataframe=iris,
-#     value_column_name='sepal length (cm)',
-#     grouping_column_name='species',
+#     value_column='sepal length (cm)',
+#     grouping_column='species',
 #     list_of_row_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
 # )

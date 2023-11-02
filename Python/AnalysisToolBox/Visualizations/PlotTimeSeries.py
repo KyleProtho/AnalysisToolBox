@@ -9,9 +9,9 @@ sns.set(style="white",
 
 # Declare function
 def PlotTimeSeries(dataframe,
-                   value_column_name,
-                   time_column_name,
-                   grouping_column_name=None,
+                   value_column,
+                   time_column,
+                   grouping_column=None,
                    # Line formatting arguments
                    line_color="#3269a8",
                    line_alpha=0.8,
@@ -35,9 +35,9 @@ def PlotTimeSeries(dataframe,
 
     Parameters:
     dataframe (pandas.DataFrame): The dataframe containing the data to be plotted.
-    value_column_name (str): The name of the column in the dataframe that contains the values to be plotted.
-    time_column_name (str): The name of the column in the dataframe that contains the time data.
-    grouping_column_name (str, optional): The name of the column in the dataframe to group data by. Defaults to None.
+    value_column (str): The name of the column in the dataframe that contains the values to be plotted.
+    time_column (str): The name of the column in the dataframe that contains the time data.
+    grouping_column (str, optional): The name of the column in the dataframe to group data by. Defaults to None.
     line_color (str, optional): The color of the line in the plot. Defaults to "#3269a8".
     line_alpha (float, optional): The transparency of the line in the plot. Defaults to 0.8.
     color_palette (str, optional): The color palette to use for the plot. Defaults to "Set2".
@@ -62,11 +62,11 @@ def PlotTimeSeries(dataframe,
     fig, ax = plt.subplots(figsize=figure_size)
     
     # Use Seaborn to create a line plot
-    if grouping_column_name is None:
+    if grouping_column is None:
         sns.lineplot(
             data=dataframe,
-            x=time_column_name,
-            y=value_column_name,
+            x=time_column,
+            y=value_column,
             color=line_color,
             alpha=line_alpha,
             marker=markers,
@@ -75,9 +75,9 @@ def PlotTimeSeries(dataframe,
     else:
         sns.lineplot(
             data=dataframe,
-            x=time_column_name,
-            y=value_column_name,
-            hue=grouping_column_name,
+            x=time_column,
+            y=value_column,
+            hue=grouping_column,
             palette=color_palette,
             alpha=line_alpha,
             marker=markers,
@@ -133,7 +133,7 @@ def PlotTimeSeries(dataframe,
     # Move the y-axis label to the top of the y-axis, and set the font to Arial, size 9, and color #666666
     ax.yaxis.set_label_coords(-0.1, 0.84)
     ax.yaxis.set_label_text(
-        value_column_name,
+        value_column,
         fontname="Arial",
         fontsize=10,
         color="#666666"
@@ -142,7 +142,7 @@ def PlotTimeSeries(dataframe,
     # Move the x-axis label to the right of the x-axis, and set the font to Arial, size 9, and color #666666
     ax.xaxis.set_label_coords(0.9, -0.1)
     ax.xaxis.set_label_text(
-        time_column_name,
+        time_column,
         fontname="Arial",
         fontsize=10,
         color="#666666"
@@ -181,8 +181,8 @@ def PlotTimeSeries(dataframe,
 # time_series = pd.read_csv('https://raw.githubusercontent.com/jenfly/opsd/master/opsd_germany_daily.csv')
 # PlotTimeSeries(
 #     dataframe=time_series,
-#     value_column_name='Consumption',
-#     time_column_name='Date',
+#     value_column='Consumption',
+#     time_column='Date',
 #     number_of_x_axis_ticks=10,
 #     x_axis_tick_rotation=45,
 #     title_for_plot='Daily Electricity Consumption in Germany',

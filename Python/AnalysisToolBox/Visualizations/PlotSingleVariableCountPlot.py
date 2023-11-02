@@ -11,7 +11,7 @@ sns.set(style="white",
 
 # Declare function
 def PlotSingleVariableCountPlot(dataframe,
-                                categorical_column_name, 
+                                categorical_column, 
                                 # Plot formatting arguments
                                 color_palette="Set1",
                                 fill_color=None,
@@ -37,7 +37,7 @@ def PlotSingleVariableCountPlot(dataframe,
 
     Args:
         dataframe (_type_): The dataframe containing the categorical variable.
-        categorical_column_name (_type_): The categorical variable to plot.
+        categorical_column (_type_): The categorical variable to plot.
         color_palette (str, optional): The Seaborn color palette to use for the bar chart. Defaults to "Set1".
         fill_color (_type_, optional): The color to use for the bar chart. Defaults to None.
         top_n_to_highlight (_type_, optional): The "top N" categories to highlight. Defaults to None.
@@ -57,8 +57,8 @@ def PlotSingleVariableCountPlot(dataframe,
     """
     
     # Check that the column exists in the dataframe.
-    if categorical_column_name not in dataframe.columns:
-        raise ValueError("Column {} does not exist in dataframe.".format(categorical_column_name))
+    if categorical_column not in dataframe.columns:
+        raise ValueError("Column {} does not exist in dataframe.".format(categorical_column))
     
     # Ensure that rare category threshold is between 0 and 1
     if rare_category_threshold < 0 or rare_category_threshold > 1:
@@ -66,7 +66,7 @@ def PlotSingleVariableCountPlot(dataframe,
     
     # Make sure that the top_n_to_highlight is a positive integer, and less than the number of categories
     if top_n_to_highlight != None:
-        if top_n_to_highlight < 0 or top_n_to_highlight > len(dataframe[categorical_column_name].value_counts()):
+        if top_n_to_highlight < 0 or top_n_to_highlight > len(dataframe[categorical_column].value_counts()):
             raise ValueError("top_n_to_highlight must be a positive integer, and less than the number of categories.")
     
     # Create figure and axes
@@ -76,24 +76,24 @@ def PlotSingleVariableCountPlot(dataframe,
     if top_n_to_highlight != None:
         ax = sns.countplot(
             data=dataframe,
-            y=categorical_column_name,
-            order=dataframe[categorical_column_name].value_counts(ascending=False).index,
-            palette=["#b8b8b8" if x not in dataframe[categorical_column_name].value_counts().index[:top_n_to_highlight] else highlight_color for x in dataframe[categorical_column_name].value_counts().index],
+            y=categorical_column,
+            order=dataframe[categorical_column].value_counts(ascending=False).index,
+            palette=["#b8b8b8" if x not in dataframe[categorical_column].value_counts().index[:top_n_to_highlight] else highlight_color for x in dataframe[categorical_column].value_counts().index],
             alpha=fill_transparency
         )
     elif fill_color == None:
         ax = sns.countplot(
             data=dataframe,
-            y=categorical_column_name,
-            order=dataframe[categorical_column_name].value_counts(ascending=False).index,
+            y=categorical_column,
+            order=dataframe[categorical_column].value_counts(ascending=False).index,
             palette=color_palette,
             alpha=fill_transparency
         )
     else:
         ax = sns.countplot(
             data=dataframe,
-            y=categorical_column_name,
-            order=dataframe[categorical_column_name].value_counts(ascending=False).index,
+            y=categorical_column,
+            order=dataframe[categorical_column].value_counts(ascending=False).index,
             color=fill_color,
             alpha=fill_transparency
         )
@@ -102,7 +102,7 @@ def PlotSingleVariableCountPlot(dataframe,
     plt.subplots_adjust(top=0.85)
     
     # Wrap y axis label using textwrap
-    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column_name, 30))  # String wrap the variable name
+    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column, 30))  # String wrap the variable name
     ax.set_ylabel(wrapped_variable_name)
     
     # Format and wrap y axis tick labels using textwrap
@@ -126,8 +126,8 @@ def PlotSingleVariableCountPlot(dataframe,
     ax.spines['left'].set_visible(False)
     
     # Add data labels
-    abs_values = dataframe[categorical_column_name].value_counts(ascending=False)
-    rel_values = dataframe[categorical_column_name].value_counts(ascending=False, normalize=True).values * 100
+    abs_values = dataframe[categorical_column].value_counts(ascending=False)
+    rel_values = dataframe[categorical_column].value_counts(ascending=False, normalize=True).values * 100
     lbls = [f'{p[0]} ({p[1]:.0f}%)' for p in zip(abs_values, rel_values)]
     ax.bar_label(container=ax.containers[0],
                     labels=lbls,
@@ -213,7 +213,7 @@ def PlotSingleVariableCountPlot(dataframe,
 # iris['species'] = iris['species'].astype('category')
 # # PlotSingleVariableCountPlot(
 # #     dataframe=iris,
-# #     categorical_column_name='species',
+# #     categorical_column='species',
 # #     title_for_plot='Species',
 # #     subtitle_for_plot='This is a subtitle',
 # #     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",
@@ -226,7 +226,7 @@ def PlotSingleVariableCountPlot(dataframe,
 # )
 # PlotSingleVariableCountPlot(
 #     dataframe=iris,
-#     categorical_column_name='species long label',
+#     categorical_column='species long label',
 #     title_for_plot='Species',
 #     subtitle_for_plot='This is a subtitle',
 #     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",

@@ -10,10 +10,10 @@ sns.set(style="white",
 
 # Declare function
 def PlotScatterplot(dataframe,
-                    y_axis_column_name,
-                    x_axis_column_name,
+                    y_axis_column,
+                    x_axis_column,
                     # Dot formatting arguments
-                    grouping_column_name=None,
+                    grouping_column=None,
                     group_color_palette="Set1",
                     dot_fill_color="#999999",
                     # Fitted line arguments
@@ -43,9 +43,9 @@ def PlotScatterplot(dataframe,
 
     Parameters:
     dataframe (DataFrame): The dataframe containing the data.
-    y_axis_column_name (str): The column name for the y-axis data.
-    x_axis_column_name (str): The column name for the x-axis data.
-    grouping_column_name (str, optional): The column name for grouping data. Defaults to None.
+    y_axis_column (str): The column name for the y-axis data.
+    x_axis_column (str): The column name for the x-axis data.
+    grouping_column (str, optional): The column name for grouping data. Defaults to None.
     group_color_palette (str, optional): The color palette for the groups. Defaults to "Set1".
     dot_fill_color (str, optional): The fill color for the dots. Defaults to "#999999".
     fitted_line_type (str, optional): The type of fitted line. Defaults to None.
@@ -85,11 +85,11 @@ def PlotScatterplot(dataframe,
     
     # Draw scatterplot
     if fitted_line_type == None:
-        if grouping_column_name == None:
+        if grouping_column == None:
             ax = sns.scatterplot(
                 data=dataframe, 
-                x=x_axis_column_name,
-                y=y_axis_column_name,
+                x=x_axis_column,
+                y=y_axis_column,
                 color=dot_fill_color,
                 alpha=0.5,
                 linewidth=0.5,
@@ -98,19 +98,19 @@ def PlotScatterplot(dataframe,
         else:
             ax = sns.scatterplot(
                 data=dataframe, 
-                x=x_axis_column_name,
-                y=y_axis_column_name,
-                hue=grouping_column_name,
+                x=x_axis_column,
+                y=y_axis_column,
+                hue=grouping_column,
                 alpha=0.5,
                 linewidth=0.5,
                 palette=group_color_palette
             )
     elif fitted_line_type == 'straight':
-        if grouping_column_name == None:
+        if grouping_column == None:
             ax = sns.regplot(
                 data=dataframe,
-                x=x_axis_column_name,
-                y=y_axis_column_name,
+                x=x_axis_column,
+                y=y_axis_column,
                 marker='o',
                 scatter_kws={
                     'color': dot_fill_color,
@@ -126,20 +126,20 @@ def PlotScatterplot(dataframe,
         else:
             ax = sns.lmplot(
                 data=dataframe,
-                x=x_axis_column_name,
-                y=y_axis_column_name,
-                hue=grouping_column_name,
+                x=x_axis_column,
+                y=y_axis_column,
+                hue=grouping_column,
                 palette=group_color_palette,
                 scatter_kws={'alpha': 0.5,
                              'linewidth': 0.5},
                 fit_reg=True
             )
     elif fitted_line_type == 'lowess':
-        if grouping_column_name == None:
+        if grouping_column == None:
             ax = sns.regplot(
                 data=dataframe,
-                x=x_axis_column_name,
-                y=y_axis_column_name,
+                x=x_axis_column,
+                y=y_axis_column,
                 marker='o',
                 scatter_kws={
                     'color': dot_fill_color,
@@ -153,9 +153,9 @@ def PlotScatterplot(dataframe,
         else:
             ax = sns.lmplot(
                 data=dataframe,
-                x=x_axis_column_name,
-                y=y_axis_column_name,
-                hue=grouping_column_name,
+                x=x_axis_column,
+                y=y_axis_column,
+                hue=grouping_column,
                 palette=group_color_palette,
                 scatter_kws={'alpha': 0.5,
                              'linewidth': 0.5},
@@ -497,7 +497,7 @@ def PlotScatterplot(dataframe,
     try:
         ax.yaxis.set_label_coords(-0.1, 0.84)
         ax.yaxis.set_label_text(
-            y_axis_column_name,
+            y_axis_column,
             fontname="Arial",
             fontsize=10,
             color="#666666"
@@ -505,7 +505,7 @@ def PlotScatterplot(dataframe,
     except AttributeError:
         ax.ax.yaxis.set_label_coords(-0.1, 0.87)
         ax.ax.yaxis.set_label_text(
-            y_axis_column_name,
+            y_axis_column,
             fontname="Arial",
             fontsize=10,
             color="#666666"
@@ -515,7 +515,7 @@ def PlotScatterplot(dataframe,
     try:
         ax.xaxis.set_label_coords(0.9, -0.1)
         ax.xaxis.set_label_text(
-            x_axis_column_name,
+            x_axis_column,
             fontname="Arial",
             fontsize=10,
             color="#666666"
@@ -523,7 +523,7 @@ def PlotScatterplot(dataframe,
     except AttributeError:
         ax.ax.xaxis.set_label_coords(0.9, -0.075)
         ax.ax.xaxis.set_label_text(
-            x_axis_column_name,
+            x_axis_column,
             fontname="Arial",
             fontsize=10,
             color="#666666"
@@ -579,8 +579,8 @@ def PlotScatterplot(dataframe,
 # iris['species'] = iris['species'].astype('category')
 # # PlotScatterplot(
 # #     dataframe=iris,
-# #     y_axis_column_name="sepal length (cm)",
-# #     x_axis_column_name="petal length (cm)",
+# #     y_axis_column="sepal length (cm)",
+# #     x_axis_column="petal length (cm)",
 # #     title_for_plot="Sepal Length vs. Petal Length",
 # #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
 # #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
@@ -588,8 +588,8 @@ def PlotScatterplot(dataframe,
 # # )
 # PlotScatterplot(
 #     dataframe=iris,
-#     y_axis_column_name="sepal length (cm)",
-#     x_axis_column_name="petal length (cm)",
+#     y_axis_column="sepal length (cm)",
+#     x_axis_column="petal length (cm)",
 #     title_for_plot="Sepal Length vs. Petal Length",
 #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
 #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
@@ -603,8 +603,8 @@ def PlotScatterplot(dataframe,
 # )
 # # PlotScatterplot(
 # #     dataframe=iris,
-# #     y_axis_column_name="sepal length (cm)",
-# #     x_axis_column_name="petal length (cm)",
+# #     y_axis_column="sepal length (cm)",
+# #     x_axis_column="petal length (cm)",
 # #     title_for_plot="Sepal Length vs. Petal Length",
 # #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
 # #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
@@ -614,35 +614,35 @@ def PlotScatterplot(dataframe,
 # # )
 # # PlotScatterplot(
 # #     dataframe=iris,
-# #     y_axis_column_name="sepal length (cm)",
-# #     x_axis_column_name="petal length (cm)",
+# #     y_axis_column="sepal length (cm)",
+# #     x_axis_column="petal length (cm)",
 # #     title_for_plot="Sepal Length vs. Petal Length",
 # #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
 # #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
 # #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-# #     grouping_column_name="species",
+# #     grouping_column="species",
 # # )
 # # PlotScatterplot(
 # #     dataframe=iris,
-# #     y_axis_column_name="sepal length (cm)",
-# #     x_axis_column_name="petal length (cm)",
+# #     y_axis_column="sepal length (cm)",
+# #     x_axis_column="petal length (cm)",
 # #     title_for_plot="Sepal Length vs. Petal Length",
 # #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
 # #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
 # #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
 # #     fitted_line_type="lowess",
-# #     grouping_column_name="species",
+# #     grouping_column="species",
 # # )
 # # PlotScatterplot(
 # #     dataframe=iris,
-# #     y_axis_column_name="sepal length (cm)",
-# #     x_axis_column_name="petal length (cm)",
+# #     y_axis_column="sepal length (cm)",
+# #     x_axis_column="petal length (cm)",
 # #     title_for_plot="Sepal Length vs. Petal Length",
 # #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
 # #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
 # #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
 # #     fitted_line_type="lowess",
-# #     grouping_column_name="species",
+# #     grouping_column="species",
 # #     upper_left_quadrant_label="",
 # #     upper_right_quadrant_label="UPPER RIGHT",
 # #     upper_right_quadrant_fill_color="#999999",
