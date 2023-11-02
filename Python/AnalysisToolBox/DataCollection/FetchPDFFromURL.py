@@ -1,6 +1,8 @@
+# Load packages
 import requests
 import PyPDF2
 
+# Declare function
 def FetchPDFFromURL(url, filename):
     """This function downloads a PDF from a website and saves it to the current directory.
 
@@ -8,8 +10,10 @@ def FetchPDFFromURL(url, filename):
         url (str): The URL of the PDF file that you want to download.
         filename (str): The name of the file that you want to save the PDF to.
     """
+    
     # Send a GET request to the url and get the response
     response = requests.get(url)
+    
     # Check if the response status code is 200 (OK)
     if response.status_code == 200:
         # Open the filename in write-binary mode

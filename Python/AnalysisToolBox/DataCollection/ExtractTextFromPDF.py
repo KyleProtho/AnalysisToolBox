@@ -1,21 +1,26 @@
+# Load packages
 import PyPDF2
 import re
 
+# Delclare function
 def ExtractTextFromPDF(filepath_to_pdf,
                        filepath_for_exported_text,
                        start_page=1,
                        end_page=None,
                        show_word_count=True,
                        show_estimated_token_count=True):
-    """This function extracts text from a PDF file, cleans it, then saves it to a text file.
+    """
+    This function extracts text from a PDF file, cleans it, then saves it to a text file.
 
     Args:
-        filepath_to_pdf (str): The path to the PDF file that you want to extract text from.
-        filepath_for_exported_text (str): The path to the text file that you want to save the extracted text to.
-        start_page (int, optional): The page number of the PDF file that you want to start extracting text from. Defaults to 1.
-        end_page (int or None, optional): The page number of the PDF file that you want to stop extracting text from. If None, the function will extract text from all pages in the PDF file. Defaults to None.
-        show_word_count (bool, optional): Whether or not to show the word count of the extracted text. Defaults to True.
-        show_estimated_token_count (bool, optional): Whether or not to show the estimated token count of the extracted text. Defaults to True.
+    filepath_to_pdf (str): The path to the PDF file that you want to extract text from.
+    filepath_for_exported_text (str): The path to the text file that you want to save the extracted text to.
+    start_page (int, optional): The page number of the PDF file that you want to start extracting text from. Defaults to 1.
+    end_page (int or None, optional): The page number of the PDF file that you want to stop extracting text from. If None, the function will extract text from all pages in the PDF file. Defaults to None.
+    show_word_count (bool, optional): Whether or not to show the word count of the extracted text. Defaults to True.
+    
+    Returns:
+    None
     """
     
     # Ensure that filepath_to_pdf is a string ending in .pdf
@@ -81,9 +86,6 @@ def ExtractTextFromPDF(filepath_to_pdf,
         # Get the number of tokens in the text
         number_of_tokens = word_count * (100/75)
         print(f"Estimated token count: {int(round(number_of_tokens, 0))}")
-        # Print estimated cost of input into Chat GPT 3.5 Turbo model
-        estimated_cost = round(number_of_tokens * (0.0300/1000), 2)
-        print(f"Estimated cost of input into DaVinci v3 model: ${estimated_cost} ($0.002 per 1k tokens).")
 
 
 # # Test the function

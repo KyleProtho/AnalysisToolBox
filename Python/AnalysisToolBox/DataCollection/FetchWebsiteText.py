@@ -6,9 +6,20 @@ import json
 import os
 import requests
 
-# Declare functions
+# Declare function
 def FetchWebsiteText(url,
                      browserless_api_key=None):
+    """
+    Fetches the text content from a specified website using the Browserless service.
+
+    Parameters:
+    url (str): The URL of the website from which to fetch text.
+    browserless_api_key (str, optional): The API key for the Browserless service. If not provided, the function attempts to load it from a .env file.
+
+    Returns:
+    str: The text content of the website, with any occurrence of four or more newlines replaced with three newlines.
+    """
+    
     # If no API key is provided, try to load from .env file
     if browserless_api_key is None:
         load_dotenv()
