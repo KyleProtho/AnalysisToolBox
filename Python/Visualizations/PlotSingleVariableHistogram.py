@@ -11,7 +11,7 @@ sns.set(style="white",
 
 # Declare function
 def PlotSingleVariableHistogram(dataframe,
-                                quantitative_variable,
+                                value_column_name,
                                 # Histogram formatting arguments
                                 fill_color="#999999",
                                 fill_transparency=0.6,
@@ -28,9 +28,33 @@ def PlotSingleVariableHistogram(dataframe,
                                 caption_y_indent=-0.15,
                                 # Plot formatting arguments
                                 figure_size=(8, 6)):
+    """
+    This function plots a single variable histogram from a given dataframe.
+
+    Parameters:
+    dataframe (pandas.DataFrame): The dataframe containing the data to be plotted.
+    value_column_name (str): The name of the column in the dataframe to be plotted.
+    fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
+    fill_transparency (float, optional): The transparency of the fill color. Defaults to 0.6.
+    show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
+    show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
+    title_for_plot (str, optional): The title for the plot. Defaults to None.
+    subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
+    caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+    data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+    show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
+    title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
+    subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
+    caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
+    figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
+
+    Returns:
+    None
+    """
+    
     # Check that the column exists in the dataframe.
-    if quantitative_variable not in dataframe.columns:
-        raise ValueError("Column {} does not exist in dataframe.".format(quantitative_variable))
+    if value_column_name not in dataframe.columns:
+        raise ValueError("Column {} does not exist in dataframe.".format(value_column_name))
 
     # Create figure and axes
     fig, ax = plt.subplots(figsize=figure_size)
@@ -38,7 +62,7 @@ def PlotSingleVariableHistogram(dataframe,
     # Create histogram using seaborn
     sns.histplot(
         data=dataframe,
-        x=quantitative_variable,
+        x=value_column_name,
         color=fill_color,
         alpha=fill_transparency,
     )
@@ -65,7 +89,7 @@ def PlotSingleVariableHistogram(dataframe,
     # Show the mean if requested
     if show_mean:
         # Calculate the mean
-        mean = dataframe[quantitative_variable].mean()
+        mean = dataframe[value_column_name].mean()
         # Show the mean as a vertical line with a label
         ax.axvline(
             x=mean,
@@ -89,7 +113,7 @@ def PlotSingleVariableHistogram(dataframe,
     # Show the median if requested
     if show_median:
         # Calculate the median
-        median = dataframe[quantitative_variable].median()
+        median = dataframe[value_column_name].median()
         # Show the median as a vertical line with a label
         ax.axvline(
             x=median,
@@ -181,13 +205,13 @@ def PlotSingleVariableHistogram(dataframe,
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # # PlotSingleVariableHistogram(
 # #     dataframe=iris,
-# #     quantitative_variable="sepal length (cm)",
+# #     value_column_name="sepal length (cm)",
 # #     title_for_plot="Sepal Length (cm)",
 # #     subtitle_for_plot="Iris Dataset"
 # # )
 # PlotSingleVariableHistogram(
 #     dataframe=iris,
-#     quantitative_variable="sepal length (cm)",
+#     value_column_name="sepal length (cm)",
 #     title_for_plot="Sepal Length (cm)",
 #     subtitle_for_plot="Iris Dataset",
 #     caption_for_plot="This is a caption that is long enough to wrap onto multiple lines. This is a caption that is long enough to wrap onto multiple lines. This is a caption that is long enough to wrap onto multiple lines.",

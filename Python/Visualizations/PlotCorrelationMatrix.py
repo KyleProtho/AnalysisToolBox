@@ -8,9 +8,10 @@ sns.set(style="white",
         font="Arial",
         context="paper")
 
+# Declare function
 def PlotCorrelationMatrix(dataframe,
-                          list_of_numeric_variables,
-                          list_of_outcome_variables=None,
+                          list_of_value_column_names,
+                          list_of_outcome_column_names=None,
                           show_as_pairplot=True,
                           # Pairplot formatting options
                           pairplot_size=(20, 20),
@@ -27,11 +28,36 @@ def PlotCorrelationMatrix(dataframe,
                           title_y_indent=1.12,
                           subtitle_y_indent=1.03,
                           caption_y_indent=-0.35):
+    """
+    This function plots a correlation matrix or pairplot for a given dataframe. 
+
+    Parameters:
+    dataframe (pandas.DataFrame): The dataframe to plot.
+    list_of_value_column_names (list): The names of the columns to include in the plot.
+    list_of_outcome_column_names (list, optional): The names of the outcome columns to include in the plot. Defaults to None.
+    show_as_pairplot (bool, optional): Whether to show the plot as a pairplot. Defaults to True.
+    pairplot_size (tuple, optional): The size of the pairplot. Defaults to (20, 20).
+    scatter_fill_color (str, optional): The fill color for scatter plots. Defaults to "#3269a8".
+    fit_lowess_line (bool, optional): Whether to fit a lowess line to the data. Defaults to True.
+    line_color (str, optional): The color of the line. Defaults to "#cc4b5a".
+    title_for_plot (str, optional): The title for the plot. Defaults to "Pairplot of Numeric Variables".
+    subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Shows the linear relationship between numeric variables".
+    caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+    data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+    x_indent (float, optional): The x-indent for the plot. Defaults to -0.7.
+    title_y_indent (float, optional): The y-indent for the title. Defaults to 1.12.
+    subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.03.
+    caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.35.
+
+    Returns:
+    None
+    """
+    
     # Select relevant variables, keep complete cases only
-    if list_of_outcome_variables is None:
-        completed_df = dataframe[list_of_numeric_variables].dropna()
+    if list_of_outcome_column_names is None:
+        completed_df = dataframe[list_of_value_column_names].dropna()
     else:
-        completed_df = dataframe[list_of_outcome_variables + list_of_numeric_variables].dropna()
+        completed_df = dataframe[list_of_outcome_column_names + list_of_value_column_names].dropna()
 
     # Drop Inf values
     completed_df = completed_df[np.isfinite(completed_df).all(1)]
@@ -40,7 +66,7 @@ def PlotCorrelationMatrix(dataframe,
     # Show pairplot if specified -- otherwise, print correlation matrix
     if show_as_pairplot:
         plt.figure(figsize=pairplot_size)
-        if list_of_outcome_variables is None:
+        if list_of_outcome_column_names is None:
             ax = sns.pairplot(
                 data=completed_df,
                 kind='reg',
@@ -65,8 +91,8 @@ def PlotCorrelationMatrix(dataframe,
         else:
             ax = sns.pairplot(
                 data=completed_df,
-                x_vars=list_of_numeric_variables,
-                y_vars=list_of_outcome_variables,
+                x_vars=list_of_value_column_names,
+                y_vars=list_of_outcome_column_names,
                 kind='reg',
                 markers='o',
                 diag_kws={
@@ -103,16 +129,16 @@ def PlotCorrelationMatrix(dataframe,
         )
         
         # Adjust y-indents for title and subtitle
-        if list_of_outcome_variables is None:
-            title_y_indent = title_y_indent*len(list_of_numeric_variables)
-            subtitle_y_indent = subtitle_y_indent*len(list_of_numeric_variables)
+        if list_of_outcome_column_names is None:
+            title_y_indent = title_y_indent*len(list_of_value_column_names)
+            subtitle_y_indent = subtitle_y_indent*len(list_of_value_column_names)
         else:
-            title_y_indent = title_y_indent*len(list_of_outcome_variables)
-            subtitle_y_indent = subtitle_y_indent*len(list_of_outcome_variables)
+            title_y_indent = title_y_indent*len(list_of_outcome_column_names)
+            subtitle_y_indent = subtitle_y_indent*len(list_of_outcome_column_names)
         
         # Set the title with Arial font, size 14, and color #262626 at the top of the plot
         ax.text(
-            x=x_indent*len(list_of_numeric_variables),
+            x=x_indent*len(list_of_value_column_names),
             y=title_y_indent,
             s=title_for_plot,
             fontname="Arial",
@@ -123,7 +149,7 @@ def PlotCorrelationMatrix(dataframe,
         
         # Set the subtitle with Arial font, size 11, and color #666666
         ax.text(
-            x=x_indent*len(list_of_numeric_variables),
+            x=x_indent*len(list_of_value_column_names),
             y=subtitle_y_indent,
             s=subtitle_for_plot,
             fontname="Arial",
@@ -140,7 +166,7 @@ def PlotCorrelationMatrix(dataframe,
             # Add the caption to the plot, if one is provided
             if caption_for_plot != None:
                 # Word wrap the caption without splitting words
-                if list_of_outcome_variables is None:
+                if list_of_outcome_column_names is None:
                     wrapped_caption = textwrap.fill(caption_for_plot, 110, break_long_words=False)
                 else:
                     wrapped_caption = textwrap.fill(caption_for_plot, 60, break_long_words=False)
@@ -151,7 +177,7 @@ def PlotCorrelationMatrix(dataframe,
             
             # Add the caption to the plot
             ax.text(
-                x=x_indent*len(list_of_numeric_variables),
+                x=x_indent*len(list_of_value_column_names),
                 y=caption_y_indent,
                 s=wrapped_caption,
                 fontname="Arial",
@@ -169,7 +195,7 @@ def PlotCorrelationMatrix(dataframe,
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # # PlotCorrelationMatrix(
 # #     dataframe=iris,
-# #     list_of_numeric_variables=[
+# #     list_of_value_column_names=[
 # #         'sepal length (cm)',
 # #         'sepal width (cm)', 
 # #         'petal length (cm)', 
@@ -179,11 +205,11 @@ def PlotCorrelationMatrix(dataframe,
 # # )
 # PlotCorrelationMatrix(
 #     dataframe=iris, 
-#     list_of_numeric_variables=[
+#     list_of_value_column_names=[
 #         'sepal width (cm)', 
 #         'petal length (cm)', 
 #         'petal width (cm)'
 #     ],
-#     list_of_outcome_variables=['sepal length (cm)'],
+#     list_of_outcome_column_names=['sepal length (cm)'],
 #     caption_for_plot="This is a caption for the plot. Just using this to test the word wrapping functionality.",
 # )

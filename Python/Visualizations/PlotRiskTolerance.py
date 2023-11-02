@@ -10,7 +10,7 @@ sns.set(style="white",
         context="paper")
 
 # Declare function
-def PlotRiskTolerance(sip,
+def PlotRiskTolerance(simulated_values,
                       risk_tolerance,
                       # Risk tolerance arguments
                       lower_is_worse=True,
@@ -24,7 +24,7 @@ def PlotRiskTolerance(sip,
                       show_median=True,
                       # Text formatting arguments
                       title_for_plot="Risk Tolerance",
-                      subtitle_for_plot="Show the simulated outcomes that are worse than the risk tolerance.",
+                      subtitle_for_plot="Shows the simulated outcomes that are worse than the risk tolerance.",
                       caption_for_plot=None,
                       data_source_for_plot=None,
                       show_y_axis=False,
@@ -33,6 +33,34 @@ def PlotRiskTolerance(sip,
                       caption_y_indent=-0.15,
                       # Plot formatting arguments
                       figure_size=(8, 6)):
+    """
+    This function plots a histogram of simulated values and highlights the values that are worse than the risk tolerance.
+    
+    Parameters:
+    simulated_values (numpy array or pandas Series): The simulated values to plot.
+    risk_tolerance (int or float): The risk tolerance value.
+    lower_is_worse (bool, optional): If True, values lower than the risk tolerance are considered worse. Defaults to True.
+    variable_name (str, optional): The name of the variable being simulated. Defaults to "Outcome".
+    observed_value (int or float, optional): The observed value to be plotted. Defaults to None.
+    risk_tolerance_label (str, optional): The label for the risk tolerance. Defaults to "Tolerance".
+    fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
+    fill_transparency (float, optional): The transparency of the fill color. Defaults to 0.6.
+    show_mean (bool, optional): If True, the mean of the simulated values is shown. Defaults to True.
+    show_median (bool, optional): If True, the median of the simulated values is shown. Defaults to True.
+    title_for_plot (str, optional): The title for the plot. Defaults to "Risk Tolerance".
+    subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Show the simulated outcomes that are worse than the risk tolerance.".
+    caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+    data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+    show_y_axis (bool, optional): If False, the y-axis is not shown. Defaults to False.
+    title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
+    subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
+    caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
+    figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
+    
+    Returns:
+    None. The function plots a histogram and does not return any value.
+    """
+    
     # Ensure that risk tolerance is numeric
     if not isinstance(risk_tolerance, (int, float)):
         raise ValueError("Risk tolerance must be numeric.")
@@ -41,12 +69,12 @@ def PlotRiskTolerance(sip,
     if observed_value != None and not isinstance(observed_value, (int, float)):
         raise ValueError("Observed value must be numeric.")
     
-    # If sip is a pandas series, convert it to a numpy array
-    if isinstance(sip, pd.Series):
-        sip = sip.to_numpy()
+    # If simulated_values is a pandas series or a list, convert it to a numpy array
+    if isinstance(simulated_values, pd.Series) or isinstance(simulated_values, list):
+        simulated_values = simulated_values.to_numpy()
     
-    # Create dataframe with only the outcome variable and the SIP
-    dataframe = pd.DataFrame(sip, columns=[variable_name])
+    # Create dataframe with only the outcome variable and the simulated_values
+    dataframe = pd.DataFrame(simulated_values, columns=[variable_name])
     
     # Create risk flag column name
     if lower_is_worse:
@@ -203,11 +231,11 @@ def PlotRiskTolerance(sip,
 
 # # Test function
 # import numpy as np
-# # PlotRiskTolerance(sip=np.random.normal(0, 1, 10000),
+# # PlotRiskTolerance(simulated_values=np.random.normal(0, 1, 10000),
 # #                   risk_tolerance=-0.5)
-# PlotRiskTolerance(sip=np.random.normal(0, 1, 10000),
+# PlotRiskTolerance(simulated_values=np.random.normal(0, 1, 10000),
 #                   risk_tolerance=-0.5,
 #                   observed_value=-0.75)
-# # PlotRiskTolerance(sip=np.random.normal(0, 1, 10000),
+# # PlotRiskTolerance(simulated_values=np.random.normal(0, 1, 10000),
 # #                   risk_tolerance=-0.5,
 # #                   lower_is_worse=False)

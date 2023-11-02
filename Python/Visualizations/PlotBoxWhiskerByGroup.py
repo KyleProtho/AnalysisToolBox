@@ -1,3 +1,4 @@
+# Load packages
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
@@ -6,11 +7,11 @@ sns.set(style="white",
         font="Arial",
         context="paper")
 
-# Create box whisker function
+# Declare function
 def PlotBoxWhiskerByGroup(dataframe,
-                          outcome_variable,
-                          group_variable_1,
-                          group_variable_2=None,
+                          value_column_name,
+                          grouping_column_name_1,
+                          grouping_column_name_2=None,
                           fill_color=None,
                           color_palette='Set2',
                           # Text formatting arguments
@@ -22,7 +23,7 @@ def PlotBoxWhiskerByGroup(dataframe,
                           title_y_indent=1.1,
                           subtitle_y_indent=1.05,
                           caption_y_indent=-0.15,
-                          x_indent=-0.128,
+                          x_indent=-0.10,
                           # Plot formatting arguments
                           figure_size=(8, 6)):
     """
@@ -30,9 +31,9 @@ def PlotBoxWhiskerByGroup(dataframe,
 
     Parameters:
     dataframe (pandas.DataFrame): The input dataframe.
-    outcome_variable (str): The name of the outcome variable.
-    group_variable_1 (str): The name of the first group variable.
-    group_variable_2 (str, optional): The name of the second group variable. Defaults to None.
+    value_column_name (str): The name of the outcome variable.
+    grouping_column_name_1 (str): The name of the first group variable.
+    grouping_column_name_2 (str, optional): The name of the second group variable. Defaults to None.
     fill_color (str, optional): The color to fill the box plot with. Defaults to None.
     color_palette (str, optional): The color palette to use for the box plot. Defaults to 'Set2'.
     title_for_plot (str, optional): The title for the plot. Defaults to None.
@@ -53,36 +54,36 @@ def PlotBoxWhiskerByGroup(dataframe,
     fig, ax = plt.subplots(figsize=figure_size)
     
     # Generate box whisker plot
-    if group_variable_2 != None:
+    if grouping_column_name_2 != None:
         if fill_color != None:
             ax = sns.boxplot(
                 data=dataframe,
-                x=group_variable_1,
-                y=outcome_variable, 
-                hue=group_variable_2, 
-                color=fill_color
+                x=grouping_column_name_1,
+                y=value_column_name, 
+                hue=grouping_column_name_2, 
+                color=fill_color,
             )
         else:
             ax = sns.boxplot(
                 data=dataframe,
-                x=group_variable_1,
-                y=outcome_variable, 
-                hue=group_variable_2, 
+                x=grouping_column_name_1,
+                y=value_column_name, 
+                hue=grouping_column_name_2, 
                 palette=color_palette
             )
     else:
         if fill_color != None:
             ax = sns.boxplot(
                 data=dataframe,
-                x=group_variable_1,
-                y=outcome_variable, 
+                x=grouping_column_name_1,
+                y=value_column_name, 
                 color=fill_color
             )
         else:
             ax = sns.boxplot(
                 data=dataframe,
-                x=group_variable_1,
-                y=outcome_variable, 
+                x=grouping_column_name_1,
+                y=value_column_name, 
                 palette=color_palette
             )
     
@@ -186,8 +187,8 @@ def PlotBoxWhiskerByGroup(dataframe,
 # iris['species'] = datasets.load_iris(as_frame=True).target
 # PlotBoxWhiskerByGroup(
 #     dataframe=iris,
-#     outcome_variable='sepal length (cm)',
-#     group_variable_1='species',
-#     # title_for_plot='Sepal Length by Species',
-#     # subtitle_for_plot='A test visulaization using the iris dataset',
+#     value_column_name='sepal length (cm)',
+#     grouping_column_name_1='species',
+#     title_for_plot='Sepal Length by Species',
+#     subtitle_for_plot='A test visulaization using the iris dataset',
 # )
