@@ -118,12 +118,12 @@ def ChiSquareTestOfIndependence(dataframe,
             # Change x-axis colors to "#666666"
             ax.tick_params(axis='x', colors="#666666")
             ax.spines['top'].set_color("#666666")
+            ax.spines['left'].set_color("#d6d6d6")
         
             # Remove bottom, left, and right spines
             ax.spines['bottom'].set_visible(False)
             ax.spines['right'].set_visible(False)
-            ax.spines['left'].set_visible(False)
-        
+            
             # Remove the y-axis tick text
             ax.set_yticklabels([])
         
