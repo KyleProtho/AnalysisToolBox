@@ -1,7 +1,9 @@
+# Load packages
 import sys
 import os
 import win32com.client as client
 
+# Declare function
 def ConvertWordDocsToPDF(word_folder_path,
                          pdf_folder_path,
                          open_each_doc=False):

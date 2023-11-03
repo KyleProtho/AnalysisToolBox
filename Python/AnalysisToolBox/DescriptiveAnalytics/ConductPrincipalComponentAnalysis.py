@@ -9,16 +9,16 @@ from sklearn.preprocessing import MinMaxScaler
 
 # Delcare function
 def ConductPrincipalComponentAnalysis(dataframe,
-                                      list_of_numeric_variables=None,
+                                      list_of_numeric_columns=None,
                                       number_of_components=None,
                                       random_seed=412,
                                       display_pca_as_markdown=True):
-    # If list_of_numeric_variables is not specified, then use all numeric variables
-    if list_of_numeric_variables is None:
-        list_of_numeric_variables = dataframe.select_dtypes(include=[np.number]).columns.tolist()
+    # If list_of_numeric_columns is not specified, then use all numeric variables
+    if list_of_numeric_columns is None:
+        list_of_numeric_columns = dataframe.select_dtypes(include=[np.number]).columns.tolist()
         
     # Select only numeric variables
-    dataframe_pca = dataframe[list_of_numeric_variables].copy()
+    dataframe_pca = dataframe[list_of_numeric_columns].copy()
     
     # Remove missing values
     dataframe_pca = dataframe_pca.dropna()

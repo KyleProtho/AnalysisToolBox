@@ -1,3 +1,4 @@
+# Load packages
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
@@ -8,7 +9,7 @@ from yellowbrick.cluster import KElbowVisualizer
 
 # Declare function
 def CreateKMeansClusters(dataframe,
-                         list_of_variables_to_base_clusters=None,
+                         list_of_numeric_columns_for_clustering=None,
                          number_of_clusters=None,
                          column_name_for_clusters='K-Means Cluster',
                          scale_predictor_variables=True,
@@ -21,7 +22,7 @@ def CreateKMeansClusters(dataframe,
 
     Args:
         dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
-        list_of_variables_to_base_clusters (list, optional): The list of variables to base the clusters on. Defaults to None, which will use all variables in the dataframe.
+        list_of_numeric_columns_for_clustering (list, optional): The list of variables to base the clusters on. Defaults to None, which will use all variables in the dataframe.
         number_of_clusters (int, optional): The number of clusters to create. Defaults to None, which will use the elbow method to determine the optimal number of clusters.
         column_name_for_clusters (str, optional): The name of the new column containing the clusters. Defaults to 'K-Means Cluster'.
         scale_predictor_variables (bool, optional): Whether to scale the predictor variables prior to analysis. Defaults to True.
@@ -35,16 +36,16 @@ def CreateKMeansClusters(dataframe,
     """
     
     # Keep complete cases only
-    dataframe_clusters = dataframe.dropna(subset=list_of_variables_to_base_clusters)
+    dataframe_clusters = dataframe.dropna(subset=list_of_numeric_columns_for_clustering)
 
     # Scale the predictors, if requested
     if scale_predictor_variables:
         # Scale predictors
-        dataframe_clusters[list_of_variables_to_base_clusters] = StandardScaler().fit_transform(dataframe_clusters[list_of_variables_to_base_clusters])
+        dataframe_clusters[list_of_numeric_columns_for_clustering] = StandardScaler().fit_transform(dataframe_clusters[list_of_numeric_columns_for_clustering])
     
     # Show peak-to-peak range of each predictor
     print("\nPeak-to-peak range of each predictor:")
-    print(np.ptp(dataframe_clusters[list_of_variables_to_base_clusters], axis=0))
+    print(np.ptp(dataframe_clusters[list_of_numeric_columns_for_clustering], axis=0))
 
     # If number of clusters not specified, use elbow to find "best" number
     if number_of_clusters == None:
@@ -64,7 +65,7 @@ def CreateKMeansClusters(dataframe,
         random_state=random_seed,
         max_iter=maximum_iterations,
     )
-    model = model.fit(dataframe_clusters[list_of_variables_to_base_clusters])
+    model = model.fit(dataframe_clusters[list_of_numeric_columns_for_clustering])
 
     # Join clusters to original dataset
     dataframe_clusters[column_name_for_clusters] = model.labels_
@@ -85,7 +86,7 @@ def CreateKMeansClusters(dataframe,
     if show_cluster_summary_plots:
         plt.figure(figsize=summary_plot_size)
         sns.pairplot(
-            data=dataframe[list_of_variables_to_base_clusters + [column_name_for_clusters]],
+            data=dataframe[list_of_numeric_columns_for_clustering + [column_name_for_clusters]],
             hue=column_name_for_clusters
         )
         plt.suptitle("Cluster Summary Plots", fontsize=15)
@@ -99,7 +100,7 @@ def CreateKMeansClusters(dataframe,
 # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
 # iris = CreateKMeansClusters(
 #     dataframe=iris,
-#     list_of_variables_to_base_clusters=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+#     list_of_numeric_columns_for_clustering=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
 #     scale_predictor_variables=True,
 #     show_cluster_summary_plots=True
 # )

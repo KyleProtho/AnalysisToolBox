@@ -1,5 +1,7 @@
+# Load packages
 from PyPDF2 import PdfReader, PdfWriter
 
+# Declare function
 def CreateCopyOfPDF(input_file, 
                     output_file, 
                     start_page=None, 

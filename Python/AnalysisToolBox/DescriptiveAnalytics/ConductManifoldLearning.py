@@ -7,17 +7,17 @@ from sklearn.manifold import TSNE
 
 # Delcare function
 def ConductManifoldLearning(dataframe,
-                            list_of_numeric_variables=None,
+                            list_of_numeric_columns=None,
                             number_of_components=3,
                             random_seed=412,
                             show_component_summary_plots=True,
                             summary_plot_size=(20, 20)):
-    # If list_of_numeric_variables is not specified, then use all numeric variables
-    if list_of_numeric_variables is None:
-        list_of_numeric_variables = dataframe.select_dtypes(include=[np.number]).columns.tolist()
+    # If list_of_numeric_columns is not specified, then use all numeric variables
+    if list_of_numeric_columns is None:
+        list_of_numeric_columns = dataframe.select_dtypes(include=[np.number]).columns.tolist()
         
     # Select only numeric variables
-    dataframe_manifold = dataframe[list_of_numeric_variables].copy()
+    dataframe_manifold = dataframe[list_of_numeric_columns].copy()
     
     # Remove missing values
     dataframe_manifold = dataframe_manifold.dropna()
@@ -51,9 +51,9 @@ def ConductManifoldLearning(dataframe,
     if show_component_summary_plots:
         plt.figure(figsize=summary_plot_size)
         sns.pairplot(
-            data=dataframe[list_of_numeric_variables + list_of_component_names],
+            data=dataframe[list_of_numeric_columns + list_of_component_names],
             x_vars=list_of_component_names,
-            y_vars=list_of_numeric_variables,
+            y_vars=list_of_numeric_columns,
             kind='kde'
         )
         plt.suptitle("Component Summary Plots", fontsize=15)
