@@ -25,7 +25,7 @@ def ConductSurvivalAnalysis(dataframe,
                             point_in_time_survival_color="#3269a8",
                             # Text formatting arguments
                             title_for_plot="Cumulative Survival Curve",
-                            subtitle_for_plot=None,
+                            subtitle_for_plot='Shows the cumulative survival probability over time',
                             caption_for_plot=None,
                             data_source_for_plot=None,
                             x_indent=-0.127,
@@ -143,7 +143,7 @@ def ConductSurvivalAnalysis(dataframe,
             # Add group column
             group_data_time_table[group_column] = group
             # Row bind to the dataframe
-            data_time_table = pd.concat([data_time_table, group_data_time_table], axis=0)
+            data_time_table = pd.concat([data_time_table, group_data_time_table], axis=0).reset_index(drop=True)
             
     # If plot_survival_curve is True, plot the survival curve
     if plot_survival_curve:
@@ -335,21 +335,22 @@ def ConductSurvivalAnalysis(dataframe,
     return return_dict
 
 
-# # Test the function
+# Test the function
+data = pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/1. Survival Analysis/lung.csv")
 # survival_analysis = ConductSurvivalAnalysis(
-#     dataframe=pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/1. Survival Analysis/lung.csv"),
+#     dataframe=data,
 #     outcome_column="status",
 #     time_duration_column="time"
 # )
-# # survival_analysis = ConductSurvivalAnalysis(
-# #     dataframe=pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/1. Survival Analysis/lung.csv"),
-# #     outcome_column="status",
-# #     time_duration_column="time",
-# #     group_column="sex"
-# # )
-# # survival_analysis = ConductSurvivalAnalysis(
-# #     dataframe=pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/1. Survival Analysis/lung.csv"),
-# #     outcome_column="status",
-# #     time_duration_column="time",
-# #     group_column="ph.ecog"
-# # )
+survival_analysis = ConductSurvivalAnalysis(
+    dataframe=data,
+    outcome_column="status",
+    time_duration_column="time",
+    group_column="sex"
+)
+# survival_analysis = ConductSurvivalAnalysis(
+#     dataframe=data,
+#     outcome_column="status",
+#     time_duration_column="time",
+#     group_column="ph.ecog"
+# )

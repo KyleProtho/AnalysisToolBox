@@ -53,6 +53,7 @@ def PlotClusteredBarChart(dataframe,
     Returns:
     None. The function creates and displays a plot.
     """
+    
     # Draw a nested barplot by species and sex
     ax = sns.catplot(
         data=dataframe, 
