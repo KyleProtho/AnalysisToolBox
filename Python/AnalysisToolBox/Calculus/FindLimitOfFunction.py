@@ -1,7 +1,8 @@
+# Load packages
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Define a function that finds the x_tangent of a function
+# Declare function
 def FindLimitOfFunction(f_of_x,
                         point,
                         step=0.0001,

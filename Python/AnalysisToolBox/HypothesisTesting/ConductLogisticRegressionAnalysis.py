@@ -1,9 +1,11 @@
+# Load packages
 import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 import statsmodels.api as sm
 import seaborn as sns
 
+# Declare function
 def ConductLogisticRegressionAnalysis(dataframe,
                                       outcome_variable,
                                       list_of_predictors,

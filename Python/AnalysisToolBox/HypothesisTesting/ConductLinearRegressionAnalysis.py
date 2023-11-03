@@ -1,14 +1,16 @@
+# Load packages
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 import statsmodels.api as sm
 
+# Declare function
 def ConductLinearRegressionAnalysis(dataframe,
                                     outcome_variable,
                                     list_of_predictors,
                                     scale_predictors=False,
-                                    show_diagnostic_plots_for_each_predictor=True,
+                                    show_diagnostic_plots_for_each_predictor=False,
                                     show_help=True):
     
     # Select columns specified

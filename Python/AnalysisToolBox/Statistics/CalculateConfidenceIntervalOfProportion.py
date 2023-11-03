@@ -220,8 +220,8 @@ def CalculateConfidenceIntervalOfProportion(sample_proportion,
 
 
 # # Test the function
-# CalculateConfidenceIntervalOfProportion(sample_proportion=.37,
-#                                         sample_size=411,
+# CalculateConfidenceIntervalOfProportion(sample_proportion=.1974,
+#                                         sample_size=766,
 #                                         confidence_level=.95,
 #                                         subtitle_for_plot="Shows the sample proportion and its 95% confidence interval")
 

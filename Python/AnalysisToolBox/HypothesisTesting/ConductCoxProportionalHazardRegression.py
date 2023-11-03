@@ -10,7 +10,6 @@ sns.set(style="white",
         font="Arial",
         context="paper")
 
-
 # Declare function
 def ConductCoxProportionalHazardRegression(dataframe,
                                            outcome_column,

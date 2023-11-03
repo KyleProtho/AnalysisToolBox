@@ -1,7 +1,9 @@
+# Load packages
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
+# Declare function
 def PlotVectors(list_of_vectors,
                 list_of_vector_labels=None,
                 color_palette='Set2'):

@@ -36,6 +36,7 @@ setup(
         'seaborn',
         'scikit-learn',  # sklearn
         'statsmodels',
+        'sympy',
         'tableone',
         'textwrap',
         'zipfile',

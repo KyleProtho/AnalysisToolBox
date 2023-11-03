@@ -1,12 +1,14 @@
+# Load packages
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# Declare function
 def SolveSystemOfEquations(coefficients,
                            constants=None,
                            show_plot=True,
                            plot_boundary=10):
-    """_summary_
+    """
     This function plots a system of equations.
     
     Args:

@@ -1,10 +1,11 @@
-# Analysis Tool Box
+# Analysis Tool Box (in progress)
 
 ## Description
 
 Analysis Tool Box is a collection of tools in Python for data collection and processing, statisitics, analytics, and intelligence analysis.
 
 ## Getting Started
+
 To install the package, run the following command in the root directory of the project:
 
 ```bash

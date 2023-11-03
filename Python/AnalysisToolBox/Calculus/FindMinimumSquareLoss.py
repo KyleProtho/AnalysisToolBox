@@ -1,3 +1,4 @@
+# Load packages
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -5,6 +6,7 @@ sns.set(style="white",
         font="Arial",
         context="paper")
 
+# Declare function
 def FindMinimumSquareLoss(observed_values,
                           predicted_values,
                           show_plot=True):

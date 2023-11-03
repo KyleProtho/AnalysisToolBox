@@ -2,9 +2,14 @@
 from lifelines import KaplanMeierFitter
 from lifelines.statistics import logrank_test, multivariate_logrank_test
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 import statsmodels.api as sm
+import textwrap
+sns.set(style="white",
+        font="Arial",
+        context="paper")
 
 # Declare function
 def ConductSurvivalAnalysis(dataframe,

@@ -1,9 +1,11 @@
+# Load packages
 import numpy as np
 
+# Declare function
 def ConvertSystemOfEquationsToMatrix(coefficients,
                                      constants,
                                      show_determinant=True):
-    """_summary_
+    """
     This function converts a system of equations to a matrix.
     
     Args:

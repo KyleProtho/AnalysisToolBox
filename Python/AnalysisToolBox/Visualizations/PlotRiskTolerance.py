@@ -20,8 +20,6 @@ def PlotRiskTolerance(simulated_values,
                       # Histogram formatting arguments
                       fill_color="#999999",
                       fill_transparency=0.6,
-                      show_mean=True,
-                      show_median=True,
                       # Text formatting arguments
                       title_for_plot="Risk Tolerance",
                       subtitle_for_plot="Shows the simulated outcomes that are worse than the risk tolerance.",
@@ -45,8 +43,6 @@ def PlotRiskTolerance(simulated_values,
     risk_tolerance_label (str, optional): The label for the risk tolerance. Defaults to "Tolerance".
     fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
     fill_transparency (float, optional): The transparency of the fill color. Defaults to 0.6.
-    show_mean (bool, optional): If True, the mean of the simulated values is shown. Defaults to True.
-    show_median (bool, optional): If True, the median of the simulated values is shown. Defaults to True.
     title_for_plot (str, optional): The title for the plot. Defaults to "Risk Tolerance".
     subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Show the simulated outcomes that are worse than the risk tolerance.".
     caption_for_plot (str, optional): The caption for the plot. Defaults to None.

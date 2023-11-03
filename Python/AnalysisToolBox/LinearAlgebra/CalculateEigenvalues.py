@@ -1,6 +1,8 @@
+# Load packages
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Declare functions
 def CalculateEigenvalues(matrix, 
                          show_plot=True, 
                          matrix_color='#033dfc', 

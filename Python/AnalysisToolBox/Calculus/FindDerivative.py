@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import sympy
-# Set the variable x as a sympy symbol
-x = sympy.Symbol('x')
 
 def FindDerivative(f_of_x,
                    print_functions=False,
@@ -11,7 +9,7 @@ def FindDerivative(f_of_x,
                    minimum_x=-10, 
                    maximum_x=10, 
                    n=100):
-    """_summary_
+    """
     This function finds the derivative of a function.
 
     Args:
@@ -57,6 +55,8 @@ def FindDerivative(f_of_x,
 
 
 # # Test the function
+# # Set the variable x as a sympy symbol
+# x = sympy.Symbol('x')
 # FindDerivative(f_of_x=x**3 + 2*x**2 + x + 1,
 #                return_derivative_function=True)
 # # FindDerivative(f_of_x=x * np.e**x,

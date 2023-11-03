@@ -1,6 +1,8 @@
+# Load packages
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Declare function
 def VisualizeMatrixAsLinearTransformation(two_by_two_matrix1,
                                           two_by_two_matrix2=None,
                                           plot_with_grid=False,
@@ -11,7 +13,7 @@ def VisualizeMatrixAsLinearTransformation(two_by_two_matrix1,
                                           x_max=5,
                                           y_min=-5,
                                           y_max=5):
-    """_summary_
+    """
     This function takes in two 2x2 matrices and plots the unit square and the transformed unit square. If a second matrix is provided, it will plot the transformed unit square twice, once for each matrix.
     
     Args:
