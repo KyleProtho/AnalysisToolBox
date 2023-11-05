@@ -4,11 +4,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
-# Define a function that plots a function
+# Declare function
 def PlotFunction(f_of_x, 
                  minimum_x=-10, 
                  maximum_x=10, 
@@ -31,14 +28,29 @@ def PlotFunction(f_of_x,
                  caption_y_indent=-0.3,
                  # Plot formatting arguments
                  figure_size=(8, 5)):
-    """_summary_
+    """
     This function plots a function of x.
 
     Args:
-        f_of_x (lambda): The function of x.
+        f_of_x (lambda): The function of x to plot.
         minimum_x (int, optional): The minimum value of x to use when plotting the function. Defaults to -10.
         maximum_x (int, optional): The maximum value of x to use when plotting the function. Defaults to 10.
         n (int, optional): The number of points to use when plotting the function. Defaults to 100.
+        line_color (str, optional): The color of the function plot line. Defaults to "#3269a8".
+        line_alpha (float, optional): The alpha (transparency) of the function plot line. Defaults to 0.8.
+        color_palette (str, optional): The color palette to use for the markers. Defaults to "Set2".
+        markers (str, optional): The marker style to use for the function plot. Defaults to "o".
+        x_axis_variable_name (str, optional): The label for the x-axis. Defaults to "x".
+        y_axis_variable_name (str, optional): The label for the y-axis. Defaults to "f(x)".
+        title_for_plot (str, optional): The title for the plot. Defaults to "Function Plot".
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Shows the function of x".
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        x_indent (float, optional): The x-indent for the x-axis label. Defaults to -0.127.
+        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.125.
+        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.3.
+        figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 5).
     """
     
     # Plot the function

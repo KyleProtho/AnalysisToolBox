@@ -2,15 +2,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def FindMinimumSquareLoss(observed_values,
                           predicted_values,
                           show_plot=True):
-    """_summary_
+    """
     This function calculates the minimum square loss between observed and predicted values.
 
     Args:
@@ -58,10 +55,3 @@ def FindMinimumSquareLoss(observed_values,
     # Return the minimum square loss.
     return FindMinimumSquareLoss
 
-
-# # Test the function.
-# observed_values = [1, 2, 3, 4, 5]
-# predicted_values = observed_values + np.random.normal(0, 0.5, 5)
-# # predicted_values = [1.5, 2.5, 3.5, 4.5, 8]
-# min_loss = FindMinimumSquareLoss(observed_values, predicted_values)
-# print(min_loss)

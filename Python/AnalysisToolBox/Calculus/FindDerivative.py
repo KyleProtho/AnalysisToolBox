@@ -1,7 +1,9 @@
+# Load packages
 import matplotlib.pyplot as plt
 import numpy as np
 import sympy
 
+# Declare function
 def FindDerivative(f_of_x,
                    print_functions=False,
                    return_derivative_function=False,
@@ -13,13 +15,14 @@ def FindDerivative(f_of_x,
     This function finds the derivative of a function.
 
     Args:
-        f_of_x (function): A function of x as a sympy expression.
-        print_functions (bool, optional): Whether to print the function and its derivative. Defaults to True.
-        return_derivative_function (bool, optional): Whether to return the derivative function. Defaults to False.
+    f_of_x (function): A function of x as a sympy expression.
+    print_functions (bool, optional): Whether to print the function and its derivative. Defaults to True.
+    return_derivative_function (bool, optional): Whether to return the derivative function. Defaults to False.
 
     Returns:
-        _type_: _description_
+    d_f_of_x (function): The derivative of the function.
     """
+    
     # Compute the derivative of the higher-order function using sympy
     d_f_of_x = sympy.diff(f_of_x, x)
     
@@ -32,36 +35,27 @@ def FindDerivative(f_of_x,
     if plot_functions:
         # Create x values
         x_values = np.linspace(minimum_x, maximum_x, n)
-        # Create y values for original function using sympy
-        y_values_original = np.zeros(len(x_values))
-        for i in range(len(x_values)):
-            y_values_original[i] = f_of_x.evalf(subs={x: x_values[i]})
-        # Create y values for derivative function
-        y_values_derivative = np.zeros(len(x_values))
-        for i in range(len(x_values)):
-            y_values_derivative[i] = d_f_of_x.evalf(subs={x: x_values[i]})
+        
+        # Vectorize the original function and its derivative
+        vfunc = np.vectorize(lambda val: f_of_x.evalf(subs={x: val}))
+        vfunc_derivative = np.vectorize(lambda val: d_f_of_x.evalf(subs={x: val}))
+
+        # Create y values for original function and its derivative using the vectorized functions
+        y_values_original = vfunc(x_values)
+        y_values_derivative = vfunc_derivative(x_values)
+
         # Plot the original function
         plt.plot(x_values, y_values_original, label="f(x)")
+        
         # Plot the derivative function
         plt.plot(x_values, y_values_derivative, label="f'(x)")
+        
         # Add a legend
         plt.legend()
+        
         # Show the plot
         plt.show()
     
     # Return the derivative function if requested
     if return_derivative_function:
         return d_f_of_x
-
-
-# # Test the function
-# # Set the variable x as a sympy symbol
-# x = sympy.Symbol('x')
-# FindDerivative(f_of_x=x**3 + 2*x**2 + x + 1,
-#                return_derivative_function=True)
-# # FindDerivative(f_of_x=x * np.e**x,
-# #                return_derivative_function=True)
-# # der_f_of_x = FindDerivative(
-# #     f_of_x=np.e**(2*x),
-# #     return_derivative_function=True
-# # )

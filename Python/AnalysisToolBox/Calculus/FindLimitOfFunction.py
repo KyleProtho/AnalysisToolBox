@@ -12,19 +12,24 @@ def FindLimitOfFunction(f_of_x,
                         x_maximum=10,
                         n=100,
                         tangent_line_window=None):
-    """_summary_
-    This function finds the x_tangent of a function at a given point. It also plots the function and the tangent line at the point of interest.
+    """
+    This function finds the x_tangent of a function at a given point. 
+    It also plots the function and the tangent line at the point of interest.
 
     Args:
-        f_of_x (lambda): The function of x.
-        point (int or float): The point at which to find the x_tangent.
-        step (float, optional): The step size to use when calculating the x_tangent. Defaults to 0.0001.
-        plot_function (bool, optional): Whether or not to plot the function. Defaults to True.
-        x_minimum (int, optional): The minimum value of x to use when plotting the function. Defaults to -10.
-        x_maximum (int, optional): The maximum value of x to use when plotting the function. Defaults to 10.
-        n (int, optional): The number of points to use when plotting the function. Defaults to 100.
-        tangent_line_window (_type_, optional): The window to use when plotting the tangent line. Defaults to None, which will use 1/5 of the x range.
+    f_of_x (lambda): The function of x.
+    point (int or float): The point at which to find the x_tangent.
+    step (float, optional): The step size to use when calculating the x_tangent. Defaults to 0.0001.
+    plot_function (bool, optional): Whether or not to plot the function. Defaults to True.
+    x_minimum (int, optional): The minimum value of x to use when plotting the function. Defaults to -10.
+    x_maximum (int, optional): The maximum value of x to use when plotting the function. Defaults to 10.
+    n (int, optional): The number of points to use when plotting the function. Defaults to 100.
+    tangent_line_window (_type_, optional): The window to use when plotting the tangent line. Defaults to None, which will use 1/5 of the x range.
+    
+    Returns:
+    float: The x_tangent at the point of interest.
     """
+    
     # Create array of values based on the function
     x = np.linspace(x_minimum, x_maximum, n)
     y = np.zeros(len(x))
@@ -72,31 +77,4 @@ def FindLimitOfFunction(f_of_x,
         
     except ZeroDivisionError:
         print("The limit at x={0} is undefined.".format(point))
-
-
-# # Test the function
-# FindLimitOfFunction(
-#     f_of_x=lambda x: np.power(x, 2),
-#     point=0
-# )
-# FindLimitOfFunction(
-#     f_of_x=lambda x: 1/x, 
-#     point=0
-# )
-# FindLimitOfFunction(
-#     f_of_x=lambda x: np.sin(x), 
-#     point=0
-# )
-# FindLimitOfFunction(
-#     f_of_x=lambda x: np.exp(1) ** x, 
-#     point=1,
-#     x_minimum=0,
-#     x_maximum=10
-# )
-# FindLimitOfFunction(
-#     f_of_x=lambda x: np.log(x), 
-#     point=1,
-#     x_minimum=0,
-#     x_maximum=10
-# )
 
