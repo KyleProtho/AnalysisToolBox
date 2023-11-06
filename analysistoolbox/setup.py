@@ -24,7 +24,7 @@ setup(
         'Operating System :: OS Independent'
     ],
     python_requires='>=3.9',
-    package_dir={'': '../analysistoolbox'},
+    package_dir={'': '/analysistoolbox'},
     packages=find_packages(where="analysistoolbox"),
     install_requires=[
         'beautifulsoup4',
