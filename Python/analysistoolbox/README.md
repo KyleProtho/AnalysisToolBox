@@ -14,17 +14,17 @@ pip install analysistoolbox
 
 ## Usage
 
-There are many submodules in the AnalysisToolBox package, each with their own functions. The following is a list of the submodules:
+There are many modules in the analysistoolbox package, each with their own functions. The following is a list of the modules:
 
-* Calculus
-* DataCollection
-* DataProcessing
-* DescriptiveAnalytics
-* FileManagement
-* HypothesisTesting
-* LinearAlgebra
-* Statistics
-* Visualizations
+* calculus
+* data_collection
+* data_processing
+* descriptive_analytics
+* file_management
+* hypothesis_testing
+* linear_algebra
+* statistics
+* visualizations
 
 ### Calculus
 
