@@ -9,7 +9,7 @@ Analysis Tool Box is a collection of tools in Python for data collection and pro
 To install the package, run the following command in the root directory of the project:
 
 ```bash
-pip install AnalysisToolBox
+pip install analysistoolbox
 ```
 
 ## Usage
@@ -34,7 +34,7 @@ The **FindDerivative** function calculates the derivative of a given function. I
 
 ```python
 # Load the FindDerivative function from the Calculus submodule
-from AnalysisToolBox.Calculus import FindDerivative
+from analysistoolbox.calculus import FindDerivative
 import sympy
 
 # Define a symbolic variable
@@ -59,7 +59,7 @@ The **FindLimitOfFunction** function finds the limit of a function at a specific
 ```python
 # Import the necessary libraries
 import numpy as np
-from AnalysisToolBox.Calculus import FindLimitOfFunction
+from analysistoolbox.calculus import FindLimitOfFunction
 
 # Define a function
 f_of_x = lambda x: np.sin(x) / x
@@ -83,7 +83,7 @@ The **FindMinimumSquareLoss** function calculates the minimum square loss betwee
 
 ```python
 # Import the necessary libraries
-from AnalysisToolBox.Calculus import FindMinimumSquareLoss
+from analysistoolbox.calculus import FindMinimumSquareLoss
 
 # Define observed and predicted values
 observed_values = [1, 2, 3, 4, 5]
@@ -105,7 +105,7 @@ The **PlotFunction** function plots a mathematical function of x. It takes a lam
 
 ```python
 # Import the necessary libraries
-from AnalysisToolBox.Calculus import PlotFunction
+from analysistoolbox.calculus import PlotFunction
 
 # Define the function to plot
 f_of_x = lambda x: x**2
