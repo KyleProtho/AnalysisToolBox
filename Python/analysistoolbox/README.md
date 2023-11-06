@@ -2,7 +2,7 @@
 
 ## Description
 
-Analysis Tool Box is a collection of tools in Python for data collection and processing, statisitics, analytics, and intelligence analysis.
+Analysis Tool Box (i.e. "analysistoolbox") is a collection of tools in Python for data collection and processing, statisitics, analytics, and intelligence analysis.
 
 ## Getting Started
 
