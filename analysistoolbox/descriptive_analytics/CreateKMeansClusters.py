@@ -17,7 +17,7 @@ def CreateKMeansClusters(dataframe,
                          summary_plot_size=(20, 20),
                          random_seed=412,
                          maximum_iterations=300):
-    """_summary_
+    """
     This function creates K-Means clusters on a dataset based on the variables specified.
 
     Args:

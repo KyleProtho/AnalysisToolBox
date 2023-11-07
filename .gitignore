@@ -4,4 +4,9 @@
 .env
 TextSummarizationAndGeneration/.chroma
 .github
-analysistoolbox/.pypirc
+.pypirc
+DEV.md
+analysistoolbox/analysistoolbox.egg-info
+build
+dist
+

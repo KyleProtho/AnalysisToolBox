@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 # Read the README file.
-with open('../README.md', encoding='utf-8') as f:
+with open('README.md', encoding='utf-8') as f:
     long_description = f.read()
 
 # Setup the package.
@@ -12,7 +12,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url="https://github.com/KyleProtho/AnalysisToolBox/tree/master/Python/analysistoolbox",
-    version='0.0.02',
+    version='0.0.05',
     author='Kyle Protho',
     author_email='kyletprotho@gmail.com',
     license='GNU GPLv3',
@@ -25,8 +25,8 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.9',
-    package_dir={'': '../analysistoolbox'},
-    packages=find_packages(where="analysistoolbox"),
+    # package_dir={'': 'analysistoolbox'},
+    packages=find_packages(),
     install_requires=[
         'beautifulsoup4',
         'folium',
