@@ -15,14 +15,14 @@ def CreateBinnedColumn(dataframe,
     The new column name is the name of the variable to bin with '- Binned' appended to it.
 
     Args:
-    dataframe (Pandas dataframe): Pandas dataframe
-    numeric_column_name (str): The name of the variable to bin. Should be a numeric variable.
-    number_of_bins (int, optional): The number of bins to create. Defaults to 6.
-    binning_strategy (str, optional): The strategy to use to create the bins. Defaults to 'kmeans'.
-    new_column_name (str, optional): The name of the new column containing the bins. Defaults to None.
+        dataframe (Pandas dataframe): Pandas dataframe
+        numeric_column_name (str): The name of the variable to bin. Should be a numeric variable.
+        number_of_bins (int, optional): The number of bins to create. Defaults to 6.
+        binning_strategy (str, optional): The strategy to use to create the bins. Defaults to 'kmeans'.
+        new_column_name (str, optional): The name of the new column containing the bins. Defaults to None.
 
     Returns:
-    Pandas dataframe: An updated Pandas dataframe with the bins for the variable to bin
+        Pandas dataframe: An updated Pandas dataframe with the bins for the variable to bin
     """
     
     # Create new column name if not provided

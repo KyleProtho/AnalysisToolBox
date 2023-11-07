@@ -6,9 +6,6 @@ import pandas as pd
 import seaborn as sns
 import statsmodels.api as sm
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def ConductCoxProportionalHazardRegression(dataframe,
@@ -16,7 +13,6 @@ def ConductCoxProportionalHazardRegression(dataframe,
                                            duration_column,
                                            list_of_predictor_columns,
                                            plot_survival_curve=True,
-                                           # Survival curve plot formatting arguments
                                            line_color="#3269a8",
                                            line_alpha=0.8,
                                            color_palette="Set2",
@@ -32,6 +28,35 @@ def ConductCoxProportionalHazardRegression(dataframe,
                                            subtitle_y_indent=1.05,
                                            caption_y_indent=-0.3,
                                            figure_size=(8, 5)):
+    """
+    Conducts Cox Proportional Hazard Regression on the given dataframe and returns the model.
+    
+    Args:
+        dataframe (pandas.DataFrame): The dataframe containing the data to be used in the regression.
+        outcome_column (str): The name of the column containing the outcome variable.
+        duration_column (str): The name of the column containing the duration variable.
+        list_of_predictor_columns (list): A list of column names containing the predictor variables.
+        plot_survival_curve (bool, optional): Whether or not to plot the survival curve. Defaults to True.
+        line_color (str, optional): The color of the lines in the plot. Defaults to "#3269a8".
+        line_alpha (float, optional): The alpha value of the lines in the plot. Defaults to 0.8.
+        color_palette (str, optional): The color palette to use in the plot. Defaults to "Set2".
+        markers (str, optional): The marker style to use in the plot. Defaults to "o".
+        number_of_x_axis_ticks (int, optional): The number of ticks to use on the x-axis. Defaults to 20.
+        x_axis_tick_rotation (int, optional): The rotation angle of the x-axis tick labels. Defaults to None.
+        title_for_plot (str, optional): The title of the plot. Defaults to "Survival Counts by Group".
+        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to 'Shows the counts of "surviving" records by group over time'.
+        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
+        x_indent (float, optional): The x-axis indent of the plot. Defaults to -0.127.
+        title_y_indent (float, optional): The title y-axis indent of the plot. Defaults to 1.125.
+        subtitle_y_indent (float, optional): The subtitle y-axis indent of the plot. Defaults to 1.05.
+        caption_y_indent (float, optional): The caption y-axis indent of the plot. Defaults to -0.3.
+        figure_size (tuple, optional): The size of the plot. Defaults to (8, 5).
+    
+    Returns:
+        lifelines.CoxPHFitter: The Cox Proportional Hazard Regression model.
+    """
+    
     # Select the columns to keep
     dataframe = dataframe[[outcome_column, duration_column] + list_of_predictor_columns].copy()
 
@@ -208,28 +233,4 @@ def ConductCoxProportionalHazardRegression(dataframe,
 
     # Return the model
     return model
-
-
-# # Test function
-# data = pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/2. Cox Proportional Hazard Regression/lung.csv")
-# # cox_results = ConductCoxProportionalHazardRegression(
-# #     dataframe = data,
-# #     outcome_column="status",
-# #     duration_column="time",
-# #     list_of_predictor_columns=[
-# #         'age', 'sex', 'ph.ecog', 
-# #         'ph.karno', 'pat.karno',
-# #         'meal.cal', 'wt.loss'
-# #     ]
-# # )
-# cox_results = ConductCoxProportionalHazardRegression(
-#     dataframe=data,
-#     outcome_column="status",
-#     duration_column="time",
-#     list_of_predictor_columns=[
-#         'sex', 'ph.ecog', 
-#         'ph.karno', 'pat.karno',
-#         'wt.loss'
-#     ]
-# )
 

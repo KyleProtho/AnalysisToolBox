@@ -5,9 +5,6 @@ import pandas as pd
 from scipy.stats import ttest_rel
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def TwoSampleTTestPaired(dataframe,
@@ -17,7 +14,6 @@ def TwoSampleTTestPaired(dataframe,
                          alternative_hypothesis="two-sided",
                          null_handling='omit',
                          plot_sample_distributions=True,
-                         # Plotting arguments
                          fill_color="#999999",
                          fill_transparency=0.2,
                          title_for_plot="Paired T-Test",
@@ -29,6 +25,33 @@ def TwoSampleTTestPaired(dataframe,
                          subtitle_y_indent=1.05,
                          caption_y_indent=-0.15,
                          figure_size=(8, 6)):
+    """
+    Conducts a paired two-sample t-test on two columns of a pandas DataFrame.
+
+    Args:
+        dataframe (pandas.DataFrame): The DataFrame containing the data to be analyzed.
+        outcome1_column (str): The name of the first column containing the outcome data.
+        outcome2_column (str): The name of the second column containing the outcome data.
+        confidence_interval (float, optional): The desired level of confidence for the test. Defaults to 0.95.
+        alternative_hypothesis (str, optional): The alternative hypothesis to be tested. Can be "two-sided", "greater", or "less". Defaults to "two-sided".
+        null_handling (str, optional): How to handle null values in the data. Can be "omit", "raise", or "propagate". Defaults to "omit".
+        plot_sample_distributions (bool, optional): Whether to plot the distribution of the mean difference across all pairs. Defaults to True.
+        fill_color (str, optional): The color to fill the distribution plot with. Defaults to "#999999".
+        fill_transparency (float, optional): The transparency of the fill color. Defaults to 0.2.
+        title_for_plot (str, optional): The title of the distribution plot. Defaults to "Paired T-Test".
+        subtitle_for_plot (str, optional): The subtitle of the distribution plot. Defaults to "Shows the distribution of the mean difference across all pairs".
+        caption_for_plot (str, optional): The caption of the distribution plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source of the distribution plot. Defaults to None.
+        show_y_axis (bool, optional): Whether to show the y-axis on the distribution plot. Defaults to False.
+        title_y_indent (float, optional): The y-indent of the title on the distribution plot. Defaults to 1.1.
+        subtitle_y_indent (float, optional): The y-indent of the subtitle on the distribution plot. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent of the caption on the distribution plot. Defaults to -0.15.
+        figure_size (tuple, optional): The size of the distribution plot. Defaults to (8, 6).
+
+    Returns:
+        scipy.stats.Ttest_relResult: The results of the paired two-sample t-test.
+    """
+    
     # Show pivot table summary
     table_groups = dataframe.groupby(
         [True]*len(dataframe)
@@ -205,15 +228,3 @@ def TwoSampleTTestPaired(dataframe,
     # Return results
     return ttest_results
 
-
-# # Test function
-# data = pd.DataFrame({
-#     'Before': [1, 2, 3, 4, 5],
-#     'After': [2, 4, 6, 8, 10]
-# })
-# # Run function
-# TwoSampleTTestPaired(
-#     dataframe=data,
-#     outcome1_column='Before',
-#     outcome2_column='After',
-# )

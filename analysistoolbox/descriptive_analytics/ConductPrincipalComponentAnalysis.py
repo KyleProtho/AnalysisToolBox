@@ -13,6 +13,20 @@ def ConductPrincipalComponentAnalysis(dataframe,
                                       number_of_components=None,
                                       random_seed=412,
                                       display_pca_as_markdown=True):
+    """
+    Conducts principal component analysis on a given dataframe.
+
+    Args:
+        dataframe (pandas.DataFrame): The dataframe to perform PCA on.
+        list_of_numeric_columns (list, optional): A list of column names to use for PCA. If not specified, all numeric columns will be used. Defaults to None.
+        number_of_components (int, optional): The number of principal components to use. If not specified, the function will determine the optimal number of components. Defaults to None.
+        random_seed (int, optional): The random seed to use for reproducibility. Defaults to 412.
+        display_pca_as_markdown (bool, optional): Whether to display the principal components as a markdown table. Defaults to True.
+
+    Returns:
+        pandas.DataFrame: The original dataframe with the principal components added.
+    """
+    
     # If list_of_numeric_columns is not specified, then use all numeric variables
     if list_of_numeric_columns is None:
         list_of_numeric_columns = dataframe.select_dtypes(include=[np.number]).columns.tolist()

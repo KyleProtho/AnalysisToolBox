@@ -8,7 +8,7 @@ def ImputeMissingValuesUsingNearestNeighbors(dataframe,
                                              list_of_numeric_columns_to_impute,
                                              number_of_neighbors=3,
                                              averaging_method='uniform'):
-    """_summary_
+    """
     This function imputes missing values in a dataframe using nearest neighbors.
     
     Args:

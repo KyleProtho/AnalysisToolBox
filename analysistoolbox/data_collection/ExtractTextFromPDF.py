@@ -13,14 +13,11 @@ def ExtractTextFromPDF(filepath_to_pdf,
     This function extracts text from a PDF file, cleans it, then saves it to a text file.
 
     Args:
-    filepath_to_pdf (str): The path to the PDF file that you want to extract text from.
-    filepath_for_exported_text (str): The path to the text file that you want to save the extracted text to.
-    start_page (int, optional): The page number of the PDF file that you want to start extracting text from. Defaults to 1.
-    end_page (int or None, optional): The page number of the PDF file that you want to stop extracting text from. If None, the function will extract text from all pages in the PDF file. Defaults to None.
-    show_word_count (bool, optional): Whether or not to show the word count of the extracted text. Defaults to True.
-    
-    Returns:
-    None
+        filepath_to_pdf (str): The path to the PDF file that you want to extract text from.
+        filepath_for_exported_text (str): The path to the text file that you want to save the extracted text to.
+        start_page (int, optional): The page number of the PDF file that you want to start extracting text from. Defaults to 1.
+        end_page (int or None, optional): The page number of the PDF file that you want to stop extracting text from. If None, the function will extract text from all pages in the PDF file. Defaults to None.
+        show_word_count (bool, optional): Whether or not to show the word count of the extracted text. Defaults to True.
     """
     
     # Ensure that filepath_to_pdf is a string ending in .pdf

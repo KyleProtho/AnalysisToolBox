@@ -11,11 +11,11 @@ def FindMinimumSquareLoss(observed_values,
     This function calculates the minimum square loss between observed and predicted values.
 
     Args:
-    observed_values: A list of observed values.
-    predicted_values: A list of predicted values.
+        observed_values: A list of observed values.
+        predicted_values: A list of predicted values.
 
     Returns:
-    The minimum square loss between the observed and predicted values.
+        The minimum square loss between the observed and predicted values.
     """
     # Check if the number of observed values is equal to the number of predicted values.
     if len(observed_values) != len(predicted_values):

@@ -10,13 +10,10 @@ def CreateCopyOfPDF(input_file,
     This function creates a copy of a PDF file.
 
     Args:
-    input_file (str): The path to the input PDF file to copy (including the file name).
-    output_file (str): The path to the output PDF file to create (including the file name).
-    start_page (int, optional): The page number to start copying from. Defaults to None (first page).
-    end_page (int, optional): The page number to stop copying at. Defaults to None (last page).
-
-    Raises:
-    None
+        input_file (str): The path to the input PDF file to copy (including the file name).
+        output_file (str): The path to the output PDF file to create (including the file name).
+        start_page (int, optional): The page number to start copying from. Defaults to None (first page).
+        end_page (int, optional): The page number to stop copying at. Defaults to None (last page).
     """
     # If start_page is None, set to 0
     if start_page is None:

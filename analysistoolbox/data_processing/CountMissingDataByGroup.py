@@ -9,12 +9,12 @@ def CountMissingDataByGroup(dataframe,
     This function counts the number of records with missing data by group.
 
     Args:
-    dataframe (Pandas dataframe): Pandas dataframe
-    list_of_grouping_columns (list): List of variables to group by
-    list_of_columns_to_analyze (list, optional): List of variables to count missing data in. Defaults to None. If None, all variables are counted.
+        dataframe (Pandas dataframe): Pandas dataframe
+        list_of_grouping_columns (list): List of variables to group by
+        list_of_columns_to_analyze (list, optional): List of variables to count missing data in. Defaults to None. If None, all variables are counted.
 
     Returns:
-    Pandas dataframe: A Pandas dataframe with the number of records with missing data by group.
+        Pandas dataframe: A Pandas dataframe with the number of records with missing data by group.
     """
     
     # Select variables to count missing data for

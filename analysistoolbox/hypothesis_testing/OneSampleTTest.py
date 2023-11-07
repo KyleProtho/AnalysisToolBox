@@ -6,9 +6,6 @@ import pandas as pd
 from scipy.stats import ttest_1samp
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def OneSampleTTest(dataframe, 
@@ -30,6 +27,33 @@ def OneSampleTTest(dataframe,
                    subtitle_y_indent=1.05,
                    caption_y_indent=-0.15,
                    figure_size=(8, 6)):
+    """
+    Conducts a one-sample t-test on a given dataframe and value column, comparing the sample mean to a hypothesized value.
+    
+    Args:
+        dataframe (pandas.DataFrame): The dataframe containing the data to be tested.
+        value_column (str): The name of the column in the dataframe containing the data to be tested.
+        hypothesized_value (float): The hypothesized value to be tested against the sample mean.
+        confidence_interval (float, optional): The confidence level for the test. Defaults to 0.95.
+        alternative_hypothesis (str, optional): The alternative hypothesis for the test. Can be "two-sided", "less", or "greater". Defaults to "two-sided".
+        null_handling (str, optional): How to handle null values in the data. Can be "omit", "raise", or "propagate". Defaults to "omit".
+        plot_sample_distribution (bool, optional): Whether to plot the sample distribution and the hypothesized value. Defaults to True.
+        fill_color (str, optional): The fill color for the sample distribution plot. Defaults to "#999999".
+        fill_transparency (float, optional): The fill transparency for the sample distribution plot. Defaults to 0.2.
+        title_for_plot (str, optional): The title for the sample distribution plot. Defaults to "One Sample T-Test".
+        subtitle_for_plot (str, optional): The subtitle for the sample distribution plot. Defaults to "Shows the distribution of the sample mean and the hypothesized value.".
+        caption_for_plot (str, optional): The caption for the sample distribution plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the sample distribution plot. Defaults to None.
+        show_y_axis (bool, optional): Whether to show the y-axis on the sample distribution plot. Defaults to False.
+        title_y_indent (float, optional): The y-indent for the title on the sample distribution plot. Defaults to 1.10.
+        subtitle_y_indent (float, optional): The y-indent for the subtitle on the sample distribution plot. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent for the caption on the sample distribution plot. Defaults to -0.15.
+        figure_size (tuple, optional): The size of the sample distribution plot. Defaults to (8, 6).
+    
+    Returns:
+        scipy.stats.Ttest_1sampResult: The results of the one-sample t-test.
+    """
+    
     # Conduct one sample t-test
     ttest_results = ttest_1samp(
         dataframe[value_column], 
@@ -200,16 +224,3 @@ def OneSampleTTest(dataframe,
     # Return results
     return ttest_results
 
-
-# # Test function
-# # Load data
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# iris['species'] = iris['species'].astype('category')
-# # Run function
-# results = OneSampleTTest(
-#     dataframe=iris,
-#     value_column='sepal length (cm)',
-#     hypothesized_value=6.0,
-# ) 

@@ -12,6 +12,20 @@ def ConductLinearRegressionAnalysis(dataframe,
                                     scale_predictors=False,
                                     show_diagnostic_plots_for_each_predictor=False,
                                     show_help=True):
+    """
+    Conducts a linear regression analysis on a given dataframe, using a specified outcome variable and list of predictor variables.
+
+    Args:
+        dataframe (pandas.DataFrame): The dataframe containing the data to be analyzed.
+        outcome_variable (str): The name of the column in the dataframe containing the outcome variable.
+        list_of_predictors (list): A list of strings, each containing the name of a column in the dataframe containing a predictor variable.
+        scale_predictors (bool, optional): Whether or not to scale the predictor variables before running the analysis. Defaults to False.
+        show_diagnostic_plots_for_each_predictor (bool, optional): Whether or not to show diagnostic plots for each predictor variable. Defaults to False.
+        show_help (bool, optional): Whether or not to show help text explaining how to access the output of the function. Defaults to True.
+
+    Returns:
+        dict: A dictionary containing the fitted linear regression model, the model summary, a test dataset of predictors, and a test dataset of outcomes.
+    """
     
     # Select columns specified
     dataframe = dataframe[list_of_predictors + [outcome_variable]]
@@ -61,13 +75,3 @@ def ConductLinearRegressionAnalysis(dataframe,
     }
     return dict_return
 
-
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# linear_reg_model = ConductLinearRegressionAnalysis(
-#     dataframe=iris,
-#     outcome_variable='sepal length (cm)',
-#     list_of_predictors=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
-# )
-# linear_reg_model['Model Summary']

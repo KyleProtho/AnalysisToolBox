@@ -29,7 +29,7 @@ def CreateAssociationRules(dataframe,
                            title_y_indent=1.125,
                            subtitle_y_indent=1.05,
                            caption_y_indent=-0.3,):
-    """_summary_
+    """
     This function creates association rules from a dataset.
     
     Args:

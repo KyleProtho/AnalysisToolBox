@@ -14,17 +14,17 @@ def FetchUSShapefile(state=None,
     Fetches a geographical shapefile from the TIGER database of the U.S. Census Bureau.
 
     Parameters:
-    state (str, optional): The state for which the shapefile is to be fetched. Default is None.
-    county (str, optional): The county for which the shapefile is to be fetched. Default is None.
-    geography (str, optional): The type of geographical unit for which the shapefile is to be fetched. 
-                               Must be one of the following: 'nation', 'divisions', 'regions', 'states', 
-                               'counties', 'zipcodes', 'tract', 'block groups', 'blocks', 'school districts', 
-                               'county subdivisions', 'congressional districts', 'state legislative districts', 
-                               'voting districts'. Default is 'census tract'.
-    census_year (int, optional): The census year for which the shapefile is to be fetched. Default is 2021.
+        state (str, optional): The state for which the shapefile is to be fetched. Default is None.
+        county (str, optional): The county for which the shapefile is to be fetched. Default is None.
+        geography (str, optional): The type of geographical unit for which the shapefile is to be fetched. 
+                                Must be one of the following: 'nation', 'divisions', 'regions', 'states', 
+                                'counties', 'zipcodes', 'tract', 'block groups', 'blocks', 'school districts', 
+                                'county subdivisions', 'congressional districts', 'state legislative districts', 
+                                'voting districts'. Default is 'census tract'.
+        census_year (int, optional): The census year for which the shapefile is to be fetched. Default is 2021.
 
     Returns:
-    geopandas.GeoDataFrame: The fetched shapefile as a GeoDataFrame.
+        geopandas.GeoDataFrame: The fetched shapefile as a GeoDataFrame.
     """
     
     # Ensure that geography is a valid option

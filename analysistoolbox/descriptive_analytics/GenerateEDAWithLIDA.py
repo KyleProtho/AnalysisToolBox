@@ -28,22 +28,22 @@ def GenerateEDAWithLIDA(dataframe,
     This function generates exploratory data analysis (EDA) goals using the LIDA package from Microsoft.
     
     Args:
-    dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
-    llm_api_key (str): The API key for the LLM provider.
-    llm_provider (str): The LLM provider. Defaults to "openai".
-    llm_model (str): The LLM model. Defaults to "gpt-3.5-turbo".
-    visualization_library (str): The visualization library to use. Defaults to "seaborn".
-    goal_temperature (float, optional): The temperature to use for goal generation. Defaults to 0.50.
-    code_generation_temperature (float, optional): The temperature to use for code generation. Defaults to 0.05.
-    data_summary_method (str, optional): The method to use for data summarization. Defaults to "llm".
-    number_of_samples_to_show_in_summary (int, optional): The number of samples to show in the data summary. Defaults to 5.
-    return_data_fields_summary (bool, optional): Whether to return the data fields summary. Defaults to True.
-    number_of_goals_to_generate (int, optional): The number of goals to generate. Defaults to 5.
-    plot_recommended_visualization (bool, optional): Whether to plot the recommended visualization. Defaults to False.
-    show_code_for_recommended_visualization (bool, optional): Whether to show the code for the recommended visualization. Defaults to False.
+        dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
+        llm_api_key (str): The API key for the LLM provider.
+        llm_provider (str): The LLM provider. Defaults to "openai".
+        llm_model (str): The LLM model. Defaults to "gpt-3.5-turbo".
+        visualization_library (str): The visualization library to use. Defaults to "seaborn".
+        goal_temperature (float, optional): The temperature to use for goal generation. Defaults to 0.50.
+        code_generation_temperature (float, optional): The temperature to use for code generation. Defaults to 0.05.
+        data_summary_method (str, optional): The method to use for data summarization. Defaults to "llm".
+        number_of_samples_to_show_in_summary (int, optional): The number of samples to show in the data summary. Defaults to 5.
+        return_data_fields_summary (bool, optional): Whether to return the data fields summary. Defaults to True.
+        number_of_goals_to_generate (int, optional): The number of goals to generate. Defaults to 5.
+        plot_recommended_visualization (bool, optional): Whether to plot the recommended visualization. Defaults to False.
+        show_code_for_recommended_visualization (bool, optional): Whether to show the code for the recommended visualization. Defaults to False.
 
     Returns:
-    Pandas dataframe: A dataframe containing the data fields summary.
+        Pandas dataframe: A dataframe containing the data fields summary.
     """
     # Set up LIDA and text generation model
     lida = Manager(text_gen=llm(

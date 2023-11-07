@@ -6,9 +6,6 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def TTestOfProportionFromStats(sample_proportion,
@@ -17,7 +14,6 @@ def TTestOfProportionFromStats(sample_proportion,
                                alternative_hypothesis="two-sided",
                                confidence_interval=.95,
                                plot_sample_distribution=True,
-                               # Plotting arguments
                                value_name="Value",
                                fill_color="#999999",
                                fill_transparency=0.6,
@@ -30,6 +26,33 @@ def TTestOfProportionFromStats(sample_proportion,
                                subtitle_y_indent=1.05,
                                caption_y_indent=-0.15,
                                figure_size=(8, 6)):
+    """
+    Conducts a hypothesis test of a proportion using a one-sample z-test or t-test.
+
+    Args:
+        sample_proportion (float): The proportion of the sample that exhibits the characteristic of interest.
+        sample_size (int): The size of the sample.
+        hypothesized_proportion (float): The hypothesized proportion of the population that exhibits the characteristic of interest.
+        alternative_hypothesis (str, optional): The alternative hypothesis. Can be "two-sided", "less", or "greater". Defaults to "two-sided".
+        confidence_interval (float, optional): The confidence level for the hypothesis test. Defaults to .95.
+        plot_sample_distribution (bool, optional): Whether to plot the distribution of the sample mean and the hypothesized mean. Defaults to True.
+        value_name (str, optional): The name of the value being tested. Defaults to "Value".
+        fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
+        fill_transparency (float, optional): The transparency of the fill color for the histogram. Defaults to 0.6.
+        title_for_plot (str, optional): The title for the plot. Defaults to "Hypothesis Test of a Mean".
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Shows the distribution of the sample mean and the hypothesized mean.".
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
+        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.10.
+        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
+        figure_size (tuple, optional): The size of the plot. Defaults to (8, 6).
+
+    Returns:
+        float: The test statistic.
+    """
+    
     # If alternative hypothesis is "two-sided", then divide and add half of complement
     if alternative_hypothesis == "two-sided":
         ppf_threshold = confidence_interval + ((1 - confidence_interval) / 2)
@@ -252,5 +275,3 @@ def TTestOfProportionFromStats(sample_proportion,
     # Return results
     return test_stat
 
-
-# Test function

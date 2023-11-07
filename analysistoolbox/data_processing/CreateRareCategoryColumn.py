@@ -14,14 +14,14 @@ def CreateRareCategoryColumn(dataframe,
     The default threshold is 5%. If new_column_suffix is not specified, the new column name is the original column name with " (with Other)" appended to it.
     
     Args:
-    dataframe (Pandas dataframe): Pandas dataframe
-    categorical_column_name (str): The name of the column containing the categorical variable.
-    rare_category_label (str, optional): The label to use for rare categories. Defaults to "Other".
-    rare_category_threshold (float, optional): The relative frequency threshold for rare categories. Defaults to 0.05.
-    new_column_suffix (str, optional): The suffix to append to the original column name to create the new column name. Defaults to None.
+        dataframe (Pandas dataframe): Pandas dataframe
+        categorical_column_name (str): The name of the column containing the categorical variable.
+        rare_category_label (str, optional): The label to use for rare categories. Defaults to "Other".
+        rare_category_threshold (float, optional): The relative frequency threshold for rare categories. Defaults to 0.05.
+        new_column_suffix (str, optional): The suffix to append to the original column name to create the new column name. Defaults to None.
 
     Returns:
-    Pandas dataframe: An updated Pandas dataframe with the new column containing rare categories
+        Pandas dataframe: An updated Pandas dataframe with the new column containing rare categories
     """
     
     # If new column name is not provided, create one

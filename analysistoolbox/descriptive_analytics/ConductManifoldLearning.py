@@ -12,6 +12,26 @@ def ConductManifoldLearning(dataframe,
                             random_seed=412,
                             show_component_summary_plots=True,
                             summary_plot_size=(20, 20)):
+    """
+    Conducts manifold learning on a given dataframe and returns a new dataframe with the
+    original columns and the new manifold learning components.
+
+    Args:
+        dataframe (pandas.DataFrame): The input dataframe.
+        list_of_numeric_columns (list, optional): A list of column names to use for the manifold
+            learning. If None, all numeric columns will be used. Defaults to None.
+        number_of_components (int, optional): The number of components to generate. Defaults to 3.
+        random_seed (int, optional): The random seed to use for the manifold learning algorithm.
+            Defaults to 412.
+        show_component_summary_plots (bool, optional): Whether to show summary plots of each
+            component for each variable. Defaults to True.
+        summary_plot_size (tuple, optional): The size of the summary plots. Defaults to (20, 20).
+
+    Returns:
+        pandas.DataFrame: A new dataframe with the original columns and the new manifold learning
+        components.
+    """
+    
     # If list_of_numeric_columns is not specified, then use all numeric variables
     if list_of_numeric_columns is None:
         list_of_numeric_columns = dataframe.select_dtypes(include=[np.number]).columns.tolist()

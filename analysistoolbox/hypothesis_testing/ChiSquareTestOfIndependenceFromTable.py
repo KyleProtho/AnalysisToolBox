@@ -5,20 +5,15 @@ from scipy.stats import chi2_contingency
 import statsmodels.api as sm
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def ChiSquareTestOfIndependenceFromTable(contingency_table,
                                          column_wise_variable_name,
                                          show_contingency_tables=True,
                                          show_plot=True,
-                                         # Plot formatting arguments
                                          color_palette="Set1",
                                          fill_transparency=0.8,
                                          figure_size=(6, 6),
-                                         # Text formatting arguments
                                          title_for_plot="Chi-Square Test of Independence",
                                          subtitle_for_plot="Shows observed vs. expected counts",
                                          caption_for_plot="Expected counts are based on the null hypothesis of no association between the two variables.",
@@ -28,6 +23,31 @@ def ChiSquareTestOfIndependenceFromTable(contingency_table,
                                          subtitle_y_indent=1.1,
                                          caption_y_indent=-0.15,
                                          decimal_places_for_data_label=1):
+    """
+    Performs a chi-square test of independence on a contingency table and returns the observed and expected counts.
+
+    Args:
+        contingency_table (pandas.DataFrame): A contingency table with the row-wise variable as the index and the column-wise variable as the columns.
+        column_wise_variable_name (str): The name of the column-wise variable.
+        show_contingency_tables (bool, optional): Whether to show the observed and expected contingency tables. Defaults to True.
+        show_plot (bool, optional): Whether to show a clustered bar chart of the observed and expected values. Defaults to True.
+        color_palette (str, optional): The color palette to use for the plot. Defaults to "Set1".
+        fill_transparency (float, optional): The transparency of the bars in the plot. Defaults to 0.8.
+        figure_size (tuple, optional): The size of the plot. Defaults to (6, 6).
+        title_for_plot (str, optional): The title of the plot. Defaults to "Chi-Square Test of Independence".
+        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Shows observed vs. expected counts".
+        caption_for_plot (str, optional): The caption of the plot. Defaults to "Expected counts are based on the null hypothesis of no association between the two variables.".
+        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
+        x_indent (float, optional): The x-axis indent of the plot. Defaults to -0.95.
+        title_y_indent (float, optional): The y-axis indent of the title of the plot. Defaults to 1.15.
+        subtitle_y_indent (float, optional): The y-axis indent of the subtitle of the plot. Defaults to 1.1.
+        caption_y_indent (float, optional): The y-axis indent of the caption of the plot. Defaults to -0.15.
+        decimal_places_for_data_label (int, optional): The number of decimal places to show in the data labels of the plot. Defaults to 1.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing the observed and expected counts, as well as the difference between the observed and expected counts.
+    """
+    
     # Get row-wise variable names
     row_wise_variable_name = contingency_table.index.name
     
@@ -211,20 +231,3 @@ def ChiSquareTestOfIndependenceFromTable(contingency_table,
     # Return counts 
     return(df_counts)
 
-
-# # Test function
-# # Create a contingency table
-# contingency_table = pd.DataFrame({
-#     'Outcome': ['Positive', 'Negative'],
-#     'Predicted Positive': [5, 1],
-#     'Predicted Negative': [1, 5]
-# })
-# contingency_table.index = contingency_table['Outcome']
-# contingency_table = contingency_table.drop(columns=['Outcome'])
-# # Run function
-# ChiSquareTestOfIndependenceFromTable(
-#     contingency_table,
-#     column_wise_variable_name='Predicted',
-#     show_contingency_tables=True,
-#     show_plot=True
-# )

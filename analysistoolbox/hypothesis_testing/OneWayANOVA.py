@@ -7,9 +7,6 @@ import pandas as pd
 from scipy.stats import ttest_1samp
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def OneWayANOVA(dataframe,
@@ -19,7 +16,6 @@ def OneWayANOVA(dataframe,
                 homogeneity_of_variance=True,
                 use_welch_correction=False,
                 plot_sample_distributions=True,
-                # Plotting arguments
                 color_palette='Set2',
                 title_for_plot="One-Way ANOVA",
                 subtitle_for_plot="Shows the distribution of the sample means for each group.",
@@ -30,6 +26,32 @@ def OneWayANOVA(dataframe,
                 subtitle_y_indent=1.05,
                 caption_y_indent=-0.15,
                 figure_size=(8, 6)):
+    """
+    Conducts a one-way ANOVA on a given dataframe, with options for post-hoc testing and visualization.
+
+    Args:
+        dataframe: A pandas dataframe containing the data to be analyzed.
+        outcome_column: A string representing the name of the column containing the outcome variable.
+        grouping_column: A string representing the name of the column containing the grouping variable.
+        signficance_level: A float representing the desired significance level (default: 0.05).
+        homogeneity_of_variance: A boolean indicating whether to assume homogeneity of variance (default: True).
+        use_welch_correction: A boolean indicating whether to use Welch's correction for unequal variances (default: False).
+        plot_sample_distributions: A boolean indicating whether to plot the distribution of sample means for each group (default: True).
+        color_palette: A string representing the name of the color palette to use for the plot (default: 'Set2').
+        title_for_plot: A string representing the title of the plot (default: 'One-Way ANOVA').
+        subtitle_for_plot: A string representing the subtitle of the plot (default: 'Shows the distribution of the sample means for each group.').
+        caption_for_plot: A string representing the caption of the plot (default: None).
+        data_source_for_plot: A string representing the data source of the plot (default: None).
+        show_y_axis: A boolean indicating whether to show the y-axis on the plot (default: False).
+        title_y_indent: A float representing the y-axis position of the title (default: 1.1).
+        subtitle_y_indent: A float representing the y-axis position of the subtitle (default: 1.05).
+        caption_y_indent: A float representing the y-axis position of the caption (default: -0.15).
+        figure_size: A tuple representing the size of the plot (default: (8, 6)).
+
+    Returns:
+        A string representing the results of Tukey's test.
+    """
+    
     # Show pivot table summary
     table_groups = pd.pivot_table(dataframe, 
         values=[outcome_column], 
@@ -201,19 +223,3 @@ def OneWayANOVA(dataframe,
     # Return results
     return results
 
-
-# # Test function
-# # Load data
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# iris['species'] = iris['species'].astype('category')
-# # Run function
-# results = OneWayANOVA(
-#     dataframe=iris,
-#     outcome_column='sepal length (cm)',
-#     grouping_column='species',
-#     signficance_level=0.05,
-#     homogeneity_of_variance=True,
-#     use_welch_correction=False
-# )

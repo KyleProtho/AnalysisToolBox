@@ -11,12 +11,9 @@ def ConvertWordDocsToPDF(word_folder_path,
     This function converts all Word documents in a folder to PDF.
 
     Args:
-    word_folder_path (str): The path to the folder containing the Word documents.
-    pdf_folder_path (str): The path to the folder where the PDF documents will be saved.
-    open_each_doc (bool, optional): Whether to open each Word document as it is converted. Defaults to False.
-    
-    Returns:
-    None
+        word_folder_path (str): The path to the folder containing the Word documents.
+        pdf_folder_path (str): The path to the folder where the PDF documents will be saved.
+        open_each_doc (bool, optional): Whether to open each Word document as it is converted. Defaults to False.
     """
     
     # Create list of word files in the directory

@@ -5,10 +5,6 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
-
 
 # Declare function
 def TTestOfTwoMeansFromStats(group1_mean,
@@ -21,7 +17,6 @@ def TTestOfTwoMeansFromStats(group1_mean,
                              confidence_interval=0.95,
                              alternative_hypothesis="two-sided",
                              plot_sample_distributions=True,
-                             # Plotting arguments
                              value_name="Value",
                              color_palette='Set2',
                              title_for_plot="T-Test of Two Means",
@@ -33,7 +28,36 @@ def TTestOfTwoMeansFromStats(group1_mean,
                              subtitle_y_indent=1.05,
                              caption_y_indent=-0.15,
                              figure_size=(8, 6)):
-        
+    """
+    Conducts a two-sample t-test of the null hypothesis that the means of two independent samples are equal.
+
+    Args:
+        group1_mean (float): The mean of the first sample.
+        group1_sd (float): The standard deviation of the first sample.
+        group1_sample_size (int): The sample size of the first sample.
+        group2_mean (float): The mean of the second sample.
+        group2_sd (float): The standard deviation of the second sample.
+        group2_sample_size (int): The sample size of the second sample.
+        homogeneity_of_variance (bool, optional): Whether to assume equal variances for the two samples. Defaults to True.
+        confidence_interval (float, optional): The confidence level for the test. Defaults to 0.95.
+        alternative_hypothesis (str, optional): The alternative hypothesis for the test. Can be "two-sided", "less", or "greater". Defaults to "two-sided".
+        plot_sample_distributions (bool, optional): Whether to plot the distribution of the sample means for each group. Defaults to True.
+        value_name (str, optional): The name of the value being measured. Defaults to "Value".
+        color_palette (str or list, optional): The color palette to use for the plot. Can be a string with the name of a seaborn palette or a list of colors. Defaults to 'Set2'.
+        title_for_plot (str, optional): The title of the plot. Defaults to "T-Test of Two Means".
+        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Shows the distribution of the sample means for each group.".
+        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
+        show_y_axis (bool, optional): Whether to show the y-axis of the plot. Defaults to False.
+        title_y_indent (float, optional): The y-coordinate of the title of the plot. Defaults to 1.1.
+        subtitle_y_indent (float, optional): The y-coordinate of the subtitle of the plot. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-coordinate of the caption of the plot. Defaults to -0.15.
+        figure_size (tuple, optional): The size of the plot. Defaults to (8, 6).
+
+    Returns:
+        namedtuple: A named tuple containing the test statistic and the p-value of the test.
+    """
+    
     # Conduct t-test
     ttest_results = ttest_ind_from_stats(
         mean1=group1_mean, 
@@ -184,16 +208,3 @@ def TTestOfTwoMeansFromStats(group1_mean,
     # Reutrn results
     return ttest_results
 
-
-# # Test the function
-# TTestOfTwoMeansFromStats(
-#     group1_mean=10,
-#     group1_sd=3,
-#     group1_sample_size=30,
-#     group2_mean=9,
-#     group2_sd=5,
-#     group2_sample_size=100,
-#     homogeneity_of_variance=True,
-#     confidence_interval=0.95,
-#     alternative_hypothesis="two-sided"
-# )

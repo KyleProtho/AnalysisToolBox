@@ -5,9 +5,6 @@ from scipy.stats import chi2_contingency
 import statsmodels.api as sm
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def ChiSquareTestOfIndependence(dataframe,
@@ -29,6 +26,32 @@ def ChiSquareTestOfIndependence(dataframe,
                                 subtitle_y_indent=1.1,
                                 caption_y_indent=-0.15,
                                 decimal_places_for_data_label=1):
+    """
+    Performs a chi-square test of independence and returns the observed and expected counts for each combination of the outcome and predictor variables. 
+    It also returns a clustered bar chart of the observed and expected counts.
+
+    Args:
+        dataframe (pandas.DataFrame): The dataframe containing the data.
+        categorical_outcome_column (str): The name of the outcome column.
+        categorical_predictor_column (str): The name of the predictor column.
+        show_contingency_tables (bool, optional): If True, prints the contingency tables. Defaults to True.
+        show_plot (bool, optional): If True, shows a plot of the observed and expected counts. Defaults to True.
+        color_palette (str, optional): The color palette to use for the plot. Defaults to "Set1".
+        fill_transparency (float, optional): The transparency of the bars in the plot. Defaults to 0.8.
+        figure_size (tuple, optional): The size of the figure for the plot. Defaults to (6, 6).
+        title_for_plot (str, optional): The title for the plot. Defaults to "Chi-Square Test of Independence".
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Shows observed vs. expected counts".
+        caption_for_plot (str, optional): The caption for the plot. Defaults to "Expected counts are based on the null hypothesis of no association between the two variables.".
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        x_indent (float, optional): The x-indent for the plot title. Defaults to -0.95.
+        title_y_indent (float, optional): The y-indent for the plot title. Defaults to 1.15.
+        subtitle_y_indent (float, optional): The y-indent for the plot subtitle. Defaults to 1.1.
+        caption_y_indent (float, optional): The y-indent for the plot caption. Defaults to -0.15.
+        decimal_places_for_data_label (int, optional): The number of decimal places for the data labels on the plot. Defaults to 1.
+
+    Returns:
+        pandas.DataFrame: A dataframe containing the observed and expected counts for each combination of the outcome and predictor variables, as well as the difference between the observed and expected counts.
+    """
     
     # Select necessary columns
     dataframe = dataframe[[
@@ -215,15 +238,3 @@ def ChiSquareTestOfIndependence(dataframe,
     # Return counts 
     return(df_counts)
 
-
-# # Test the function
-# data = {
-#     'Outcome': ['Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'No', 'Yes', 'No'],
-#     'Predictor': ['Yes', 'Yes', 'No', 'No', 'Yes', 'Yes', 'No', 'Yes']
-# }
-# data = pd.DataFrame(data)
-# ChiSquareTestOfIndependence(
-#     dataframe=data,
-#     categorical_outcome_column='Outcome',
-#     categorical_predictor_column='Predictor'
-# )

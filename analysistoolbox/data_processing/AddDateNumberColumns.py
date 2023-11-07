@@ -8,11 +8,11 @@ def AddDateNumberColumns(dataframe,
     This function adds year, quarter, month, and week number columns to a dataset based on a date column.
     
     Args:
-    dataframe (Pandas dataframe): Pandas dataframe
-    date_column (str): Name of column containing dates
+        dataframe (Pandas dataframe): Pandas dataframe
+        date_column (str): Name of column containing dates
 
     Returns:
-    Pandas dataframe: An updated Pandas dataframe with date number columns.
+        Pandas dataframe: An updated Pandas dataframe with date number columns.
     """
     
     # Extract year from date

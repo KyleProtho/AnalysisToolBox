@@ -5,9 +5,6 @@ import pandas as pd
 from scipy.stats import ttest_ind
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def TwoSampleTTestOfIndependence(dataframe,
@@ -18,7 +15,6 @@ def TwoSampleTTestOfIndependence(dataframe,
                                  homogeneity_of_variance=True,
                                  null_handling='omit',
                                  plot_sample_distributions=True,
-                                 # Plotting arguments
                                  color_palette='Set2',
                                  title_for_plot="T-Test of Independence",
                                  subtitle_for_plot="Shows the distribution of the sample means for each group.",
@@ -29,6 +25,33 @@ def TwoSampleTTestOfIndependence(dataframe,
                                  subtitle_y_indent=1.05,
                                  caption_y_indent=-0.15,
                                  figure_size=(8, 6)):
+    """
+    Conducts a two-sample t-test of independence on a dataframe with two groups.
+
+    Args:
+    - dataframe: pandas DataFrame containing the data to be analyzed
+    - outcome_column: string representing the name of the column containing the outcome variable
+    - grouping_column: string representing the name of the column containing the grouping variable
+    - confidence_interval: float representing the desired confidence interval (default=.95)
+    - alternative_hypothesis: string representing the alternative hypothesis (default="two-sided")
+    - homogeneity_of_variance: boolean representing whether to assume equal variances (default=True)
+    - null_handling: string representing how to handle null values (default='omit')
+    - plot_sample_distributions: boolean representing whether to plot the distribution of the sample means for each group (default=True)
+    - color_palette: string representing the name of the color palette to use for the plot (default='Set2')
+    - title_for_plot: string representing the title of the plot (default="T-Test of Independence")
+    - subtitle_for_plot: string representing the subtitle of the plot (default="Shows the distribution of the sample means for each group.")
+    - caption_for_plot: string representing the caption of the plot (default=None)
+    - data_source_for_plot: string representing the data source of the plot (default=None)
+    - show_y_axis: boolean representing whether to show the y-axis on the plot (default=False)
+    - title_y_indent: float representing the y-indent of the title on the plot (default=1.1)
+    - subtitle_y_indent: float representing the y-indent of the subtitle on the plot (default=1.05)
+    - caption_y_indent: float representing the y-indent of the caption on the plot (default=-0.15)
+    - figure_size: tuple representing the size of the plot (default=(8, 6))
+
+    Returns:
+    - ttest_results: a scipy.stats.ttest_ind_result object containing the results of the t-test
+    """
+    
     # Get groupings (there should only be two)
     list_groups = dataframe[grouping_column].unique()
     if len(list_groups) > 2:
@@ -206,19 +229,3 @@ def TwoSampleTTestOfIndependence(dataframe,
     # Return results
     return ttest_results
 
-
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# iris['species'] = iris['species'].astype('category')
-# # Filter to two groups
-# iris = iris[iris['species'].isin([0, 1])]
-# # Run the function
-# TwoSampleTTestOfIndependence(
-#     dataframe=iris,
-#     outcome_column="sepal length (cm)",
-#     grouping_column="species",
-#     confidence_interval=.95,
-#     alternative_hypothesis="two-sided",
-# )

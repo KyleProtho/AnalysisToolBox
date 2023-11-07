@@ -13,6 +13,23 @@ def ConductEntityMatching(dataframe_1,
                           match_score_threshold=95,
                           columns_to_compare=None,
                           match_methods=['Partial Token Set Ratio', 'Weighted Ratio']):
+    """
+    Conducts entity matching between two dataframes using various fuzzy matching algorithms.
+    
+    Args:
+        dataframe_1 (pandas.DataFrame): First dataframe to match.
+        dataframe_1_primary_key (str): Name of the primary key column in dataframe_1.
+        dataframe_2 (pandas.DataFrame): Second dataframe to match.
+        dataframe_2_primary_key (str): Name of the primary key column in dataframe_2.
+        levenshtein_distance_filter (int, optional): Maximum Levenshtein distance between two entities to consider a match. Defaults to None.
+        match_score_threshold (int, optional): Minimum match score to consider a match. Defaults to 95.
+        columns_to_compare (list of str, optional): List of columns to compare between the two dataframes. If None, all columns are compared. Defaults to None.
+        match_methods (list of str, optional): List of fuzzy matching algorithms to use. Defaults to ['Partial Token Set Ratio', 'Weighted Ratio'].
+        
+    Returns:
+        pandas.DataFrame: Dataframe of matched entities and their match scores.
+    """
+    
     # Create list of valid match methods
     valid_match_methods = [
         'Ratio', 'Partial Ratio', 

@@ -12,6 +12,20 @@ def ConductLogisticRegressionAnalysis(dataframe,
                                       scale_predictors=False,
                                       show_diagnostic_plots_for_each_predictor=True,
                                       show_help=True):
+    """
+    Conducts a logistic regression analysis on the specified dataframe, using the specified outcome variable and list of predictors.
+
+    Args:
+        dataframe (pandas.DataFrame): The dataframe containing the data to be analyzed.
+        outcome_variable (str): The name of the column in the dataframe containing the outcome variable.
+        list_of_predictors (list of str): A list of the names of the columns in the dataframe containing the predictor variables.
+        scale_predictors (bool, optional): Whether or not to scale the predictor variables. Default is False.
+        show_diagnostic_plots_for_each_predictor (bool, optional): Whether or not to show diagnostic plots for each predictor variable. Default is True.
+        show_help (bool, optional): Whether or not to show help text. Default is True.
+
+    Returns:
+        dict: A dictionary containing the fitted model and model summary.
+    """
     
     # Select columns specified
     dataframe = dataframe[list_of_predictors + [outcome_variable]].copy()
@@ -86,15 +100,3 @@ def ConductLogisticRegressionAnalysis(dataframe,
     }
     return dict_return
 
-
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# # iris = iris[iris['species'] != 2]
-# logistic_reg_model = ConductLogisticRegressionAnalysis(
-#     dataframe=iris,
-#     outcome_variable='species',
-#     list_of_predictors=['petal width (cm)', 'petal length (cm)']
-# )
-# logistic_reg_model['Model Summary']

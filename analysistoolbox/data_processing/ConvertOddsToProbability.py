@@ -6,7 +6,8 @@ import pandas as pd
 def ConvertOddsToProbability(dataframe,
                              odds_column,
                              probability_column_name=None):
-    """This function converts odds to probability.
+    """
+    This function converts odds to probability.
 
     Args:
         dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.

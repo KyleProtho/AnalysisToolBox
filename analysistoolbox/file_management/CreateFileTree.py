@@ -8,11 +8,8 @@ def CreateFileTree(path,
     Recursively walks the directory tree and prints a diagram of all the subdirectories and files in the tree.
 
     Args:
-    path: The path to the root directory.
-    indent: The number of spaces to indent the output.
-
-    Returns:
-    None
+        path (str): The path to the root directory.
+        indent (str): The number of spaces to indent the output.
     """
     
     # Initialize the output

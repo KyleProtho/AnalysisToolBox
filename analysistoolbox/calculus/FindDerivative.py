@@ -15,12 +15,12 @@ def FindDerivative(f_of_x,
     This function finds the derivative of a function.
 
     Args:
-    f_of_x (function): A function of x as a sympy expression.
-    print_functions (bool, optional): Whether to print the function and its derivative. Defaults to True.
-    return_derivative_function (bool, optional): Whether to return the derivative function. Defaults to False.
+        f_of_x (function): A function of x as a sympy expression.
+        print_functions (bool, optional): Whether to print the function and its derivative. Defaults to True.
+        return_derivative_function (bool, optional): Whether to return the derivative function. Defaults to False.
 
     Returns:
-    d_f_of_x (function): The derivative of the function.
+        d_f_of_x (function): The derivative of the function.
     """
     
     # Compute the derivative of the higher-order function using sympy
