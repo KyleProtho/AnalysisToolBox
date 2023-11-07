@@ -5,6 +5,18 @@ import os
 # Declare function
 def ImportDataFromFolder(folder_path,
                          force_column_names_to_match = True):
+    """
+    This function imports all csv and Excel files from a folder and combines them into a single dataframe.
+    Note: Each file should have the same column names.
+
+    Args:
+    folder_path (str): The path to the folder containing the csv and Excel files.
+    force_column_names_to_match (bool, optional): Whether to force the column names to match across all files. Defaults to True.
+
+    Returns:
+    Pandas dataframe: A dataframe containing all the data from the csv and Excel files.
+    """
+    
     # Create empty list to store dataframes
     df_list = []
     
@@ -40,6 +52,3 @@ def ImportDataFromFolder(folder_path,
     # Return list of dataframes
     return(df_list)
 
-
-# # Test function
-# qrs_data = ImportDataFromFolder(folder_path ="C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/Excel/QRS/Processed/Nationwide PUF")

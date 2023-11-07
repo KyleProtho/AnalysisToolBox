@@ -6,6 +6,18 @@ def CreateCopyOfPDF(input_file,
                     output_file, 
                     start_page=None, 
                     end_page=None):
+    """
+    This function creates a copy of a PDF file.
+
+    Args:
+    input_file (str): The path to the input PDF file to copy (including the file name).
+    output_file (str): The path to the output PDF file to create (including the file name).
+    start_page (int, optional): The page number to start copying from. Defaults to None (first page).
+    end_page (int, optional): The page number to stop copying at. Defaults to None (last page).
+
+    Raises:
+    None
+    """
     # If start_page is None, set to 0
     if start_page is None:
         start_page = 1
@@ -31,11 +43,3 @@ def CreateCopyOfPDF(input_file,
         with open(output_file, 'wb') as output_pdf:
             pdf_writer.write(output_pdf)
 
-
-# # Test the function
-# CreateCopyOfPDF(
-#     input_file="C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/Documentation/QRS/Technical Specifications/2024-QRS-Measure-Technical-Specifications-508_0.pdf",
-#     output_file="C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/Documentation/QRS/Technical Specifications/2024 QRS Measure List.pdf",
-#     start_page=13,
-#     end_page=14
-# )

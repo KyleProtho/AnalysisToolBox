@@ -7,6 +7,18 @@ import win32com.client as client
 def ConvertWordDocsToPDF(word_folder_path,
                          pdf_folder_path,
                          open_each_doc=False):
+    """
+    This function converts all Word documents in a folder to PDF.
+
+    Args:
+    word_folder_path (str): The path to the folder containing the Word documents.
+    pdf_folder_path (str): The path to the folder where the PDF documents will be saved.
+    open_each_doc (bool, optional): Whether to open each Word document as it is converted. Defaults to False.
+    
+    Returns:
+    None
+    """
+    
     # Create list of word files in the directory
     list_word_docs = [f for f in os.listdir(word_folder_path) if f.endswith(".docx")]
     
@@ -40,8 +52,3 @@ def ConvertWordDocsToPDF(word_folder_path,
     # Print message saying script is done
     print("All Word documents converted to PDF.")
 
-# # Test the function
-# ConvertWordDocsToPDF(
-#     word_folder_path=r"C:\Users\oneno\Downloads\Test Word Docs",
-#     pdf_folder_path=r"C:\Users\oneno\Downloads\Test PDF Docs"
-# )

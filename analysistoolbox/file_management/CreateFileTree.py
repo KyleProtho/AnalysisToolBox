@@ -5,14 +5,14 @@ import os
 def CreateFileTree(path, 
                    indent_spaces=2):
     """
-    Recursively walks the directory tree and returns a list of all the subdirectories and files in the tree.
+    Recursively walks the directory tree and prints a diagram of all the subdirectories and files in the tree.
 
     Args:
     path: The path to the root directory.
     indent: The number of spaces to indent the output.
 
     Returns:
-    A list of all the subdirectories and files in the directory tree.
+    None
     """
     
     # Initialize the output
@@ -31,6 +31,3 @@ def CreateFileTree(path,
     # Print the output
     print('\n'.join(output))
 
-
-# # Test function
-# CreateFileTree("C:/Users/oneno/OneDrive/Creations/Snippets for Statistics/SnippetsForStatistics/analysistoolbox")
