@@ -17,22 +17,22 @@ def CreateGaussianMixtureClusters(dataframe,
                                   summary_plot_size=(20, 20),
                                   random_seed=412,
                                   maximum_iterations=300):
-    """_summary_
+    """
     This function creates Gaussian Mixture clusters on a dataset based on the variables specified.
 
     Args:
-        dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
-        list_of_numeric_columns_for_clustering (list, optional): The list of variables to base the clusters on. Defaults to None, which will use all variables in the dataframe.
-        number_of_clusters (int, optional): The number of clusters to create. Defaults to None, which will use the elbow method to determine the optimal number of clusters.
-        column_name_for_clusters (str, optional): The name of the new column containing the clusters. Defaults to 'K-Means Cluster'.
-        scale_predictor_variables (bool, optional): Whether to scale the predictor variables prior to analysis. Defaults to True.
-        show_cluster_summary_plots (bool, optional): Whether to show cluster summary plots. Defaults to True.
-        summary_plot_size (tuple, optional): The size of the summary plots. Defaults to (20, 20).
-        random_seed (int, optional): The random seed to use for replication. Defaults to 412.
-        maximum_iterations (int, optional): The maximum number of iterations to use for the K-Means algorithm. Defaults to 300.
+    dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
+    list_of_numeric_columns_for_clustering (list, optional): The list of variables to base the clusters on. Defaults to None, which will use all variables in the dataframe.
+    number_of_clusters (int, optional): The number of clusters to create. Defaults to None, which will use the elbow method to determine the optimal number of clusters.
+    column_name_for_clusters (str, optional): The name of the new column containing the clusters. Defaults to 'K-Means Cluster'.
+    scale_predictor_variables (bool, optional): Whether to scale the predictor variables prior to analysis. Defaults to True.
+    show_cluster_summary_plots (bool, optional): Whether to show cluster summary plots. Defaults to True.
+    summary_plot_size (tuple, optional): The size of the summary plots. Defaults to (20, 20).
+    random_seed (int, optional): The random seed to use for replication. Defaults to 412.
+    maximum_iterations (int, optional): The maximum number of iterations to use for the K-Means algorithm. Defaults to 300.
     
     Returns:
-        Pandas dataframe: An updated Pandas dataframe with the clusters joined to the original data.
+    Pandas dataframe: An updated Pandas dataframe with the clusters joined to the original data.
     """
     
     # Keep complete cases only
@@ -112,19 +112,3 @@ def CreateGaussianMixtureClusters(dataframe,
     # Return updated dataset
     return(dataframe)
 
-
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris = CreateGaussianMixtureClusters(
-#     dataframe=iris,
-#     list_of_numeric_columns_for_clustering=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-#     show_cluster_summary_plots=True,
-#     number_of_clusters=3
-# )
-# # iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# # iris = CreateGaussianMixtureClusters(
-# #     dataframe=iris,
-# #     list_of_numeric_columns_for_clustering=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-# #     show_cluster_summary_plots=True
-# # )

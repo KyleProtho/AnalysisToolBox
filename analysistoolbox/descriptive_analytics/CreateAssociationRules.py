@@ -256,11 +256,3 @@ def CreateAssociationRules(dataframe,
     # Return association rules
     return(df_association_rules)
 
-
-# # Test function
-# data_groceries = pd.read_excel("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/6. Association Rule Learning/Groceries.xlsx")
-# arules_groceries = CreateAssociationRules(
-#     dataframe=data_groceries,
-#     transaction_id_column="Index",
-#     items_column="Value"
-# )

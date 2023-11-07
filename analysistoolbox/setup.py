@@ -53,6 +53,7 @@ setup(
         'statsmodels',
         'sympy',
         'tableone',
+        'yellowbrick'
     ],
     extras_require={
         'dev': [

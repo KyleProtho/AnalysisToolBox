@@ -62,15 +62,3 @@ def ConductManifoldLearning(dataframe,
     # Return dataframe
     return(dataframe)
 
-
-# # Test function
-# dataset = pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/5. Dimension Reduction/abalone-challenge.csv")
-# # dataset = ConductManifoldLearning(
-# #     dataframe=dataset
-# # )
-# # Randomly remove 10% of values from the dataset
-# dataset = dataset.mask(np.random.random(dataset.shape) < .1)
-# # Conduct Manifold Learning
-# dataset = ConductManifoldLearning(
-#     dataframe=dataset
-# )

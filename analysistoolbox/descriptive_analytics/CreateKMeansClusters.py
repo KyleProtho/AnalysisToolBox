@@ -95,12 +95,3 @@ def CreateKMeansClusters(dataframe,
     # Return updated dataset
     return(dataframe)
 
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris = CreateKMeansClusters(
-#     dataframe=iris,
-#     list_of_numeric_columns_for_clustering=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-#     scale_predictor_variables=True,
-#     show_cluster_summary_plots=True
-# )
