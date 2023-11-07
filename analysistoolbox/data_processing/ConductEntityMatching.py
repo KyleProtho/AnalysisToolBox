@@ -204,29 +204,3 @@ def ConductEntityMatching(dataframe_1,
     # Return results
     return(data_match_results)
 
-
-# # Test function
-# # Import dataset
-# dataframe = pd.read_csv("C:/Users/oneno/Downloads/patients.csv")
-# # Remove numbers from names
-# dataframe['FIRST'] = dataframe['FIRST'].str.replace('\d+', '', regex=True)
-# dataframe['LAST'] = dataframe['LAST'].str.replace('\d+', '', regex=True)
-# # Split dataframe into two
-# dataframe_1 = dataframe.iloc[:int(len(dataframe)/2)]
-# dataframe_2 = dataframe.iloc[int(len(dataframe)/2):]
-# # Perform entity matching
-# # matches = ConductEntityMatching(
-# #     dataframe_1, 'Id', 
-# #     dataframe_2, 'Id', 
-# #     columns_to_compare=['FIRST', 'LAST'],
-# #     match_score_threshold=86,
-# #     match_methods=['Weighted Ratio', 'Token Sort Ratio']
-# # )
-# matches = ConductEntityMatching(
-#     dataframe_1, 'Id', 
-#     dataframe_2, 'Id', 
-#     columns_to_compare=['FIRST', 'LAST'],
-#     levenshtein_distance_filter=10,
-#     match_score_threshold=86,
-#     match_methods=['Weighted Ratio', 'Token Sort Ratio']
-# )

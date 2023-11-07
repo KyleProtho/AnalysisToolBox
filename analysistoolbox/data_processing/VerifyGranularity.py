@@ -65,12 +65,3 @@ def VerifyGranularity(dataframe,
         dataframe = dataframe.drop(columns=['Dataset Key'])
         return(dataframe)
 
-
-# # Test function
-# import numpy as np
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# # Create id column based on row number
-# iris['id'] = np.arange(len(iris))
-# # Test VerifyGranularity function
-# VerifyGranularity(iris, ['id'])

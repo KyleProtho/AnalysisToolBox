@@ -64,26 +64,3 @@ def FetchUSShapefile(state=None,
     # Return the shapefile
     return(shapefile)
 
-
-# # Test function
-# # pa_counties = FetchUSShapefile(
-# #     state='Pennsylvania',
-# #     geography='counties',
-# #     census_year=2021
-# # )
-# # pa_counties.explore()
-
-# # pa_county_subdivisions = FetchUSShapefile(
-# #     state='Pennsylvania',
-# #     county='Allegheny',
-# #     geography='county subdivisions',
-# # )
-# # pa_county_subdivisions.explore()
-
-# pa_zipcodes = FetchUSShapefile(
-#     state='Pennsylvania',
-#     county='Allegheny',
-#     geography='zipcodes',
-#     census_year=2010
-# )
-# pa_zipcodes.explore()

@@ -56,10 +56,3 @@ def GetGoogleSearchResults(query,
     # Return the response
     return response
 
-
-# # Test the function
-# results = GetGoogleSearchResults(
-#     query='microsoft autogen',
-#     serper_api_key=open("C:/Users/oneno/OneDrive/Desktop/Serper key.txt", 'r').read(),
-#     display_results=True
-# )

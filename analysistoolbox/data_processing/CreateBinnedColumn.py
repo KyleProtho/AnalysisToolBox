@@ -63,11 +63,3 @@ def CreateBinnedColumn(dataframe,
     # Return the dataframe
     return dataframe
 
-
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris = CreateBinnedColumn(
-#     dataframe=iris, 
-#     numeric_column_name='sepal length (cm)'
-# )

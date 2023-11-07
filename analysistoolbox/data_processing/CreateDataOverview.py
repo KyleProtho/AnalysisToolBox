@@ -132,10 +132,3 @@ def CreateDataOverview(dataframe,
     # Return the overview
     return(data_overview)
 
-
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# iris['species'] = iris['species'].astype('category')
-# CreateDataOverview(iris)

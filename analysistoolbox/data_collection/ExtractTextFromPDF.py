@@ -86,12 +86,3 @@ def ExtractTextFromPDF(filepath_to_pdf,
         # Get the number of tokens in the text
         number_of_tokens = word_count * (100/75)
         print(f"Estimated token count: {int(round(number_of_tokens, 0))}")
-
-
-# # Test the function
-# ExtractTextFromPDF(
-#     filepath_to_pdf="C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/App/data/source/QRS/2023/2023 QRS Technical Specifications.pdf",
-#     filepath_for_exported_text="C:/Users/oneno/OneDrive/Creations/Star Sense/StarSense/App/data/source/QRS/2023/2023 QRS Technical Specifications - Table of Contents.txt",
-#     start_page=19,
-#     end_page=20
-# )

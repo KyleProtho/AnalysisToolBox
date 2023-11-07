@@ -61,7 +61,3 @@ def FetchWebsiteText(url,
     # Return the text
     return text
 
-
-# # Test the function
-# contents = FetchWebsiteText(url="https://microsoft.github.io/autogen/docs/Use-Cases/agent_chat/#diverse-applications-implemented-with-autogen",
-#                             browserless_api_key=open("C:/Users/oneno/OneDrive/Desktop/Browserless key.txt", "r").read())

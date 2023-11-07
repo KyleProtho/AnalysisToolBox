@@ -48,11 +48,3 @@ def ImputeMissingValuesUsingNearestNeighbors(dataframe,
     # Return the dataframe with imputed values
     return(dataframe)
 
-# Test the function
-from sklearn import datasets
-iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# Randomly set 10% of the values in the dataframe to NaN
-iris = iris.mask(np.random.random(iris.shape) < .1)
-# Impute the missing values
-iris = ImputeMissingValuesUsingNearestNeighbors(dataframe=iris,
-                                               list_of_numeric_columns_to_impute=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'])

@@ -1,7 +1,7 @@
 # Load packages
 import pandas as pd
 
-# Define function
+# Declare function
 def CleanTextColumns(dataframe):
     """
     This function cleans string-type columns in a dataframe by removing leading and trailing spaces.
@@ -20,3 +20,4 @@ def CleanTextColumns(dataframe):
             
     # Return dataframe
     return(dataframe)
+

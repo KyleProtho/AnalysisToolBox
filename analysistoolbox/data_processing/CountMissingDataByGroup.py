@@ -42,12 +42,3 @@ def CountMissingDataByGroup(dataframe,
     # Return missing data by group summary
     return(df_missing_by_group)
 
-
-# # Test function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# CountMissingDataByGroup(
-#     dataframe=iris, 
-#     list_of_grouping_columns=['species'],
-# )

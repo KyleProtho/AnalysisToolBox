@@ -95,16 +95,3 @@ def ConductAnomalyDetection(dataframe,
     # Return the dataframe
     return(dataframe)
 
-
-# # Test the function
-# # dataset = ConductAnomalyDetection(
-# #     dataframe=pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/5. Dimension Reduction/houses_to_rent.csv"),
-# #     list_of_columns_to_analyze=['area', 'floor', 'parking spaces']
-# # )
-# dataset = pd.read_csv("C:/Users/oneno/OneDrive/Documents/Continuing Education/Udemy/Data Mining for Business in Python/5. Dimension Reduction/houses_to_rent.csv")
-# # Mask some values in the dataset
-# dataset = dataset.mask(np.random.random(dataset.shape) < .1)
-# dataset = ConductAnomalyDetection(
-#     dataframe=dataset,
-#     list_of_columns_to_analyze=['area', 'floor', 'parking spaces']
-# )
