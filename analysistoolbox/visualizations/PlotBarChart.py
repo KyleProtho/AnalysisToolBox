@@ -25,7 +25,8 @@ def PlotBarChart(dataframe,
                  title_y_indent=1.15,
                  subtitle_y_indent=1.1,
                  caption_y_indent=-0.15,
-                 decimal_places_for_data_label=2):
+                 decimal_places_for_data_label=1,
+                 data_label_fontsize=11):
     """
     This function generates a bar chart using the seaborn library. 
     The function takes in a pandas dataframe, a categorical variable, and a value variable. 
@@ -117,12 +118,14 @@ def PlotBarChart(dataframe,
     ax.spines['left'].set_visible(False)
     
     # Add data labels
-    abs_values = dataframe.sort_values(value_column_name, ascending=True)[value_column_name].round(decimal_places_for_data_label).astype(str)
-    lbls = [f'{p[0]}' for p in zip(abs_values)]
-    lbls = lbls[::-1]
+    abs_values = dataframe.sort_values(value_column_name, ascending=False)[value_column_name].round(decimal_places_for_data_label)
+    # Create format code for data labels
+    data_label_format = "{:." + str(decimal_places_for_data_label) + "f}"
+    lbls = [data_label_format.format(p) for p in abs_values]
     ax.bar_label(container=ax.containers[0],
                  labels=lbls,
-                 padding=5)
+                 padding=5,
+                 fontsize=data_label_fontsize)
         
     # Set the x indent of the plot titles and captions
     # Get longest y tick label

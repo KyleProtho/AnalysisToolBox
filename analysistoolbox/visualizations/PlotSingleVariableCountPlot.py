@@ -20,6 +20,7 @@ def PlotSingleVariableCountPlot(dataframe,
                                 rare_category_threshold=0.05,
                                 figure_size=(8, 6),
                                 # Text formatting arguments
+                                data_label_fontsize=10,
                                 title_for_plot=None,
                                 subtitle_for_plot=None,
                                 caption_for_plot=None,
@@ -40,10 +41,11 @@ def PlotSingleVariableCountPlot(dataframe,
         top_n_to_highlight (_type_, optional): The "top N" categories to highlight. Defaults to None.
         highlight_color (str, optional): The color to use for the highlighted "top N" categories. Defaults to "#b0170c".
         fill_transparency (float, optional): The transparency to use for the bar chart. Defaults to 0.8.
-        title_for_plot (_type_, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (_type_, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (_type_, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (_type_, optional): The data source for the plot. Defaults to None.
+        data_label_fontsize (int, optional): The font size to use for the data labels. Defaults to 10.
+        title_for_plot (str, optional): The title for the plot. Defaults to None.
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
         title_y_indent (float, optional): The vertical indent for the title. Defaults to 1.15.
         subtitle_y_indent (float, optional): The vertical indent for the subtitle. Defaults to 1.1.
         caption_y_indent (float, optional): The vertical indent for the caption. Defaults to -0.15.
@@ -127,8 +129,9 @@ def PlotSingleVariableCountPlot(dataframe,
     rel_values = dataframe[categorical_column_name].value_counts(ascending=False, normalize=True).values * 100
     lbls = [f'{p[0]} ({p[1]:.0f}%)' for p in zip(abs_values, rel_values)]
     ax.bar_label(container=ax.containers[0],
-                    labels=lbls,
-                    padding=5)
+                 labels=lbls,
+                 padding=5,
+                 fontsize=data_label_fontsize)
     
     # Add rare category threshold line
     if add_rare_category_line:
