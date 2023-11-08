@@ -1,6 +1,7 @@
 # test_FindDerivative.py
 import unittest
 from analysistoolbox.calculus import FindDerivative
+import sympy as sp
 
 class TestFindDerivative(unittest.TestCase):
     def test_find_derivative(self):

@@ -5,9 +5,6 @@ from math import ceil
 from matplotlib import pyplot as plt
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def PlotSingleVariableHistogram(dataframe,
@@ -31,25 +28,22 @@ def PlotSingleVariableHistogram(dataframe,
     """
     This function plots a single variable histogram from a given dataframe.
 
-    Parameters:
-    dataframe (pandas.DataFrame): The dataframe containing the data to be plotted.
-    value_column_name (str): The name of the column in the dataframe to be plotted.
-    fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
-    fill_transparency (float, optional): The transparency of the fill color. Defaults to 0.6.
-    show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
-    show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
-    title_for_plot (str, optional): The title for the plot. Defaults to None.
-    subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-    caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-    data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-    show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
-    title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
-    subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
-    caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-    figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
-
-    Returns:
-    None
+    Args:
+        dataframe (pandas.DataFrame): The dataframe containing the data to be plotted.
+        value_column_name (str): The name of the column in the dataframe to be plotted.
+        fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
+        fill_transparency (float, optional): The transparency of the fill color. Defaults to 0.6.
+        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
+        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
+        title_for_plot (str, optional): The title for the plot. Defaults to None.
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
+        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
+        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
+        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
     """
     
     # Check that the column exists in the dataframe.
@@ -199,21 +193,3 @@ def PlotSingleVariableHistogram(dataframe,
     # Clear plot
     plt.clf()
 
-
-# # Test function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# # PlotSingleVariableHistogram(
-# #     dataframe=iris,
-# #     value_column_name="sepal length (cm)",
-# #     title_for_plot="Sepal Length (cm)",
-# #     subtitle_for_plot="Iris Dataset"
-# # )
-# PlotSingleVariableHistogram(
-#     dataframe=iris,
-#     value_column_name="sepal length (cm)",
-#     title_for_plot="Sepal Length (cm)",
-#     subtitle_for_plot="Iris Dataset",
-#     caption_for_plot="This is a caption that is long enough to wrap onto multiple lines. This is a caption that is long enough to wrap onto multiple lines. This is a caption that is long enough to wrap onto multiple lines.",
-#     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris"
-# )

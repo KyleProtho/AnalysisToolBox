@@ -5,9 +5,6 @@ from math import ceil
 from matplotlib import pyplot as plt
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def PlotSingleVariableCountPlot(dataframe,
@@ -204,32 +201,3 @@ def PlotSingleVariableCountPlot(dataframe,
     # Clear plot
     plt.clf()
 
-
-# # Test the function
-# import numpy as np
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# iris['species'] = iris['species'].astype('category')
-# # PlotSingleVariableCountPlot(
-# #     dataframe=iris,
-# #     categorical_column_name='species',
-# #     title_for_plot='Species',
-# #     subtitle_for_plot='This is a subtitle',
-# #     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",
-# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris"
-# # )
-# iris['species long label'] = np.where(
-#     iris['species'] == 0,
-#     "Longish label for 0",
-#     iris['species']
-# )
-# PlotSingleVariableCountPlot(
-#     dataframe=iris,
-#     categorical_column_name='species long label',
-#     title_for_plot='Species',
-#     subtitle_for_plot='This is a subtitle',
-#     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",
-#     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-#     top_n_to_highlight=1
-# )

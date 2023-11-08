@@ -3,9 +3,6 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def PlotTwoVariableHeatmap(dataframe,
@@ -27,24 +24,21 @@ def PlotTwoVariableHeatmap(dataframe,
     """
     This function generates a heatmap plot for two categorical variables from a given dataframe.
 
-    Parameters:
-    dataframe (pandas.DataFrame): The dataframe containing the data.
-    categorical_column_name_1 (str): The name of the first categorical column in the dataframe.
-    categorical_column_name_2 (str): The name of the second categorical column in the dataframe.
-    color_palette (str, optional): The color palette to use for the heatmap. Defaults to "Blues".
-    show_legend (bool, optional): Whether to show the legend on the plot. Defaults to False.
-    figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
-    data_label_format (str, optional): The format for the data labels. Defaults to ".1%".
-    title_for_plot (str, optional): The title for the plot. Defaults to None.
-    subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-    caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-    data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-    title_y_indent (float, optional): The y-indent for the title. Defaults to 1.15.
-    subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.1.
-    caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-
-    Returns:
-    None: The function generates a plot and does not return any value.
+    Args:
+        dataframe (pandas.DataFrame): The dataframe containing the data.
+        categorical_column_name_1 (str): The name of the first categorical column in the dataframe.
+        categorical_column_name_2 (str): The name of the second categorical column in the dataframe.
+        color_palette (str, optional): The color palette to use for the heatmap. Defaults to "Blues".
+        show_legend (bool, optional): Whether to show the legend on the plot. Defaults to False.
+        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
+        data_label_format (str, optional): The format for the data labels. Defaults to ".1%".
+        title_for_plot (str, optional): The title for the plot. Defaults to None.
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.15.
+        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.1.
+        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
     """
     
     # Create contingency table
@@ -147,21 +141,3 @@ def PlotTwoVariableHeatmap(dataframe,
     # Clear plot
     plt.clf()
 
-
-# # Test function
-# # Generate dataframe with two categorical variables
-# dataframe = pd.DataFrame({
-#     "Category 1": ["A", "A", "A", "B", "A", "A", "A", "B", "A", "B"],
-#     "Category 2": ["X", "X", "X", "X", "Y", "Y", "Y", "Y", "Z", "Z"]
-# })
-# # Plot heatmap
-# PlotTwoVariableHeatmap(
-#     dataframe=dataframe,
-#     categorical_column_name_1="Category 1",
-#     categorical_column_name_2="Category 2",
-#     color_palette="Blues",
-#     show_legend=False,
-#     figure_size=(8, 6),
-#     title_for_plot="Heatmap of Two Categorical Variables",
-#     subtitle_for_plot="Just testing out the function"
-# )

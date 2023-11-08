@@ -5,9 +5,6 @@ from math import ceil
 from matplotlib import pyplot as plt
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def PlotRiskTolerance(simulated_values,
@@ -36,29 +33,26 @@ def PlotRiskTolerance(simulated_values,
     """
     This function plots a histogram of simulated values and highlights the values that are worse than the risk tolerance.
     
-    Parameters:
-    simulated_values (numpy array or pandas Series): The simulated values to plot.
-    risk_tolerance (int or float): The risk tolerance value.
-    lower_is_worse (bool, optional): If True, values lower than the risk tolerance are considered worse. Defaults to True.
-    variable_name (str, optional): The name of the variable being simulated. Defaults to "Outcome".
-    observed_value (int or float, optional): The observed value to be plotted. Defaults to None.
-    risk_tolerance_label (str, optional): The label for the risk tolerance. Defaults to "Tolerance".
-    fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
-    fill_transparency (float, optional): The transparency of the fill color. Defaults to 0.6.
-    show_mean (bool, optional): If True, the mean of the simulated values is shown. Defaults to True.
-    show_median (bool, optional): If True, the median of the simulated values is shown. Defaults to True.
-    title_for_plot (str, optional): The title for the plot. Defaults to "Risk Tolerance".
-    subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Show the simulated outcomes that are worse than the risk tolerance.".
-    caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-    data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-    show_y_axis (bool, optional): If False, the y-axis is not shown. Defaults to False.
-    title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
-    subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
-    caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-    figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
-    
-    Returns:
-    None. The function plots a histogram and does not return any value.
+    Args:
+        simulated_values (numpy array or pandas Series): The simulated values to plot.
+        risk_tolerance (int or float): The risk tolerance value.
+        lower_is_worse (bool, optional): If True, values lower than the risk tolerance are considered worse. Defaults to True.
+        variable_name (str, optional): The name of the variable being simulated. Defaults to "Outcome".
+        observed_value (int or float, optional): The observed value to be plotted. Defaults to None.
+        risk_tolerance_label (str, optional): The label for the risk tolerance. Defaults to "Tolerance".
+        fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
+        fill_transparency (float, optional): The transparency of the fill color. Defaults to 0.6.
+        show_mean (bool, optional): If True, the mean of the simulated values is shown. Defaults to True.
+        show_median (bool, optional): If True, the median of the simulated values is shown. Defaults to True.
+        title_for_plot (str, optional): The title for the plot. Defaults to "Risk Tolerance".
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Show the simulated outcomes that are worse than the risk tolerance.".
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        show_y_axis (bool, optional): If False, the y-axis is not shown. Defaults to False.
+        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
+        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
+        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
     """
     
     # Ensure that risk tolerance is numeric
@@ -228,14 +222,3 @@ def PlotRiskTolerance(simulated_values,
     # Clear plot
     plt.clf()
     
-
-# # Test function
-# import numpy as np
-# # PlotRiskTolerance(simulated_values=np.random.normal(0, 1, 10000),
-# #                   risk_tolerance=-0.5)
-# PlotRiskTolerance(simulated_values=np.random.normal(0, 1, 10000),
-#                   risk_tolerance=-0.5,
-#                   observed_value=-0.75)
-# # PlotRiskTolerance(simulated_values=np.random.normal(0, 1, 10000),
-# #                   risk_tolerance=-0.5,
-# #                   lower_is_worse=False)

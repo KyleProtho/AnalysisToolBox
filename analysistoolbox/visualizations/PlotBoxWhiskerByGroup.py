@@ -3,9 +3,6 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def PlotBoxWhiskerByGroup(dataframe,
@@ -29,26 +26,23 @@ def PlotBoxWhiskerByGroup(dataframe,
     """
     Function to create a box and whisker plot for a given outcome variable, grouped by one or two categorical variables. 
 
-    Parameters:
-    dataframe (pandas.DataFrame): The input dataframe.
-    value_column_name (str): The name of the outcome variable.
-    grouping_column_name_1 (str): The name of the first group variable.
-    grouping_column_name_2 (str, optional): The name of the second group variable. Defaults to None.
-    fill_color (str, optional): The color to fill the box plot with. Defaults to None.
-    color_palette (str, optional): The color palette to use for the box plot. Defaults to 'Set2'.
-    title_for_plot (str, optional): The title for the plot. Defaults to None.
-    subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-    caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-    data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-    show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
-    title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
-    subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
-    caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-    x_indent (float, optional): The x-indent for the plot. Defaults to -0.128.
-    figure_size (tuple, optional): The size of the plot. Defaults to (8, 6).
-
-    Returns:
-    None
+    Args:
+        dataframe (pandas.DataFrame): The input dataframe.
+        value_column_name (str): The name of the outcome variable.
+        grouping_column_name_1 (str): The name of the first group variable.
+        grouping_column_name_2 (str, optional): The name of the second group variable. Defaults to None.
+        fill_color (str, optional): The color to fill the box plot with. Defaults to None.
+        color_palette (str, optional): The color palette to use for the box plot. Defaults to 'Set2'.
+        title_for_plot (str, optional): The title for the plot. Defaults to None.
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
+        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
+        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
+        x_indent (float, optional): The x-indent for the plot. Defaults to -0.128.
+        figure_size (tuple, optional): The size of the plot. Defaults to (8, 6).
     """
     # Create figure and axes
     fig, ax = plt.subplots(figsize=figure_size)
@@ -180,15 +174,3 @@ def PlotBoxWhiskerByGroup(dataframe,
     # Clear plot
     plt.clf()
 
-
-# # Test function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# PlotBoxWhiskerByGroup(
-#     dataframe=iris,
-#     value_column_name='sepal length (cm)',
-#     grouping_column_name_1='species',
-#     title_for_plot='Sepal Length by Species',
-#     subtitle_for_plot='A test visulaization using the iris dataset',
-# )

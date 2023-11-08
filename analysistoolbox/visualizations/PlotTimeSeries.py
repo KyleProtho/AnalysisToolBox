@@ -3,9 +3,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def PlotTimeSeries(dataframe,
@@ -33,29 +30,26 @@ def PlotTimeSeries(dataframe,
     """
     This function plots a time series from a given dataframe.
 
-    Parameters:
-    dataframe (pandas.DataFrame): The dataframe containing the data to be plotted.
-    value_column_name (str): The name of the column in the dataframe that contains the values to be plotted.
-    time_column_name (str): The name of the column in the dataframe that contains the time data.
-    grouping_column_name (str, optional): The name of the column in the dataframe to group data by. Defaults to None.
-    line_color (str, optional): The color of the line in the plot. Defaults to "#3269a8".
-    line_alpha (float, optional): The transparency of the line in the plot. Defaults to 0.8.
-    color_palette (str, optional): The color palette to use for the plot. Defaults to "Set2".
-    markers (str, optional): The marker style for the plot. Defaults to "o".
-    number_of_x_axis_ticks (int, optional): The number of ticks on the x-axis. Defaults to None.
-    x_axis_tick_rotation (int, optional): The rotation of the x-axis ticks. Defaults to None.
-    title_for_plot (str, optional): The title for the plot. Defaults to None.
-    subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-    caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-    data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-    x_indent (float, optional): The x-indent for the plot text. Defaults to -0.127.
-    title_y_indent (float, optional): The y-indent for the plot title. Defaults to 1.125.
-    subtitle_y_indent (float, optional): The y-indent for the plot subtitle. Defaults to 1.05.
-    caption_y_indent (float, optional): The y-indent for the plot caption. Defaults to -0.3.
-    figure_size (tuple, optional): The size of the figure for the plot. Defaults to (8, 5).
-
-    Returns:
-    None
+    Args:
+        dataframe (pandas.DataFrame): The dataframe containing the data to be plotted.
+        value_column_name (str): The name of the column in the dataframe that contains the values to be plotted.
+        time_column_name (str): The name of the column in the dataframe that contains the time data.
+        grouping_column_name (str, optional): The name of the column in the dataframe to group data by. Defaults to None.
+        line_color (str, optional): The color of the line in the plot. Defaults to "#3269a8".
+        line_alpha (float, optional): The transparency of the line in the plot. Defaults to 0.8.
+        color_palette (str, optional): The color palette to use for the plot. Defaults to "Set2".
+        markers (str, optional): The marker style for the plot. Defaults to "o".
+        number_of_x_axis_ticks (int, optional): The number of ticks on the x-axis. Defaults to None.
+        x_axis_tick_rotation (int, optional): The rotation of the x-axis ticks. Defaults to None.
+        title_for_plot (str, optional): The title for the plot. Defaults to None.
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        x_indent (float, optional): The x-indent for the plot text. Defaults to -0.127.
+        title_y_indent (float, optional): The y-indent for the plot title. Defaults to 1.125.
+        subtitle_y_indent (float, optional): The y-indent for the plot subtitle. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent for the plot caption. Defaults to -0.3.
+        figure_size (tuple, optional): The size of the figure for the plot. Defaults to (8, 5).
     """
     
     # Create figure and axes
@@ -176,15 +170,3 @@ def PlotTimeSeries(dataframe,
     # Show plot
     plt.show()
     
-
-# # Test the function
-# time_series = pd.read_csv('https://raw.githubusercontent.com/jenfly/opsd/master/opsd_germany_daily.csv')
-# PlotTimeSeries(
-#     dataframe=time_series,
-#     value_column_name='Consumption',
-#     time_column_name='Date',
-#     number_of_x_axis_ticks=10,
-#     x_axis_tick_rotation=45,
-#     title_for_plot='Daily Electricity Consumption in Germany',
-#     data_source_for_plot='https://raw.githubusercontent.com/jenfly',
-# )

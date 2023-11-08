@@ -3,9 +3,6 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def PlotDensityByGroup(dataframe,
@@ -27,23 +24,20 @@ def PlotDensityByGroup(dataframe,
     This function generates a density plot for a given dataframe, with the option to group by a specific column.
     The plot is generated using seaborn's kdeplot function.
 
-    Parameters:
-    dataframe (pandas.DataFrame): The dataframe to plot.
-    value_column_name (str): The name of the column in the dataframe to use for the x-axis values.
-    grouping_column_name (str): The name of the column in the dataframe to use for grouping data.
-    color_palette (str, optional): The color palette to use for the plot. Defaults to 'Set2'.
-    title_for_plot (str, optional): The title for the plot. Defaults to None.
-    subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-    caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-    data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-    show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
-    title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
-    subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
-    caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-    figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
-
-    Returns:
-    None
+    Args:
+        dataframe (pandas.DataFrame): The dataframe to plot.
+        value_column_name (str): The name of the column in the dataframe to use for the x-axis values.
+        grouping_column_name (str): The name of the column in the dataframe to use for grouping data.
+        color_palette (str, optional): The color palette to use for the plot. Defaults to 'Set2'.
+        title_for_plot (str, optional): The title for the plot. Defaults to None.
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
+        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
+        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
+        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
     """
     
     # Create figure and axes
@@ -139,16 +133,3 @@ def PlotDensityByGroup(dataframe,
     # Clear plot
     plt.clf()
 
-
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# PlotDensityByGroup(
-#     dataframe=iris, 
-#     value_column_name='sepal length (cm)', 
-#     grouping_column_name='species',
-#     title_for_plot='Sepal Length by Species',
-#     subtitle_for_plot="Shows the distribution of sepal length by species.",
-#     data_source_for_plot='Iris Data Set',
-# )

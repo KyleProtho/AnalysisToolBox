@@ -5,9 +5,6 @@ from math import ceil
 from matplotlib import pyplot as plt
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def PlotClusteredBarChart(dataframe,
@@ -33,25 +30,22 @@ def PlotClusteredBarChart(dataframe,
     It takes a pandas DataFrame and column names for grouping and value, along with various optional parameters for plot formatting and text formatting. 
 
     Args:
-    dataframe (pd.DataFrame): The data to plot.
-    grouping_column_name_1 (str): The name of the first grouping column.
-    grouping_column_name_2 (str): The name of the second grouping column.
-    value_column_name (str): The name of the value column.
-    color_palette (str, optional): The color palette to use for the plot. Defaults to "Set1".
-    fill_transparency (float, optional): The transparency of the bars. Defaults to 0.8.
-    figure_size (tuple, optional): The size of the figure. Defaults to (6, 6).
-    title_for_plot (str, optional): The title for the plot. Defaults to None.
-    subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-    caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-    data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-    x_indent (float, optional): The x-indent for the title and subtitle. Defaults to -0.04.
-    title_y_indent (float, optional): The y-indent for the title. Defaults to 1.15.
-    subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.1.
-    caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-    decimal_places_for_data_label (int, optional): The number of decimal places for the data labels. Defaults to 0.
-
-    Returns:
-    None. The function creates and displays a plot.
+        dataframe (pd.DataFrame): The data to plot.
+        grouping_column_name_1 (str): The name of the first grouping column.
+        grouping_column_name_2 (str): The name of the second grouping column.
+        value_column_name (str): The name of the value column.
+        color_palette (str, optional): The color palette to use for the plot. Defaults to "Set1".
+        fill_transparency (float, optional): The transparency of the bars. Defaults to 0.8.
+        figure_size (tuple, optional): The size of the figure. Defaults to (6, 6).
+        title_for_plot (str, optional): The title for the plot. Defaults to None.
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        x_indent (float, optional): The x-indent for the title and subtitle. Defaults to -0.04.
+        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.15.
+        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.1.
+        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
+        decimal_places_for_data_label (int, optional): The number of decimal places for the data labels. Defaults to 0.
     """
     # Draw a nested barplot by species and sex
     ax = sns.catplot(
@@ -167,38 +161,3 @@ def PlotClusteredBarChart(dataframe,
     # Clear plot
     plt.clf()
 
-
-# # Test the function
-# data = {
-#     "category": ["A", "A", "B", "B"],
-#     "group": ["X", "Y", "X", "Y"],
-#     "value": [1, 2, 3, 4],
-#     "value_big": [10, 20, 30, 15],
-#     "value_small": [0.1, 0.2, 0.3, 0.1]
-# }
-# data = pd.DataFrame(data)
-# # PlotClusteredBarChart(
-# #     dataframe=data,
-# #     grouping_column_name_1="category", 
-# #     grouping_column_name_2="group",
-# #     value_column_name="value",
-# #     title_for_plot="Clustered Bar Chart",
-# #     subtitle_for_plot="Using totally made-up data",
-# # )
-# # PlotClusteredBarChart(
-# #     dataframe=data,
-# #     grouping_column_name_1="category", 
-# #     grouping_column_name_2="group",
-# #     value_column_name="value_big",
-# #     title_for_plot="Clustered Bar Chart",
-# #     subtitle_for_plot="Using totally made-up data",
-# # )
-# PlotClusteredBarChart(
-#     dataframe=data,
-#     grouping_column_name_1="category", 
-#     grouping_column_name_2="group",
-#     value_column_name="value_small",
-#     title_for_plot="Clustered Bar Chart",
-#     subtitle_for_plot="Using totally made-up data",
-#     decimal_places_for_data_label=1
-# )

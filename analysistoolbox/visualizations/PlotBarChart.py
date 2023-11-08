@@ -5,9 +5,6 @@ from math import ceil
 from matplotlib import pyplot as plt
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def PlotBarChart(dataframe,
@@ -34,27 +31,24 @@ def PlotBarChart(dataframe,
     The function takes in a pandas dataframe, a categorical variable, and a value variable. 
     The function also takes in optional arguments for plot formatting, text formatting, and data labels.
 
-    Parameters:
-    dataframe (pandas dataframe): The dataframe containing the data to be plotted.
-    categorical_column_name (str): The name of the column in the dataframe containing the categorical variable.
-    value_column_name (str): The name of the column in the dataframe containing the value variable.
-    color_palette (str or list, optional): The seaborn color palette to use for the plot. Defaults to "Set1".
-    fill_color (str, optional): The color to use for the bars in the plot. If None, the color palette will be used. Defaults to None.
-    top_n_to_highlight (int, optional): The number of top categories to highlight in the plot. Defaults to None.
-    highlight_color (str, optional): The color to use for the highlighted categories. Defaults to "#b0170c".
-    fill_transparency (float, optional): The transparency of the bars in the plot. Defaults to 0.8.
-    figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
-    title_for_plot (str, optional): The title of the plot. Defaults to None.
-    subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to None.
-    caption_for_plot (str, optional): The caption of the plot. Defaults to None.
-    data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
-    title_y_indent (float, optional): The y-axis indent for the plot title. Defaults to 1.15.
-    subtitle_y_indent (float, optional): The y-axis indent for the plot subtitle. Defaults to 1.1.
-    caption_y_indent (float, optional): The y-axis indent for the plot caption. Defaults to -0.15.
-    decimal_places_for_data_label (int, optional): The number of decimal places to round the data labels to. Defaults to 2.
-
-    Returns:
-    None
+    Args:
+        dataframe (pandas dataframe): The dataframe containing the data to be plotted.
+        categorical_column_name (str): The name of the column in the dataframe containing the categorical variable.
+        value_column_name (str): The name of the column in the dataframe containing the value variable.
+        color_palette (str or list, optional): The seaborn color palette to use for the plot. Defaults to "Set1".
+        fill_color (str, optional): The color to use for the bars in the plot. If None, the color palette will be used. Defaults to None.
+        top_n_to_highlight (int, optional): The number of top categories to highlight in the plot. Defaults to None.
+        highlight_color (str, optional): The color to use for the highlighted categories. Defaults to "#b0170c".
+        fill_transparency (float, optional): The transparency of the bars in the plot. Defaults to 0.8.
+        figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
+        title_for_plot (str, optional): The title of the plot. Defaults to None.
+        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to None.
+        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
+        title_y_indent (float, optional): The y-axis indent for the plot title. Defaults to 1.15.
+        subtitle_y_indent (float, optional): The y-axis indent for the plot subtitle. Defaults to 1.1.
+        caption_y_indent (float, optional): The y-axis indent for the plot caption. Defaults to -0.15.
+        decimal_places_for_data_label (int, optional): The number of decimal places to round the data labels to. Defaults to 2.
     """
     
     # Check that the column exists in the dataframe.
@@ -192,39 +186,3 @@ def PlotBarChart(dataframe,
     # Clear plot
     plt.clf()
 
-
-# # Test the function
-# import numpy as np
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# iris['species'] = iris['species'].astype('category')
-# # Group and summarize average petal length by species
-# iris = iris.groupby('species').agg({'petal length (cm)': np.mean}).reset_index()
-# PlotBarChart(
-#     dataframe=iris,
-#     categorical_column_name='species',
-#     value_column_name='petal length (cm)',
-#     title_for_plot='Species',
-#     subtitle_for_plot='This is a subtitle',
-#     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",
-#     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-#     # top_n_to_highlight=1
-#     # add_rare_category_line=True,
-# )
-
-# data = {
-#     'Group': ['Pittsburgh', 'Denver', 'Tampa'],
-#     'Current Performance': [.7997, .6933, .9339]
-# }
-# data = pd.DataFrame(data)
-# PlotBarChart(
-#     dataframe=data,
-#     categorical_column_name='Group',
-#     value_column_name='Current Performance',
-#     title_for_plot='Test',
-#     subtitle_for_plot='This is a subtitle',
-#     caption_for_plot="Meta-lesson: if you're going to go through the effort of visualizing data, take the time to be thoughtful about your design choices!",
-#     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-#     top_n_to_highlight=1
-# )

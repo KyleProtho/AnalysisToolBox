@@ -4,9 +4,6 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def PlotCorrelationMatrix(dataframe,
@@ -31,26 +28,23 @@ def PlotCorrelationMatrix(dataframe,
     """
     This function plots a correlation matrix or pairplot for a given dataframe. 
 
-    Parameters:
-    dataframe (pandas.DataFrame): The dataframe to plot.
-    list_of_value_column_names (list): The names of the columns to include in the plot.
-    list_of_outcome_column_names (list, optional): The names of the outcome columns to include in the plot. Defaults to None.
-    show_as_pairplot (bool, optional): Whether to show the plot as a pairplot. Defaults to True.
-    pairplot_size (tuple, optional): The size of the pairplot. Defaults to (20, 20).
-    scatter_fill_color (str, optional): The fill color for scatter plots. Defaults to "#3269a8".
-    fit_lowess_line (bool, optional): Whether to fit a lowess line to the data. Defaults to True.
-    line_color (str, optional): The color of the line. Defaults to "#cc4b5a".
-    title_for_plot (str, optional): The title for the plot. Defaults to "Pairplot of Numeric Variables".
-    subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Shows the linear relationship between numeric variables".
-    caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-    data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-    x_indent (float, optional): The x-indent for the plot. Defaults to -0.7.
-    title_y_indent (float, optional): The y-indent for the title. Defaults to 1.12.
-    subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.03.
-    caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.35.
-
-    Returns:
-    None
+    Args:
+        dataframe (pandas.DataFrame): The dataframe to plot.
+        list_of_value_column_names (list): The names of the columns to include in the plot.
+        list_of_outcome_column_names (list, optional): The names of the outcome columns to include in the plot. Defaults to None.
+        show_as_pairplot (bool, optional): Whether to show the plot as a pairplot. Defaults to True.
+        pairplot_size (tuple, optional): The size of the pairplot. Defaults to (20, 20).
+        scatter_fill_color (str, optional): The fill color for scatter plots. Defaults to "#3269a8".
+        fit_lowess_line (bool, optional): Whether to fit a lowess line to the data. Defaults to True.
+        line_color (str, optional): The color of the line. Defaults to "#cc4b5a".
+        title_for_plot (str, optional): The title for the plot. Defaults to "Pairplot of Numeric Variables".
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Shows the linear relationship between numeric variables".
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        x_indent (float, optional): The x-indent for the plot. Defaults to -0.7.
+        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.12.
+        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.03.
+        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.35.
     """
     
     # Select relevant variables, keep complete cases only
@@ -189,27 +183,3 @@ def PlotCorrelationMatrix(dataframe,
     else:
         print(completed_df.corr())
 
-
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# # PlotCorrelationMatrix(
-# #     dataframe=iris,
-# #     list_of_value_column_names=[
-# #         'sepal length (cm)',
-# #         'sepal width (cm)', 
-# #         'petal length (cm)', 
-# #         'petal width (cm)'
-# #     ],
-# #     caption_for_plot="This is a caption for the plot. Just using this to test the word wrapping functionality."
-# # )
-# PlotCorrelationMatrix(
-#     dataframe=iris, 
-#     list_of_value_column_names=[
-#         'sepal width (cm)', 
-#         'petal length (cm)', 
-#         'petal width (cm)'
-#     ],
-#     list_of_outcome_column_names=['sepal length (cm)'],
-#     caption_for_plot="This is a caption for the plot. Just using this to test the word wrapping functionality.",
-# )

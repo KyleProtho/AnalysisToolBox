@@ -14,18 +14,17 @@ def RenderTableOne(dataframe,
     """
     Generates and displays a summary table (Table 1) from a given pandas DataFrame.
 
-    Parameters:
-    dataframe (pandas.DataFrame): The DataFrame that contains the data.
-    value_column_name (str): The name of the column in the DataFrame to be used as the outcome variable.
-    grouping_column_name (str): The name of the column in the DataFrame to be used as the grouping variable.
-    list_of_row_variables (list): A list of column names to be included as rows in the table.
-    table_format (str, optional): The format of the table. Defaults to 'html'.
-    show_p_value (bool, optional): Whether to include p-values in the table. Defaults to True.
-    return_table_object (bool, optional): Whether to return the TableOne object. Defaults to False.
+    Args:
+        dataframe (pandas.DataFrame): The DataFrame that contains the data.
+        value_column_name (str): The name of the column in the DataFrame to be used as the outcome variable.
+        grouping_column_name (str): The name of the column in the DataFrame to be used as the grouping variable.
+        list_of_row_variables (list): A list of column names to be included as rows in the table.
+        table_format (str, optional): The format of the table. Defaults to 'html'.
+        show_p_value (bool, optional): Whether to include p-values in the table. Defaults to True.
+        return_table_object (bool, optional): Whether to return the TableOne object. Defaults to False.
 
     Returns:
-    tableone.TableOne: The TableOne object, if return_table_object is True. Otherwise, None.
-
+        tableone.TableOne: The TableOne object, if return_table_object is True. Otherwise, None.
     """
     
     # Select the columns to be included in the table
@@ -70,14 +69,3 @@ def RenderTableOne(dataframe,
     if return_table_object:
         return(table_one)
 
-
-# # Test function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# RenderTableOne(
-#     dataframe=iris,
-#     value_column_name='sepal length (cm)',
-#     grouping_column_name='species',
-#     list_of_row_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
-# )

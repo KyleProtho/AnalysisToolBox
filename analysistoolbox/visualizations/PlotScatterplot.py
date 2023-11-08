@@ -4,9 +4,6 @@ from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def PlotScatterplot(dataframe,
@@ -41,35 +38,32 @@ def PlotScatterplot(dataframe,
     """
     This function generates a scatterplot using the provided dataframe and column names for x and y axes.
 
-    Parameters:
-    dataframe (DataFrame): The dataframe containing the data.
-    y_axis_column_name (str): The column name for the y-axis data.
-    x_axis_column_name (str): The column name for the x-axis data.
-    grouping_column_name (str, optional): The column name for grouping data. Defaults to None.
-    group_color_palette (str, optional): The color palette for the groups. Defaults to "Set1".
-    dot_fill_color (str, optional): The fill color for the dots. Defaults to "#999999".
-    fitted_line_type (str, optional): The type of fitted line. Defaults to None.
-    line_color (str, optional): The color of the line. Defaults to None.
-    title_for_plot (str, optional): The title for the plot. Defaults to None.
-    subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-    caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-    data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-    x_indent (float, optional): The x indent for the plot. Defaults to -0.128.
-    title_y_indent (float, optional): The y indent for the title. Defaults to 1.125.
-    subtitle_y_indent (float, optional): The y indent for the subtitle. Defaults to 1.05.
-    caption_y_indent (float, optional): The y indent for the caption. Defaults to -0.3.
-    upper_left_quadrant_label (str, optional): The label for the upper left quadrant. Defaults to None.
-    upper_left_quadrant_fill_color (str, optional): The fill color for the upper left quadrant. Defaults to None.
-    upper_right_quadrant_label (str, optional): The label for the upper right quadrant. Defaults to None.
-    upper_right_quadrant_fill_color (str, optional): The fill color for the upper right quadrant. Defaults to None.
-    lower_left_quadrant_label (str, optional): The label for the lower left quadrant. Defaults to None.
-    lower_left_quadrant_fill_color (str, optional): The fill color for the lower left quadrant. Defaults to None.
-    lower_right_quadrant_label (str, optional): The label for the lower right quadrant. Defaults to None.
-    lower_right_quadrant_fill_color (str, optional): The fill color for the lower right quadrant. Defaults to None.
-    folder_to_save_plot (str, optional): The folder to save the plot. Defaults to None.
-
-    Returns:
-    None. The function saves the plot to the specified folder.
+    Args:
+        dataframe (DataFrame): The dataframe containing the data.
+        y_axis_column_name (str): The column name for the y-axis data.
+        x_axis_column_name (str): The column name for the x-axis data.
+        grouping_column_name (str, optional): The column name for grouping data. Defaults to None.
+        group_color_palette (str, optional): The color palette for the groups. Defaults to "Set1".
+        dot_fill_color (str, optional): The fill color for the dots. Defaults to "#999999".
+        fitted_line_type (str, optional): The type of fitted line. Defaults to None.
+        line_color (str, optional): The color of the line. Defaults to None.
+        title_for_plot (str, optional): The title for the plot. Defaults to None.
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        x_indent (float, optional): The x indent for the plot. Defaults to -0.128.
+        title_y_indent (float, optional): The y indent for the title. Defaults to 1.125.
+        subtitle_y_indent (float, optional): The y indent for the subtitle. Defaults to 1.05.
+        caption_y_indent (float, optional): The y indent for the caption. Defaults to -0.3.
+        upper_left_quadrant_label (str, optional): The label for the upper left quadrant. Defaults to None.
+        upper_left_quadrant_fill_color (str, optional): The fill color for the upper left quadrant. Defaults to None.
+        upper_right_quadrant_label (str, optional): The label for the upper right quadrant. Defaults to None.
+        upper_right_quadrant_fill_color (str, optional): The fill color for the upper right quadrant. Defaults to None.
+        lower_left_quadrant_label (str, optional): The label for the lower left quadrant. Defaults to None.
+        lower_left_quadrant_fill_color (str, optional): The fill color for the lower left quadrant. Defaults to None.
+        lower_right_quadrant_label (str, optional): The label for the lower right quadrant. Defaults to None.
+        lower_right_quadrant_fill_color (str, optional): The fill color for the lower right quadrant. Defaults to None.
+        folder_to_save_plot (str, optional): The folder to save the plot. Defaults to None.
     """
     
     # Ensure that fitted_line_type is None, 'straight', or 'lowess'
@@ -571,82 +565,3 @@ def PlotScatterplot(dataframe,
     # Clear plot
     plt.clf()
 
-
-# # Test function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# iris['species'] = iris['species'].astype('category')
-# # PlotScatterplot(
-# #     dataframe=iris,
-# #     y_axis_column_name="sepal length (cm)",
-# #     x_axis_column_name="petal length (cm)",
-# #     title_for_plot="Sepal Length vs. Petal Length",
-# #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
-# #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
-# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris"
-# # )
-# PlotScatterplot(
-#     dataframe=iris,
-#     y_axis_column_name="sepal length (cm)",
-#     x_axis_column_name="petal length (cm)",
-#     title_for_plot="Sepal Length vs. Petal Length",
-#     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
-#     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
-#     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-#     upper_left_quadrant_label="",
-#     upper_right_quadrant_label="UPPER RIGHT",
-#     upper_right_quadrant_fill_color="#32a852",
-#     lower_left_quadrant_label="LOWER LEFT",
-#     lower_left_quadrant_fill_color="#d14a41",
-#     lower_right_quadrant_label=""
-# )
-# # PlotScatterplot(
-# #     dataframe=iris,
-# #     y_axis_column_name="sepal length (cm)",
-# #     x_axis_column_name="petal length (cm)",
-# #     title_for_plot="Sepal Length vs. Petal Length",
-# #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
-# #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
-# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-# #     fitted_line_type="lowess",
-# #     line_color="#d14a41",
-# # )
-# # PlotScatterplot(
-# #     dataframe=iris,
-# #     y_axis_column_name="sepal length (cm)",
-# #     x_axis_column_name="petal length (cm)",
-# #     title_for_plot="Sepal Length vs. Petal Length",
-# #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
-# #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
-# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-# #     grouping_column_name="species",
-# # )
-# # PlotScatterplot(
-# #     dataframe=iris,
-# #     y_axis_column_name="sepal length (cm)",
-# #     x_axis_column_name="petal length (cm)",
-# #     title_for_plot="Sepal Length vs. Petal Length",
-# #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
-# #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
-# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-# #     fitted_line_type="lowess",
-# #     grouping_column_name="species",
-# # )
-# # PlotScatterplot(
-# #     dataframe=iris,
-# #     y_axis_column_name="sepal length (cm)",
-# #     x_axis_column_name="petal length (cm)",
-# #     title_for_plot="Sepal Length vs. Petal Length",
-# #     subtitle_for_plot="Generally, sepal length increases as petal length increases.",
-# #     caption_for_plot="This is a caption for the plot. It can be up to 120 characters long, and it will be word-wrapped without splitting words.",
-# #     data_source_for_plot="https://archive.ics.uci.edu/ml/datasets/iris",
-# #     fitted_line_type="lowess",
-# #     grouping_column_name="species",
-# #     upper_left_quadrant_label="",
-# #     upper_right_quadrant_label="UPPER RIGHT",
-# #     upper_right_quadrant_fill_color="#999999",
-# #     lower_left_quadrant_label="LOWER LEFT",
-# #     lower_left_quadrant_fill_color="#999999",
-# #     lower_right_quadrant_label=""
-# # )
