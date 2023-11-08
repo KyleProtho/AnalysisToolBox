@@ -9,7 +9,8 @@ def GetZipFile(url,
                unzip=True,
                print_contents=True):
     """
-    This function downloads a zip file from a url and saves it to a specified folder. It can also unzip the file and print the contents of the zip file.
+    This function downloads a zip file from a url and saves it to a specified folder. 
+    It can also unzip the file and print the contents of the zip file.
     
     Args:
         url (str): The url of the zip file to download.

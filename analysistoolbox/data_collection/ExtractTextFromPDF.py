@@ -7,8 +7,8 @@ def ExtractTextFromPDF(filepath_to_pdf,
                        filepath_for_exported_text,
                        start_page=1,
                        end_page=None,
-                       show_word_count=True,
-                       show_estimated_token_count=True):
+                       show_word_count=False,
+                       show_estimated_token_count=False):
     """
     This function extracts text from a PDF file, cleans it, then saves it to a text file.
 
