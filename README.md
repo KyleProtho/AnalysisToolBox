@@ -270,6 +270,29 @@ path_to_save_folder = "/path/to/save/folder"
 GetZipFile(url, path_to_save_folder)
 ```
 
+### Data Processing
+
+#### AddDateNumberColumns
+
+The **AddDateNumberColumns** function adds columns for the year, month, quarter, week, day of the month, and day of the week to a dataframe.
+
+```python
+# Import necessary packages
+from analysistoolbox.data_processing import AddDateNumberColumns
+from datetime import datetime
+import pandas as pd
+
+# Create a sample dataframe
+data = {'Date': [datetime(2020, 1, 1), datetime(2020, 2, 1), datetime(2020, 3, 1), datetime(2020, 4, 1)]}
+df = pd.DataFrame(data)
+
+# Use the function on the sample dataframe
+df = AddDateNumberColumns(df, 'Date')
+
+# Print the updated dataframe
+print(df)
+```
+
 ## Contributions
 
 To report an issue, request a feature, or contribute to the project, please see the [CONTRIBUTING.md](CONTRIBUTING.md) file.
