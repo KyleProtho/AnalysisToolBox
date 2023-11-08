@@ -293,9 +293,85 @@ df = AddDateNumberColumns(df, 'Date')
 print(df)
 ```
 
+#### AddLeadingZeros
+
+The **AddLeadingZeros** function adds leading zeros to a column. If fixed_length is not specified, the longest string in the column is used as the fixed length. If add_as_new_column is set to True, the new column is added to the dataframe. Otherwise, the original column is updated.
+
+```python
+# Import necessary packages
+from analysistoolbox.data_processing import AddLeadingZeros
+import pandas as pd
+
+# Create a sample dataframe
+data = {'ID': [1, 23, 456, 7890]}
+df = pd.DataFrame(data)
+
+# Print original dataframe
+print("Original dataframe:")
+print(df)
+
+# Use the AddLeadingZeros function
+df = AddLeadingZeros(df, 'ID', add_as_new_column=True)
+
+# Print updated dataframe
+print("Updated dataframe:")
+print(df)
+```
+
+#### AddRowCountColumn
+
+The **AddRowCountColumn** function adds a column to a dataframe that contains the row number for each row, based on a group (or groups) of columns. The function can also sort the dataframe by a column or columns before adding the row count column.
+
+```python
+# Import necessary packages
+from analysistoolbox.data_processing import AddRowCountColumn
+import pandas as pd
+
+# Create a sample dataframe
+data = {
+    'Payment Method': ['Check', 'Credit Card', 'Check', 'Credit Card', 'Check', 'Credit Card', 'Check', 'Credit Card'],
+    'Transaction Value': [100, 200, 300, 400, 500, 600, 700, 800],
+    'Transaction Order': [1, 2, 3, 4, 5, 6, 7, 8]
+}
+df = pd.DataFrame(data)
+
+# Define the parameters for the function
+grouping_variables = ['Payment Method']
+order_columns = ['Transaction Order']
+ascending_order_args = [True]
+row_count_column_name = 'Row Count'
+
+# Call the function
+new_df = AddRowCountColumn(df, grouping_variables, order_columns, ascending_order_args, row_count_column_name)
+```
+
+#### AddTPeriodColumn
+
+The **AddTPeriodColumn** function adds a T-period column to a dataframe. The T-period column is the number of intervals (e.g., days or weeks) since the earliest date in the dataframe.
+
+```python
+# Import necessary libraries
+from analysistoolbox.data_processing import AddTPeriodColumn
+from datetime import datetime
+import pandas as pd
+
+# Create a sample dataframe
+data = {
+    'date': pd.date_range(start='1/1/2020', end='1/10/2020'),
+    'value': range(1, 11)
+}
+df = pd.DataFrame(data)
+
+# Use the function
+df_updated = AddTPeriodColumn(df, 'date', 'days')
+
+# Print the updated dataframe
+print(df_updated)
+```
+
 ## Contributions
 
-To report an issue, request a feature, or contribute to the project, please see the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+To report an issue, request a feature, or contribute to the project, please see the [CONTRIBUTING.md](CONTRIBUTING.md) file (in progress).
 
 ## License
 
