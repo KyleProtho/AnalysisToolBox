@@ -10,3 +10,4 @@ analysistoolbox/analysistoolbox.egg-info
 build
 dist
 analysistoolbox.egg-info
+__pycache__
