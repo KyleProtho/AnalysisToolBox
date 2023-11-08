@@ -1,3 +1,4 @@
+# Load packages
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -7,6 +8,7 @@ from sklearn import metrics
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 
+# Declare function
 def CreateContentBasedRecommender(dataframe,
                                   outcome_variable,
                                   user_list_of_predictor_variables,
@@ -217,69 +219,3 @@ def CreateContentBasedRecommender(dataframe,
     else:
         return(model)
 
-# # Test the function
-# # Import data
-# data_movies = pd.read_csv("C:/Users/oneno/Downloads/movies.csv")
-# data_users = pd.read_csv("C:/Users/oneno/Downloads/ratings.csv")
-# # Add genre flags
-# data_movies['Movie genre - Animated'] = data_movies['genres'].str.contains('Animation').astype(int)
-# data_movies['Movie genre - Comedy'] = data_movies['genres'].str.contains('Comedy').astype(int)
-# data_movies['Movie genre - Drama'] = data_movies['genres'].str.contains('Drama').astype(int)
-# data_movies['Movie genre - Romance'] = data_movies['genres'].str.contains('Romance').astype(int)
-# data_movies['Movie genre - Thriller'] = data_movies['genres'].str.contains('Thriller').astype(int)
-# data_movies['Movie genre - Action'] = data_movies['genres'].str.contains('Action').astype(int)
-# data_movies['Movie genre - Adventure'] = data_movies['genres'].str.contains('Adventure').astype(int)
-# data_movies['Movie genre - Fantasy'] = data_movies['genres'].str.contains('Fantasy').astype(int)
-# data_movies['Movie genre - Sci-fi'] = data_movies['genres'].str.contains('Sci-Fi').astype(int)
-# data_movies['Movie genre - Horror'] = data_movies['genres'].str.contains('Horror').astype(int)
-# # Join average rating to movies
-# df_temp = data_users.groupby('movieId').agg({'rating': 'mean'}).reset_index()
-# df_temp.rename(columns={'rating': 'Movie - Average rating'}, inplace=True)
-# data_movies = data_movies.merge(df_temp, how='left', on='movieId')
-# del(df_temp)
-# # Create list of genre columns
-# list_of_genres = [
-#     'Movie genre - Animated', 'Movie genre - Comedy', 'Movie genre - Drama', 
-#     'Movie genre - Romance', 'Movie genre - Thriller', 'Movie genre - Action', 
-#     'Movie genre - Adventure', 'Movie genre - Fantasy', 'Movie genre - Sci-fi', 
-#     'Movie genre - Horror'
-# ]
-# # Join movie attributes to users
-# data_users = data_users.merge(
-#     data_movies[['movieId', 'Movie - Average rating'] + list_of_genres],
-#     how='left', 
-#     on='movieId'
-# )
-# del(data_movies)
-# # Left join average rating by genre
-# list_user_genre_ratings = []
-# for genre in list_of_genres:
-#     new_col_name = genre.replace('Movie genre - ', 'User - Average rating for ')
-#     list_user_genre_ratings.append(new_col_name)
-#     data_users[new_col_name] = data_users[genre] * data_users['rating']
-# data_users_summary = data_users.groupby('userId').agg({col: 'mean' for col in list_user_genre_ratings}).reset_index()
-# data_users.drop(columns=list_user_genre_ratings, inplace=True)
-# data_users = data_users.merge(data_users_summary, how='left', on='userId')
-# del(data_users_summary, genre, new_col_name, list_user_genre_ratings, list_of_genres)
-# # Create content based recommender
-# movie_recommnder = CreateContentBasedRecommender(
-#     dataframe=data_users,
-#     outcome_variable='rating',
-#     user_list_of_predictor_variables=[
-#         'User - Average rating for Animated',
-#         'User - Average rating for Comedy', 'User - Average rating for Drama',
-#         'User - Average rating for Romance',
-#         'User - Average rating for Thriller',
-#         'User - Average rating for Action',
-#         'User - Average rating for Adventure',
-#         'User - Average rating for Fantasy', 'User - Average rating for Sci-fi',
-#         'User - Average rating for Horror'
-#     ],
-#     item_list_of_predictor_variables=[
-#         'Movie - Average rating',
-#         'Movie genre - Animated', 'Movie genre - Comedy', 'Movie genre - Drama',
-#         'Movie genre - Romance', 'Movie genre - Thriller',
-#         'Movie genre - Action', 'Movie genre - Adventure',
-#         'Movie genre - Fantasy', 'Movie genre - Sci-fi', 'Movie genre - Horror'
-#     ]
-# )
