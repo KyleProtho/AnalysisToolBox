@@ -43,6 +43,7 @@ setup(
         'openai',
         'pandas',
         'pygris',
+        'pymetalog',
         'PyPDF2',
         'python-dotenv',
         'pywin32',

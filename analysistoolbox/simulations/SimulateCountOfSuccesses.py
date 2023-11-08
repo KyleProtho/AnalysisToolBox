@@ -6,18 +6,15 @@ import pandas as pd
 import random
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
-def SimulateTimeUntilNEvents(number_of_events=1,
-                             expected_time_between_events=1,
+def SimulateCountOfSuccesses(probability_of_success,
+                             sample_size_per_trial,
                              # Simulation parameters
                              number_of_trials=10000,
-                             random_seed=412,
                              return_format='dataframe',
-                             simulated_variable_name='Time Until N Events',
+                             simulated_variable_name='Count',
+                             random_seed=412,
                              # Plotting parameters
                              plot_simulation_results=True,
                              fill_color="#999999",
@@ -27,7 +24,7 @@ def SimulateTimeUntilNEvents(number_of_events=1,
                              show_median=True,
                              # Text formatting arguments
                              title_for_plot="Simulation Results",
-                             subtitle_for_plot="Showing the distribution of time until n events occur",
+                             subtitle_for_plot="Showing the simulated number of successes",
                              caption_for_plot=None,
                              data_source_for_plot=None,
                              show_y_axis=False,
@@ -35,20 +32,45 @@ def SimulateTimeUntilNEvents(number_of_events=1,
                              subtitle_y_indent=1.05,
                              caption_y_indent=-0.15):
     """
-    Gamma distributions are continuous distributions that model the amount of time needed 
-    before a specified number of events happen.
-
+    Simulates the number of successes in a binomial distribution.
+    The binomial distribution can be used to describe the number of successes 'p' in 'n' total events
     Conditions:
-    - Continuous non-negative data
-    - A generalization of the exponential distribution, but more parameters to fit (With great flexibility, comes great complexity!)
-    - An exponential distribution models the time to the first event, the Gamma distribution models the time to the ‘n’th event.
+    - Discrete data
+    - Two possible outcomes for each trial
+    - Each trial is independent
+    - The probability of success/failure is the same in each trial
+    
+    Args:
+        probability_of_success (float): The probability of success for each trial.
+        sample_size_per_trial (int): The number of trials in each simulation.
+        number_of_trials (int, optional): The number of simulations to run. Defaults to 10000.
+        return_format (str, optional): The format in which to return the simulation results. Must be either 'dataframe' or 'array'. Defaults to 'dataframe'.
+        simulated_variable_name (str, optional): The name of the simulated variable. Defaults to 'Count'.
+        random_seed (int, optional): The random seed to use for replicability. Defaults to 412.
+        plot_simulation_results (bool, optional): Whether to plot the simulation results. Defaults to True.
+        fill_color (str, optional): The color to fill the histogram bars with. Defaults to "#999999".
+        fill_transparency (float, optional): The transparency of the histogram bars. Must be between 0 and 1. Defaults to 0.6.
+        figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
+        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
+        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
+        title_for_plot (str, optional): The title of the plot. Defaults to "Simulation Results".
+        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Showing the simulated number of successes".
+        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
+        show_y_axis (bool, optional): Whether to show the y-axis on the plot. Defaults to False.
+        title_y_indent (float, optional): The y-indent of the plot title. Defaults to 1.1.
+        subtitle_y_indent (float, optional): The y-indent of the plot subtitle. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent of the plot caption. Defaults to -0.15.
+
+    Returns:
+        pandas.DataFrame or numpy.ndarray: The simulated results in the specified format.
     """
     
     # Ensure arguments are valid
-    if number_of_events <= 0:
-        raise ValueError("Please make sure that your number_of_events argument is greater than 0.")
-    if expected_time_between_events <= 0:
-        raise ValueError("Please make sure that your expected_time_between_events argument is greater than 0.")
+    if probability_of_success >= 1:
+        raise ValueError("Please change your probability_of_success argument -- it must be less than 1.")
+    if sample_size_per_trial <= 0:
+        raise ValueError("Please make sure that your sample_size_per_trial argument is a positive whole number.")
     
     # Ensure that return_format is either 'dataframe' or 'array'
     if return_format not in ['dataframe', 'array']:
@@ -57,17 +79,15 @@ def SimulateTimeUntilNEvents(number_of_events=1,
     # If specified, set random seed for replicability
     if random_seed is not None:
         random.seed(random_seed)
-        
-    # Simulate time between events
-    list_sim_results = np.random.gamma(
-        shape=number_of_events,
-        scale=expected_time_between_events,
-        size=number_of_trials
-    )
+
+    # Simulate number of successes
+    list_sim_results = np.random.binomial(n=sample_size_per_trial,
+                                          p=probability_of_success,
+                                          size=number_of_trials)
     
-    # Convert results to a dataframe
+    # Convert results to dataframe
     df_simulation = pd.DataFrame(list_sim_results,
-                                 columns = [simulated_variable_name])
+                                 columns=[simulated_variable_name])
     
     # Generate plot if user requests it
     if plot_simulation_results == True:
@@ -80,6 +100,7 @@ def SimulateTimeUntilNEvents(number_of_events=1,
             x=simulated_variable_name,
             color=fill_color,
             alpha=fill_transparency,
+            binwidth=1
         )
         
         # Remove top, left, and right spines. Set bottom spine to dark gray.
@@ -220,7 +241,3 @@ def SimulateTimeUntilNEvents(number_of_events=1,
     else:
         return np.array(list_sim_results)
 
-
-# # Test function
-# SimulateTimeUntilNEvents(number_of_events=3,
-#                           expected_time_between_events=10)

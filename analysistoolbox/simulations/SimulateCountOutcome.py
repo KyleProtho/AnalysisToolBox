@@ -6,9 +6,6 @@ import pandas as pd
 import random
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def SimulateCountOutcome(expected_count,
@@ -34,14 +31,37 @@ def SimulateCountOutcome(expected_count,
                          subtitle_y_indent=1.05,
                          caption_y_indent=-0.15):
     """
-    Poisson distributions are discrete distributions that indicate the probability 
-    of a number of events
-
+    Simulates a count outcome using a Poisson distribution.
+    Poisson distributions are discrete distributions that indicate the probability of a number of events occurring in a fixed period of time if these events occur
     Conditions:
     - Discrete non-negative data - count of events, the rate parameter can be a non-integer positive value
     - Each event is independent of other events
     - Each event happens at a fixed rate
     - A fixed amount of time in which the events occur
+
+    Args:
+        expected_count (float): The expected count of events.
+        number_of_trials (int): The number of trials to simulate. Default is 10000.
+        return_format (str): The format in which to return the simulation results. Must be either 'dataframe' or 'array'. Default is 'dataframe'.
+        simulated_variable_name (str): The name of the simulated variable. Default is 'Count'.
+        random_seed (int): The random seed to use for replicability. Default is 412.
+        plot_simulation_results (bool): Whether to plot the simulation results. Default is True.
+        fill_color (str): The color to use for the fill of the histogram. Default is "#999999".
+        fill_transparency (float): The transparency of the fill of the histogram. Default is 0.6.
+        figure_size (tuple): The size of the figure. Default is (8, 6).
+        show_mean (bool): Whether to show the mean on the plot. Default is True.
+        show_median (bool): Whether to show the median on the plot. Default is True.
+        title_for_plot (str): The title of the plot. Default is "Simulation Results".
+        subtitle_for_plot (str): The subtitle of the plot. Default is "Showing the distribution of the simulated count outcome".
+        caption_for_plot (str): The caption of the plot. Default is None.
+        data_source_for_plot (str): The data source for the plot. Default is None.
+        show_y_axis (bool): Whether to show the y-axis on the plot. Default is False.
+        title_y_indent (float): The y-indent of the title on the plot. Default is 1.1.
+        subtitle_y_indent (float): The y-indent of the subtitle on the plot. Default is 1.05.
+        caption_y_indent (float): The y-indent of the caption on the plot. Default is -0.15.
+
+    Returns:
+        pandas.DataFrame or numpy.ndarray: The simulation results in the specified format.
     """
     
     # Ensure arguments are valid
@@ -215,8 +235,4 @@ def SimulateCountOutcome(expected_count,
         return df_simulation
     else:
         return np.array(list_sim_results)
-
-
-# # Test function
-# df_test = SimulateCountOutcome(expected_count=5)
 

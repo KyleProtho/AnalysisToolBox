@@ -6,87 +6,95 @@ import pandas as pd
 import random
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
-# Delcare function
-def SimulateNormallyDistributedOutcome(expected_outcome=0,
-                                       standard_deviation_of_outcome=None,
-                                       min_max_of_outcome=None,
-                                       # Simulation parameters
-                                       number_of_trials=10000,
-                                       return_format='dataframe',
-                                       simulated_variable_name='Simulated Outcome',
-                                       random_seed=412,
-                                       # Plotting parameters
-                                       plot_simulation_results=True,
-                                       fill_color="#999999",
-                                       fill_transparency=0.6,
-                                       figure_size=(8, 6),
-                                       show_mean=True,
-                                       show_median=True,
-                                       # Text formatting arguments
-                                       title_for_plot="Simulation Results",
-                                       subtitle_for_plot="Showing the distribution of the outcome",
-                                       caption_for_plot=None,
-                                       data_source_for_plot=None,
-                                       show_y_axis=False,
-                                       title_y_indent=1.1,
-                                       subtitle_y_indent=1.05,
-                                       caption_y_indent=-0.15):
+# Declare function
+def SimulateCountUntilFirstSuccess(probability_of_success,
+                                   # Simulation parameters
+                                   number_of_trials=10000,
+                                   simulated_variable_name='Count Until First Success',
+                                   random_seed=412,
+                                   return_format='dataframe',
+                                   # Plotting parameters
+                                   plot_simulation_results=True,
+                                   fill_color="#999999",
+                                   fill_transparency=0.6,
+                                   figure_size=(8, 6),
+                                   show_mean=True,
+                                   show_median=True,
+                                   # Text formatting arguments
+                                   title_for_plot="Simulation Results",
+                                   subtitle_for_plot="Showing the distribution of the count until first success",
+                                   caption_for_plot=None,
+                                   data_source_for_plot=None,
+                                   show_y_axis=False,
+                                   title_y_indent=1.1,
+                                   subtitle_y_indent=1.05,
+                                   caption_y_indent=-0.15):
     """
-    The normal distribution is a continuous probability distribution that is symmetrical around its mean, 
-    most of the observations cluster around the central peak, and the probabilities for values further away 
-    from the mean taper off equally in both directions. Extreme values in both tails of the distribution 
-    are similarly unlikely.
-
+    Simulate the count until the first success using a negative binomial distribution.
+    A negative binomial distribution can be used to describe the number of successes r - 1
+    and x failures in x + r -1 trials, until you have a success on the x + rth trial. 
+    Rephrased, this models the number of failures (x) you would have to see before you see a 
+    certain number of successes (r).
     Conditions:
-    - Continuous data
-    - Unbounded distribution
-    - Outliers are minimal
+    - Count of discrete events
+    - The events CAN be non-independent, implying that events can influence or cause other events
+    - Variance can exceed the mean
+
+    Args:
+        probability_of_success (float): The probability of success for each trial.
+        number_of_trials (int, optional): The number of trials to simulate. Defaults to 10000.
+        simulated_variable_name (str, optional): The name of the simulated variable. Defaults to 'Count Until First Success'.
+        random_seed (int, optional): The random seed for replicability. Defaults to 412.
+        return_format (str, optional): The format of the output. Either 'dataframe' or 'array'. Defaults to 'dataframe'.
+        plot_simulation_results (bool, optional): Whether to plot the simulation results. Defaults to True.
+        fill_color (str, optional): The color to fill the histogram bars with. Defaults to "#999999".
+        fill_transparency (float, optional): The transparency of the histogram bars. Defaults to 0.6.
+        figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
+        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
+        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
+        title_for_plot (str, optional): The title of the plot. Defaults to "Simulation Results".
+        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Showing the distribution of the count until first success".
+        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
+        show_y_axis (bool, optional): Whether to show the y-axis on the plot. Defaults to False.
+        title_y_indent (float, optional): The y-indent of the plot title. Defaults to 1.1.
+        subtitle_y_indent (float, optional): The y-indent of the plot subtitle. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent of the plot caption. Defaults to -0.15.
+
+    Returns:
+        pandas.DataFrame or numpy.ndarray: The simulated count until the first success.
     """
     
-    # Ensure arguments are valid
-    if standard_deviation_of_outcome is not None and standard_deviation_of_outcome < 0:
-        raise ValueError("Please make sure that your standard_deviation_of_outcome argument is greater than or equal to 0.")
+    # Ensure probability_of_success is between 0 and 1
+    if probability_of_success > 1 or probability_of_success < 0:
+        raise ValueError("Please change your probability_of_success argument -- it must be greater than 0 and less than 1.")
     
     # Ensure that return_format is either 'dataframe' or 'array'
     if return_format not in ['dataframe', 'array']:
         raise ValueError("return_format must be either 'dataframe' or 'array'.")
     
-    # Ensure that min_max_of_outcome is either None or a list of length 2
-    if min_max_of_outcome is not None:
-        if len(min_max_of_outcome) != 2:
-            raise ValueError("If specified, min_max_of_outcome must be a list of length 2.")
-    
     # If specified, set random seed for replicability
     if random_seed is not None:
         random.seed(random_seed)
-    
-    # If standard_deviation_of_outcome and min_max_of_outcome are not None, print a warning
-    if standard_deviation_of_outcome is not None and min_max_of_outcome is not None:
-        print("Warning: Both standard_deviation_of_outcome and min_max_of_outcome were specified. Ignoring min_max_of_outcome.")
-    
-    # If standard_deviation_of_outcome is not specified, estimate it using min_max_of_outcome
-    if standard_deviation_of_outcome is None:
-        if min_max_of_outcome is None:
-            raise ValueError("Please specify either standard_deviation_of_outcome or min_max_of_outcome.")
-        else:
-            # This formula is known as the "range rule" and it is based on the empirical finding that the range 
-            # of a normal distribution is typically equal to 3.29 times its standard deviation.
-            standard_deviation_of_outcome = (min_max_of_outcome[1] - min_max_of_outcome[0]) / 3.29  
-        
-    # Simulate normally distributed outcome
-    list_sim_results = np.random.normal(
-        loc=expected_outcome,
-        scale=standard_deviation_of_outcome,
-        size=number_of_trials
-    )
-    
-    # Create dataframe of simulation results
+
+    # Simulate count until first success
+    list_sim_results = []
+    for i in range(0, number_of_trials):
+        is_success = False
+        event_count = 0
+        while is_success == False:
+            event_count += 1
+            sim_result = random.choices(population = [0, 1],
+                                        weights = [1-probability_of_success, probability_of_success])
+            sim_result = sum(sim_result)
+            if sim_result == 1:
+                list_sim_results.append(event_count)
+                is_success = True
+            else:
+                continue
     df_simulation = pd.DataFrame(list_sim_results,
-                                 columns=[simulated_variable_name])
+                                 columns = [simulated_variable_name])
     
     # Generate plot if user requests it
     if plot_simulation_results == True:
@@ -238,13 +246,4 @@ def SimulateNormallyDistributedOutcome(expected_outcome=0,
         return df_simulation
     else:
         return np.array(list_sim_results)
-    
 
-# # Test function
-# # SimulateNormallyDistributedOutcome(expected_outcome=15,
-# #                                    min_max_of_outcome=[10, 20])
-# # SimulateNormallyDistributedOutcome(expected_outcome=15,
-# #                                    standard_deviation_of_outcome=2.5)
-# SimulateNormallyDistributedOutcome(expected_outcome=15,
-#                                    standard_deviation_of_outcome=2.5,
-#                                    min_max_of_outcome=[10, 20])

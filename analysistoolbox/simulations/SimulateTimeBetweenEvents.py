@@ -1,97 +1,83 @@
 # Load packages
-from math import ceil, sqrt
+from math import ceil
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import random
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
-def SimulateTDistributedOutcome(degrees_of_freedom,
-                                expected_outcome=0,
-                                standard_deviation_of_outcome=None,
-                                min_max_of_outcome=None,
-                                # Simulation parameters
-                                number_of_trials=10000,
-                                return_format='dataframe',
-                                simulated_variable_name='Simulated Outcome',
-                                random_seed=412,
-                                # Plotting parameters
-                                plot_simulation_results=True,
-                                fill_color="#999999",
-                                fill_transparency=0.6,
-                                figure_size=(8, 6),
-                                show_mean=True,
-                                show_median=True,
-                                # Text formatting arguments
-                                title_for_plot="Simulation Results",
-                                subtitle_for_plot="Showing the distribution of the outcome",
-                                caption_for_plot=None,
-                                data_source_for_plot=None,
-                                show_y_axis=False,
-                                title_y_indent=1.1,
-                                subtitle_y_indent=1.05,
-                                caption_y_indent=-0.15):
+def SimulateTimeBetweenEvents(expected_time_between_events,
+                              number_of_trials=10000,
+                              return_format='dataframe',
+                              simulated_variable_name='Time Between Events',
+                              random_seed=412,
+                              plot_simulation_results=True,
+                              fill_color="#999999",
+                              fill_transparency=0.6,
+                              figure_size=(8, 6),
+                              show_mean=True,
+                              show_median=True,
+                              title_for_plot="Simulation Results",
+                              subtitle_for_plot="Showing the distribution of the time between events",
+                              caption_for_plot=None,
+                              data_source_for_plot=None,
+                              show_y_axis=False,
+                              title_y_indent=1.1,
+                              subtitle_y_indent=1.05,
+                              caption_y_indent=-0.15):
     """
-    The T distribution (also called Student's T Distribution) is a family of distributions that 
-    look almost identical to the normal distribution curve, only a bit shorter and fatter. 
-    A Student's t-distribution is used where one would be inclined to use a Normal distribution, 
-    but a Normal distribution is susceptible to outliers whereas a t-distribution is more robust.
-
+    Simulates the time between events using an exponential distribution.
     Conditions:
-    - Continuous data
-    - Unbounded distribution
-    - Considered an overdispersed Normal distribution, mixture of individual normal distributions with different variances
+    - Continuous non-negative data
+    - Time between events are considered to happen at a constant rate
+    - Events are considered to be independent
+
+    Args:
+        expected_time_between_events (float): The expected time between events.
+        number_of_trials (int, optional): The number of trials to simulate. Defaults to 10000.
+        return_format (str, optional): The format of the output. Either 'dataframe' or 'array'. Defaults to 'dataframe'.
+        simulated_variable_name (str, optional): The name of the simulated variable. Defaults to 'Time Between Events'.
+        random_seed (int, optional): The random seed for replicability. Defaults to 412.
+        plot_simulation_results (bool, optional): Whether to plot the simulation results. Defaults to True.
+        fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
+        fill_transparency (float, optional): The fill transparency for the histogram. Defaults to 0.6.
+        figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
+        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
+        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
+        title_for_plot (str, optional): The title of the plot. Defaults to "Simulation Results".
+        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Showing the distribution of the time between events".
+        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
+        show_y_axis (bool, optional): Whether to show the y-axis on the plot. Defaults to False.
+        title_y_indent (float, optional): The y-indent of the title on the plot. Defaults to 1.1.
+        subtitle_y_indent (float, optional): The y-indent of the subtitle on the plot. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent of the caption on the plot. Defaults to -0.15.
+
+    Returns:
+        pandas.DataFrame or numpy.ndarray: The simulated time between events.
     """
     
     # Ensure arguments are valid
-    if standard_deviation_of_outcome is not None and standard_deviation_of_outcome < 0:
-        raise ValueError("Please make sure that your standard_deviation_of_outcome argument is greater than or equal to 0.")
-    if degrees_of_freedom <= 0:
-        raise ValueError("Please make sure that your degrees_of_freedom argument is greater than or equal to 1.")
+    if expected_time_between_events <= 0:
+        raise ValueError("Please make sure that your expected_time_between_events argument is greater than 0.")
     
     # Ensure that return_format is either 'dataframe' or 'array'
     if return_format not in ['dataframe', 'array']:
         raise ValueError("return_format must be either 'dataframe' or 'array'.")
     
-    # Ensure that min_max_of_outcome is either None or a list of length 2
-    if min_max_of_outcome is not None:
-        if len(min_max_of_outcome) != 2:
-            raise ValueError("If specified, min_max_of_outcome must be a list of length 2.")
-    
-    # If specified, set random seed for replicability
-    if random_seed is not None:
-        random.seed(random_seed)
-    
-    # If standard_deviation_of_outcome and min_max_of_outcome are not None, print a warning
-    if standard_deviation_of_outcome is not None and min_max_of_outcome is not None:
-        print("Warning: Both standard_deviation_of_outcome and min_max_of_outcome were specified. Ignoring min_max_of_outcome.")
-    
-    # If standard_deviation_of_outcome is not specified, estimate it using min_max_of_outcome
-    if standard_deviation_of_outcome is None:
-        if min_max_of_outcome is None:
-            raise ValueError("Please specify either standard_deviation_of_outcome or min_max_of_outcome.")
-        else:
-            standard_deviation_of_outcome = (min_max_of_outcome[1] - min_max_of_outcome[0]) / (4 * sqrt(10))
-            # The range rule of a t-distribution is typically equal to 4 times the standard deviation of the distribution, 
-            # multiplied by the square root of the degrees of freedom.
-    
     # If specified, set random seed for replicability
     if random_seed is not None:
         random.seed(random_seed)
         
-    # Simulate T distributed outcome
-    list_sim_results = np.random.standard_t(df=degrees_of_freedom,
-                                            size=number_of_trials)
+    # Simulate time between events
+    list_sim_results = np.random.exponential(
+        scale=expected_time_between_events,
+        size = number_of_trials
+    )
     
-    # Convert T score to original value scale
-    list_sim_results = list_sim_results * standard_deviation_of_outcome + expected_outcome
-    
-    # Create dataframe of simulation results
+    # Convert results to a dataframe
     df_simulation = pd.DataFrame(list_sim_results,
                                  columns=[simulated_variable_name])
     
@@ -246,11 +232,3 @@ def SimulateTDistributedOutcome(degrees_of_freedom,
     else:
         return np.array(list_sim_results)
 
-
-# # Test function
-# # df_test = SimulateTDistributedOutcome(degrees_of_freedom=3,
-# #                                       expected_outcome=0,
-# #                                       min_max_of_outcome=[-3, 3])
-# df_test = SimulateTDistributedOutcome(degrees_of_freedom=3,
-#                                       expected_outcome=0,
-#                                       standard_deviation_of_outcome=1)

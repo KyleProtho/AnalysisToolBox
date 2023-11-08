@@ -6,9 +6,6 @@ import pandas as pd
 import pymetalog as pm
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def CreateMetalogDistribution(dataframe,
@@ -39,6 +36,42 @@ def CreateMetalogDistribution(dataframe,
                               title_y_indent=1.1,
                               subtitle_y_indent=1.05,
                               caption_y_indent=-0.15):
+    """
+    Creates a metalog distribution from a given variable in a pandas dataframe.
+
+    Args:
+        dataframe (pandas.DataFrame): The pandas dataframe containing the variable.
+        variable (str): The name of the variable in the dataframe.
+        lower_bound (float, optional): The lower bound of the metalog distribution. Defaults to None.
+        upper_bound (float, optional): The upper bound of the metalog distribution. Defaults to None.
+        learning_rate (float, optional): The learning rate of the metalog distribution. Defaults to 0.01.
+        term_maximum (int, optional): The maximum number of terms used in the metalog distribution. Defaults to 9.
+        term_minimum (int, optional): The minimum number of terms used in the metalog distribution. Defaults to 2.
+        term_for_random_sample (int, optional): The number of terms used in the metalog distribution for random sampling.
+            Defaults to None.
+        number_of_samples (int, optional): The number of samples to randomly select from the metalog distribution.
+            Defaults to 10000.
+        show_summary (bool, optional): Whether to show the summary of the metalog distribution. Defaults to True.
+        return_format (str, optional): The format of the output. Either 'dataframe' or 'array'. Defaults to 'dataframe'.
+        plot_metalog_distribution (bool, optional): Whether to plot the metalog distribution. Defaults to True.
+        fill_color (str, optional): The color of the histogram fill. Defaults to "#999999".
+        fill_transparency (float, optional): The transparency of the histogram fill. Defaults to 0.6.
+        figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
+        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
+        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
+        title_for_plot (str, optional): The title of the plot. Defaults to "Metalog Distribution".
+        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Showing the metalog distribution of the variable".
+        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
+        show_y_axis (bool, optional): Whether to show the y-axis on the plot. Defaults to False.
+        title_y_indent (float, optional): The y-indent of the title on the plot. Defaults to 1.1.
+        subtitle_y_indent (float, optional): The y-indent of the subtitle on the plot. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent of the caption on the plot. Defaults to -0.15.
+
+    Returns:
+        pandas.DataFrame or numpy.ndarray: The metalog distribution in the specified format.
+    """
+    
     # Ensure that return_format is either 'dataframe' or 'array'
     if return_format not in ['dataframe', 'array']:
         raise ValueError("return_format must be either 'dataframe' or 'array'.")
@@ -260,24 +293,3 @@ def CreateMetalogDistribution(dataframe,
     else:
         return arr_metalog
 
-
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# iris = iris[iris['species'] == 0]
-# # petal_legnth_dist = CreateMetalogDistribution(
-# #     dataframe=iris,
-# #     variable='petal length (cm)',
-# # )
-# # petal_legnth_dist = CreateMetalogDistribution(
-# #     dataframe=iris,
-# #     variable='petal length (cm)',
-# #     upper_bound=7,
-# # )
-# petal_legnth_dist = CreateMetalogDistribution(
-#     dataframe=iris,
-#     variable='petal length (cm)',
-#     lower_bound=0,
-#     upper_bound=3
-# )

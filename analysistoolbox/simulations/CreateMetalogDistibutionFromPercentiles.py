@@ -6,9 +6,6 @@ from math import ceil
 from matplotlib import pyplot as plt
 import seaborn as sns
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
 # Declare function
 def CreateMetalogDistributionFromPercentiles(list_of_values,
@@ -40,6 +37,41 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
                                              title_y_indent=1.1,
                                              subtitle_y_indent=1.05,
                                              caption_y_indent=-0.15):
+    """
+    Creates a metalog distribution from a list of values and a list of percentiles.
+
+    Args:
+        list_of_values (list): A list of values.
+        list_of_percentiles (list): A list of percentiles.
+        lower_bound (float, optional): The lower bound of the metalog distribution. Defaults to None.
+        upper_bound (float, optional): The upper bound of the metalog distribution. Defaults to None.
+        learning_rate (float, optional): The learning rate of the metalog distribution. Defaults to .01.
+        term_maximum (int, optional): The maximum number of terms used in the metalog distribution. Defaults to None.
+        term_minimum (int, optional): The minimum number of terms used in the metalog distribution. Defaults to 2.
+        term_for_random_sample (int, optional): The number of terms used in the metalog distribution for a random sample. Defaults to None.
+        number_of_samples (int, optional): The number of samples to take from the metalog distribution. Defaults to 10000.
+        variable_name (str, optional): The name of the variable. Defaults to "Simulated Value".
+        show_summary (bool, optional): Whether to show the summary of the metalog distribution. Defaults to True.
+        return_format (str, optional): The format of the return value. Must be one of "dataframe" or "array". Defaults to "dataframe".
+        show_distribution_plot (bool, optional): Whether to show the metalog distribution plot. Defaults to True.
+        figure_size (tuple, optional): The size of the metalog distribution plot. Defaults to (8, 6).
+        fill_color (str, optional): The fill color of the metalog distribution plot. Defaults to "#999999".
+        fill_transparency (float, optional): The fill transparency of the metalog distribution plot. Defaults to 0.6.
+        show_mean (bool, optional): Whether to show the mean on the metalog distribution plot. Defaults to True.
+        show_median (bool, optional): Whether to show the median on the metalog distribution plot. Defaults to True.
+        show_y_axis (bool, optional): Whether to show the y-axis on the metalog distribution plot. Defaults to False.
+        title_for_plot (str, optional): The title of the metalog distribution plot. Defaults to None.
+        subtitle_for_plot (str, optional): The subtitle of the metalog distribution plot. Defaults to None.
+        caption_for_plot (str, optional): The caption of the metalog distribution plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source of the metalog distribution plot. Defaults to None.
+        title_y_indent (float, optional): The y-indent of the title on the metalog distribution plot. Defaults to 1.1.
+        subtitle_y_indent (float, optional): The y-indent of the subtitle on the metalog distribution plot. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-indent of the caption on the metalog distribution plot. Defaults to -0.15.
+
+    Returns:
+        pandas.DataFrame or numpy.ndarray: The metalog distribution in the specified format.
+    """
+    
     # Ensure that the list of values and list of percentiles are the same length
     if len(list_of_values) != len(list_of_percentiles):
         raise ValueError("The list of values and list of percentiles must be the same length.")
@@ -261,14 +293,3 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
     else:
         return arr_metalog
     
-    
-# # Test function
-# CreateMetalogDistributionFromPercentiles(
-#     list_of_values=[20, 25, 30, 90],
-#     list_of_percentiles=[.10, .33, .66, .90],
-#     lower_bound=0,
-#     upper_bound=100,
-#     variable_name="Estimated Scores in Survey",
-#     title_for_plot="Estimated Scores in Survey",
-#     subtitle_for_plot="Based on observed scores for the 10th, 33rd, 66th, and 90th percentiles."
-# )

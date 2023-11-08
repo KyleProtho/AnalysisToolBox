@@ -7,4 +7,5 @@ from .hypothesis_testing import *
 from .linear_algebra import *
 from .predictive_analytics import *
 from .prescriptive_analytics import *
+from .simulations import *
 from .visualizations import *
