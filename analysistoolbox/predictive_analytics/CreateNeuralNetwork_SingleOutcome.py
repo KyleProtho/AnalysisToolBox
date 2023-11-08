@@ -1,3 +1,4 @@
+# Load packages
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -6,7 +7,7 @@ from sklearn import metrics
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 
-# Function that creates a neural network model using TensorFlow
+# Declare function
 def CreateNeuralNetwork_SingleOutcome(dataframe,
                                       outcome_variable,
                                       list_of_predictor_variables,
@@ -205,27 +206,3 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
     else:
         return(model)
 
-
-# # Test the function
-# from sklearn.datasets import load_iris
-# iris = pd.DataFrame(load_iris(as_frame=True).data)
-# iris['species'] = load_iris(as_frame=True).target
-# # # CATEGORICAL OUTCOME
-# # # iris = iris[iris['species'] != 2]
-# # species_neural_net_model = CreateNeuralNetwork_SingleOutcome(
-# #     dataframe=iris,
-# #     outcome_variable='species',
-# #     is_outcome_categorical=True,
-# #     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-# #     number_of_hidden_layers=2,
-# #     scale_predictor_variables=True
-# # )
-# # NUMERICAL OUTCOME
-# sep_len_neural_net_model = CreateNeuralNetwork_SingleOutcome(
-#     dataframe=iris,
-#     outcome_variable='sepal length (cm)',
-#     is_outcome_categorical=False,
-#     list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-#     number_of_hidden_layers=2,
-#     scale_predictor_variables=True
-# )

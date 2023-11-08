@@ -1,3 +1,4 @@
+# Load packages
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -7,6 +8,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+# Declare function
 def CreateLogisticRegressionModel(dataframe,
                                   outcome_variable,
                                   list_of_predictor_variables,
@@ -98,13 +100,3 @@ def CreateLogisticRegressionModel(dataframe,
     else:
         return(model)
 
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# # iris = iris[iris['species'] != 2]
-# logistic_reg_model = CreateLogisticRegressionModel(
-#     dataframe=iris,
-#     outcome_variable='species',
-#     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
-# )

@@ -53,6 +53,8 @@ setup(
         'statsmodels',
         'sympy',
         'tableone',
+        'tensorflow',
+        'xgboost',
         'yellowbrick'
     ],
     extras_require={

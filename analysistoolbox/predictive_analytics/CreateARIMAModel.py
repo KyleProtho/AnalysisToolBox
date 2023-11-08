@@ -1,3 +1,4 @@
+# Load packages
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -6,6 +7,7 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
+# Declare function
 def ConductARIMAModel(dataframe,
                       outcome_variable,
                       show_acf_pacf_plots=True,
@@ -50,10 +52,3 @@ def ConductARIMAModel(dataframe,
     # Return the model
     return arima_model
 
-
-# # Test the function
-# time_series = pd.read_csv('https://raw.githubusercontent.com/jenfly/opsd/master/opsd_germany_daily.csv')
-# consumption_arima_model = ConductARIMAModel(
-#     dataframe=time_series,
-#     outcome_variable='Consumption'
-# )

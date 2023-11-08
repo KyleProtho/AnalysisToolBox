@@ -1,72 +1,69 @@
-# Load pacakges
-from matplotlib import pyplot as plt
+# Load packages
+from IPython.display import display, Markdown
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from sklearn import linear_model, metrics
-from sklearn.preprocessing import StandardScaler
+from sklearn import metrics
 from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor, plot_tree, export_text
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
 
-# Function to create linear regression model
-def CreateLinearRegressionModel(dataframe,
-                                outcome_variable,
-                                list_of_predictor_variables,
-                                # Model parameters
-                                scale_predictor_variables=False,
-                                test_size=0.2,
-                                max_iterations=1000,
-                                learning_rate=0.01,
-                                lambda_for_regularization=0.001,
-                                random_seed=412,
-                                print_peak_to_peak_range_of_each_predictor=False,
-                                # All plot arguments
-                                data_source_for_plot=None,
-                                # Model performance plot arguments
-                                plot_model_test_performance=True,
-                                dot_fill_color="#999999",
-                                line_color=None,
-                                figure_size_for_model_test_performance_plot=(8, 6),
-                                title_for_model_test_performance_plot="Model Performance",
-                                subtitle_for_model_test_performance_plot="The predicted values vs. the actual values in the test dataset.",
-                                caption_for_model_test_performance_plot=None,
-                                title_y_indent_for_model_test_performance_plot=1.10,
-                                subtitle_y_indent_for_model_test_performance_plot=1.05,
-                                caption_y_indent_for_model_test_performance_plot=-0.215,
-                                x_indent_for_model_test_performance_plot=-0.115,
-                                # Feature importance plot arguments
-                                plot_feature_importance=True,
-                                top_n_to_highlight=3,
-                                highlight_color="#b0170c",
-                                fill_transparency=0.8,
-                                figure_size_for_feature_importance_plot=(8, 6),
-                                title_for_feature_importance_plot="Feature Importance",
-                                subtitle_for_feature_importance_plot="Shows the predictive power of each feature in the model.",
-                                caption_for_feature_importance_plot=None,
-                                title_y_indent_for_feature_importance_plot=1.15,
-                                subtitle_y_indent_for_feature_importance_plot=1.1,
-                                caption_y_indent_for_feature_importance_plot=-0.15):
+# Declare function
+def CreateDecisionTreeModel(dataframe,
+                            outcome_variable,
+                            list_of_predictor_variables,
+                            is_outcome_categorical=True,
+                            # Model training arguments
+                            test_size=0.2,
+                            categorical_splitting_criterion='entropy',
+                            numerical_splitting_criterion='mse',
+                            maximum_depth=None,
+                            minimum_impurity_decrease=0.0,
+                            random_seed=412,
+                            filter_nulls=False,
+                            # All plot arguments
+                            data_source_for_plot=None,
+                            # Model performance plot arguments
+                            plot_model_test_performance=True,
+                            dot_fill_color="#999999",
+                            fitted_line_type=None,
+                            line_color=None,
+                            heatmap_color_palette="Blues",
+                            figure_size_for_model_test_performance_plot=(8, 6),
+                            title_for_model_test_performance_plot="Model Performance",
+                            subtitle_for_model_test_performance_plot="The predicted values vs. the actual values in the test dataset.",
+                            caption_for_model_test_performance_plot=None,
+                            title_y_indent_for_model_test_performance_plot=1.09,
+                            subtitle_y_indent_for_model_test_performance_plot=1.05,
+                            caption_y_indent_for_model_test_performance_plot=-0.215,
+                            x_indent_for_model_test_performance_plot=-0.115,
+                            # Feature importance plot arguments
+                            plot_feature_importance=True,
+                            top_n_to_highlight=3,
+                            highlight_color="#b0170c",
+                            fill_transparency=0.8,
+                            figure_size_for_feature_importance_plot=(8, 6),
+                            title_for_feature_importance_plot="Feature Importance",
+                            subtitle_for_feature_importance_plot="Shows the predictive power of each feature in the model.",
+                            caption_for_feature_importance_plot=None,
+                            title_y_indent_for_feature_importance_plot=1.15,
+                            subtitle_y_indent_for_feature_importance_plot=1.1,
+                            caption_y_indent_for_feature_importance_plot=-0.15,
+                            # Decision tree plot arguments
+                            plot_decision_tree=False,
+                            decision_tree_plot_size=(20, 20),
+                            print_decision_rules=False):
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
     
-    # Replace inf with nan, and drop rows with nan
-    dataframe.replace([np.inf, -np.inf], np.nan, inplace=True)
-    dataframe.dropna(inplace=True)
-    print("Count of examples eligible for inclusion in model training and testing:", len(dataframe.index))
+    # Drop rows with infinite values
+    dataframe = dataframe.replace([np.inf, -np.inf], np.nan)
     
-    # Scale the predictors, if requested
-    if scale_predictor_variables:
-        # Scale predictors
-        scaler = StandardScaler()
-        dataframe[list_of_predictor_variables] = scaler.fit_transform(dataframe[list_of_predictor_variables])
-        
-    # Show the peak-to-peak range of each predictor
-    if print_peak_to_peak_range_of_each_predictor:
-        print("\nPeak-to-peak range of each predictor:")
-        print(np.ptp(dataframe[list_of_predictor_variables], axis=0))
+    # Drop rows with missing values if filter_nulls is True
+    if filter_nulls:
+        dataframe = dataframe.dropna()
+    print("Count of examples eligible for inclusion in model training and testing:", len(dataframe.index))
     
     # Split dataframe into training and test sets
     train, test = train_test_split(
@@ -75,65 +72,133 @@ def CreateLinearRegressionModel(dataframe,
         random_state=random_seed
     )
     
-    # Create linear regression object
-    model = linear_model.SGDRegressor(
-        loss='squared_error',
-        max_iter=max_iterations,
-        eta0=learning_rate,
-        alpha=lambda_for_regularization,
-        random_state=random_seed,
-        fit_intercept=True,
-    )
-    
-    # Train the model using the training sets and show fitting summary
-    model.fit(train[list_of_predictor_variables], train[outcome_variable])
-    print(f"\nNumber of iterations completed: {model.n_iter_}")
-    print(f"Number of weight updates: {model.t_}")
-    
-    # # Show parameters of the model
-    # b_norm = model.intercept_
-    # w_norm = model.coef_
-    # print(f"\nModel parameters:    w: {w_norm}, b:{b_norm}")
+    # Create decision tree model
+    if is_outcome_categorical:
+        model = DecisionTreeClassifier(
+            criterion=categorical_splitting_criterion,
+            max_depth=maximum_depth,
+            min_impurity_decrease=minimum_impurity_decrease,
+            random_state=random_seed
+        )
+    else:
+        model = DecisionTreeRegressor(
+            criterion=numerical_splitting_criterion,
+            max_depth=maximum_depth,
+            min_impurity_decrease=minimum_impurity_decrease,
+            random_state=random_seed
+        )
+        
+    # Fit the model
+    model = model.fit(train[list_of_predictor_variables], train[outcome_variable])
     
     # Add predictions to test set
     test['Predicted'] = model.predict(test[list_of_predictor_variables])
     
-    # Show mean squared error if outcome is numerical
-    print('Mean Squared Error:', metrics.mean_squared_error(test[outcome_variable], test['Predicted']))
-    print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
-    print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
+    # Show mean squared error and variance if outcome is numerical
+    if is_outcome_categorical == False:
+        print('Mean Squared Error:', metrics.mean_squared_error(test[outcome_variable], test['Predicted']))
+        print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
+        print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
+    # Show accuracy if outcome is categorical
+    else:
+        classifcation_report = metrics.classification_report(test[outcome_variable], test['Predicted'])
+        print("Classification Report:\n", classifcation_report, sep="")
     
-    # Plot predicted and observed outputs if requested
+    # Print decision rules if requested
+    if print_decision_rules:
+        r = export_text(
+            model,
+            feature_names=list_of_predictor_variables
+        )
+        print(r)
+    
+    # Plot decision tree if requested
+    if plot_decision_tree:
+        plt.figure(figsize=decision_tree_plot_size)
+        plot_tree(
+            model, 
+            feature_names=list_of_predictor_variables,
+            filled=True,
+            rounded=True,
+            precision=3
+        )
+    
+    # Print the confusion matrix if outcome is categorical
     if plot_model_test_performance:
         # Set the size of the plot
         plt.figure(figsize=figure_size_for_model_test_performance_plot)
         
-        # Generate a scatterplot of the predicted vs. observed outcome
-        ax = sns.regplot(
-            data=test,
-            x=outcome_variable,
-            y='Predicted',
-            marker='o',
-            scatter_kws={
-                'color': dot_fill_color,
-                'alpha': 0.5,
-                'linewidth': 0.5,
-                'edgecolor': dot_fill_color
-            },
-            lowess=True,
-            line_kws={'color': line_color}
-        )
-        
-        # Add a "perfect prediction" line
-        plt.plot(
-            test[outcome_variable], 
-            test[outcome_variable], 
-            color='black', 
-            alpha=0.35, 
-            linewidth=0.5, 
-            linestyle='--'
-        )
-        
+        # If outcome is categorical, create a heatmap
+        if is_outcome_categorical:
+            # Generate a contingency table using pandas
+            contingency_table = pd.crosstab(
+                test['Predicted'],
+                test[outcome_variable],
+                rownames=['Predicted'],
+                colnames=['Actual'],
+                margins=True,
+                margins_name='Total',
+                dropna=False
+            )
+            
+            # Display as a markdown table
+            display(contingency_table)
+            
+            # Create a confusion matrix
+            confusion_matrix = metrics.confusion_matrix(
+                test[outcome_variable], 
+                test['Predicted']
+            )
+            
+            # Transpose the confusion matrix
+            confusion_matrix = confusion_matrix.transpose()
+            
+            # Convert the confusion matrix to a percentage using the column sums
+            confusion_matrix = confusion_matrix / confusion_matrix.sum(axis=0)
+            
+            # Generate a heatmap of the confusion matrix
+            plt.figure(figsize=(9,9))
+            ax = sns.heatmap(
+                confusion_matrix, 
+                annot=True, 
+                # Format numbers as percentages
+                fmt='.0%', 
+                linewidths=.5, 
+                square=True, 
+                cmap=heatmap_color_palette,
+            )
+            
+            # Remove the color bar
+            ax.collections[0].colorbar.remove()
+
+        # Plot the residuals if outcome is numerical
+        else:
+            # Generate a scatterplot of the predicted vs. observed outcome
+            ax = sns.regplot(
+                data=test,
+                x=outcome_variable,
+                y='Predicted',
+                marker='o',
+                scatter_kws={
+                    'color': dot_fill_color,
+                    'alpha': 0.5,
+                    'linewidth': 0.5,
+                    'edgecolor': dot_fill_color
+                },
+                lowess=True,
+                line_kws={'color': line_color}
+            )
+            
+            # Add a "perfect prediction" line
+            plt.plot(
+                test[outcome_variable], 
+                test[outcome_variable], 
+                color='black', 
+                alpha=0.35, 
+                linewidth=0.5, 
+                linestyle='--'
+            )
+            
         # Remove top and right spines, and set bottom and left spines to gray
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
@@ -217,22 +282,11 @@ def CreateLinearRegressionModel(dataframe,
     
     # Plot feature importance if requested
     if plot_feature_importance:
-        # Get importance
-        importance = model.coef_
-        
-        # Create lists to store feature names and feature importance
-        feature_names = []
-        feature_importance = []
-        
-        # Store feature names and feature importance in lists
-        for i,v in enumerate(importance):
-            feature_names.append(i)
-            feature_importance.append(v)
         # Create dataframe of feature importance
         data_feauture_importance = pd.DataFrame(
             data={
                 'Feature': model.feature_names_in_,
-                'Importance': model.coef_
+                'Importance': model.feature_importances_
             }
         )
         
@@ -270,7 +324,7 @@ def CreateLinearRegressionModel(dataframe,
         ax.get_xaxis().set_ticks([])
         
         # Format x-axis label
-        ax.set_xlabel("Beta Coefficent", fontsize=10, fontname="Arial", color="#262626")
+        ax.set_xlabel("Importance", fontsize=10, fontname="Arial", color="#262626")
         
         # Remove spines
         ax.spines['right'].set_visible(False)
@@ -351,23 +405,7 @@ def CreateLinearRegressionModel(dataframe,
         # Show the plot
         plt.show()
         plt.clf()
-    
+     
     # Return the model
-    if scale_predictor_variables:
-        dict_return = {
-            'model': model,
-            'scaler': scaler
-        }
-        return(dict_return)
-    else:
-        return(model)
-
-
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# linear_reg_model = CreateLinearRegressionModel(dataframe=iris,
-#                                                outcome_variable='sepal length (cm)',
-#                                                list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-#                                                scale_predictor_variables=True)
+    return model
 

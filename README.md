@@ -12,6 +12,16 @@ To install the package, run the following command in the root directory of the p
 pip install analysistoolbox
 ```
 
+Visualizations are created using the matplotlib and seaborn libraries. While you can select whichever seaborn style you'd like, the following Seaborn style tends to get the best looking plots:
+
+```python
+sns.set(
+    style="white",
+    font="Arial",
+    context="paper"
+)
+```
+
 ## Usage
 
 There are many modules in the analysistoolbox package, each with their own functions. The following is a list of the modules:
@@ -23,6 +33,7 @@ There are many modules in the analysistoolbox package, each with their own funct
 * file_management
 * hypothesis_testing
 * linear_algebra
+* predictive_analytics
 * statistics
 * visualizations
 

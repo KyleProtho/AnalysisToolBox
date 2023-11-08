@@ -1,60 +1,49 @@
-from IPython.display import display, Markdown
+# Load packages
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor, plot_tree, export_text
 import textwrap
-sns.set(style="white",
-        font="Arial",
-        context="paper")
+from xgboost import XGBClassifier, XGBRegressor
 
-def CreateDecisionTreeModel(dataframe,
-                            outcome_variable,
-                            list_of_predictor_variables,
-                            is_outcome_categorical=True,
-                            # Model training arguments
-                            test_size=0.2,
-                            categorical_splitting_criterion='entropy',
-                            numerical_splitting_criterion='mse',
-                            maximum_depth=None,
-                            minimum_impurity_decrease=0.0,
-                            random_seed=412,
-                            filter_nulls=False,
-                            # All plot arguments
-                            data_source_for_plot=None,
-                            # Model performance plot arguments
-                            plot_model_test_performance=True,
-                            dot_fill_color="#999999",
-                            fitted_line_type=None,
-                            line_color=None,
-                            heatmap_color_palette="Blues",
-                            figure_size_for_model_test_performance_plot=(8, 6),
-                            title_for_model_test_performance_plot="Model Performance",
-                            subtitle_for_model_test_performance_plot="The predicted values vs. the actual values in the test dataset.",
-                            caption_for_model_test_performance_plot=None,
-                            title_y_indent_for_model_test_performance_plot=1.09,
-                            subtitle_y_indent_for_model_test_performance_plot=1.05,
-                            caption_y_indent_for_model_test_performance_plot=-0.215,
-                            x_indent_for_model_test_performance_plot=-0.115,
-                            # Feature importance plot arguments
-                            plot_feature_importance=True,
-                            top_n_to_highlight=3,
-                            highlight_color="#b0170c",
-                            fill_transparency=0.8,
-                            figure_size_for_feature_importance_plot=(8, 6),
-                            title_for_feature_importance_plot="Feature Importance",
-                            subtitle_for_feature_importance_plot="Shows the predictive power of each feature in the model.",
-                            caption_for_feature_importance_plot=None,
-                            title_y_indent_for_feature_importance_plot=1.15,
-                            subtitle_y_indent_for_feature_importance_plot=1.1,
-                            caption_y_indent_for_feature_importance_plot=-0.15,
-                            # Decision tree plot arguments
-                            plot_decision_tree=False,
-                            decision_tree_plot_size=(20, 20),
-                            print_decision_rules=False):
+# Declare function
+def CreateBoostedTreeModel(dataframe,
+                           outcome_variable,
+                           list_of_predictor_variables,
+                           maximum_depth=None,
+                           is_outcome_categorical=True,
+                           test_size=0.2,
+                           random_seed=412,
+                           filter_nulls=False,
+                           # All plot arguments
+                           data_source_for_plot=None,
+                           # Model performance plot arguments
+                           plot_model_test_performance=True,
+                           dot_fill_color="#999999",
+                           line_color=None,
+                           heatmap_color_palette="Blues",
+                           figure_size_for_model_test_performance_plot=(8, 6),
+                           title_for_model_test_performance_plot="Model Performance",
+                           subtitle_for_model_test_performance_plot="The predicted values vs. the actual values in the test dataset.",
+                           caption_for_model_test_performance_plot=None,
+                           title_y_indent_for_model_test_performance_plot=1.09,
+                           subtitle_y_indent_for_model_test_performance_plot=1.05,
+                           caption_y_indent_for_model_test_performance_plot=-0.215,
+                           x_indent_for_model_test_performance_plot=-0.115,
+                           # Feature importance plot arguments
+                           plot_feature_importance=True,
+                           top_n_to_highlight=3,
+                           highlight_color="#b0170c",
+                           fill_transparency=0.8,
+                           figure_size_for_feature_importance_plot=(8, 6),
+                           title_for_feature_importance_plot="Feature Importance",
+                           subtitle_for_feature_importance_plot="Shows the predictive power of each feature in the model.",
+                           caption_for_feature_importance_plot=None,
+                           title_y_indent_for_feature_importance_plot=1.15,
+                           subtitle_y_indent_for_feature_importance_plot=1.1,
+                           caption_y_indent_for_feature_importance_plot=-0.15,):
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
     
@@ -73,22 +62,18 @@ def CreateDecisionTreeModel(dataframe,
         random_state=random_seed
     )
     
-    # Create decision tree model
+    # Create boosted tree model
     if is_outcome_categorical:
-        model = DecisionTreeClassifier(
-            criterion=categorical_splitting_criterion,
+        model = XGBClassifier(
             max_depth=maximum_depth,
-            min_impurity_decrease=minimum_impurity_decrease,
             random_state=random_seed
         )
     else:
-        model = DecisionTreeRegressor(
-            criterion=numerical_splitting_criterion,
+        model = XGBRegressor(
             max_depth=maximum_depth,
-            min_impurity_decrease=minimum_impurity_decrease,
             random_state=random_seed
         )
-        
+    
     # Fit the model
     model = model.fit(train[list_of_predictor_variables], train[outcome_variable])
     
@@ -104,26 +89,7 @@ def CreateDecisionTreeModel(dataframe,
     else:
         classifcation_report = metrics.classification_report(test[outcome_variable], test['Predicted'])
         print("Classification Report:\n", classifcation_report, sep="")
-    
-    # Print decision rules if requested
-    if print_decision_rules:
-        r = export_text(
-            model,
-            feature_names=list_of_predictor_variables
-        )
-        print(r)
-    
-    # Plot decision tree if requested
-    if plot_decision_tree:
-        plt.figure(figsize=decision_tree_plot_size)
-        plot_tree(
-            model, 
-            feature_names=list_of_predictor_variables,
-            filled=True,
-            rounded=True,
-            precision=3
-        )
-    
+     
     # Print the confusion matrix if outcome is categorical
     if plot_model_test_performance:
         # Set the size of the plot
@@ -166,7 +132,7 @@ def CreateDecisionTreeModel(dataframe,
                 fmt='.0%', 
                 linewidths=.5, 
                 square=True, 
-                cmap=heatmap_color_palette,
+                cmap=heatmap_color_palette
             )
             
             # Remove the color bar
@@ -405,29 +371,7 @@ def CreateDecisionTreeModel(dataframe,
             
         # Show the plot
         plt.show()
-        plt.clf()
-     
+    
     # Return the model
     return model
 
-
-# # Test the function
-# from sklearn import datasets
-# iris = pd.DataFrame(datasets.load_iris(as_frame=True).data)
-# iris['species'] = datasets.load_iris(as_frame=True).target
-# # CATEGORICAL OUTCOME
-# species_desc_tree_model = CreateDecisionTreeModel(
-#     dataframe=iris,
-#     outcome_variable='species',
-#     list_of_predictor_variables=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-#     caption_for_model_test_performance_plot="Each square shows the percentage of observations in the test dataset that are predicted to be in that category. The denominator the total number of actual outcomes in each category."
-# )
-# # # NUMERICAL OUTCOME
-# # sep_len_desc_tree_model = CreateDecisionTreeModel(
-# #     dataframe=iris,
-# #     outcome_variable='sepal length (cm)',
-# #     is_outcome_categorical=False,
-# #     list_of_predictor_variables=['sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
-# #     maximum_depth=5,
-# #     caption_for_model_test_performance_plot="The colored line shows the predicted values vs. the actual values in the test dataset. The grey straight line shows where the predicted values would be if the model was perfect."
-# # )
