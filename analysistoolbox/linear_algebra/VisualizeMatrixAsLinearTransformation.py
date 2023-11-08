@@ -14,7 +14,8 @@ def VisualizeMatrixAsLinearTransformation(two_by_two_matrix1,
                                           y_min=-5,
                                           y_max=5):
     """
-    This function takes in two 2x2 matrices and plots the unit square and the transformed unit square. If a second matrix is provided, it will plot the transformed unit square twice, once for each matrix.
+    Plots up to two 2x2 matrices and the unit square and the transformed unit square. 
+    If a second matrix is provided, it will plot the transformed unit square twice, once for each matrix.
     
     Args:
         two_by_two_matrix1 (list or np.array): A 2x2 matrix. If a list is provided, it will be converted to a numpy array.
@@ -153,31 +154,3 @@ def VisualizeMatrixAsLinearTransformation(two_by_two_matrix1,
     # Show the plot
     plt.show()
 
-  
-# # Test the function
-# VisualizeMatrixAsLinearTransformation([[3, 1],[1, 2]])
-# # VisualizeMatrixAsLinearTransformation([[0, 1],[1, 1]])
-
-# # theta = np.pi/3 # 60 degree clockwise rotation
-# # a = np.column_stack([[np.cos(theta), np.sin(theta)], [-np.sin(theta), np.cos(theta)]])
-# # VisualizeMatrixAsLinearTransformation(a)
-
-# # m_1 = np.array([[3, 1], [1, 2]])
-# # m_2 = np.array([[2, -1], [0, 2]])
-# # VisualizeMatrixAsLinearTransformation(
-# #     two_by_two_matrix1=m_1,
-# #     two_by_two_matrix2=m_2,
-# #     x_min=-1,
-# #     y_min=0,
-# #     y_max=7
-# # )
-
-# # m_1 = np.array([[3, 1], [1, 2]])
-# # m_1_inv = np.linalg.inv(m_1)
-# # VisualizeMatrixAsLinearTransformation(
-# #     two_by_two_matrix1=m_1,
-# #     two_by_two_matrix2=m_1_inv,
-# #     x_min=-1,
-# #     y_min=0,
-# #     y_max=7
-# # )

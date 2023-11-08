@@ -7,6 +7,21 @@ import seaborn as sns
 def PlotVectors(list_of_vectors,
                 list_of_vector_labels=None,
                 color_palette='Set2'):
+    """
+    Plots a list of 2D vectors.
+
+    Args:
+        list_of_vectors (list): A list of 2D vectors represented as lists or numpy arrays.
+        list_of_vector_labels (list, optional): A list of labels for the vectors. If None, default labels will be used. Defaults to None.
+        color_palette (str, optional): The name of the seaborn color palette to use. Defaults to 'Set2'.
+
+    Raises:
+        Exception: If a vector has more than 2 coordinates.
+
+    Returns:
+        None
+    """
+    
     # Iterate through the list of vectors, and if the vector is a list, convert it to a numpy array
     for vector_index in range(len(list_of_vectors)):
         # If the vector is a list, convert it to a numpy array
@@ -78,10 +93,3 @@ def PlotVectors(list_of_vectors,
     # Show the plot
     plt.show()
 
-
-# # Test the function
-# # v = np.array([[1],[3]])
-# # w = np.array([[4],[-1]])
-# # v_plus_w = v + w
-# # PlotVectors([v, w, v_plus_w])
-# PlotVectors([[3, 1],[1, 2]])

@@ -13,6 +13,28 @@ def CalculateEigenvalues(matrix,
                          y_max=5, 
                          show_labels=True, 
                          plot_with_grid=True):
+    """
+    Calculates the eigenvalues and eigenvectors of a 2x2 matrix and optionally plots the matrix and eigenvectors.
+    
+    Args:
+        matrix (numpy.ndarray or list): The 2x2 matrix to calculate the eigenvalues and eigenvectors of.
+        show_plot (bool, optional): Whether to show a plot of the matrix and eigenvectors. Defaults to True.
+        matrix_color (str, optional): The color to use for the matrix plot. Defaults to '#033dfc'.
+        eigenvector_color (str, optional): The color to use for the eigenvector plot. Defaults to '#e82a53'.
+        x_min (int, optional): The minimum x value for the plot. Defaults to -1.
+        x_max (int, optional): The maximum x value for the plot. Defaults to 5.
+        y_min (int, optional): The minimum y value for the plot. Defaults to -1.
+        y_max (int, optional): The maximum y value for the plot. Defaults to 5.
+        show_labels (bool, optional): Whether to show labels on the plot. Defaults to True.
+        plot_with_grid (bool, optional): Whether to show a grid on the plot. Defaults to True.
+    
+    Returns:
+        None
+    
+    Raises:
+        ValueError: If the matrix is not 2x2.
+    
+    """
     
     # If matrix is list, convert to numpy array
     if type(matrix) == list:
@@ -142,15 +164,4 @@ def CalculateEigenvalues(matrix,
         print("The system of eigenvector equations is singular, and does not have a unique solution. At least two equations are linearly dependent.")
     else:
         print("The system of eigenvector equations is non-singular, and has a unique solution. The equations are linearly independent.")
-    
-
-# # Test the function
-# matrix = np.array([[3, 1], [0, 2]])
-# CalculateEigenvalues(matrix, y_max=3)
-# # shear_matrix = np.array([[1, 0.5], [0, 1]])
-# # CalculateEigenvalues(shear_matrix, y_max=3)
-# # y_rotation_matrix = np.array([[0, 1],[-1, 0]])
-# # CalculateEigenvalues(y_rotation_matrix, y_max=3)
-# # scaling_matrix = np.array([[2, 0], [0, 2]])
-# # CalculateEigenvalues(scaling_matrix, y_max=3)
 

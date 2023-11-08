@@ -9,7 +9,7 @@ def SolveSystemOfEquations(coefficients,
                            show_plot=True,
                            plot_boundary=10):
     """
-    This function plots a system of equations.
+    Plots a system of equations.
     
     Args:
         coefficients (list of lists): A matrix of coefficients for the system of equations

@@ -1,11 +1,12 @@
+# Import packages
 import numpy as np
 import sympy as sp
 
-# Write a function that converts a matrix to row echelon form.
+# Declare function
 def ConvertMatrixToRowEchelonForm(matrix,
                                   show_pivot_columns=False):
-    """_summary_
-    This function converts a matrix to row echelon form.
+    """
+    Converts a matrix to row echelon form.
     
     Args:
         matrix (np.array or list): Matrix to be converted to row echelon form.
@@ -35,12 +36,3 @@ def ConvertMatrixToRowEchelonForm(matrix,
     # Return matrix in row echelon form
     return matrix_row_echelon
 
-
-# # Test the function
-# ConvertMatrixToRowEchelonForm(
-#     matrix=[
-#         [4, -3, 1,  -10.],
-#         [2, 1,  3,  0.],
-#         [-1,    2,  -5, 17]
-#     ],
-# )

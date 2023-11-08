@@ -6,7 +6,7 @@ def ConvertSystemOfEquationsToMatrix(coefficients,
                                      constants,
                                      show_determinant=True):
     """
-    This function converts a system of equations to a matrix.
+    Converts a system of equations to a matrix.
     
     Args:
         coefficients (list or np.array): The coefficients of the system of equations. 
@@ -39,17 +39,3 @@ def ConvertSystemOfEquationsToMatrix(coefficients,
     # Return the matrix
     return matrix
 
-
-# # Test the function
-# ConvertSystemOfEquationsToMatrix(
-#     coefficients=[
-#         [4, -3, 1],
-#         [2, 1,  3],
-#         [-1,    2,  -5]
-#     ],
-#     constants=[
-#         -10, 
-#         0, 
-#         17
-#     ]
-# )
