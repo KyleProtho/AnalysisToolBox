@@ -46,6 +46,7 @@ The **FindDerivative** function calculates the derivative of a given function. I
 ```python
 # Load the FindDerivative function from the Calculus submodule
 from analysistoolbox.calculus import FindDerivative
+import seaborn as sns
 import sympy
 
 # Set Seaborn style
@@ -76,8 +77,9 @@ The **FindLimitOfFunction** function finds the limit of a function at a specific
 
 ```python
 # Import the necessary libraries
-import numpy as np
 from analysistoolbox.calculus import FindLimitOfFunction
+import numpy as np
+import seaborn as sns
 
 # Set Seaborn style
 sns.set(
@@ -112,6 +114,7 @@ The **FindMinimumSquareLoss** function calculates the minimum square loss betwee
 ```python
 # Import the necessary libraries
 from analysistoolbox.calculus import FindMinimumSquareLoss
+import seaborn as sns
 
 # Set Seaborn style
 sns.set(
@@ -141,6 +144,7 @@ The **PlotFunction** function plots a mathematical function of x. It takes a lam
 ```python
 # Import the necessary libraries
 from analysistoolbox.calculus import PlotFunction
+import seaborn as sns
 
 # Set Seaborn style
 sns.set(

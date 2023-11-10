@@ -1,3 +1,8 @@
+# Turn off warnings
+import warnings
+warnings.filterwarnings('ignore')
+
+# Import all modules
 from .calculus import *
 from .data_collection import *
 from .data_processing import *
@@ -9,3 +14,6 @@ from .predictive_analytics import *
 from .prescriptive_analytics import *
 from .simulations import *
 from .visualizations import *
+
+# Turn on warnings
+warnings.filterwarnings('default')
