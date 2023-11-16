@@ -32,6 +32,7 @@ def PlotBulletChart(dataframe,
                     value_label_color="#262626",
                     value_label_format="{:.0f}",
                     value_label_font_size=12,
+                    value_label_spacing=.65,
                     title_for_plot=None,
                     subtitle_for_plot=None,
                     caption_for_plot=None,
@@ -92,7 +93,7 @@ def PlotBulletChart(dataframe,
         dataframe = dataframe.sort_values(by=grouping_column_name, ascending=False)
 
     # Create a figure and axis
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=figure_size)
 
     # Iterate over each row in the dataframe
     for index, row in dataframe.iterrows():
@@ -174,7 +175,7 @@ def PlotBulletChart(dataframe,
         if show_value_labels:
             ax.text(
                 x=value,
-                y=y_position+0.575,
+                y=y_position+value_label_spacing,
                 s=value_label_format.format(value),
                 fontname="Arial",
                 fontsize=value_label_font_size,
