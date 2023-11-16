@@ -16,7 +16,7 @@ def PlotBulletChart(dataframe,
                     value_maximum=None,
                     value_minimum=0,
                     # Bullet chart formatting arguments
-                    group_order=None,
+                    display_order_list=None,
                     null_background_color='#dbdbdb',
                     background_color_palette=None,
                     background_alpha=0.8,
@@ -52,7 +52,7 @@ def PlotBulletChart(dataframe,
         list_of_limit_columns: list of str, default None. A list of the names of the columns in the dataframe containing the limit values to be plotted.
         value_maximum: float, default None. The maximum value to be plotted on the chart. If None, the maximum value among the limit columns is used.
         value_minimum: float, default 0. The minimum value to be plotted on the chart.
-        group_order: list of str, default None. A list of the groups in the dataframe in the order they should be plotted.
+        display_order_list: list of str, default None. A list of the groups in the dataframe in the order they should be plotted.
         null_background_color: str, default '#dbdbdb'. The color of the background area of the chart where there is no data.
         background_color_palette: str, default None. The color palette to be used for the limit columns. If None, a greyscale palette is used.
         background_alpha: float, default 0.8. The alpha value of the limit column colors.
@@ -84,9 +84,9 @@ def PlotBulletChart(dataframe,
         value_maximum = dataframe[list_of_limit_columns].max().max()
     
     # Sort the dataframe by the by the grouping column
-    if group_order != None:
-        group_order.reverse()
-        dataframe['Order'] = dataframe[grouping_column_name].apply(lambda x: group_order.index(x))
+    if display_order_list != None:
+        display_order_list.reverse()
+        dataframe['Order'] = dataframe[grouping_column_name].apply(lambda x: display_order_list.index(x))
         dataframe = dataframe.sort_values(by='Order', ascending=True)
     else:
         dataframe = dataframe.sort_values(by=grouping_column_name, ascending=False)

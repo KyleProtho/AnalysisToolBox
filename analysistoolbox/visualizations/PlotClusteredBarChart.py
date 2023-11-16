@@ -11,11 +11,10 @@ def PlotClusteredBarChart(dataframe,
                           grouping_column_name_1, 
                           grouping_column_name_2,
                           value_column_name,
-                          # Plot formatting arguments
                           color_palette="Set1",
                           fill_transparency=0.8,
+                          display_order_list=None,
                           figure_size=(6, 6),
-                          # Text formatting arguments
                           title_for_plot=None,
                           subtitle_for_plot=None,
                           caption_for_plot=None,
@@ -36,6 +35,7 @@ def PlotClusteredBarChart(dataframe,
         value_column_name (str): The name of the value column.
         color_palette (str, optional): The color palette to use for the plot. Defaults to "Set1".
         fill_transparency (float, optional): The transparency of the bars. Defaults to 0.8.
+        display_order_list (list, optional): The order to display the 1st categories in the plot. Defaults to None.
         figure_size (tuple, optional): The size of the figure. Defaults to (6, 6).
         title_for_plot (str, optional): The title for the plot. Defaults to None.
         subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
@@ -47,6 +47,17 @@ def PlotClusteredBarChart(dataframe,
         caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
         decimal_places_for_data_label (int, optional): The number of decimal places for the data labels. Defaults to 0.
     """
+    # If display_order_list is provided, check that it contains all of the categories in the dataframe
+    if display_order_list != None:
+        if not set(display_order_list).issubset(set(dataframe[grouping_column_name_1].unique())):
+            raise ValueError("display_order_list must contain all of the categories in the " + grouping_column_name_1 + " column of dataframe.")
+        else:
+            # Order the dataframe by the display_order_list
+            dataframe[grouping_column_name_1] = pd.Categorical(dataframe[grouping_column_name_1], categories=display_order_list, ordered=True)
+    else:
+        # If display_order_list is not provided, create one from the dataframe
+        display_order_list = dataframe.sort_values(value_column_name, ascending=True)[grouping_column_name_1].unique()
+    
     # Draw a nested barplot by species and sex
     ax = sns.catplot(
         data=dataframe, 

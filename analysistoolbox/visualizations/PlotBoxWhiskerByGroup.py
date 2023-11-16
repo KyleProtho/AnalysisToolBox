@@ -11,7 +11,7 @@ def PlotBoxWhiskerByGroup(dataframe,
                           grouping_column_name_2=None,
                           fill_color=None,
                           color_palette='Set2',
-                          # Text formatting arguments
+                          display_order_list=None,
                           title_for_plot=None,
                           subtitle_for_plot=None,
                           caption_for_plot=None,
@@ -21,7 +21,6 @@ def PlotBoxWhiskerByGroup(dataframe,
                           subtitle_y_indent=1.05,
                           caption_y_indent=-0.15,
                           x_indent=-0.10,
-                          # Plot formatting arguments
                           figure_size=(8, 6)):
     """
     Function to create a box and whisker plot for a given outcome variable, grouped by one or two categorical variables. 
@@ -33,6 +32,7 @@ def PlotBoxWhiskerByGroup(dataframe,
         grouping_column_name_2 (str, optional): The name of the second group variable. Defaults to None.
         fill_color (str, optional): The color to fill the box plot with. Defaults to None.
         color_palette (str, optional): The color palette to use for the box plot. Defaults to 'Set2'.
+        display_order_list (list, optional): The order to display the 1st categories in the plot. Defaults to None.
         title_for_plot (str, optional): The title for the plot. Defaults to None.
         subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
         caption_for_plot (str, optional): The caption for the plot. Defaults to None.
@@ -44,6 +44,14 @@ def PlotBoxWhiskerByGroup(dataframe,
         x_indent (float, optional): The x-indent for the plot. Defaults to -0.128.
         figure_size (tuple, optional): The size of the plot. Defaults to (8, 6).
     """
+    # If display_order_list is provided, check that it contains all of the categories in the dataframe
+    if display_order_list != None:
+        if not set(display_order_list).issubset(set(dataframe[grouping_column_name_1].unique())):
+            raise ValueError("display_order_list must contain all of the categories in the " + grouping_column_name_1 + " column of dataframe.")
+    else:
+        # If display_order_list is not provided, create one from the dataframe
+        display_order_list = dataframe.sort_values(value_column_name, ascending=True)[grouping_column_name_1].unique()
+    
     # Create figure and axes
     fig, ax = plt.subplots(figsize=figure_size)
     
@@ -56,6 +64,7 @@ def PlotBoxWhiskerByGroup(dataframe,
                 y=value_column_name, 
                 hue=grouping_column_name_2, 
                 color=fill_color,
+                order=display_order_list,
             )
         else:
             ax = sns.boxplot(
@@ -63,7 +72,8 @@ def PlotBoxWhiskerByGroup(dataframe,
                 x=grouping_column_name_1,
                 y=value_column_name, 
                 hue=grouping_column_name_2, 
-                palette=color_palette
+                palette=color_palette,
+                order=display_order_list,
             )
     else:
         if fill_color != None:
@@ -71,14 +81,16 @@ def PlotBoxWhiskerByGroup(dataframe,
                 data=dataframe,
                 x=grouping_column_name_1,
                 y=value_column_name, 
-                color=fill_color
+                color=fill_color,
+                order=display_order_list,
             )
         else:
             ax = sns.boxplot(
                 data=dataframe,
                 x=grouping_column_name_1,
                 y=value_column_name, 
-                palette=color_palette
+                palette=color_palette,
+                order=display_order_list,
             )
     
     # Remove top, and right spines. Set bottom and left spine to dark gray.

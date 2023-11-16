@@ -10,14 +10,13 @@ import textwrap
 def PlotBarChart(dataframe,
                  categorical_column_name, 
                  value_column_name,
-                 # Plot formatting arguments
                  color_palette="Set1",
                  fill_color=None,
                  top_n_to_highlight=None,
                  highlight_color="#b0170c",
                  fill_transparency=0.8,
+                 display_order_list=None,
                  figure_size=(8, 6),
-                 # Text formatting arguments
                  title_for_plot=None,
                  subtitle_for_plot=None,
                  caption_for_plot=None,
@@ -41,6 +40,7 @@ def PlotBarChart(dataframe,
         top_n_to_highlight (int, optional): The number of top categories to highlight in the plot. Defaults to None.
         highlight_color (str, optional): The color to use for the highlighted categories. Defaults to "#b0170c".
         fill_transparency (float, optional): The transparency of the bars in the plot. Defaults to 0.8.
+        display_order_list (list, optional): The order to display the categories in the plot. Defaults to None.
         figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
         title_for_plot (str, optional): The title of the plot. Defaults to None.
         subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to None.
@@ -60,6 +60,14 @@ def PlotBarChart(dataframe,
     if top_n_to_highlight != None:
         if top_n_to_highlight < 0 or top_n_to_highlight > len(dataframe[categorical_column_name].value_counts()):
             raise ValueError("top_n_to_highlight must be a positive integer, and less than the number of categories.")
+        
+    # If display_order_list is provided, check that it contains all of the categories in the dataframe
+    if display_order_list != None:
+        if not set(display_order_list).issubset(set(dataframe[categorical_column_name].unique())):
+            raise ValueError("display_order_list must contain all of the categories in the dataframe.")
+    else:
+        # If display_order_list is not provided, create one from the dataframe
+        display_order_list = dataframe.sort_values(value_column_name, ascending=False)[categorical_column_name]
     
     # Create figure and axes
     fig, ax = plt.subplots(figsize=figure_size)
@@ -71,7 +79,7 @@ def PlotBarChart(dataframe,
             y=categorical_column_name,
             x=value_column_name,
             palette=[highlight_color if x in dataframe.sort_values(value_column_name, ascending=False)[value_column_name].nlargest(top_n_to_highlight).index else "#b8b8b8" for x in dataframe.sort_values(value_column_name, ascending=False).index],
-            order=dataframe.sort_values(value_column_name, ascending=False)[categorical_column_name],
+            order=display_order_list,
             alpha=fill_transparency
         )
     elif fill_color == None:
@@ -80,7 +88,7 @@ def PlotBarChart(dataframe,
             y=categorical_column_name,
             x=value_column_name,
             palette=color_palette,
-            order=dataframe.sort_values(value_column_name, ascending=False)[categorical_column_name],
+            order=display_order_list,
             alpha=fill_transparency
         )
     else:
@@ -89,7 +97,7 @@ def PlotBarChart(dataframe,
             y=categorical_column_name,
             x=value_column_name,
             color=fill_color,
-            order=dataframe.sort_values(value_column_name, ascending=False)[categorical_column_name],
+            order=display_order_list,
             alpha=fill_transparency
         )
     

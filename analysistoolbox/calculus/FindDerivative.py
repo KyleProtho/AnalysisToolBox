@@ -22,9 +22,11 @@ def FindDerivative(f_of_x,
     Returns:
         d_f_of_x (function): The derivative of the function.
     """
-    
     # Compute the derivative of the higher-order function using sympy
-    d_f_of_x = sympy.diff(f_of_x, x)
+    try:
+        d_f_of_x = sympy.diff(f_of_x, x)
+    except NameError:
+        raise ValueError("The function must be a sympy expression. Ensure that you have imported sympy and declared x as a sympy symbol. ( e.g., x = sympy.Symbol('x') )" )
     
     # Print the derivative function
     if print_functions:
