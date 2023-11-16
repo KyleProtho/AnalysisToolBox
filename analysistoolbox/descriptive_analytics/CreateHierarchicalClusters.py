@@ -3,31 +3,31 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
-from yellowbrick.cluster import KElbowVisualizer
+from scipy.cluster.hierarchy import dendrogram, linkage
+from sklearn.cluster import AgglomerativeClustering
 
 # Declare function
-def CreateKMeansClusters(dataframe,
-                         list_of_value_columns_for_clustering=None,
-                         number_of_clusters=None,
-                         column_name_for_clusters='K-Means Cluster',
-                         random_seed=412,
-                         maximum_iterations=300,
-                         scale_predictor_variables=True,
-                         show_cluster_summary_plots=True,
-                         color_palette='Set2',
-                         # Text formatting arguments
-                         caption_for_plot=None,
-                         data_source_for_plot=None,
-                         show_y_axis=False,
-                         title_y_indent=1.1,
-                         subtitle_y_indent=1.05,
-                         caption_y_indent=-0.15,
-                         # Plot formatting arguments
-                         summary_plot_size=(6, 4)):
+def CreateHierarchicalClusters(dataframe,
+                               list_of_value_columns_for_clustering=None,
+                               number_of_clusters=None,
+                               column_name_for_clusters='Hierarchical Cluster',
+                               random_seed=412,
+                               maximum_iterations=300,
+                               scale_predictor_variables=True,
+                               show_cluster_summary_plots=True,
+                               color_palette='Set2',
+                               # Text formatting arguments
+                               caption_for_plot=None,
+                               data_source_for_plot=None,
+                               show_y_axis=False,
+                               title_y_indent=1.1,
+                               subtitle_y_indent=1.05,
+                               caption_y_indent=-0.15,
+                               # Plot formatting arguments
+                               summary_plot_size=(6, 4)):
     """
-    This function creates K-Means clusters on a dataset based on the variables specified.
+    This function creates hierachical clusters on a dataset based on the variables specified.
 
     Args:
         dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
@@ -59,28 +59,19 @@ def CreateKMeansClusters(dataframe,
     print("\nPeak-to-peak range of each value column/variable:")
     print(np.ptp(dataframe_clusters[list_of_value_columns_for_clustering], axis=0))
     
-    # If number of clusters not specified, use elbow to find "best" number
+    # If number of clusters not specified, create a dendrogram to help determine it
     if number_of_clusters == None:
-        # Maximum number of clusters is 20 or the number of observations, whichever is smaller
-        max_clusters = min(20, dataframe_clusters.shape[0])
-        
-        # Conduct elbow method
-        model = KMeans()
-        visualizer = KElbowVisualizer(
-            model,
-            k=(2, max_clusters),
-            timings=True
-        )
-        visualizer.fit(dataframe)
-        visualizer.show()
-        number_of_clusters = visualizer.elbow_value_
-        
-    # Conduct k-means clusters
-    model = KMeans(
-        n_clusters=number_of_clusters, 
-        random_state=random_seed,
-        max_iter=maximum_iterations,
-    )
+        print("\n\nReview the dendrogram and determine the optimal number of clusters.")
+        print("Hierarchical clustering will proceed with 3 clusters, but you can change this value by setting the number_of_clusters argument, if needed.")
+        linked = linkage(dataframe_clusters[list_of_value_columns_for_clustering], 'ward')
+        plt.figure(figsize=(10, 7))
+        dendrogram(linked, orientation='top', distance_sort='descending', show_leaf_counts=True)
+        plt.show()
+        # Set clusters to 3
+        number_of_clusters = 3
+
+    # Conduct hierarchical clustering
+    model = AgglomerativeClustering(n_clusters=number_of_clusters)
     model = model.fit(dataframe_clusters[list_of_value_columns_for_clustering])
 
     # Join clusters to original dataset
@@ -98,6 +89,7 @@ def CreateKMeansClusters(dataframe,
         right_index=True
     )
     
+    # Show cluster summary plots if requested
     if show_cluster_summary_plots:
         # Loop through each numeric variable
         for numeric_var in list_of_value_columns_for_clustering:
