@@ -82,13 +82,18 @@ def PlotBulletChart(dataframe,
     
     # If value_maximum is not specified, use the maximum value among the limit columns
     if value_maximum is None:
-        value_maximum = dataframe[list_of_limit_columns].max().max()
+        if list_of_limit_columns is not None:
+            value_maximum = dataframe[list_of_limit_columns].max().max()
+        else:
+            value_maximum = dataframe[value_column_name].max()
     
-    # Sort the dataframe by the by the grouping column
+    # If display_order_list is provided, check that it contains all of the categories in the dataframe
     if display_order_list != None:
-        display_order_list.reverse()
-        dataframe['Order'] = dataframe[grouping_column_name].apply(lambda x: display_order_list.index(x))
-        dataframe = dataframe.sort_values(by='Order', ascending=True)
+        if not set(display_order_list).issubset(set(dataframe[grouping_column_name].unique())):
+            raise ValueError("display_order_list must contain all of the categories in the " + grouping_column_name + " column of dataframe.")
+        else:
+            display_order_list.reverse()
+            dataframe = dataframe.set_index(grouping_column_name).loc[display_order_list].reset_index()
     else:
         dataframe = dataframe.sort_values(by=grouping_column_name, ascending=False)
 
