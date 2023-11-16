@@ -69,7 +69,7 @@ def PlotClusteredBarChart(dataframe,
         alpha=fill_transparency, 
         height=figure_size[1],
         aspect=figure_size[0] / figure_size[1],
-        errorbar=None
+        ci=None,
     )
     
     # Add space between the title and the plot
