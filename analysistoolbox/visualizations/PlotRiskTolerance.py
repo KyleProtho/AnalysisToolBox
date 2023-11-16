@@ -17,8 +17,6 @@ def PlotRiskTolerance(simulated_values,
                       # Histogram formatting arguments
                       fill_color="#999999",
                       fill_transparency=0.6,
-                      show_mean=True,
-                      show_median=True,
                       # Text formatting arguments
                       title_for_plot="Risk Tolerance",
                       subtitle_for_plot="Shows the simulated outcomes that are worse than the risk tolerance.",
@@ -110,9 +108,6 @@ def PlotRiskTolerance(simulated_values,
     
     # Remove the y-axis label
     ax.set_ylabel(None)
-    
-    # Remove the x-axis label
-    ax.set_xlabel(None)
     
     # Calculate the percentage of outcomes that are worse than the risk tolerance
     risk_probability = dataframe[risk_flag_col_name].mean()
