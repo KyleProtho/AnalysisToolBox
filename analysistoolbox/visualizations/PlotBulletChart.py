@@ -92,8 +92,11 @@ def PlotBulletChart(dataframe,
         if not set(display_order_list).issubset(set(dataframe[grouping_column_name].unique())):
             raise ValueError("display_order_list must contain all of the categories in the " + grouping_column_name + " column of dataframe.")
         else:
+            # Reverse the display_order_list
+            display_order_list = display_order_list[::-1]
             # Order the dataframe by the display_order_list
             dataframe[grouping_column_name] = pd.Categorical(dataframe[grouping_column_name], categories=display_order_list, ordered=True)
+            dataframe = dataframe.sort_values(grouping_column_name)
     else:
         # If display_order_list is not provided, create one from the dataframe
         display_order_list = dataframe.sort_values(value_column_name, ascending=True)[grouping_column_name].unique()
