@@ -46,15 +46,7 @@ The **FindDerivative** function calculates the derivative of a given function. I
 ```python
 # Load the FindDerivative function from the Calculus submodule
 from analysistoolbox.calculus import FindDerivative
-import seaborn as sns
 import sympy
-
-# Set Seaborn style
-sns.set(
-    style="white",
-    font="Arial",
-    context="paper"
-)
 
 # Define a symbolic variable
 x = sympy.symbols('x')
@@ -79,14 +71,7 @@ The **FindLimitOfFunction** function finds the limit of a function at a specific
 # Import the necessary libraries
 from analysistoolbox.calculus import FindLimitOfFunction
 import numpy as np
-import seaborn as sns
-
-# Set Seaborn style
-sns.set(
-    style="white",
-    font="Arial",
-    context="paper"
-)
+import sympy
 
 # Define a symbolic variable
 x = sympy.symbols('x')
@@ -114,14 +99,6 @@ The **FindMinimumSquareLoss** function calculates the minimum square loss betwee
 ```python
 # Import the necessary libraries
 from analysistoolbox.calculus import FindMinimumSquareLoss
-import seaborn as sns
-
-# Set Seaborn style
-sns.set(
-    style="white",
-    font="Arial",
-    context="paper"
-)
 
 # Define observed and predicted values
 observed_values = [1, 2, 3, 4, 5]
@@ -134,6 +111,7 @@ minimum_square_loss = FindMinimumSquareLoss(
     show_plot=True
 )
 
+# Print the minimum square loss
 print(f"The minimum square loss is: {minimum_square_loss}")
 ```
 
@@ -144,14 +122,10 @@ The **PlotFunction** function plots a mathematical function of x. It takes a lam
 ```python
 # Import the necessary libraries
 from analysistoolbox.calculus import PlotFunction
-import seaborn as sns
+import sympy
 
-# Set Seaborn style
-sns.set(
-    style="white",
-    font="Arial",
-    context="paper"
-)
+# Set x as a symbolic variable
+x = sympy.symbols('x')
 
 # Define the function to plot
 f_of_x = lambda x: x**2
@@ -170,16 +144,10 @@ The **ExtractTextFromPDF** function extracts text from a PDF file, cleans it, th
 # Import the function
 from analysistoolbox.data_collection import ExtractTextFromPDF
 
-# Define the path to the PDF file
-filepath_to_pdf = "/path/to/your/input.pdf"
-
-# Define the path to the text file
-filepath_for_exported_text = "/path/to/your/output.txt"
-
 # Call the function
 ExtractTextFromPDF(
-    filepath_to_pdf=filepath_to_pdf, 
-    filepath_for_exported_text=filepath_for_exported_text, 
+    filepath_to_pdf="/path/to/your/input.pdf", 
+    filepath_for_exported_text="/path/to/your/output.txt", 
     start_page=1, 
     end_page=None
 )
@@ -190,16 +158,14 @@ ExtractTextFromPDF(
 The **FetchPDFFromURL** function downloads a PDF file from a URL and saves it to a specified location.
 
 ```python
+# Import the function
 from analysistoolbox.data_collection import FetchPDFFromURL
 
-# URL of the PDF file to download
-url = "https://example.com/sample.pdf"
-
-# Name of the file to save the PDF as
-filename = "sample.pdf"
-
 # Call the function to download the PDF
-FetchPDFFromURL(url, filename)
+FetchPDFFromURL(
+    url="https://example.com/sample.pdf", 
+    filename="C:/folder/sample.pdf"
+)
 ```
 
 #### FetchUSShapefile
@@ -207,10 +173,16 @@ FetchPDFFromURL(url, filename)
 The **FetchUSShapefile** function fetches a geographical shapefile from the TIGER database of the U.S. Census Bureau. 
 
 ```python
+# Import the function
 from analysistoolbox.data_collection import FetchUSShapefile
 
 # Fetch the shapefile for the census tracts in King County, Washington, for the 2021 census year
-shapefile = FetchUSShapefile(state='WA', county='King', geography='tract', census_year=2021)
+shapefile = FetchUSShapefile(
+    state='PA', 
+    county='Allegheny', 
+    geography='tract', 
+    census_year=2021
+)
 
 # Print the first few rows of the shapefile
 print(shapefile.head())
@@ -221,17 +193,14 @@ print(shapefile.head())
 The **FetchWebsiteText** function fetches the text from a website and saves it to a text file.
 
 ```python
-# Import the function from the module
+# Import the function
 from analysistoolbox.data_collection import FetchWebsiteText
 
-# Define the URL to fetch
-url = "https://www.example.com"
-
-# Define the Browserless API key
-browserless_api_key = "your_browserless_api_key"
-
 # Call the function
-text = FetchWebsiteText(url, browserless_api_key)
+text = FetchWebsiteText(
+    url="https://www.example.com", 
+    browserless_api_key="your_browserless_api_key"
+)
 
 # Print the fetched text
 print(text)
@@ -245,12 +214,15 @@ The **GetGoogleSearchResults** function fetches Google search results for a give
 # Import the function
 from analysistoolbox.data_collection import GetGoogleSearchResults
 
-# Define a search query
-query = "Python programming"
-
 # Call the function with the query
 # Make sure to replace 'your_serper_api_key' with your actual Serper API key
-results = GetGoogleSearchResults(query, serper_api_key='your_serper_api_key', number_of_results=5, apply_autocorrect=True, display_results=True)
+results = GetGoogleSearchResults(
+    query="Python programming", 
+    serper_api_key='your_serper_api_key', 
+    number_of_results=5, 
+    apply_autocorrect=True, 
+    display_results=True
+)
 
 # Print the results
 print(results)
@@ -264,14 +236,11 @@ The **GetZipFile** function downloads a zip file from a url and saves it to a sp
 # Import the function
 from analysistoolbox.data_collection import GetZipFile
 
-# URL of the zip file to download
-url = "http://example.com/file.zip"
-
-# Path to the folder where the zip file will be saved
-path_to_save_folder = "/path/to/save/folder"
-
 # Call the function
-GetZipFile(url, path_to_save_folder)
+GetZipFile(
+    url="http://example.com/file.zip", 
+    path_to_save_folder="/path/to/save/folder"
+)
 ```
 
 ### Data Processing
@@ -291,7 +260,10 @@ data = {'Date': [datetime(2020, 1, 1), datetime(2020, 2, 1), datetime(2020, 3, 1
 df = pd.DataFrame(data)
 
 # Use the function on the sample dataframe
-df = AddDateNumberColumns(df, 'Date')
+df = AddDateNumberColumns(
+    dataframe=df, 
+    date_column_name='Date'
+)
 
 # Print the updated dataframe
 print(df)
@@ -310,15 +282,14 @@ import pandas as pd
 data = {'ID': [1, 23, 456, 7890]}
 df = pd.DataFrame(data)
 
-# Print original dataframe
-print("Original dataframe:")
-print(df)
-
 # Use the AddLeadingZeros function
-df = AddLeadingZeros(df, 'ID', add_as_new_column=True)
+df = AddLeadingZeros(
+    dataframe=df, 
+    column_name='ID', 
+    add_as_new_column=True
+)
 
 # Print updated dataframe
-print("Updated dataframe:")
 print(df)
 ```
 
@@ -339,14 +310,16 @@ data = {
 }
 df = pd.DataFrame(data)
 
-# Define the parameters for the function
-grouping_variables = ['Payment Method']
-order_columns = ['Transaction Order']
-ascending_order_args = [True]
-row_count_column_name = 'Row Count'
-
 # Call the function
-new_df = AddRowCountColumn(df, grouping_variables, order_columns, ascending_order_args, row_count_column_name)
+df_updated = AddRowCountColumn(
+    dataframe=df, 
+    list_of_grouping_variables=['Payment Method'], 
+    list_of_order_columns=['Transaction Order'], 
+    list_of_ascending_order_args=[True]
+)
+
+# Print the updated dataframe
+print(df_updated)
 ```
 
 #### AddTPeriodColumn
@@ -367,10 +340,85 @@ data = {
 df = pd.DataFrame(data)
 
 # Use the function
-df_updated = AddTPeriodColumn(df, 'date', 'days')
+df_updated = AddTPeriodColumn(
+    dataframe=df, 
+    date_column_name='date', 
+    t_period_interval='days'
+)
 
 # Print the updated dataframe
 print(df_updated)
+```
+
+#### AddTukeyOutlierColumn
+
+The **AddTukeyOutlierColumn** function adds a column to a dataframe that indicates whether a value is an outlier. The function uses the Tukey method to identify outliers.
+
+```python
+# Import necessary libraries
+from analysistoolbox.data_processing import AddTukeyOutlierColumn
+import pandas as pd
+
+# Create a sample dataframe
+data = pd.DataFrame({'values': [1, 2, 3, 4, 5, 6, 7, 8, 9, 20]})
+
+# Use the function
+df_updated = AddTukeyOutlierColumn(
+    dataframe=data, 
+    value_column_name='values', 
+    tukey_boundary_multiplier=1.5, 
+    plot_tukey_outliers=True
+)
+
+# Print the updated dataframe
+print(df_updated)
+```
+
+#### CleanTextColumns
+
+The **CleanTextColumns** function cleans string-type columns in a pandas DataFrame by removing all leading and trailing spaces.
+
+```python
+# Import necessary libraries
+import pandas as pd
+from analysistoolbox.data_processing import CleanTextColumns
+
+# Create a sample dataframe
+df = pd.DataFrame({
+    'A': [' hello', 'world ', ' python '],
+    'B': [1, 2, 3],
+})
+
+# Clean the dataframe
+df_clean = CleanTextColumns(df)
+
+# Print the updated dataframe
+print(df_clean)
+```
+
+#### ConductAnomalyDetection
+
+The **ConductAnomalyDetection** function performs anomaly detection on a given dataset using the z-score method.
+
+```python
+# Import necessary libraries
+from analysistoolbox.data_processing import ConductAnomalyDetection
+import pandas as pd
+
+# Create a sample dataframe
+df = pd.DataFrame({
+    'A': [1, 2, 3, 1000],
+    'B': [4, 5, 6, 2000],
+})
+
+# Conduct anomaly detection
+df_anomaly_detected = ConductAnomalyDetection(
+    dataframe=df, 
+    list_of_columns_to_analyze=['A', 'B']
+)
+
+# Print the updated dataframe
+print(df_anomaly_detected)
 ```
 
 ## Contributions

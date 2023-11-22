@@ -4,7 +4,7 @@ import numpy as np
 
 # Declare function
 def AddTPeriodColumn(dataframe,
-                     date_column,
+                     date_column_name,
                      t_period_interval="days",
                      t_period_column_name=None):
     """
@@ -13,7 +13,7 @@ def AddTPeriodColumn(dataframe,
 
     Args:
         dataframe (Pandas dataframe): Pandas dataframe
-        date_column (str): The name of the column containing the date. Options are "days", "weeks", "months", or "years"
+        date_column_name (str): The name of the column containing the date. Options are "days", "weeks", "months", or "years"
         t_period_interval (str, optional): The interval or time object to use for the T-period column. Defaults to "days".
         t_period_column_name (str, optional): The name of the T-period column. Defaults to None. If None, the column name is "T Period in " + t_period_interval.
 
@@ -22,16 +22,16 @@ def AddTPeriodColumn(dataframe,
     """
     
     # Ensure that column is a date datatype
-    if dataframe[date_column].dtypes != "<M8[ns]":
-        dataframe[date_column] = pd.to_datetime(dataframe[date_column])
+    if dataframe[date_column_name].dtypes != "<M8[ns]":
+        dataframe[date_column_name] = pd.to_datetime(dataframe[date_column_name])
         
     # Set T-period column name
     if t_period_column_name == None:
         t_period_column_name = "T Period in " + t_period_interval
 
     # Calculate difference from earliest date in interval specified
-    earliest_time = min(dataframe[date_column])
-    dataframe[t_period_column_name] = dataframe[date_column] - earliest_time
+    earliest_time = min(dataframe[date_column_name])
+    dataframe[t_period_column_name] = dataframe[date_column_name] - earliest_time
     if t_period_interval == "days":
         dataframe[t_period_column_name] = dataframe[t_period_column_name].dt.days
     if t_period_interval == "weeks":
