@@ -10,13 +10,16 @@ import textwrap
 def PlotBarChart(dataframe,
                  categorical_column_name, 
                  value_column_name,
+                 # Bar formatting arguments
                  color_palette="Set1",
                  fill_color=None,
                  top_n_to_highlight=None,
                  highlight_color="#b0170c",
                  fill_transparency=0.8,
+                 # Plot formatting arguments
                  display_order_list=None,
                  figure_size=(8, 6),
+                 # Text formatting arguments
                  title_for_plot=None,
                  subtitle_for_plot=None,
                  caption_for_plot=None,

@@ -1,0 +1,180 @@
+# Load packages
+from matplotlib import pyplot as plt
+import pandas as pd
+import seaborn as sns
+import textwrap
+
+# Declare function
+def PlotDotPlot(dataframe,
+                categorical_column_name,
+                value_column_name,
+                group_column_name,
+                # Dot formatting arguments
+                color_palette="Paired",
+                dot_size=1.5,
+                dot_alpha=1,
+                connect_dots=True,
+                connect_line_color="#666666",
+                connect_line_alpha=0.4,
+                connect_line_width=0.75,
+                # Plot formatting arguments
+                display_order_list=None,
+                figure_size=(10, 6),
+                # Text formatting arguments
+                title_for_plot=None,
+                subtitle_for_plot=None,
+                caption_for_plot=None,
+                data_source_for_plot=None,
+                title_y_indent=1.15,
+                subtitle_y_indent=1.1,
+                caption_y_indent=-0.15,
+                decimal_places_for_data_label=1,
+                data_label_fontsize=11):
+    
+    # If display_order_list is provided, check that it contains all of the categories in the dataframe
+    if display_order_list != None:
+        if not set(display_order_list).issubset(set(dataframe[categorical_column_name].unique())):
+            raise ValueError("display_order_list must contain all of the categories in the dataframe.")
+    else:
+        # If display_order_list is not provided, create one from the dataframe
+        display_order_list = dataframe.sort_values(value_column_name, ascending=False)[categorical_column_name]
+        display_order_list = display_order_list.unique()
+    
+    # Initialize the matplotlib figure
+    f, ax = plt.subplots(figsize=figure_size)
+    
+    # If connect_dots is True, create horizontal lines connecting the dots
+    if connect_dots == True:
+        for i in range(len(display_order_list)):
+            # Get the x and y coordinates for the dots
+            x_coordinates = dataframe[dataframe[categorical_column_name] == display_order_list[i]][value_column_name]
+            y_coordinates = dataframe[dataframe[categorical_column_name] == display_order_list[i]][categorical_column_name]
+            
+            # Get the x and y coordinates for the lines
+            x_line_coordinates = [x_coordinates.min(), x_coordinates.max()]
+            y_line_coordinates = [y_coordinates.min(), y_coordinates.max()]
+            
+            # Plot the lines
+            plt.plot(
+                x_line_coordinates, 
+                y_line_coordinates, 
+                color=connect_line_color, 
+                alpha=connect_line_alpha, 
+                linestyle='dashed', 
+                linewidth=connect_line_width
+            )
+    
+    # Create pointplot
+    sns.pointplot(
+        data=dataframe,
+        x=value_column_name, 
+        y=categorical_column_name, 
+        hue=group_column_name,
+        order=display_order_list,
+        join=False,
+        palette=color_palette, 
+        markers='o', 
+        scale=dot_size,
+        ax=ax
+    )
+    
+    # Add space between the title and the plot
+    plt.subplots_adjust(top=0.85)
+    
+    # Wrap y axis label using textwrap
+    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column_name, 30))  # String wrap the variable name
+    ax.set_ylabel(wrapped_variable_name)
+    
+    # Format and wrap y axis tick labels using textwrap
+    y_tick_labels = ax.get_yticklabels()
+    wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 30)) for label in y_tick_labels]
+    ax.set_yticklabels(wrapped_y_tick_labels, fontsize=10, fontname="Arial", color="#262626")
+    
+    # Move x-axis to the top
+    ax.xaxis.tick_top()
+    
+    # Change x-axis colors to "#666666"
+    ax.tick_params(axis='x', colors="#666666")
+    ax.spines['top'].set_color("#666666")
+    
+    # Remove bottom, left, and right spines
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    
+    # Add data labels
+    abs_values = dataframe.sort_values(value_column_name, ascending=False)[value_column_name].round(decimal_places_for_data_label)
+    for p, label in zip(ax.patches, abs_values):
+        ax.annotate(
+            label,
+            (p.get_x() + p.get_width() / 2., p.get_y() + p.get_height() / 2.),
+            ha='center',
+            va='center',
+            fontsize=data_label_fontsize,
+            color='#262626',
+            xytext=(0, 0),
+            textcoords='offset points'
+        )
+        
+    # Set the x indent of the plot titles and captions
+    # Get longest y tick label
+    longest_y_tick_label = max(wrapped_y_tick_labels, key=len)
+    if len(longest_y_tick_label) >= 30:
+        x_indent = -0.3
+    else:
+        x_indent = -0.005 - (len(longest_y_tick_label) * 0.011)
+        
+    # Set the title with Arial font, size 14, and color #262626 at the top of the plot
+    ax.text(
+        x=x_indent,
+        y=title_y_indent,
+        s=title_for_plot,
+        fontname="Arial",
+        fontsize=14,
+        color="#262626",
+        transform=ax.transAxes
+    )
+    
+    # Set the subtitle with Arial font, size 11, and color #666666
+    ax.text(
+        x=x_indent,
+        y=subtitle_y_indent,
+        s=subtitle_for_plot,
+        fontname="Arial",
+        fontsize=11,
+        color="#666666",
+        transform=ax.transAxes
+    )
+    
+        
+    # Add a word-wrapped caption if one is provided
+    if caption_for_plot != None or data_source_for_plot != None:
+        # Create starting point for caption
+        wrapped_caption = ""
+        
+        # Add the caption to the plot, if one is provided
+        if caption_for_plot != None:
+            # Word wrap the caption without splitting words
+            wrapped_caption = textwrap.fill(caption_for_plot, 110, break_long_words=False)
+            
+        # Add the data source to the caption, if one is provided
+        if data_source_for_plot != None:
+            wrapped_caption = wrapped_caption + "\n\nSource: " + data_source_for_plot
+        
+        # Add the caption to the plot
+        ax.text(
+            x=x_indent,
+            y=caption_y_indent,
+            s=wrapped_caption,
+            fontname="Arial",
+            fontsize=8,
+            color="#666666",
+            transform=ax.transAxes
+        )
+        
+    # Show plot
+    plt.show()
+    
+    # Clear plot
+    plt.clf()
+
