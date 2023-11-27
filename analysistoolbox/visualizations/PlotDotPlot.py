@@ -30,6 +30,40 @@ def PlotDotPlot(dataframe,
                 caption_y_indent=-0.15,
                 decimal_places_for_data_label=1,
                 data_label_fontsize=11):
+    """
+    Plot a dot plot with optional connecting lines.
+
+    Args:
+        dataframe (pd.DataFrame): The input dataframe.
+        categorical_column_name (str): The name of the categorical column in the dataframe.
+        value_column_name (str): The name of the value column in the dataframe.
+        group_column_name (str): The name of the group column in the dataframe.
+        color_palette (str, optional): The color palette to use for the plot. Defaults to "Paired".
+        dot_size (float, optional): The size of the dots in the plot. Defaults to 1.5.
+        dot_alpha (float, optional): The transparency of the dots in the plot. Defaults to 1.
+        connect_dots (bool, optional): Whether to connect the dots with lines. Defaults to True.
+        connect_line_color (str, optional): The color of the connecting lines. Defaults to "#666666".
+        connect_line_alpha (float, optional): The transparency of the connecting lines. Defaults to 0.4.
+        connect_line_width (float, optional): The width of the connecting lines. Defaults to 0.75.
+        display_order_list (list, optional): The order in which the categories should be displayed. 
+            If not provided, the categories will be sorted by the value column in descending order. Defaults to None.
+        figure_size (tuple, optional): The size of the plot figure. Defaults to (10, 6).
+        title_for_plot (str, optional): The title for the plot. Defaults to None.
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        title_y_indent (float, optional): The y-axis indentation for the title. Defaults to 1.15.
+        subtitle_y_indent (float, optional): The y-axis indentation for the subtitle. Defaults to 1.1.
+        caption_y_indent (float, optional): The y-axis indentation for the caption. Defaults to -0.15.
+        decimal_places_for_data_label (int, optional): The number of decimal places to round the data labels. Defaults to 1.
+        data_label_fontsize (int, optional): The fontsize of the data labels. Defaults to 11.
+
+    Raises:
+        ValueError: If the display_order_list does not contain all of the categories in the dataframe.
+
+    Returns:
+        None
+    """
     
     # If display_order_list is provided, check that it contains all of the categories in the dataframe
     if display_order_list != None:
