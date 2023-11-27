@@ -13,6 +13,8 @@ def PlotScatterplot(dataframe,
                     grouping_column_name=None,
                     group_color_palette="Set1",
                     dot_fill_color="#999999",
+                    size_by_column_name=None,
+                    size_normalization=None,
                     # Fitted line arguments
                     fitted_line_type=None,
                     line_color=None,
@@ -45,6 +47,8 @@ def PlotScatterplot(dataframe,
         grouping_column_name (str, optional): The column name for grouping data. Defaults to None.
         group_color_palette (str, optional): The color palette for the groups. Defaults to "Set1".
         dot_fill_color (str, optional): The fill color for the dots. Defaults to "#999999".
+        size_by_column_name(str, optional): The column name for sizing the dots. Defaults to None.
+        size_normalization (tuple, optional): The range of sizes for the dots. Defaults to None.
         fitted_line_type (str, optional): The type of fitted line. Defaults to None.
         line_color (str, optional): The color of the line. Defaults to None.
         title_for_plot (str, optional): The title for the plot. Defaults to None.
@@ -84,6 +88,8 @@ def PlotScatterplot(dataframe,
                 data=dataframe, 
                 x=x_axis_column_name,
                 y=y_axis_column_name,
+                size=size_by_column_name,
+                size_norm=size_normalization,
                 color=dot_fill_color,
                 alpha=0.5,
                 linewidth=0.5,
@@ -94,6 +100,8 @@ def PlotScatterplot(dataframe,
                 data=dataframe, 
                 x=x_axis_column_name,
                 y=y_axis_column_name,
+                size=size_by_column_name,
+                size_norm=size_normalization,
                 hue=grouping_column_name,
                 alpha=0.5,
                 linewidth=0.5,
@@ -110,7 +118,9 @@ def PlotScatterplot(dataframe,
                     'color': dot_fill_color,
                     'alpha': 0.5,
                     'linewidth': 0.5,
-                    'edgecolor': dot_fill_color
+                    'edgecolor': dot_fill_color,
+                    'size': size_by_column_name,
+                    'size_norm': size_normalization,
                 },
                 linewidth=0.5,
                 edgecolor=dot_fill_color,
@@ -124,8 +134,12 @@ def PlotScatterplot(dataframe,
                 y=y_axis_column_name,
                 hue=grouping_column_name,
                 palette=group_color_palette,
-                scatter_kws={'alpha': 0.5,
-                             'linewidth': 0.5},
+                scatter_kws={
+                    'alpha': 0.5,
+                    'linewidth': 0.5,
+                    'size': size_by_column_name,
+                    'size_norm': size_normalization,
+                },
                 fit_reg=True
             )
     elif fitted_line_type == 'lowess':
@@ -139,7 +153,9 @@ def PlotScatterplot(dataframe,
                     'color': dot_fill_color,
                     'alpha': 0.5,
                     'linewidth': 0.5,
-                    'edgecolor': dot_fill_color
+                    'edgecolor': dot_fill_color,
+                    'size': size_by_column_name,
+                    'size_norm': size_normalization,
                 },
                 lowess=True,
                 line_kws={'color': line_color}
@@ -151,8 +167,12 @@ def PlotScatterplot(dataframe,
                 y=y_axis_column_name,
                 hue=grouping_column_name,
                 palette=group_color_palette,
-                scatter_kws={'alpha': 0.5,
-                             'linewidth': 0.5},
+                scatter_kws={
+                    'alpha': 0.5,
+                    'linewidth': 0.5,
+                    'size': size_by_column_name,
+                    'size_norm': size_normalization,
+                },
                 lowess=True
             )
         
