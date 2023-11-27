@@ -13,7 +13,9 @@ def PlotTimeSeries(dataframe,
                    line_color="#3269a8",
                    line_alpha=0.8,
                    color_palette="Set2",
-                   markers="o",
+                   # Marker formatting arguments
+                   marker_size_column_name=None,
+                   marker_size_normalization=None,
                    # Text formatting arguments
                    number_of_x_axis_ticks=None,
                    x_axis_tick_rotation=None,
@@ -38,7 +40,8 @@ def PlotTimeSeries(dataframe,
         line_color (str, optional): The color of the line in the plot. Defaults to "#3269a8".
         line_alpha (float, optional): The transparency of the line in the plot. Defaults to 0.8.
         color_palette (str, optional): The color palette to use for the plot. Defaults to "Set2".
-        markers (str, optional): The marker style for the plot. Defaults to "o".
+        marker_size_column_name (str, optional): The name of the column in the dataframe that contains the marker size data. Defaults to None.
+        marker_size_normalization (tuple, optional): The normalization factor for the marker size data. Defaults to None.
         number_of_x_axis_ticks (int, optional): The number of ticks on the x-axis. Defaults to None.
         x_axis_tick_rotation (int, optional): The rotation of the x-axis ticks. Defaults to None.
         title_for_plot (str, optional): The title for the plot. Defaults to None.
@@ -63,7 +66,6 @@ def PlotTimeSeries(dataframe,
             y=value_column_name,
             color=line_color,
             alpha=line_alpha,
-            marker=markers,
             ax=ax
         )
     else:
@@ -74,8 +76,22 @@ def PlotTimeSeries(dataframe,
             hue=grouping_column_name,
             palette=color_palette,
             alpha=line_alpha,
-            marker=markers,
             ax=ax
+        )
+        
+    # Add scatterplot markers if a column name is provided
+    if marker_size_column_name is not None:
+        sns.scatterplot(
+            data=dataframe,
+            x=time_column_name,
+            y=value_column_name,
+            hue=grouping_column_name,
+            size=marker_size_column_name,
+            size_norm=marker_size_normalization,
+            palette=color_palette,
+            alpha=line_alpha,
+            ax=ax,
+            legend=False
         )
     
     # Remove top and right spines, and set bottom and left spines to gray
