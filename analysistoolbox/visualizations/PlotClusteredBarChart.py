@@ -84,8 +84,8 @@ def PlotClusteredBarChart(dataframe,
     wrapped_x_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 30)) for label in x_tick_labels]
     ax.ax.set_xticklabels(wrapped_x_tick_labels, fontsize=10, fontname="Arial", color="#262626")
     
-    # Change x-axis colors to "#666666"
-    ax.ax.tick_params(axis='x', colors="#666666")
+    # Change x-axis colors
+    ax.ax.tick_params(axis='x', colors="#262626")
     ax.ax.spines['top'].set_color("#666666")
     
     # Remove bottom, left, and right spines
