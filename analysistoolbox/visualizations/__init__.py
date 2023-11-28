@@ -4,6 +4,8 @@ from .PlotBulletChart import PlotBulletChart
 from .PlotClusteredBarChart import PlotClusteredBarChart
 from .PlotCorrelationMatrix import PlotCorrelationMatrix
 from .PlotDensityByGroup import PlotDensityByGroup
+from .PlotDotPlot import PlotDotPlot
+from .PlotOverlappingAreaChart import PlotOverlappingAreaChart
 from .PlotRiskTolerance import PlotRiskTolerance
 from .PlotScatterplot import PlotScatterplot
 from .PlotSingleVariableCountPlot import PlotSingleVariableCountPlot

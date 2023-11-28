@@ -81,18 +81,35 @@ def PlotTimeSeries(dataframe,
         
     # Add scatterplot markers if a column name is provided
     if marker_size_column_name is not None:
-        sns.scatterplot(
-            data=dataframe,
-            x=time_column_name,
-            y=value_column_name,
-            hue=grouping_column_name,
-            size=marker_size_column_name,
-            size_norm=marker_size_normalization,
-            palette=color_palette,
-            alpha=line_alpha,
-            ax=ax,
-            legend=False
-        )
+        if grouping_column_name is None:
+            sns.scatterplot(
+                data=dataframe,
+                x=time_column_name,
+                y=value_column_name,
+                color=line_color,
+                size=marker_size_column_name,
+                size_norm=marker_size_normalization,
+                alpha=line_alpha,
+                ax=ax,
+                linewidth=0.5,
+                edgecolor="white",
+                legend=False
+            )
+        else:
+            sns.scatterplot(
+                data=dataframe,
+                x=time_column_name,
+                y=value_column_name,
+                hue=grouping_column_name,
+                size=marker_size_column_name,
+                size_norm=marker_size_normalization,
+                palette=color_palette,
+                alpha=line_alpha,
+                ax=ax,
+                linewidth=0.5,
+                edgecolor="white",
+                legend=False
+            )
     
     # Remove top and right spines, and set bottom and left spines to gray
     ax.spines['top'].set_visible(False)
