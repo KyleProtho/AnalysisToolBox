@@ -2,5 +2,6 @@ from .ConductManifoldLearning import ConductManifoldLearning
 from .ConductPrincipalComponentAnalysis import ConductPrincipalComponentAnalysis
 from .CreateAssociationRules import CreateAssociationRules
 from .CreateGaussianMixtureClusters import CreateGaussianMixtureClusters
+from .CreateHierarchicalClusters import CreateHierarchicalClusters
 from .CreateKMeansClusters import CreateKMeansClusters
 from .GenerateEDAWithLIDA import GenerateEDAWithLIDA
