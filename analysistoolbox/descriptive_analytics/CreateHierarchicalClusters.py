@@ -55,9 +55,9 @@ def CreateHierarchicalClusters(dataframe,
         # Scale predictors
         dataframe_clusters[list_of_value_columns_for_clustering] = StandardScaler().fit_transform(dataframe_clusters[list_of_value_columns_for_clustering])
     
-    # Show peak-to-peak range of each variable
-    print("\nPeak-to-peak range of each value column/variable:")
-    print(np.ptp(dataframe_clusters[list_of_value_columns_for_clustering], axis=0))
+    # # Show peak-to-peak range of each variable
+    # print("\nPeak-to-peak range of each value column/variable:")
+    # print(np.ptp(dataframe_clusters[list_of_value_columns_for_clustering], axis=0))
     
     # If number of clusters not specified, create a dendrogram to help determine it
     if number_of_clusters == None:
