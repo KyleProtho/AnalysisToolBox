@@ -43,9 +43,9 @@ def CreateGaussianMixtureClusters(dataframe,
         # Scale predictors
         dataframe_clusters[list_of_numeric_columns_for_clustering] = StandardScaler().fit_transform(dataframe_clusters[list_of_numeric_columns_for_clustering])
     
-    # Show peak-to-peak range of each predictor
-    print("\nPeak-to-peak range of each predictor:")
-    print(np.ptp(dataframe_clusters[list_of_numeric_columns_for_clustering], axis=0))
+    # # Show peak-to-peak range of each predictor
+    # print("\nPeak-to-peak range of each predictor:")
+    # print(np.ptp(dataframe_clusters[list_of_numeric_columns_for_clustering], axis=0))
     
     # If number_of_clusters is None, conduct clustering up to 12 times and plot the results
     if number_of_clusters is None:
