@@ -109,10 +109,12 @@ def PlotCorrelationMatrix(dataframe,
         # Wrap labels in each subplot
         for ax in ax.axes.flat:
             # x-axis labels
-            wrapped_x_labels = "\n".join(ax.get_xlabel()[j:j+30] for j in range(0, len(ax.get_xlabel()), 30))
+            x_labels = ax.get_xlabel()
+            wrapped_x_labels = "\n".join(textwrap.wrap(x_labels, 40, break_long_words=False))
             ax.set_xlabel(wrapped_x_labels, horizontalalignment='center')
             # y-axis labels
-            wrapped_y_labels = "\n".join(ax.get_ylabel()[j:j+30] for j in range(0, len(ax.get_ylabel()), 30))
+            y_labels = ax.get_ylabel()
+            wrapped_y_labels = "\n".join(textwrap.wrap(y_labels, 40, break_long_words=False))
             ax.set_ylabel(wrapped_y_labels, horizontalalignment='center')
         
         # Format tick labels to be Arial, size 9, and color #666666

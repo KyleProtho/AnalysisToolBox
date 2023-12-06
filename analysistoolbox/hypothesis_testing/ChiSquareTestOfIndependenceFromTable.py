@@ -124,17 +124,17 @@ def ChiSquareTestOfIndependenceFromTable(contingency_table,
         # Iterate through subplots
         for ax in ax.axes.flat:
             # Wrap x axis label using textwrap
-            wrapped_x_labels = "\n".join(ax.get_xlabel()[j:j+30] for j in range(0, len(ax.get_xlabel()), 30))
-            ax.set_xlabel(wrapped_x_labels, horizontalalignment='center')
+            wrapped_x_labels = textwrap.fill(ax.get_xlabel(), 60, break_long_words=False)
+            ax.set_xlabel(wrapped_x_labels, fontsize=10, fontname="Arial", color="#262626", horizontalalignment='center')
         
             # Format and wrap x axis tick labels using textwrap
             x_tick_labels = ax.get_xticklabels()
-            wrapped_x_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 30)) for label in x_tick_labels]
+            wrapped_x_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 30, break_long_words=False)) for label in x_tick_labels]
             ax.set_xticklabels(wrapped_x_tick_labels, fontsize=10, fontname="Arial", color="#262626")
             
-            # Word wrap the column labels without splitting words
+             # Word wrap the column labels without splitting words
             wrapped_column_labels = textwrap.fill(ax.get_title(), 60, break_long_words=False)
-            ax.set_title(wrapped_column_labels, fontname="Arial", fontsize=10, color="#262626")
+            ax.set_title(wrapped_column_labels, fontname="Arial", fontsize=10, color="#262626", horizontalalignment='center')
             
             # Change x-axis colors to "#666666"
             ax.tick_params(axis='x', colors="#666666")

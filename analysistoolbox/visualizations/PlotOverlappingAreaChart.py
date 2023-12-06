@@ -153,17 +153,18 @@ def PlotOverlappingAreaChart(dataframe,
     
     # Word wrap the subtitle without splitting words
     if subtitle_for_plot != None:   
-        subtitle_for_plot = textwrap.fill(subtitle_for_plot, 100, break_long_words=False)
-    # Set the subtitle with Arial font, size 11, and color #666666
-    ax.text(
-        x=x_indent,
-        y=subtitle_y_indent,
-        s=subtitle_for_plot,
-        fontname="Arial",
-        fontsize=11,
-        color="#666666",
-        transform=ax.transAxes
-    )
+        subtitle_for_plot = textwrap.fill(subtitle_for_plot, 110, break_long_words=False)
+        
+        # Set the subtitle with Arial font, size 11, and color #666666
+        ax.text(
+            x=x_indent,
+            y=subtitle_y_indent,
+            s=subtitle_for_plot,
+            fontname="Arial",
+            fontsize=11,
+            color="#666666",
+            transform=ax.transAxes
+        )
     
     # Move the y-axis label to the top of the y-axis, and set the font to Arial, size 9, and color #666666
     ax.yaxis.set_label_coords(-0.1, 0.84)

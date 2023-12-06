@@ -108,12 +108,12 @@ def PlotBarChart(dataframe,
     plt.subplots_adjust(top=0.85)
     
     # Wrap y axis label using textwrap
-    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column_name, 30))  # String wrap the variable name
+    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column_name, 40, break_long_words=False))  # String wrap the variable name
     ax.set_ylabel(wrapped_variable_name)
     
     # Format and wrap y axis tick labels using textwrap
     y_tick_labels = ax.get_yticklabels()
-    wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 30)) for label in y_tick_labels]
+    wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 40, break_long_words=False)) for label in y_tick_labels]
     ax.set_yticklabels(wrapped_y_tick_labels, fontsize=10, fontname="Arial", color="#262626")
     
     # Move x-axis to the top

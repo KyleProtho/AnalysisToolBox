@@ -198,7 +198,7 @@ def PlotBulletChart(dataframe,
     
     # Format and wrap y axis tick labels using textwrap
     y_tick_labels = ax.get_yticklabels()
-    wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 30)) for label in y_tick_labels]
+    wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 40, break_long_words=False)) for label in y_tick_labels]
     ax.set_yticklabels(wrapped_y_tick_labels, fontsize=10, fontname="Arial", color="#262626")
     
     # Move x-axis to the top

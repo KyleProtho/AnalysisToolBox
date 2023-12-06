@@ -76,12 +76,12 @@ def PlotClusteredBarChart(dataframe,
     plt.subplots_adjust(top=0.85)
     
     # Wrap x axis label using textwrap
-    wrapped_variable_name = "\n".join(textwrap.wrap(grouping_column_name_1, 30))  # String wrap the variable name
+    wrapped_variable_name = "\n".join(textwrap.wrap(grouping_column_name_1, 40, break_long_words=False))  # String wrap the variable name
     ax.ax.set_xlabel(wrapped_variable_name)
     
     # Format and wrap x axis tick labels using textwrap
     x_tick_labels = ax.ax.get_xticklabels()
-    wrapped_x_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 30)) for label in x_tick_labels]
+    wrapped_x_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 40, break_long_words=False)) for label in x_tick_labels]
     ax.ax.set_xticklabels(wrapped_x_tick_labels, fontsize=10, fontname="Arial", color="#262626")
     
     # Change x-axis colors
