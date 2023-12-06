@@ -11,9 +11,11 @@ def ChiSquareTestOfIndependenceFromTable(contingency_table,
                                          column_wise_variable_name,
                                          show_contingency_tables=True,
                                          show_plot=True,
-                                         color_palette="Set1",
+                                         # Plot formatting arguments
+                                         color_palette="Paired",
                                          fill_transparency=0.8,
-                                         figure_size=(6, 6),
+                                         figure_size=(6, 8),
+                                         # Text formatting arguments
                                          title_for_plot="Chi-Square Test of Independence",
                                          subtitle_for_plot="Shows observed vs. expected counts",
                                          caption_for_plot="Expected counts are based on the null hypothesis of no association between the two variables.",
@@ -104,16 +106,16 @@ def ChiSquareTestOfIndependenceFromTable(contingency_table,
         # Draw a nested barplot by species and sex
         ax = sns.catplot(
             data=df_counts,
+            kind='bar',
             x=column_wise_variable_name,
             y='Count',
             hue='Value Type',
             col=row_wise_variable_name,
-            kind='bar',
             palette=color_palette, 
             alpha=fill_transparency, 
             height=figure_size[1],
             aspect=figure_size[0] / figure_size[1],
-            # errorbar=None
+            ci=None,
         )
         
         # Add space between the title and the plot
@@ -129,6 +131,10 @@ def ChiSquareTestOfIndependenceFromTable(contingency_table,
             x_tick_labels = ax.get_xticklabels()
             wrapped_x_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 30)) for label in x_tick_labels]
             ax.set_xticklabels(wrapped_x_tick_labels, fontsize=10, fontname="Arial", color="#262626")
+            
+            # Word wrap the column labels without splitting words
+            wrapped_column_labels = textwrap.fill(ax.get_title(), 60, break_long_words=False)
+            ax.set_title(wrapped_column_labels, fontname="Arial", fontsize=10, color="#262626")
             
             # Change x-axis colors to "#666666"
             ax.tick_params(axis='x', colors="#666666")
@@ -147,9 +153,14 @@ def ChiSquareTestOfIndependenceFromTable(contingency_table,
             min_value = df_counts['Count'].abs().min()
             if min_value < 1:
                 min_value = 1
+            
+            # Iterate through each bar in the plot and add a data label
             for p in ax.patches:
                 # Get the height of each bar
                 height = p.get_height()
+                
+                # Format the height to the specified number of decimal places
+                height = round(height, decimal_places_for_data_label)
                 
                 # Add the data label to the plot, using the specified number of decimal places
                 value_label = "{:,.{decimal_places}f}".format(height, decimal_places=decimal_places_for_data_label)
