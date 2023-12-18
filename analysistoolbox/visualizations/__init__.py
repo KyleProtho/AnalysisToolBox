@@ -2,14 +2,15 @@ from .PlotBarChart import PlotBarChart
 from .PlotBoxWhiskerByGroup import PlotBoxWhiskerByGroup
 from .PlotBulletChart import PlotBulletChart
 from .PlotClusteredBarChart import PlotClusteredBarChart
+from .PlotContingencyHeatmap import PlotContingencyHeatmap
 from .PlotCorrelationMatrix import PlotCorrelationMatrix
 from .PlotDensityByGroup import PlotDensityByGroup
 from .PlotDotPlot import PlotDotPlot
+from .PlotHeatmap import PlotHeatmap
 from .PlotOverlappingAreaChart import PlotOverlappingAreaChart
 from .PlotRiskTolerance import PlotRiskTolerance
 from .PlotScatterplot import PlotScatterplot
 from .PlotSingleVariableCountPlot import PlotSingleVariableCountPlot
 from .PlotSingleVariableHistogram import PlotSingleVariableHistogram
 from .PlotTimeSeries import PlotTimeSeries
-from .PlotTwoVariableHeatmap import PlotTwoVariableHeatmap
 from .RenderTableOne import RenderTableOne

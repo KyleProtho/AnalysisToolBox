@@ -36,7 +36,7 @@ def CreateRareCategoryColumn(dataframe,
     data_value_relative_frequency['rare'] = data_value_relative_frequency[categorical_column_name] < rare_category_threshold
     
     # Create new column name
-    new_column_name = categorical_column_name + " " + new_column_suffix
+    new_column_name = categorical_column_name + new_column_suffix
     
     # Get list of rare categories
     rare_values = data_value_relative_frequency[data_value_relative_frequency['rare'] == True].index.tolist()

@@ -23,8 +23,11 @@ def PlotCorrelationMatrix(dataframe,
                           data_source_for_plot=None,
                           x_indent=-0.7,
                           title_y_indent=1.12,
+                          title_font_size=14,
                           subtitle_y_indent=1.03,
-                          caption_y_indent=-0.35):
+                          subtitle_font_size=11,
+                          caption_y_indent=-0.35,
+                          caption_font_size=8):
     """
     This function plots a correlation matrix or pairplot for a given dataframe. 
 
@@ -138,7 +141,7 @@ def PlotCorrelationMatrix(dataframe,
             y=title_y_indent,
             s=title_for_plot,
             fontname="Arial",
-            fontsize=14,
+            fontsize=title_font_size,
             color="#262626",
             transform=ax.transAxes
         )
@@ -149,7 +152,7 @@ def PlotCorrelationMatrix(dataframe,
             y=subtitle_y_indent,
             s=subtitle_for_plot,
             fontname="Arial",
-            fontsize=11,
+            fontsize=subtitle_font_size,
             color="#666666",
             transform=ax.transAxes
         )
@@ -177,7 +180,7 @@ def PlotCorrelationMatrix(dataframe,
                 y=caption_y_indent,
                 s=wrapped_caption,
                 fontname="Arial",
-                fontsize=8,
+                fontsize=caption_font_size,
                 color="#666666",
                 transform=ax.transAxes
             )

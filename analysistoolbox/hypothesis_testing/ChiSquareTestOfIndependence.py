@@ -23,8 +23,11 @@ def ChiSquareTestOfIndependence(dataframe,
                                 data_source_for_plot=None,
                                 x_indent=-0.95,
                                 title_y_indent=1.15,
+                                title_font_size=14,
                                 subtitle_y_indent=1.1,
+                                subtitle_font_size=11,
                                 caption_y_indent=-0.15,
+                                caption_font_size=8,
                                 decimal_places_for_data_label=1):
     """
     Performs a chi-square test of independence and returns the observed and expected counts for each combination of the outcome and predictor variables. 
@@ -186,7 +189,7 @@ def ChiSquareTestOfIndependence(dataframe,
             y=title_y_indent,
             s=title_for_plot,
             fontname="Arial",
-            fontsize=14,
+            fontsize=title_font_size,
             color="#262626",
             transform=ax.transAxes
         )
@@ -197,7 +200,7 @@ def ChiSquareTestOfIndependence(dataframe,
             y=subtitle_y_indent,
             s=subtitle_for_plot,
             fontname="Arial",
-            fontsize=11,
+            fontsize=subtitle_font_size,
             color="#666666",
             transform=ax.transAxes
         )
@@ -223,7 +226,7 @@ def ChiSquareTestOfIndependence(dataframe,
                 y=caption_y_indent,
                 s=wrapped_caption,
                 fontname="Arial",
-                fontsize=8,
+                fontsize=caption_font_size,
                 color="#666666",
                 transform=ax.transAxes
             )
