@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn import linear_model, metrics
+from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 import textwrap
@@ -13,12 +14,9 @@ def CreateLinearRegressionModel(dataframe,
                                 outcome_variable,
                                 list_of_predictor_variables,
                                 # Model parameters
-                                scale_predictor_variables=False,
+                                scale_variables=False,
                                 test_size=0.2,
-                                max_iterations=1000,
-                                learning_rate=0.01,
-                                lambda_for_regularization=0.001,
-                                loss_function='squared_loss',
+                                fit_intercept=True,
                                 random_seed=412,
                                 print_peak_to_peak_range_of_each_predictor=False,
                                 # All plot arguments
@@ -56,7 +54,7 @@ def CreateLinearRegressionModel(dataframe,
     print("Count of examples eligible for inclusion in model training and testing:", len(dataframe.index))
     
     # Scale the predictors, if requested
-    if scale_predictor_variables:
+    if scale_variables:
         # Scale predictors
         scaler = StandardScaler()
         dataframe[list_of_predictor_variables] = scaler.fit_transform(dataframe[list_of_predictor_variables])
@@ -78,19 +76,26 @@ def CreateLinearRegressionModel(dataframe,
         test = dataframe.copy()
         
     # Create linear regression object
-    model = linear_model.SGDRegressor(
-        loss=loss_function,
-        max_iter=max_iterations,
-        eta0=learning_rate,
-        alpha=lambda_for_regularization,
-        random_state=random_seed,
-        fit_intercept=True,
-    )
+    if scale_variables:
+        model = make_pipeline(StandardScaler(),
+                              linear_model.LinearRegression(
+                                  fit_intercept=fit_intercept,
+                              )
+        )
+    else:
+        model = linear_model.LinearRegression(
+            fit_intercept=fit_intercept,
+        )
     
     # Train the model using the training sets and show fitting summary
-    model.fit(train[list_of_predictor_variables], train[outcome_variable])
-    print(f"\nNumber of iterations completed: {model.n_iter_}")
-    print(f"Number of weight updates: {model.t_}")
+    model.fit(X=train[list_of_predictor_variables], 
+              y=train[outcome_variable])
+    
+    # Show number of iterations and weight updates
+    if scale_variables:
+        regressor = model['linearregression']
+    else:
+        regressor = model
     
     # # Show parameters of the model
     # b_norm = model.intercept_
@@ -220,7 +225,7 @@ def CreateLinearRegressionModel(dataframe,
     # Plot feature importance if requested
     if plot_feature_importance:
         # Get importance
-        importance = model.coef_
+        importance = regressor.coef_
         
         # Create lists to store feature names and feature importance
         feature_names = []
@@ -234,7 +239,7 @@ def CreateLinearRegressionModel(dataframe,
         data_feauture_importance = pd.DataFrame(
             data={
                 'Feature': model.feature_names_in_,
-                'Importance': model.coef_
+                'Importance': regressor.coef_
             }
         )
         
@@ -355,12 +360,22 @@ def CreateLinearRegressionModel(dataframe,
         plt.clf()
     
     # Return the model
-    if scale_predictor_variables:
-        dict_return = {
-            'model': model,
-            'scaler': scaler
-        }
-        return(dict_return)
-    else:
-        return(model)
+    return model
 
+
+# # Test function
+# data = pd.DataFrame({
+#     'Year': [2015, 2016, 2017, 2018, 2019, 2020],
+#     'Value': [0.88, 0.88, 0.89, 0.90, 0.91, 0.92],
+# })
+
+# # Create model
+# model = CreateLinearRegressionModel(
+#     dataframe=data,
+#     outcome_variable='Value',
+#     list_of_predictor_variables=['Year'],
+#     # Model parameters
+#     scale_variables=True,
+#     fit_intercept=True,
+#     test_size=0,
+# )
