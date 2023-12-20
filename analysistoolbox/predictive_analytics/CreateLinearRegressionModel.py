@@ -18,6 +18,7 @@ def CreateLinearRegressionModel(dataframe,
                                 max_iterations=1000,
                                 learning_rate=0.01,
                                 lambda_for_regularization=0.001,
+                                loss_function='squared_loss',
                                 random_seed=412,
                                 print_peak_to_peak_range_of_each_predictor=False,
                                 # All plot arguments
@@ -66,15 +67,19 @@ def CreateLinearRegressionModel(dataframe,
         print(np.ptp(dataframe[list_of_predictor_variables], axis=0))
     
     # Split dataframe into training and test sets
-    train, test = train_test_split(
-        dataframe, 
-        test_size=test_size,
-        random_state=random_seed
-    )
-    
+    if test_size > 0:
+        train, test = train_test_split(
+            dataframe, 
+            test_size=test_size,
+            random_state=random_seed
+        )
+    else:
+        train = dataframe.copy()
+        test = dataframe.copy()
+        
     # Create linear regression object
     model = linear_model.SGDRegressor(
-        loss='squared_error',
+        loss=loss_function,
         max_iter=max_iterations,
         eta0=learning_rate,
         alpha=lambda_for_regularization,
