@@ -184,7 +184,6 @@ def CreateBoostedTreeModel(dataframe,
             x=x_indent_for_model_test_performance_plot,
             y=title_y_indent_for_model_test_performance_plot,
             s=title_for_model_test_performance_plot,
-            fontname="Arial",
             fontsize=14,
             color="#262626",
             transform=ax.transAxes
@@ -195,7 +194,6 @@ def CreateBoostedTreeModel(dataframe,
             x=x_indent_for_model_test_performance_plot,
             y=subtitle_y_indent_for_model_test_performance_plot,
             s=subtitle_for_model_test_performance_plot,
-            fontname="Arial",
             fontsize=11,
             color="#666666",
             transform=ax.transAxes
@@ -205,7 +203,6 @@ def CreateBoostedTreeModel(dataframe,
         ax.yaxis.set_label_coords(-0.1, 0.92)
         ax.yaxis.set_label_text(
             'Predicted',
-            fontname="Arial",
             fontsize=10,
             color="#666666"
         )
@@ -214,7 +211,6 @@ def CreateBoostedTreeModel(dataframe,
         ax.xaxis.set_label_coords(0.9, -0.1)
         ax.xaxis.set_label_text(
             outcome_variable,
-            fontname="Arial",
             fontsize=10,
             color="#666666"
         )
@@ -238,7 +234,6 @@ def CreateBoostedTreeModel(dataframe,
                 x=x_indent_for_model_test_performance_plot,
                 y=caption_y_indent_for_model_test_performance_plot,
                 s=wrapped_caption,
-                fontname="Arial",
                 fontsize=8,
                 color="#666666",
                 transform=ax.transAxes
@@ -291,7 +286,7 @@ def CreateBoostedTreeModel(dataframe,
         ax.get_xaxis().set_ticks([])
         
         # Format x-axis label
-        ax.set_xlabel("Importance", fontsize=10, fontname="Arial", color="#262626")
+        ax.set_xlabel("Importance", fontsize=10, color="#262626")
         
         # Remove spines
         ax.spines['right'].set_visible(False)
@@ -306,8 +301,7 @@ def CreateBoostedTreeModel(dataframe,
                 fmt='%.3f', 
                 label_type='edge', 
                 padding=5,
-                fontsize=10, 
-                fontname="Arial", 
+                fontsize=10,
                 color="#262626"
             )
         
@@ -327,7 +321,6 @@ def CreateBoostedTreeModel(dataframe,
             x=x_indent,
             y=title_y_indent_for_feature_importance_plot,
             s=title_for_feature_importance_plot,
-            fontname="Arial",
             fontsize=14,
             color="#262626",
             transform=ax.transAxes
@@ -338,7 +331,6 @@ def CreateBoostedTreeModel(dataframe,
             x=x_indent,
             y=subtitle_y_indent_for_feature_importance_plot,
             s=subtitle_for_feature_importance_plot,
-            fontname="Arial",
             fontsize=11,
             color="#666666",
             transform=ax.transAxes
@@ -363,7 +355,6 @@ def CreateBoostedTreeModel(dataframe,
                 x=x_indent,
                 y=caption_y_indent_for_feature_importance_plot,
                 s=wrapped_caption,
-                fontname="Arial",
                 fontsize=8,
                 color="#666666",
                 transform=ax.transAxes

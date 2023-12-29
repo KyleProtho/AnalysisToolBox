@@ -362,20 +362,3 @@ def CreateLinearRegressionModel(dataframe,
     # Return the model
     return model
 
-
-# # Test function
-# data = pd.DataFrame({
-#     'Year': [2015, 2016, 2017, 2018, 2019, 2020],
-#     'Value': [0.88, 0.88, 0.89, 0.90, 0.91, 0.92],
-# })
-
-# # Create model
-# model = CreateLinearRegressionModel(
-#     dataframe=data,
-#     outcome_variable='Value',
-#     list_of_predictor_variables=['Year'],
-#     # Model parameters
-#     scale_variables=True,
-#     fit_intercept=True,
-#     test_size=0,
-# )
