@@ -107,7 +107,7 @@ def PlotBoxWhiskerByGroup(dataframe,
         x=x_indent,
         y=title_y_indent,
         s=title_for_plot,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=14,
         color="#262626",
         transform=ax.transAxes
@@ -118,7 +118,7 @@ def PlotBoxWhiskerByGroup(dataframe,
         x=x_indent,
         y=subtitle_y_indent,
         s=subtitle_for_plot,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=11,
         color="#666666",
         transform=ax.transAxes
@@ -128,7 +128,7 @@ def PlotBoxWhiskerByGroup(dataframe,
     group_variable_1_tick_labels = ax.get_xticklabels()
     group_variable_1_tick_labels = [label.get_text() for label in group_variable_1_tick_labels]
     for label in group_variable_1_tick_labels:
-        label = textwrap.fill(label, 40, break_long_words=False)
+        label = textwrap.fill(label, 30, break_long_words=False)
     ax.set_xticklabels(group_variable_1_tick_labels)
     
     # Set x-axis tick label font to Arial, size 9, and color #666666
@@ -141,7 +141,7 @@ def PlotBoxWhiskerByGroup(dataframe,
         bottom=True,
         labelbottom=True
     )
-    plt.xticks(fontname='Arial')
+    # plt.xticks(fontname='Arial')
     
     # Set y-axis tick label font to Arial, size 9, and color #666666
     ax.tick_params(
@@ -153,7 +153,7 @@ def PlotBoxWhiskerByGroup(dataframe,
         bottom=True,
         labelbottom=True
     )
-    plt.yticks(fontname='Arial')
+    # plt.yticks(fontname='Arial')
     
     # Add a word-wrapped caption if one is provided
     if caption_for_plot != None or data_source_for_plot != None:
@@ -174,7 +174,7 @@ def PlotBoxWhiskerByGroup(dataframe,
             x=x_indent,
             y=caption_y_indent,
             s=wrapped_caption,
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=8,
             color="#666666",
             transform=ax.transAxes

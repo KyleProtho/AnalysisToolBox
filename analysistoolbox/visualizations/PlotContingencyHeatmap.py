@@ -68,7 +68,12 @@ def PlotContingencyHeatmap(dataframe,
     # Format and wrap y axis tick labels using textwrap
     y_tick_labels = ax.get_yticklabels()
     wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 40, break_long_words=False)) for label in y_tick_labels]
-    ax.set_yticklabels(wrapped_y_tick_labels, fontsize=10, fontname="Arial", color="#262626")
+    ax.set_yticklabels(
+        wrapped_y_tick_labels, 
+        fontsize=10, 
+        # fontname="Arial", 
+        color="#262626"
+    )
     
     # Wrap x axis label using textwrap
     wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column_name_2, 30))  # String wrap the variable name
@@ -77,7 +82,12 @@ def PlotContingencyHeatmap(dataframe,
     # Format and wrap x axis tick labels using textwrap
     x_tick_labels = ax.get_xticklabels()
     wrapped_x_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 40, break_long_words=False)) for label in x_tick_labels]
-    ax.set_xticklabels(wrapped_x_tick_labels, fontsize=10, fontname="Arial", color="#262626")
+    ax.set_xticklabels(
+        wrapped_x_tick_labels, 
+        fontsize=10, 
+        # fontname="Arial", 
+        color="#262626"
+    )
     
     # Set the x indent of the plot titles and captions
     # Get longest y tick label
@@ -92,7 +102,7 @@ def PlotContingencyHeatmap(dataframe,
         x=x_indent,
         y=title_y_indent,
         s=title_for_plot,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=14,
         color="#262626",
         transform=ax.transAxes
@@ -103,7 +113,7 @@ def PlotContingencyHeatmap(dataframe,
         x=x_indent,
         y=subtitle_y_indent,
         s=subtitle_for_plot,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=11,
         color="#666666",
         transform=ax.transAxes
@@ -129,7 +139,7 @@ def PlotContingencyHeatmap(dataframe,
             x=x_indent,
             y=caption_y_indent,
             s=wrapped_caption,
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=8,
             color="#666666",
             transform=ax.transAxes

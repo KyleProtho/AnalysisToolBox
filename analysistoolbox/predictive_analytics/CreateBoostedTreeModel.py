@@ -280,7 +280,12 @@ def CreateBoostedTreeModel(dataframe,
         # Format and wrap y axis tick labels using textwrap
         y_tick_labels = ax.get_yticklabels()
         wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 50)) for label in y_tick_labels]
-        ax.set_yticklabels(wrapped_y_tick_labels, fontsize=10, fontname="Arial", color="#262626")
+        ax.set_yticklabels(
+            wrapped_y_tick_labels, 
+            fontsize=10, 
+            # fontname="Arial", 
+            color="#262626"
+        )
         
         # Remove a-axis tick labels
         ax.get_xaxis().set_ticks([])

@@ -122,7 +122,12 @@ def PlotDotPlot(dataframe,
     # Format and wrap y axis tick labels using textwrap
     y_tick_labels = ax.get_yticklabels()
     wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 40, break_long_words=False)) for label in y_tick_labels]
-    ax.set_yticklabels(wrapped_y_tick_labels, fontsize=10, fontname="Arial", color="#262626")
+    ax.set_yticklabels(
+        wrapped_y_tick_labels,
+        fontsize=10, 
+        # fontname="Arial", 
+        color="#262626"
+    )
     
     # Move x-axis to the top
     ax.xaxis.tick_top()
@@ -163,7 +168,7 @@ def PlotDotPlot(dataframe,
         x=x_indent,
         y=title_y_indent,
         s=title_for_plot,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=14,
         color="#262626",
         transform=ax.transAxes
@@ -174,7 +179,7 @@ def PlotDotPlot(dataframe,
         x=x_indent,
         y=subtitle_y_indent,
         s=subtitle_for_plot,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=11,
         color="#666666",
         transform=ax.transAxes
@@ -200,7 +205,7 @@ def PlotDotPlot(dataframe,
             x=x_indent,
             y=caption_y_indent,
             s=wrapped_caption,
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=8,
             color="#666666",
             transform=ax.transAxes

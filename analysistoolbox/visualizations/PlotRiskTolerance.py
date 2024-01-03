@@ -126,7 +126,7 @@ def PlotRiskTolerance(simulated_values,
         y=plt.ylim()[1] * 0.97, 
         s=risk_tolerance_label+': {:.2f}'.format(risk_tolerance)+' ({:.1%})'.format(risk_probability),
         horizontalalignment='center',
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=9,
         color="#262626",
         alpha=0.75
@@ -146,7 +146,7 @@ def PlotRiskTolerance(simulated_values,
             y=plt.ylim()[1] * .90,
             s=variable_name+': {:.2f}'.format(observed_value),
             horizontalalignment='center',
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=9,
             color="#262626",
             alpha=0.75
@@ -157,7 +157,7 @@ def PlotRiskTolerance(simulated_values,
         x=x_indent,
         y=title_y_indent,
         s=title_for_plot,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=14,
         color="#262626",
         transform=ax.transAxes
@@ -168,7 +168,7 @@ def PlotRiskTolerance(simulated_values,
         x=x_indent,
         y=subtitle_y_indent,
         s=subtitle_for_plot,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=11,
         color="#666666",
         transform=ax.transAxes
@@ -184,7 +184,7 @@ def PlotRiskTolerance(simulated_values,
         bottom=True,
         labelbottom=True
     )
-    plt.xticks(fontname='Arial')
+    # plt.xticks(fontname='Arial')
     
     # Add a word-wrapped caption if one is provided
     if caption_for_plot != None or data_source_for_plot != None:
@@ -205,7 +205,7 @@ def PlotRiskTolerance(simulated_values,
             x=x_indent,
             y=caption_y_indent,
             s=wrapped_caption,
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=8,
             color="#666666",
             transform=ax.transAxes

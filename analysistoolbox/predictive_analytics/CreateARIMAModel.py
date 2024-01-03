@@ -41,22 +41,39 @@ def CreateARIMAModel(dataframe,
                      show_model_results=False,
                      plot_residuals=True):
     """
-    Creates an ARIMA model for a given dataframe and outcome variable.
+    Creates an ARIMA model for time series analysis.
 
     Args:
-        dataframe (pandas.DataFrame): The dataframe containing the data to be modeled.
-        outcome_column_name (str): The name of the column in the dataframe containing the outcome variable.
-        show_acf_pacf_plots (bool, optional): Whether to show ACF and PACF plots. Defaults to True.
-        lookback_periods (int, optional): The number of periods to include in the ACF and PACF plots. Defaults to 1.
-        differencing_periods (int, optional): The number of periods to difference the data. Defaults to 0.
-        lag_periods (int, optional): The number of lag periods to include in the model. Defaults to 1.
-        moving_average_periods (int, optional): The number of periods to include in the moving average component of the model. Defaults to 1.
-        show_model_results (bool, optional): Whether to show the model results. Defaults to True.
+        dataframe (pandas.DataFrame): The input dataframe containing the time series data.
+        outcome_column_name (str): The name of the column in the dataframe representing the outcome variable.
+        time_column_name (str, optional): The name of the column in the dataframe representing the time variable. Defaults to None.
+        lookback_periods (int, optional): The number of periods to consider for lagged values. Defaults to 1.
+        differencing_periods (int, optional): The number of periods to difference the time series. Defaults to 0.
+        lag_periods (int, optional): The number of periods for the autoregressive component of the model. Defaults to 1.
+        moving_average_periods (int, optional): The number of periods for the moving average component of the model. Defaults to 1.
+        plot_time_series (bool, optional): Whether to plot the time series. Defaults to False.
+        time_series_figure_size (tuple, optional): The size of the figure for the time series plot. Defaults to (8, 5).
+        line_color (str, optional): The color of the line in the time series plot. Defaults to "#3269a8".
+        line_alpha (float, optional): The transparency of the line in the time series plot. Defaults to 0.8.
+        number_of_x_axis_ticks (int, optional): The number of ticks on the x-axis in the time series plot. Defaults to None.
+        x_axis_tick_rotation (float, optional): The rotation angle of the x-axis tick labels in the time series plot. Defaults to None.
+        title_for_plot (str, optional): The title of the time series plot. Defaults to "Time Series".
+        subtitle_for_plot (str, optional): The subtitle of the time series plot. Defaults to "Shows the time series for the outcome variable.".
+        caption_for_plot (str, optional): The caption of the time series plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source information for the time series plot. Defaults to None.
+        x_indent (float, optional): The x-coordinate of the text indent in the time series plot. Defaults to -0.127.
+        title_y_indent (float, optional): The y-coordinate of the title text indent in the time series plot. Defaults to 1.125.
+        subtitle_y_indent (float, optional): The y-coordinate of the subtitle text indent in the time series plot. Defaults to 1.05.
+        caption_y_indent (float, optional): The y-coordinate of the caption text indent in the time series plot. Defaults to -0.3.
+        test_for_stationarity (bool, optional): Whether to test for stationarity of the time series. Defaults to True.
+        show_acf_pacf_plots (bool, optional): Whether to plot the ACF and PACF plots. Defaults to False.
+        show_model_results (bool, optional): Whether to show the model results. Defaults to False.
         plot_residuals (bool, optional): Whether to plot the residuals. Defaults to True.
 
     Returns:
-        statsmodels.tsa.arima.model.ARIMAResultsWrapper: The fitted ARIMA model.
+        statsmodels.tsa.arima.model.ARIMAResults: The fitted ARIMA model.
     """
+    
     # If time series plot is requested, ensure time column is provided
     if plot_time_series:
         if time_column_name == None:

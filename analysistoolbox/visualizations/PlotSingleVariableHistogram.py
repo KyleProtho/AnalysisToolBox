@@ -98,7 +98,7 @@ def PlotSingleVariableHistogram(dataframe,
             y=plt.ylim()[1] * 0.97, 
             s='Mean: {:.2f}'.format(mean),
             horizontalalignment='center',
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=9,
             color="#262626",
             alpha=0.75
@@ -122,7 +122,7 @@ def PlotSingleVariableHistogram(dataframe,
             y=plt.ylim()[1] * .90,
             s='Median: {:.2f}'.format(median),
             horizontalalignment='center',
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=9,
             color="#262626",
             alpha=0.75
@@ -133,7 +133,7 @@ def PlotSingleVariableHistogram(dataframe,
         x=x_indent,
         y=title_y_indent,
         s=title_for_plot,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=14,
         color="#262626",
         transform=ax.transAxes
@@ -144,7 +144,7 @@ def PlotSingleVariableHistogram(dataframe,
         x=x_indent,
         y=subtitle_y_indent,
         s=subtitle_for_plot,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=11,
         color="#666666",
         transform=ax.transAxes
@@ -160,7 +160,7 @@ def PlotSingleVariableHistogram(dataframe,
         bottom=True,
         labelbottom=True
     )
-    plt.xticks(fontname='Arial')
+    # plt.xticks(fontname='Arial')
     
     # Add a word-wrapped caption if one is provided
     if caption_for_plot != None or data_source_for_plot != None:
@@ -181,7 +181,7 @@ def PlotSingleVariableHistogram(dataframe,
             x=x_indent,
             y=caption_y_indent,
             s=wrapped_caption,
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=8,
             color="#666666",
             transform=ax.transAxes

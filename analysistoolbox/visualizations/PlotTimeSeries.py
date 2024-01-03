@@ -137,7 +137,7 @@ def PlotTimeSeries(dataframe,
         x=x_indent,
         y=title_y_indent,
         s=title_for_plot,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=14,
         color="#262626",
         transform=ax.transAxes
@@ -151,7 +151,7 @@ def PlotTimeSeries(dataframe,
             x=x_indent,
             y=subtitle_y_indent,
             s=subtitle_for_plot,
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=11,
             color="#666666",
             transform=ax.transAxes
@@ -161,7 +161,7 @@ def PlotTimeSeries(dataframe,
     ax.yaxis.set_label_coords(-0.1, 0.84)
     ax.yaxis.set_label_text(
         value_column_name,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=10,
         color="#666666"
     )
@@ -170,7 +170,7 @@ def PlotTimeSeries(dataframe,
     ax.xaxis.set_label_coords(0.9, -0.1)
     ax.xaxis.set_label_text(
         time_column_name,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=10,
         color="#666666"
     )
@@ -194,7 +194,7 @@ def PlotTimeSeries(dataframe,
             x=x_indent,
             y=caption_y_indent,
             s=wrapped_caption,
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=8,
             color="#666666",
             transform=ax.transAxes

@@ -82,7 +82,12 @@ def PlotClusteredBarChart(dataframe,
     # Format and wrap x axis tick labels using textwrap
     x_tick_labels = ax.ax.get_xticklabels()
     wrapped_x_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 40, break_long_words=False)) for label in x_tick_labels]
-    ax.ax.set_xticklabels(wrapped_x_tick_labels, fontsize=10, fontname="Arial", color="#262626")
+    ax.ax.set_xticklabels(
+        wrapped_x_tick_labels, 
+        fontsize=10, 
+        # fontname="Arial", 
+        color="#262626"
+    )
     
     # Change x-axis colors
     ax.ax.tick_params(axis='x', colors="#262626")
@@ -113,7 +118,7 @@ def PlotClusteredBarChart(dataframe,
             y=height + (min_value * 0.05),
             s=value_label,
             ha="center",
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=10,
             color="#262626"
         )
@@ -123,7 +128,7 @@ def PlotClusteredBarChart(dataframe,
         x=x_indent,
         y=title_y_indent,
         s=title_for_plot,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=14,
         color="#262626",
         transform=ax.ax.transAxes
@@ -134,7 +139,7 @@ def PlotClusteredBarChart(dataframe,
         x=x_indent,
         y=subtitle_y_indent,
         s=subtitle_for_plot,
-        fontname="Arial",
+        # fontname="Arial",
         fontsize=11,
         color="#666666",
         transform=ax.ax.transAxes
@@ -160,7 +165,7 @@ def PlotClusteredBarChart(dataframe,
             x=x_indent,
             y=caption_y_indent,
             s=wrapped_caption,
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=8,
             color="#666666",
             transform=ax.ax.transAxes

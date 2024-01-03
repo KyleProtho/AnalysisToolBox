@@ -159,7 +159,7 @@ def CreateLinearRegressionModel(dataframe,
             x=x_indent_for_model_test_performance_plot,
             y=title_y_indent_for_model_test_performance_plot,
             s=title_for_model_test_performance_plot,
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=14,
             color="#262626",
             transform=ax.transAxes
@@ -170,7 +170,7 @@ def CreateLinearRegressionModel(dataframe,
             x=x_indent_for_model_test_performance_plot,
             y=subtitle_y_indent_for_model_test_performance_plot,
             s=subtitle_for_model_test_performance_plot,
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=11,
             color="#666666",
             transform=ax.transAxes
@@ -180,7 +180,7 @@ def CreateLinearRegressionModel(dataframe,
         ax.yaxis.set_label_coords(-0.1, 0.92)
         ax.yaxis.set_label_text(
             'Predicted',
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=10,
             color="#666666"
         )
@@ -189,7 +189,7 @@ def CreateLinearRegressionModel(dataframe,
         ax.xaxis.set_label_coords(0.9, -0.1)
         ax.xaxis.set_label_text(
             outcome_variable,
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=10,
             color="#666666"
         )
@@ -213,7 +213,7 @@ def CreateLinearRegressionModel(dataframe,
                 x=x_indent_for_model_test_performance_plot,
                 y=caption_y_indent_for_model_test_performance_plot,
                 s=wrapped_caption,
-                fontname="Arial",
+                # fontname="Arial",
                 fontsize=8,
                 color="#666666",
                 transform=ax.transAxes
@@ -271,13 +271,23 @@ def CreateLinearRegressionModel(dataframe,
         # Format and wrap y axis tick labels using textwrap
         y_tick_labels = ax.get_yticklabels()
         wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 50)) for label in y_tick_labels]
-        ax.set_yticklabels(wrapped_y_tick_labels, fontsize=10, fontname="Arial", color="#262626")
+        ax.set_yticklabels(
+            wrapped_y_tick_labels, 
+            fontsize=10, 
+            # fontname="Arial", 
+            color="#262626"
+        )
         
         # Remove a-axis tick labels
         ax.get_xaxis().set_ticks([])
         
         # Format x-axis label
-        ax.set_xlabel("Beta Coefficent", fontsize=10, fontname="Arial", color="#262626")
+        ax.set_xlabel(
+            "Beta Coefficent", 
+            fontsize=10, 
+            # fontname="Arial", 
+            color="#262626"
+        )
         
         # Remove spines
         ax.spines['right'].set_visible(False)
@@ -293,7 +303,7 @@ def CreateLinearRegressionModel(dataframe,
                 label_type='edge', 
                 padding=5,
                 fontsize=10, 
-                fontname="Arial", 
+                # fontname="Arial", 
                 color="#262626"
             )
         
@@ -313,7 +323,7 @@ def CreateLinearRegressionModel(dataframe,
             x=x_indent,
             y=title_y_indent_for_feature_importance_plot,
             s=title_for_feature_importance_plot,
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=14,
             color="#262626",
             transform=ax.transAxes
@@ -324,7 +334,7 @@ def CreateLinearRegressionModel(dataframe,
             x=x_indent,
             y=subtitle_y_indent_for_feature_importance_plot,
             s=subtitle_for_feature_importance_plot,
-            fontname="Arial",
+            # fontname="Arial",
             fontsize=11,
             color="#666666",
             transform=ax.transAxes
@@ -349,7 +359,7 @@ def CreateLinearRegressionModel(dataframe,
                 x=x_indent,
                 y=caption_y_indent_for_feature_importance_plot,
                 s=wrapped_caption,
-                fontname="Arial",
+                # fontname="Arial",
                 fontsize=8,
                 color="#666666",
                 transform=ax.transAxes
