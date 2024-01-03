@@ -11,10 +11,13 @@ def PlotClusteredBarChart(dataframe,
                           grouping_column_name_1, 
                           grouping_column_name_2,
                           value_column_name,
+                          # Plot formatting arguments
                           color_palette="Set1",
                           fill_transparency=0.8,
                           display_order_list=None,
                           figure_size=(6, 6),
+                          show_legend=True,
+                          # Text formatting arguments
                           title_for_plot=None,
                           subtitle_for_plot=None,
                           caption_for_plot=None,
@@ -71,6 +74,10 @@ def PlotClusteredBarChart(dataframe,
         aspect=figure_size[0] / figure_size[1],
         ci=None,
     )
+    
+    # Remove the legend if show_legend is False
+    if show_legend == False:
+        ax.ax.legend_.remove()
     
     # Add space between the title and the plot
     plt.subplots_adjust(top=0.85)

@@ -20,6 +20,7 @@ def PlotDotPlot(dataframe,
                 # Plot formatting arguments
                 display_order_list=None,
                 figure_size=(10, 6),
+                show_legend=True,
                 # Text formatting arguments
                 title_for_plot=None,
                 subtitle_for_plot=None,
@@ -111,6 +112,10 @@ def PlotDotPlot(dataframe,
         scale=dot_size,
         ax=ax
     )
+    
+    # Remove legend if show_legend is False
+    if show_legend == False:
+        ax.legend_.remove()
     
     # Add space between the title and the plot
     plt.subplots_adjust(top=0.85)

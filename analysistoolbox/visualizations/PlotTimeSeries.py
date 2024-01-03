@@ -13,6 +13,7 @@ def PlotTimeSeries(dataframe,
                    line_color="#3269a8",
                    line_alpha=0.8,
                    color_palette="Set2",
+                   show_legend=True,
                    # Marker formatting arguments
                    marker_size_column_name=None,
                    marker_size_normalization=None,
@@ -116,6 +117,10 @@ def PlotTimeSeries(dataframe,
     ax.spines['right'].set_visible(False)
     ax.spines['bottom'].set_color('#666666')
     ax.spines['left'].set_color('#666666')
+    
+    # If show_legend is False, remove the legend
+    if show_legend == False:
+        ax.legend_.remove()
     
     # Set the number of ticks on the x-axis
     if number_of_x_axis_ticks is not None:

@@ -8,7 +8,9 @@ import textwrap
 def PlotDensityByGroup(dataframe,
                        value_column_name,
                        grouping_column_name,
+                       # Plot formatting arguments
                        color_palette='Set2',
+                       show_legend=True,
                        # Text formatting arguments
                        title_for_plot=None,
                        subtitle_for_plot=None,
@@ -60,6 +62,10 @@ def PlotDensityByGroup(dataframe,
     ax.spines['right'].set_visible(False)
     ax.spines['left'].set_visible(False)
     ax.spines['bottom'].set_color("#262626")
+    
+    # Remove the legend if show_legend is False
+    if show_legend == False:
+        ax.legend_.remove()
     
     # Remove the y-axis, and adjust the indent of the plot titles
     if show_y_axis == False:

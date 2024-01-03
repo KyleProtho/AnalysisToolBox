@@ -9,9 +9,12 @@ def PlotBoxWhiskerByGroup(dataframe,
                           value_column_name,
                           grouping_column_name_1,
                           grouping_column_name_2=None,
+                          # Plot formatting arguments
                           fill_color=None,
                           color_palette='Set2',
                           display_order_list=None,
+                          show_legend=True,
+                          # Text formatting arguments
                           title_for_plot=None,
                           subtitle_for_plot=None,
                           caption_for_plot=None,
@@ -98,6 +101,10 @@ def PlotBoxWhiskerByGroup(dataframe,
     ax.spines['right'].set_visible(False)
     ax.spines['bottom'].set_color("#262626")
     ax.spines['left'].set_color("#262626")
+    
+    # If show_legend is False, remove the legend
+    if show_legend == False:
+        ax.legend_.remove()
     
     # Add space between the title and the plot
     plt.subplots_adjust(top=0.85)
