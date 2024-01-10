@@ -88,6 +88,9 @@ def PlotDotPlot(dataframe,
     
     # If zero_line_group is provided, reset the values in the value column to be relative to the zero_line_group
     if zero_line_group != None:
+        # Make a copy of the value column, add ' - Original' to the name
+        dataframe[value_column_name + '- Original'] = dataframe[value_column_name]
+        
         # Left join the original values of the zero_line_group to the dataframe
         df_temp = pd.merge(
             dataframe,
@@ -211,7 +214,7 @@ def PlotDotPlot(dataframe,
             ax.text(
                 x=x_data_label_coordinates,
                 y=y_data_label_coordinates,
-                s=round(x_coordinates.max(), decimal_places_for_data_label),
+                s=round(dataframe[dataframe[categorical_column_name] == display_order_list[i]][value_column_name + '- Original'].max(), decimal_places_for_data_label),
                 # fontname="Arial",
                 fontsize=data_label_fontsize,
                 fontweight=data_label_fontweight,
@@ -226,7 +229,7 @@ def PlotDotPlot(dataframe,
             ax.text(
                 x=x_data_label_coordinates,
                 y=y_data_label_coordinates,
-                s=round(x_coordinates.min(), decimal_places_for_data_label),
+                s=round(dataframe[dataframe[categorical_column_name] == display_order_list[i]][value_column_name + '- Original'].min(), decimal_places_for_data_label),
                 # fontname="Arial",
                 fontsize=data_label_fontsize,
                 fontweight=data_label_fontweight,
