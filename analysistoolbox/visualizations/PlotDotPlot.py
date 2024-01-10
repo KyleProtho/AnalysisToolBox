@@ -10,14 +10,16 @@ def PlotDotPlot(dataframe,
                 value_column_name,
                 group_column_name,
                 # Dot formatting arguments
-                color_palette="Paired",
-                dot_size=1.5,
+                group_1_color="#4257f5",
+                group_2_color="#ccd2ff",
+                dot_size=2,
                 dot_alpha=1,
                 connect_dots=True,
                 connect_line_color="#666666",
                 connect_line_alpha=0.4,
-                connect_line_width=0.75,
+                connect_line_width=1.0,
                 # Plot formatting arguments
+                zero_line_group=None,
                 display_order_list=None,
                 figure_size=(10, 6),
                 show_legend=True,
@@ -29,8 +31,11 @@ def PlotDotPlot(dataframe,
                 title_y_indent=1.15,
                 subtitle_y_indent=1.1,
                 caption_y_indent=-0.15,
+                show_data_labels=True,
                 decimal_places_for_data_label=1,
-                data_label_fontsize=11):
+                data_label_fontsize=11,
+                data_label_fontweight='bold',
+                data_label_color="#262626"):
     """
     Plot a dot plot with optional connecting lines.
 
@@ -65,15 +70,61 @@ def PlotDotPlot(dataframe,
     Returns:
         None
     """
+    # Ensure that the group column only has two unique values
+    if len(dataframe[group_column_name].unique()) != 2:
+        raise ValueError("group_column_name must have exactly two unique values.")
     
+    # Ensure that the zero_line_group column is in the group column
+    if zero_line_group != None:
+        if zero_line_group not in dataframe[group_column_name].unique():
+            raise ValueError("zero_line_group must a value in the " + group_column_name + " column.")
+    
+    # Select the necessary columns from the dataframe
+    dataframe = dataframe[[categorical_column_name, group_column_name, value_column_name]]
+    
+    # Ensure that each row is a unique combination of the categorical and group columns
+    if len(dataframe[[categorical_column_name, group_column_name]].drop_duplicates()) != len(dataframe):
+        raise ValueError("Each row in the dataframe must be a unique combination of the categorical and group columns.")
+    
+    # If zero_line_group is provided, reset the values in the value column to be relative to the zero_line_group
+    if zero_line_group != None:
+        # Left join the original values of the zero_line_group to the dataframe
+        df_temp = pd.merge(
+            dataframe,
+            dataframe[dataframe[group_column_name] == zero_line_group][[categorical_column_name, value_column_name]],
+            on=categorical_column_name,
+            how='left',
+            suffixes=('', '_original')
+        )
+        
+        # Reset the values of the other group to be the difference between the original and zero_line_group values
+        df_temp[value_column_name] = df_temp[value_column_name] - df_temp[value_column_name + '_original']
+        
+        # Drop the original value column
+        df_temp = df_temp.drop(columns=[value_column_name + '_original'])
+        
+        # Set the values for the zero_line_group to zero
+        df_temp.loc[df_temp[group_column_name] == zero_line_group, value_column_name] = 0
+        
+        # Set the dataframe to the new dataframe
+        dataframe = df_temp
+
     # If display_order_list is provided, check that it contains all of the categories in the dataframe
     if display_order_list != None:
         if not set(display_order_list).issubset(set(dataframe[categorical_column_name].unique())):
             raise ValueError("display_order_list must contain all of the categories in the dataframe.")
     else:
-        # If display_order_list is not provided, create one from the dataframe
-        display_order_list = dataframe.sort_values(value_column_name, ascending=False)[categorical_column_name]
-        display_order_list = display_order_list.unique()
+        # If display_order_list is not provided, create one from the dataframe using the difference between the two groups
+        df_temp = pd.merge(
+            dataframe[dataframe[group_column_name] == dataframe[group_column_name].unique()[0]][[categorical_column_name, value_column_name]],
+            dataframe[dataframe[group_column_name] == dataframe[group_column_name].unique()[1]][[categorical_column_name, value_column_name]],
+            on=categorical_column_name,
+            how='outer',
+            suffixes=('_1', '_2')
+        )
+        df_temp['difference'] = df_temp[value_column_name + '_1'] - df_temp[value_column_name + '_2']
+        df_temp = df_temp.sort_values('difference', ascending=False)
+        display_order_list = df_temp[categorical_column_name].unique()
     
     # Initialize the matplotlib figure
     f, ax = plt.subplots(figsize=figure_size)
@@ -107,7 +158,7 @@ def PlotDotPlot(dataframe,
         hue=group_column_name,
         order=display_order_list,
         join=False,
-        palette=color_palette, 
+        palette=[group_1_color, group_2_color],
         markers='o', 
         scale=dot_size,
         ax=ax
@@ -147,18 +198,42 @@ def PlotDotPlot(dataframe,
     ax.spines['left'].set_visible(False)
     
     # Add data labels
-    abs_values = dataframe.sort_values(value_column_name, ascending=False)[value_column_name].round(decimal_places_for_data_label)
-    for p, label in zip(ax.patches, abs_values):
-        ax.annotate(
-            label,
-            (p.get_x() + p.get_width() / 2., p.get_y() + p.get_height() / 2.),
-            ha='center',
-            va='center',
-            fontsize=data_label_fontsize,
-            color='#262626',
-            xytext=(0, 0),
-            textcoords='offset points'
-        )
+    if show_data_labels:
+        # Plot the values on each dot
+        for i in range(len(display_order_list)):
+            # Get the x and y coordinates for the dots
+            x_coordinates = dataframe[dataframe[categorical_column_name] == display_order_list[i]][value_column_name]
+            y_coordinates = dataframe[dataframe[categorical_column_name] == display_order_list[i]][categorical_column_name]
+            
+            # Plot the data labels for the higher values
+            x_data_label_coordinates = x_coordinates.max()
+            y_data_label_coordinates = y_coordinates.max()
+            ax.text(
+                x=x_data_label_coordinates,
+                y=y_data_label_coordinates,
+                s=round(x_coordinates.max(), decimal_places_for_data_label),
+                # fontname="Arial",
+                fontsize=data_label_fontsize,
+                fontweight=data_label_fontweight,
+                color=data_label_color,
+                horizontalalignment='center',
+                verticalalignment='center',
+            )
+            
+            # Plot the data labels for the lower values
+            x_data_label_coordinates = x_coordinates.min()
+            y_data_label_coordinates = y_coordinates.min()
+            ax.text(
+                x=x_data_label_coordinates,
+                y=y_data_label_coordinates,
+                s=round(x_coordinates.min(), decimal_places_for_data_label),
+                # fontname="Arial",
+                fontsize=data_label_fontsize,
+                fontweight=data_label_fontweight,
+                color=data_label_color,
+                horizontalalignment='center',
+                verticalalignment='center',
+            )
         
     # Set the x indent of the plot titles and captions
     # Get longest y tick label
