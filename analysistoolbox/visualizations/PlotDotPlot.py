@@ -86,11 +86,11 @@ def PlotDotPlot(dataframe,
     if len(dataframe[[categorical_column_name, group_column_name]].drop_duplicates()) != len(dataframe):
         raise ValueError("Each row in the dataframe must be a unique combination of the categorical and group columns.")
     
+    # Make a copy of the value column, add ' - Original' to the name
+    dataframe[value_column_name + '- Original'] = dataframe[value_column_name]
+    
     # If zero_line_group is provided, reset the values in the value column to be relative to the zero_line_group
-    if zero_line_group != None:
-        # Make a copy of the value column, add ' - Original' to the name
-        dataframe[value_column_name + '- Original'] = dataframe[value_column_name]
-        
+    if zero_line_group != None:    
         # Left join the original values of the zero_line_group to the dataframe
         df_temp = pd.merge(
             dataframe,
