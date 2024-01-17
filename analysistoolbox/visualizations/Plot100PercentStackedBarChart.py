@@ -24,7 +24,38 @@ def Plot100PercentStackedBarChart(dataframe,
                                   data_source_for_plot=None,
                                   title_y_indent=1.15,
                                   subtitle_y_indent=1.1,
-                                  caption_y_indent=-0.15):
+                                  caption_y_indent=-0.15,
+                                  # Plot saving arguments
+                                  filepath_to_save_plot=None,
+                                  plot_dpi=300):
+    """
+    Plots a 100% stacked bar chart based on the provided DataFrame.
+    
+    Args:
+        dataframe (pandas.DataFrame): The DataFrame containing the data to be plotted.
+        group_column_name (str, optional): The name of the column in the DataFrame representing the groups. Defaults to 'Group'.
+        value_column_name (str, optional): The name of the column in the DataFrame representing the current values. Defaults to 'Current Value'.
+        target_value_column_name (str, optional): The name of the column in the DataFrame representing the target values. If provided, the percentage will be calculated based on the current value and target value. Defaults to None.
+        background_color (str, optional): The background color of the plot. Defaults to '#e8e8ed'.
+        color_palette (str, optional): The color palette to be used for the bars. Defaults to "Set1".
+        fill_color (str, optional): The fill color for the bars. If not provided, the color palette will be used. Defaults to None.
+        fill_transparency (float, optional): The transparency of the bars. Defaults to 0.8.
+        figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
+        data_label_fontsize (int, optional): The font size of the data labels. Defaults to 10.
+        title_for_plot (str, optional): The title for the plot. Defaults to None.
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        title_y_indent (float, optional): The y-axis indent for the title. Defaults to 1.15.
+        subtitle_y_indent (float, optional): The y-axis indent for the subtitle. Defaults to 1.1.
+        caption_y_indent (float, optional): The y-axis indent for the caption. Defaults to -0.15.
+        filepath_to_save_plot (str, optional): The filepath to save the plot. If provided, the plot will be saved as a PNG or JPG file. Defaults to None.
+        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
+
+    Returns:
+        None
+    """
+    
     # Ensure that the number of unique values in the 'Group' column is equal to the number of rows in the DataFrame
     if len(dataframe[group_column_name].unique()) != len(dataframe):
         raise ValueError("The number of unique values in the 'Group' column must be equal to the number of rows in the DataFrame.")
@@ -168,6 +199,18 @@ def Plot100PercentStackedBarChart(dataframe,
         
     # Show plot
     plt.show()
+    
+    # If filepath_to_save_plot is provided, save the plot
+    if filepath_to_save_plot != None:
+        # Ensure that the filepath ends with '.png' or '.jpg'
+        if not filepath_to_save_plot.endswith('.png') and not filepath_to_save_plot.endswith('.jpg'):
+            raise ValueError("The filepath to save the plot must end with '.png' or '.jpg'.")
+        
+        # Save plot
+        plt.savefig(
+            filepath_to_save_plot, 
+            dpi=plot_dpi
+        )
     
     # Clear plot
     plt.clf()

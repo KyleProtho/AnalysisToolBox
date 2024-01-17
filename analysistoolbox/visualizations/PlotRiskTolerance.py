@@ -27,10 +27,13 @@ def PlotRiskTolerance(simulated_values,
                       subtitle_y_indent=1.05,
                       caption_y_indent=-0.15,
                       # Plot formatting arguments
-                      figure_size=(8, 6)):
+                      figure_size=(8, 6),
+                      # Plot saving arguments
+                      filepath_to_save_plot=None,
+                      plot_dpi=300):
     """
-    This function plots a histogram of simulated values and highlights the values that are worse than the risk tolerance.
-    
+    Plots a histogram of simulated values and highlights the values that are worse than the risk tolerance.
+
     Args:
         simulated_values (numpy array or pandas Series): The simulated values to plot.
         risk_tolerance (int or float): The risk tolerance value.
@@ -40,10 +43,8 @@ def PlotRiskTolerance(simulated_values,
         risk_tolerance_label (str, optional): The label for the risk tolerance. Defaults to "Tolerance".
         fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
         fill_transparency (float, optional): The transparency of the fill color. Defaults to 0.6.
-        show_mean (bool, optional): If True, the mean of the simulated values is shown. Defaults to True.
-        show_median (bool, optional): If True, the median of the simulated values is shown. Defaults to True.
         title_for_plot (str, optional): The title for the plot. Defaults to "Risk Tolerance".
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Show the simulated outcomes that are worse than the risk tolerance.".
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Shows the simulated outcomes that are worse than the risk tolerance.".
         caption_for_plot (str, optional): The caption for the plot. Defaults to None.
         data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
         show_y_axis (bool, optional): If False, the y-axis is not shown. Defaults to False.
@@ -51,6 +52,11 @@ def PlotRiskTolerance(simulated_values,
         subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
         caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
         figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
+        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
+    
+    Returns:
+        None
     """
     
     # Ensure that risk tolerance is numeric
@@ -213,6 +219,18 @@ def PlotRiskTolerance(simulated_values,
         
     # Show plot
     plt.show()
+    
+    # If filepath_to_save_plot is provided, save the plot
+    if filepath_to_save_plot != None:
+        # Ensure that the filepath ends with '.png' or '.jpg'
+        if not filepath_to_save_plot.endswith('.png') and not filepath_to_save_plot.endswith('.jpg'):
+            raise ValueError("The filepath to save the plot must end with '.png' or '.jpg'.")
+        
+        # Save plot
+        plt.savefig(
+            filepath_to_save_plot, 
+            dpi=plot_dpi
+        )
     
     # Clear plot
     plt.clf()

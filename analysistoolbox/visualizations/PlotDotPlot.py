@@ -14,10 +14,17 @@ def PlotDotPlot(dataframe,
                 group_2_color="#ccd2ff",
                 dot_size=2,
                 dot_alpha=1,
+                # Connecting line formatting arguments
                 connect_dots=True,
                 connect_line_color="#666666",
                 connect_line_alpha=0.4,
                 connect_line_width=1.0,
+                connect_line_style='dashed',
+                # Connecting line label formatting arguments
+                dict_of_connect_line_labels=None,
+                connect_line_label_fontsize=11,
+                connect_line_label_fontsize_fontweight='bold',
+                connect_line_label_color="#262626",
                 # Plot formatting arguments
                 zero_line_group=None,
                 display_order_list=None,
@@ -44,16 +51,29 @@ def PlotDotPlot(dataframe,
         categorical_column_name (str): The name of the categorical column in the dataframe.
         value_column_name (str): The name of the value column in the dataframe.
         group_column_name (str): The name of the group column in the dataframe.
-        color_palette (str, optional): The color palette to use for the plot. Defaults to "Paired".
-        dot_size (float, optional): The size of the dots in the plot. Defaults to 1.5.
+        group_1_color (str, optional): The color for group 1 dots. Defaults to "#4257f5".
+        group_2_color (str, optional): The color for group 2 dots. Defaults to "#ccd2ff".
+        dot_size (float, optional): The size of the dots in the plot. Defaults to 2.
         dot_alpha (float, optional): The transparency of the dots in the plot. Defaults to 1.
         connect_dots (bool, optional): Whether to connect the dots with lines. Defaults to True.
         connect_line_color (str, optional): The color of the connecting lines. Defaults to "#666666".
         connect_line_alpha (float, optional): The transparency of the connecting lines. Defaults to 0.4.
-        connect_line_width (float, optional): The width of the connecting lines. Defaults to 0.75.
+        connect_line_width (float, optional): The width of the connecting lines. Defaults to 1.0.
+        connect_line_style (str, optional): The style of the connecting lines. Defaults to 'dashed'.
+        dict_of_connect_line_labels (dict, optional): A dictionary of labels for the connecting lines. 
+            The keys should be the categories in the dataframe and the values should be the labels. 
+            Defaults to None.
+        connect_line_label_fontsize (int, optional): The fontsize of the connecting line labels. Defaults to 11.
+        connect_line_label_fontsize_fontweight (str, optional): The fontweight of the connecting line labels. 
+            Defaults to 'bold'.
+        connect_line_label_color (str, optional): The color of the connecting line labels. Defaults to "#262626".
+        zero_line_group (str, optional): The group to use as the zero line reference. 
+            The values in the value column will be relative to this group. Defaults to None.
         display_order_list (list, optional): The order in which the categories should be displayed. 
-            If not provided, the categories will be sorted by the value column in descending order. Defaults to None.
+            If not provided, the categories will be sorted by the difference between the two groups. 
+            Defaults to None.
         figure_size (tuple, optional): The size of the plot figure. Defaults to (10, 6).
+        show_legend (bool, optional): Whether to show the legend. Defaults to True.
         title_for_plot (str, optional): The title for the plot. Defaults to None.
         subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
         caption_for_plot (str, optional): The caption for the plot. Defaults to None.
@@ -61,11 +81,12 @@ def PlotDotPlot(dataframe,
         title_y_indent (float, optional): The y-axis indentation for the title. Defaults to 1.15.
         subtitle_y_indent (float, optional): The y-axis indentation for the subtitle. Defaults to 1.1.
         caption_y_indent (float, optional): The y-axis indentation for the caption. Defaults to -0.15.
-        decimal_places_for_data_label (int, optional): The number of decimal places to round the data labels. Defaults to 1.
+        show_data_labels (bool, optional): Whether to show data labels on the dots. Defaults to True.
+        decimal_places_for_data_label (int, optional): The number of decimal places to round the data labels. 
+            Defaults to 1.
         data_label_fontsize (int, optional): The fontsize of the data labels. Defaults to 11.
-
-    Raises:
-        ValueError: If the display_order_list does not contain all of the categories in the dataframe.
+        data_label_fontweight (str, optional): The fontweight of the data labels. Defaults to 'bold'.
+        data_label_color (str, optional): The color of the data labels. Defaults to "#262626".
 
     Returns:
         None
@@ -149,9 +170,43 @@ def PlotDotPlot(dataframe,
                 y_line_coordinates, 
                 color=connect_line_color, 
                 alpha=connect_line_alpha, 
-                linestyle='dashed', 
+                linestyle=connect_line_style, 
                 linewidth=connect_line_width
             )
+            
+            # Plot the line label
+            if dict_of_connect_line_labels is not None:
+                # Ensure that the dict_of_connect_line_labels contains all of the categories in the dataframe
+                if not set(dict_of_connect_line_labels.keys()).issubset(set(dataframe[categorical_column_name].unique())):
+                    raise ValueError("dict_of_connect_line_labels must contain all of the categories in the dataframe.")
+                
+                # Iterate through the dict_of_connect_line_labels and plot the labels in the middle of the lines
+                for key, value in dict_of_connect_line_labels.items():
+                    # Get the x and y coordinates for the line of the current category
+                    x_coordinates = dataframe[dataframe[categorical_column_name] == key][value_column_name]
+                    y_coordinates = dataframe[dataframe[categorical_column_name] == key][categorical_column_name]
+                    
+                    # Get the x and y coordinates for the line label
+                    x_line_label_coordinates = (x_coordinates.min() + x_coordinates.max()) / 2
+                    y_line_label_coordinates = y_coordinates.min()
+                    
+                    # Plot the line label
+                    ax.text(
+                        x=x_line_label_coordinates,
+                        y=y_line_label_coordinates,
+                        s=value,
+                        # fontname="Arial",
+                        fontsize=connect_line_label_fontsize,
+                        fontweight=connect_line_label_fontsize_fontweight,
+                        color=connect_line_label_color,
+                        horizontalalignment='center',
+                        verticalalignment='center',
+                        bbox=dict(
+                            facecolor='white',
+                            edgecolor='white',
+                            boxstyle='round'
+                        ) 
+                    )
     
     # Create pointplot
     sns.pointplot(

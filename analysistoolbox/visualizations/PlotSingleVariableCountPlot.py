@@ -27,20 +27,25 @@ def PlotSingleVariableCountPlot(dataframe,
                                 data_source_for_plot=None,
                                 title_y_indent=1.15,
                                 subtitle_y_indent=1.1,
-                                caption_y_indent=-0.15):
+                                caption_y_indent=-0.15,
+                                # Plot saving arguments
+                                filepath_to_save_plot=None,
+                                plot_dpi=300):
     """
-    This function creates a bar chart for a single categorical variable. 
-    The function can be used to create a bar chart with a single color, or a bar chart with a different color for the top n categories. 
-    The function can also be used to add a line to the bar chart to indicate the threshold for rare categories.
+    Creates a bar chart for a single categorical variable.
 
     Args:
-        dataframe (_type_): The dataframe containing the categorical variable.
-        categorical_column_name (_type_): The categorical variable to plot.
+        dataframe (pandas.DataFrame): The dataframe containing the categorical variable.
+        categorical_column_name (str): The categorical variable to plot.
         color_palette (str, optional): The Seaborn color palette to use for the bar chart. Defaults to "Set1".
-        fill_color (_type_, optional): The color to use for the bar chart. Defaults to None.
-        top_n_to_highlight (_type_, optional): The "top N" categories to highlight. Defaults to None.
-        highlight_color (str, optional): The color to use for the highlighted "top N" categories. Defaults to "#b0170c".
+        fill_color (str, optional): The color to use for the bar chart. Defaults to None.
+        top_n_to_highlight (int, optional): The number of top categories to highlight. Defaults to None.
+        highlight_color (str, optional): The color to use for the highlighted categories. Defaults to "#b0170c".
         fill_transparency (float, optional): The transparency to use for the bar chart. Defaults to 0.8.
+        add_rare_category_line (bool, optional): Whether to add a line to indicate the threshold for rare categories. Defaults to False.
+        rare_category_line_color (str, optional): The color to use for the rare category line. Defaults to '#b5b3b3'.
+        rare_category_threshold (float, optional): The threshold for rare categories. Defaults to 0.05.
+        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
         data_label_fontsize (int, optional): The font size to use for the data labels. Defaults to 10.
         title_for_plot (str, optional): The title for the plot. Defaults to None.
         subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
@@ -49,10 +54,11 @@ def PlotSingleVariableCountPlot(dataframe,
         title_y_indent (float, optional): The vertical indent for the title. Defaults to 1.15.
         subtitle_y_indent (float, optional): The vertical indent for the subtitle. Defaults to 1.1.
         caption_y_indent (float, optional): The vertical indent for the caption. Defaults to -0.15.
-        add_rare_category_line (bool, optional): Whether to add a line to the bar chart to indicate the threshold for rare categories. Defaults to False.
-        rare_category_line_color (str, optional): The color to use for the rare category line. Defaults to '#b5b3b3'.
-        rare_category_threshold (float, optional): The threshold for rare categories. Defaults to 0.05.
-        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
+        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
+    
+    Returns:
+        None
     """
     
     # Check that the column exists in the dataframe.
@@ -210,6 +216,18 @@ def PlotSingleVariableCountPlot(dataframe,
         
     # Show plot
     plt.show()
+    
+    # If filepath_to_save_plot is provided, save the plot
+    if filepath_to_save_plot != None:
+        # Ensure that the filepath ends with '.png' or '.jpg'
+        if not filepath_to_save_plot.endswith('.png') and not filepath_to_save_plot.endswith('.jpg'):
+            raise ValueError("The filepath to save the plot must end with '.png' or '.jpg'.")
+        
+        # Save plot
+        plt.savefig(
+            filepath_to_save_plot, 
+            dpi=plot_dpi
+        )
     
     # Clear plot
     plt.clf()

@@ -9,6 +9,8 @@ def PlotOverlappingAreaChart(dataframe,
                              value_column_name,
                              variable_column_name,
                              time_column_name,
+                             # Plot formatting arguments
+                             figure_size=(8, 5),
                              # Line formatting arguments
                              line_alpha=0.9,
                              color_palette="Paired",
@@ -28,8 +30,9 @@ def PlotOverlappingAreaChart(dataframe,
                              title_y_indent=1.125,
                              subtitle_y_indent=1.05,
                              caption_y_indent=-0.3,
-                             # Plot formatting arguments
-                             figure_size=(8, 5)):
+                             # Plot saving arguments
+                             filepath_to_save_plot=None,
+                             plot_dpi=300):
     """
     Plots an overlapping area chart for a time series from a given dataframe.
 
@@ -38,6 +41,7 @@ def PlotOverlappingAreaChart(dataframe,
         value_column_name (str): The name of the column in the dataframe that contains the values to be plotted.
         variable_column_name (str): The name of the column in the dataframe to group data by.
         time_column_name (str): The name of the column in the dataframe that contains the time data.
+        figure_size (tuple, optional): The size of the figure for the plot. Defaults to (8, 5).
         line_alpha (float, optional): The transparency of the line in the plot. Defaults to 0.9.
         color_palette (str, optional): The color palette to use for the plot. Defaults to "Paired".
         fill_alpha (float, optional): The transparency of the area under the line plot. Defaults to 0.8.
@@ -54,7 +58,8 @@ def PlotOverlappingAreaChart(dataframe,
         title_y_indent (float, optional): The y-indent for the plot title. Defaults to 1.125.
         subtitle_y_indent (float, optional): The y-indent for the plot subtitle. Defaults to 1.05.
         caption_y_indent (float, optional): The y-indent for the plot caption. Defaults to -0.3.
-        figure_size (tuple, optional): The size of the figure for the plot. Defaults to (8, 5).
+        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
     """
     
     # Create figure and axes
@@ -211,4 +216,19 @@ def PlotOverlappingAreaChart(dataframe,
 
     # Show plot
     plt.show()
+    
+    # If filepath_to_save_plot is provided, save the plot
+    if filepath_to_save_plot != None:
+        # Ensure that the filepath ends with '.png' or '.jpg'
+        if not filepath_to_save_plot.endswith('.png') and not filepath_to_save_plot.endswith('.jpg'):
+            raise ValueError("The filepath to save the plot must end with '.png' or '.jpg'.")
+        
+        # Save plot
+        plt.savefig(
+            filepath_to_save_plot, 
+            dpi=plot_dpi
+        )
+        
+    # Clear plot
+    plt.clf()
     

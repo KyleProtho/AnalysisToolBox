@@ -39,43 +39,48 @@ def PlotBulletChart(dataframe,
                     data_source_for_plot=None,
                     title_y_indent=1.15,
                     subtitle_y_indent=1.1,
-                    caption_y_indent=-0.15):
+                    caption_y_indent=-0.15,
+                    # Plot saving arguments
+                    filepath_to_save_plot=None,
+                    plot_dpi=300):
     """
-    This function plots a bullet chart using the specified dataframe, value column, and group column.
-    The bullet chart is a variation of a bar chart that is used to display a single value in relation to a target value and a set of limit values.
-    The function allows for customization of the bullet chart formatting and text formatting.
-    
+    Plots a bullet chart using the specified dataframe, value column, and group column.
+
     Args:
         dataframe: pandas dataframe. The dataframe containing the data to be plotted.
         value_column_name: str. The name of the column in the dataframe containing the values to be plotted.
         grouping_column_name: str. The name of the column in the dataframe containing the groups to be plotted.
-        target_value_column_name: str, default None. The name of the column in the dataframe containing the target values to be plotted.
-        list_of_limit_columns: list of str, default None. A list of the names of the columns in the dataframe containing the limit values to be plotted.
-        value_maximum: float, default None. The maximum value to be plotted on the chart. If None, the maximum value among the limit columns is used.
-        value_minimum: float, default 0. The minimum value to be plotted on the chart.
-        display_order_list: list of str, default None. A list of the groups in the dataframe in the order they should be plotted.
-        null_background_color: str, default '#dbdbdb'. The color of the background area of the chart where there is no data.
-        background_color_palette: str, default None. The color palette to be used for the limit columns. If None, a greyscale palette is used.
-        background_alpha: float, default 0.8. The alpha value of the limit column colors.
-        value_dot_size: int, default 200. The size of the dot representing the value on the chart.
-        value_dot_color: str, default "#383838". The color of the dot representing the value on the chart.
-        value_dot_outline_color: str, default "#ffffff". The color of the outline of the dot representing the value on the chart.
-        value_dot_outline_width: int, default 2. The width of the outline of the dot representing the value on the chart.
-        target_line_color: str, default '#bf3228'. The color of the line representing the target value on the chart.
-        target_line_width: int, default 4. The width of the line representing the target value on the chart.
-        figure_size: tuple of int, default (8, 6). The size of the figure containing the chart.
-        show_value_labels: bool, default True. Whether or not to show data labels for the value on the chart.
-        value_label_color: str, default "#262626". The color of the data labels for the value on the chart.
-        value_label_format: str, default "{:.0f}". The format string for the data labels for the value on the chart.
-        value_label_font_size: int, default 12. The font size of the data labels for the value on the chart.
-        title_for_plot: str, default None. The title of the chart.
-        subtitle_for_plot: str, default None. The subtitle of the chart.
-        caption_for_plot: str, default None. The caption of the chart.
-        data_source_for_plot: str, default None. The data source of the chart.
-        title_y_indent: float, default 1.15. The y-indent of the title of the chart.
-        subtitle_y_indent: float, default 1.1. The y-indent of the subtitle of the chart.
-        caption_y_indent: float, default -0.15. The y-indent of the caption of the chart.
+        target_value_column_name: str, optional. The name of the column in the dataframe containing the target values to be plotted. Default is None.
+        list_of_limit_columns: list of str, optional. A list of the names of the columns in the dataframe containing the limit values to be plotted. Default is None.
+        value_maximum: float, optional. The maximum value to be plotted on the chart. If None, the maximum value among the limit columns is used. Default is None.
+        value_minimum: float, optional. The minimum value to be plotted on the chart. Default is 0.
+        display_order_list: list of str, optional. A list of the groups in the dataframe in the order they should be plotted. Default is None.
+        null_background_color: str, optional. The color of the background area of the chart where there is no data. Default is '#dbdbdb'.
+        background_color_palette: str, optional. The color palette to be used for the limit columns. If None, a greyscale palette is used. Default is None.
+        background_alpha: float, optional. The alpha value of the limit column colors. Default is 0.8.
+        value_dot_size: int, optional. The size of the dot representing the value on the chart. Default is 200.
+        value_dot_color: str, optional. The color of the dot representing the value on the chart. Default is "#383838".
+        value_dot_outline_color: str, optional. The color of the outline of the dot representing the value on the chart. Default is "#ffffff".
+        value_dot_outline_width: int, optional. The width of the outline of the dot representing the value on the chart. Default is 2.
+        target_line_color: str, optional. The color of the line representing the target value on the chart. Default is '#bf3228'.
+        target_line_width: int, optional. The width of the line representing the target value on the chart. Default is 4.
+        figure_size: tuple of int, optional. The size of the figure containing the chart. Default is (8, 6).
+        show_value_labels: bool, optional. Whether or not to show data labels for the value on the chart. Default is True.
+        value_label_color: str, optional. The color of the data labels for the value on the chart. Default is "#262626".
+        value_label_format: str, optional. The format string for the data labels for the value on the chart. Default is "{:.0f}".
+        value_label_font_size: int, optional. The font size of the data labels for the value on the chart. Default is 12.
+        value_label_spacing: float, optional. The spacing between the value and its data label. Default is 0.65.
+        title_for_plot: str, optional. The title of the chart. Default is None.
+        subtitle_for_plot: str, optional. The subtitle of the chart. Default is None.
+        caption_for_plot: str, optional. The caption of the chart. Default is None.
+        data_source_for_plot: str, optional. The data source of the chart. Default is None.
+        title_y_indent: float, optional. The y-indent of the title of the chart. Default is 1.15.
+        subtitle_y_indent: float, optional. The y-indent of the subtitle of the chart. Default is 1.1.
+        caption_y_indent: float, optional. The y-indent of the caption of the chart. Default is -0.15.
+        filepath_to_save_plot: str, optional. The filepath to save the plot. Default is None.
+        plot_dpi: int, optional. The DPI (dots per inch) of the saved plot. Default is 300.
     """
+    
     # Ensure that the number of unique values in the group column is equal to the number of rows in the dataframe
     if len(dataframe[grouping_column_name].unique()) != len(dataframe):
         raise ValueError("The number of unique values in the group column must be equal to the number of rows in the dataframe.")
@@ -270,6 +275,18 @@ def PlotBulletChart(dataframe,
         
     # Show plot
     plt.show()
+    
+    # If filepath_to_save_plot is provided, save the plot
+    if filepath_to_save_plot != None:
+        # Ensure that the filepath ends with '.png' or '.jpg'
+        if not filepath_to_save_plot.endswith('.png') and not filepath_to_save_plot.endswith('.jpg'):
+            raise ValueError("The filepath to save the plot must end with '.png' or '.jpg'.")
+        
+        # Save plot
+        plt.savefig(
+            filepath_to_save_plot, 
+            dpi=plot_dpi
+        )
     
     # Clear plot
     plt.clf()

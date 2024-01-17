@@ -10,13 +10,12 @@ def PlotHeatmap(dataframe,
                 y_axis_column_name,
                 value_column_name,
                 # Heatmap formatting arguments
+                color_palette="RdYlGn",
+                color_map_transparency=0.8,
+                color_map_buckets=7,
                 color_map_minimum_value=None,
-                color_map_minimum_color=13,
                 color_map_maximum_value=None,
-                color_map_maximum_color=125,
                 color_map_center_value=None,
-                color_map_saturation=80,
-                color_map_lightness=60,
                 show_legend=False,
                 figure_size=(8, 6),
                 border_line_width=6,
@@ -27,14 +26,53 @@ def PlotHeatmap(dataframe,
                 data_label_fontweight="normal",
                 data_label_color="#262626",
                 data_label_fontsize=12,
-                data_label_format="d",
                 title_for_plot=None,
                 subtitle_for_plot=None,
                 caption_for_plot=None,
                 data_source_for_plot=None,
                 title_y_indent=1.15,
                 subtitle_y_indent=1.1,
-                caption_y_indent=-0.17):
+                caption_y_indent=-0.17,
+                # Plot saving arguments
+                filepath_to_save_plot=None,
+                plot_dpi=300):
+    """
+    Plots a heatmap based on the provided dataframe.
+
+    Args:
+        dataframe (pd.DataFrame): The input dataframe.
+        x_axis_column_name (str): The column name to be used as the x-axis.
+        y_axis_column_name (str): The column name to be used as the y-axis.
+        value_column_name (str): The column name to be used as the values for the heatmap.
+        color_palette (str or list, optional): The color palette to be used for the heatmap. Defaults to "RdYlGn".
+        color_map_transparency (float, optional): The transparency of the color map. Defaults to 0.8.
+        color_map_buckets (int, optional): The number of color map buckets. Defaults to 7.
+        color_map_minimum_value (float, optional): The minimum value for the color map. If not provided, the minimum value in the dataframe will be used.
+        color_map_maximum_value (float, optional): The maximum value for the color map. If not provided, the maximum value in the dataframe will be used.
+        color_map_center_value (float, optional): The center value for the color map. If not provided, the median value in the dataframe will be used.
+        show_legend (bool, optional): Whether to show the legend. Defaults to False.
+        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
+        border_line_width (int, optional): The width of the border lines. Defaults to 6.
+        border_line_color (str, optional): The color of the border lines. Defaults to "#ffffff".
+        square_cells (bool, optional): Whether to use square cells in the heatmap. Defaults to False.
+        show_data_labels (bool, optional): Whether to show data labels in the heatmap. Defaults to True.
+        data_label_fontweight (str, optional): The font weight of the data labels. Defaults to "normal".
+        data_label_color (str, optional): The color of the data labels. Defaults to "#262626".
+        data_label_fontsize (int, optional): The font size of the data labels. Defaults to 12.
+        title_for_plot (str, optional): The title for the plot. Defaults to None.
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
+        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.15.
+        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.1.
+        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.17.
+        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
+
+    Returns:
+        None
+    """
+    
     # Convert dataframe to wide-form dataframe, using x_axis_column_name as the index and y_axis_column_name as the columns
     dataframe = dataframe.pivot(
         index=x_axis_column_name, 
@@ -48,31 +86,38 @@ def PlotHeatmap(dataframe,
     # Create figure and axes
     fig, ax = plt.subplots(figsize=figure_size)
     
+    # Adjust color map minimum and maximum values if they are not provided
+    if color_map_minimum_value == None:
+        color_map_minimum_value = dataframe.min().min()
+    if color_map_maximum_value == None:
+        color_map_maximum_value = dataframe.max().max()
+    if color_map_center_value == None:
+        color_map_center_value = dataframe.median().median()
+        
+    # Convert color palette to a list if it is not already a list
+    if type(color_palette) != list:
+        color_palette = sns.color_palette(color_palette, color_map_buckets)
+        # color_palette.set_bad(color='white', alpha=color_palette_transparency)
+    
     # Plot contingency table in a heatmap using seaborn
     ax = sns.heatmap(
         data=dataframe,
-        cmap=sns.diverging_palette(
-            color_map_minimum_color, 
-            color_map_maximum_color, 
-            s=color_map_saturation, 
-            l=color_map_lightness,
-            as_cmap=True
-        ),
+        cmap=color_palette,
         center=color_map_center_value,
         vmin=color_map_minimum_value,
         vmax=color_map_maximum_value,
         annot=show_data_labels,
-        fmt=data_label_format,
         linewidths=border_line_width,
         linecolor=border_line_color,
         cbar=show_legend,
         square=square_cells,
         ax=ax,
-        # Bold the text in the heatmap
-        annot_kws={"fontweight": data_label_fontweight,
-                #    "fontname": "Arial", 
-                   "fontsize": data_label_fontsize,
-                   "color": data_label_color}
+        annot_kws={
+            "fontweight": data_label_fontweight,
+            # "fontname": "Arial", 
+            "fontsize": data_label_fontsize,
+            "color": data_label_color,
+        }
     )
     
     # Wrap y axis label using textwrap
@@ -171,6 +216,18 @@ def PlotHeatmap(dataframe,
         
     # Show plot
     plt.show()
+    
+    # If filepath_to_save_plot is provided, save the plot
+    if filepath_to_save_plot != None:
+        # Ensure that the filepath ends with '.png' or '.jpg'
+        if not filepath_to_save_plot.endswith('.png') and not filepath_to_save_plot.endswith('.jpg'):
+            raise ValueError("The filepath to save the plot must end with '.png' or '.jpg'.")
+        
+        # Save plot
+        plt.savefig(
+            filepath_to_save_plot, 
+            dpi=plot_dpi
+        )
     
     # Clear plot
     plt.clf()

@@ -27,9 +27,12 @@ def PlotCorrelationMatrix(dataframe,
                           subtitle_y_indent=1.03,
                           subtitle_font_size=11,
                           caption_y_indent=-0.35,
-                          caption_font_size=8):
+                          caption_font_size=8,
+                          # Plot saving arguments
+                          filepath_to_save_plot=None,
+                          plot_dpi=300):
     """
-    This function plots a correlation matrix or pairplot for a given dataframe. 
+    Plots a correlation matrix or pairplot for a given dataframe.
 
     Args:
         dataframe (pandas.DataFrame): The dataframe to plot.
@@ -48,6 +51,8 @@ def PlotCorrelationMatrix(dataframe,
         title_y_indent (float, optional): The y-indent for the title. Defaults to 1.12.
         subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.03.
         caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.35.
+        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
     """
     
     # Select relevant variables, keep complete cases only
@@ -184,6 +189,24 @@ def PlotCorrelationMatrix(dataframe,
                 color="#666666",
                 transform=ax.transAxes
             )
+        
+        # Show plot
+        plt.show()
+        
+        # If filepath_to_save_plot is provided, save the plot
+        if filepath_to_save_plot != None:
+            # Ensure that the filepath ends with '.png' or '.jpg'
+            if not filepath_to_save_plot.endswith('.png') and not filepath_to_save_plot.endswith('.jpg'):
+                raise ValueError("The filepath to save the plot must end with '.png' or '.jpg'.")
+            
+            # Save plot
+            plt.savefig(
+                filepath_to_save_plot, 
+                dpi=plot_dpi
+            )
+        
+        # Close plot
+        plt.clf()
     
     else:
         print(completed_df.corr())

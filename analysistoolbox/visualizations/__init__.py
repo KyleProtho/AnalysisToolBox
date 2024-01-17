@@ -1,3 +1,4 @@
+from .Plot100PercentStackedBarChart import Plot100PercentStackedBarChart
 from .PlotBarChart import PlotBarChart
 from .PlotBoxWhiskerByGroup import PlotBoxWhiskerByGroup
 from .PlotBulletChart import PlotBulletChart

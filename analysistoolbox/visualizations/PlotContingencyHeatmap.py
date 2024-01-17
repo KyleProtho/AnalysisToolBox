@@ -20,9 +20,12 @@ def PlotContingencyHeatmap(dataframe,
                            data_source_for_plot=None,
                            title_y_indent=1.15,
                            subtitle_y_indent=1.1,
-                           caption_y_indent=-0.15):
+                           caption_y_indent=-0.15,
+                           # Plot saving arguments
+                           filepath_to_save_plot=None,
+                           plot_dpi=300):
     """
-    This function generates a heatmap plot for two categorical variables from a given dataframe.
+    Generates a heatmap plot for two categorical variables from a given dataframe.
 
     Args:
         dataframe (pandas.DataFrame): The dataframe containing the data.
@@ -39,6 +42,8 @@ def PlotContingencyHeatmap(dataframe,
         title_y_indent (float, optional): The y-indent for the title. Defaults to 1.15.
         subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.1.
         caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
+        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
     """
     
     # Create contingency table
@@ -147,6 +152,18 @@ def PlotContingencyHeatmap(dataframe,
         
     # Show plot
     plt.show()
+    
+    # If filepath_to_save_plot is provided, save the plot
+    if filepath_to_save_plot != None:
+        # Ensure that the filepath ends with '.png' or '.jpg'
+        if not filepath_to_save_plot.endswith('.png') and not filepath_to_save_plot.endswith('.jpg'):
+            raise ValueError("The filepath to save the plot must end with '.png' or '.jpg'.")
+        
+        # Save plot
+        plt.savefig(
+            filepath_to_save_plot, 
+            dpi=plot_dpi
+        )
     
     # Clear plot
     plt.clf()

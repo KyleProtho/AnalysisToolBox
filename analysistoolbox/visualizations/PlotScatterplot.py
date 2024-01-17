@@ -36,9 +36,11 @@ def PlotScatterplot(dataframe,
                     lower_left_quadrant_fill_color=None,
                     lower_right_quadrant_label=None,
                     lower_right_quadrant_fill_color=None,
-                    folder_to_save_plot=None):
+                    # Plot saving arguments
+                    filepath_to_save_plot=None,
+                    plot_dpi=300):
     """
-    This function generates a scatterplot using the provided dataframe and column names for x and y axes.
+    Generates a scatterplot using the provided dataframe and column names for x and y axes.
 
     Args:
         dataframe (DataFrame): The dataframe containing the data.
@@ -67,7 +69,8 @@ def PlotScatterplot(dataframe,
         lower_left_quadrant_fill_color (str, optional): The fill color for the lower left quadrant. Defaults to None.
         lower_right_quadrant_label (str, optional): The label for the lower right quadrant. Defaults to None.
         lower_right_quadrant_fill_color (str, optional): The fill color for the lower right quadrant. Defaults to None.
-        folder_to_save_plot (str, optional): The folder to save the plot. Defaults to None.
+        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
     """
     
     # Ensure that fitted_line_type is None, 'straight', or 'lowess'
@@ -581,6 +584,18 @@ def PlotScatterplot(dataframe,
         
     # Show plot
     plt.show()
+    
+    # If filepath_to_save_plot is provided, save the plot
+    if filepath_to_save_plot != None:
+        # Ensure that the filepath ends with '.png' or '.jpg'
+        if not filepath_to_save_plot.endswith('.png') and not filepath_to_save_plot.endswith('.jpg'):
+            raise ValueError("The filepath to save the plot must end with '.png' or '.jpg'.")
+        
+        # Save plot
+        plt.savefig(
+            filepath_to_save_plot, 
+            dpi=plot_dpi
+        )
     
     # Clear plot
     plt.clf()

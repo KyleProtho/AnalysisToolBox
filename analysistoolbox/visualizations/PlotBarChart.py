@@ -28,11 +28,12 @@ def PlotBarChart(dataframe,
                  subtitle_y_indent=1.1,
                  caption_y_indent=-0.15,
                  decimal_places_for_data_label=1,
-                 data_label_fontsize=11):
+                 data_label_fontsize=11,
+                 # Plot saving arguments
+                 filepath_to_save_plot=None,
+                 plot_dpi=300):
     """
-    This function generates a bar chart using the seaborn library. 
-    The function takes in a pandas dataframe, a categorical variable, and a value variable. 
-    The function also takes in optional arguments for plot formatting, text formatting, and data labels.
+    Generates a bar chart using the seaborn library.
 
     Args:
         dataframe (pandas dataframe): The dataframe containing the data to be plotted.
@@ -53,6 +54,12 @@ def PlotBarChart(dataframe,
         subtitle_y_indent (float, optional): The y-axis indent for the plot subtitle. Defaults to 1.1.
         caption_y_indent (float, optional): The y-axis indent for the plot caption. Defaults to -0.15.
         decimal_places_for_data_label (int, optional): The number of decimal places to round the data labels to. Defaults to 2.
+        data_label_fontsize (int, optional): The fontsize of the data labels. Defaults to 11.
+        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+        plot_dpi (int, optional): The DPI (dots per inch) of the saved plot. Defaults to 300.
+
+    Returns:
+        None
     """
     
     # Check that the column exists in the dataframe.
@@ -201,6 +208,18 @@ def PlotBarChart(dataframe,
         
     # Show plot
     plt.show()
+    
+    # If filepath_to_save_plot is provided, save the plot
+    if filepath_to_save_plot != None:
+        # Ensure that the filepath ends with '.png' or '.jpg'
+        if not filepath_to_save_plot.endswith('.png') and not filepath_to_save_plot.endswith('.jpg'):
+            raise ValueError("The filepath to save the plot must end with '.png' or '.jpg'.")
+        
+        # Save plot
+        plt.savefig(
+            filepath_to_save_plot, 
+            dpi=plot_dpi
+        )
     
     # Clear plot
     plt.clf()
