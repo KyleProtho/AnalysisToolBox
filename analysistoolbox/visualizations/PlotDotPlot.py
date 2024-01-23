@@ -30,6 +30,12 @@ def PlotDotPlot(dataframe,
                 display_order_list=None,
                 figure_size=(10, 6),
                 show_legend=True,
+                # Data label arguments
+                show_data_labels=True,
+                decimal_places_for_data_label=1,
+                data_label_fontsize=11,
+                data_label_fontweight='bold',
+                data_label_color="#262626",
                 # Text formatting arguments
                 title_for_plot=None,
                 subtitle_for_plot=None,
@@ -38,11 +44,9 @@ def PlotDotPlot(dataframe,
                 title_y_indent=1.15,
                 subtitle_y_indent=1.1,
                 caption_y_indent=-0.15,
-                show_data_labels=True,
-                decimal_places_for_data_label=1,
-                data_label_fontsize=11,
-                data_label_fontweight='bold',
-                data_label_color="#262626"):
+                # Plot saving arguments
+                filepath_to_save_plot=None,
+                plot_dpi=300):
     """
     Plot a dot plot with optional connecting lines.
 
@@ -74,6 +78,12 @@ def PlotDotPlot(dataframe,
             Defaults to None.
         figure_size (tuple, optional): The size of the plot figure. Defaults to (10, 6).
         show_legend (bool, optional): Whether to show the legend. Defaults to True.
+        show_data_labels (bool, optional): Whether to show data labels on the dots. Defaults to True.
+        decimal_places_for_data_label (int, optional): The number of decimal places to round the data labels. 
+            Defaults to 1.
+        data_label_fontsize (int, optional): The fontsize of the data labels. Defaults to 11.
+        data_label_fontweight (str, optional): The fontweight of the data labels. Defaults to 'bold'.
+        data_label_color (str, optional): The color of the data labels. Defaults to "#262626".
         title_for_plot (str, optional): The title for the plot. Defaults to None.
         subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
         caption_for_plot (str, optional): The caption for the plot. Defaults to None.
@@ -81,12 +91,8 @@ def PlotDotPlot(dataframe,
         title_y_indent (float, optional): The y-axis indentation for the title. Defaults to 1.15.
         subtitle_y_indent (float, optional): The y-axis indentation for the subtitle. Defaults to 1.1.
         caption_y_indent (float, optional): The y-axis indentation for the caption. Defaults to -0.15.
-        show_data_labels (bool, optional): Whether to show data labels on the dots. Defaults to True.
-        decimal_places_for_data_label (int, optional): The number of decimal places to round the data labels. 
-            Defaults to 1.
-        data_label_fontsize (int, optional): The fontsize of the data labels. Defaults to 11.
-        data_label_fontweight (str, optional): The fontweight of the data labels. Defaults to 'bold'.
-        data_label_color (str, optional): The color of the data labels. Defaults to "#262626".
+        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+        plot_dpi (int, optional): The DPI (dots per inch) of the saved plot. Defaults to 300.
 
     Returns:
         None
@@ -347,6 +353,18 @@ def PlotDotPlot(dataframe,
             fontsize=8,
             color="#666666",
             transform=ax.transAxes
+        )
+        
+    # If filepath_to_save_plot is provided, save the plot
+    if filepath_to_save_plot != None:
+        # Ensure that the filepath ends with '.png' or '.jpg'
+        if not filepath_to_save_plot.endswith('.png') and not filepath_to_save_plot.endswith('.jpg'):
+            raise ValueError("The filepath to save the plot must end with '.png' or '.jpg'.")
+        
+        # Save plot
+        plt.savefig(
+            filepath_to_save_plot, 
+            dpi=plot_dpi
         )
         
     # Show plot

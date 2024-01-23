@@ -205,9 +205,6 @@ def PlotBarChart(dataframe,
             color="#666666",
             transform=ax.transAxes
         )
-        
-    # Show plot
-    plt.show()
     
     # If filepath_to_save_plot is provided, save the plot
     if filepath_to_save_plot != None:
@@ -220,6 +217,9 @@ def PlotBarChart(dataframe,
             filepath_to_save_plot, 
             dpi=plot_dpi
         )
+        
+    # Show plot
+    plt.show()
     
     # Clear plot
     plt.clf()

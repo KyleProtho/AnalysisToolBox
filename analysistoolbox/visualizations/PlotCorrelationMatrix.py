@@ -190,9 +190,6 @@ def PlotCorrelationMatrix(dataframe,
                 transform=ax.transAxes
             )
         
-        # Show plot
-        plt.show()
-        
         # If filepath_to_save_plot is provided, save the plot
         if filepath_to_save_plot != None:
             # Ensure that the filepath ends with '.png' or '.jpg'
@@ -204,6 +201,9 @@ def PlotCorrelationMatrix(dataframe,
                 filepath_to_save_plot, 
                 dpi=plot_dpi
             )
+        
+        # Show plot
+        plt.show()
         
         # Close plot
         plt.clf()

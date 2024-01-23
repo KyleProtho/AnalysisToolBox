@@ -8,11 +8,11 @@ with open('README.md', encoding='utf-8') as f:
 # Setup the package.
 setup(
     name='analysistoolbox',
-    description='A collection tools in Python for data collection and processing, statisitics, analytics, and intelligence analysis.',
+    description='A collection tools in Python for data collection and processing, statistics, analytics, and intelligence analysis.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url="https://github.com/KyleProtho/AnalysisToolBox/tree/master/analysistoolbox",
-    version='1.5.0',
+    version='1.5.1',
     author='Kyle Protho',
     author_email='kyletprotho@gmail.com',
     license='GNU GPLv3',
