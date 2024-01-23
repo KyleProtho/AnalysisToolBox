@@ -25,6 +25,8 @@ def PlotDotPlot(dataframe,
                 connect_line_label_fontsize=11,
                 connect_line_label_fontsize_fontweight='bold',
                 connect_line_label_color="#262626",
+                show_connect_line_labels_in_margin=False,
+                connect_line_label_margin_space=0.05,
                 # Plot formatting arguments
                 zero_line_group=None,
                 display_order_list=None,
@@ -78,6 +80,7 @@ def PlotDotPlot(dataframe,
         figure_size (tuple, optional): The size of the plot figure. Defaults to (10, 6).
         show_legend (bool, optional): Whether to show the legend. Defaults to True.
         show_data_labels (bool, optional): Whether to show data labels on the dots. Defaults to True.
+        show_connect_line_labels_in_margin (bool, optional): Whether to show the data labels in the margin to the right of the plot.
         decimal_places_for_data_label (int, optional): The number of decimal places to round the data labels. 
             Defaults to 1.
         data_label_fontsize (int, optional): The fontsize of the data labels. Defaults to 11.
@@ -194,6 +197,10 @@ def PlotDotPlot(dataframe,
                     x_line_label_coordinates = (x_coordinates.min() + x_coordinates.max()) / 2
                     y_line_label_coordinates = y_coordinates.min()
                     
+                    # If show_connect_line_labels_in_margin is True, plot the data labels in the margin to the right of the plot
+                    if show_connect_line_labels_in_margin == True:
+                        x_line_label_coordinates = dataframe[value_column_name].max() * (1 + connect_line_label_margin_space)
+                            
                     # Plot the line label
                     ax.text(
                         x=x_line_label_coordinates,
@@ -267,9 +274,11 @@ def PlotDotPlot(dataframe,
             x_coordinates = dataframe[dataframe[categorical_column_name] == display_order_list[i]][value_column_name]
             y_coordinates = dataframe[dataframe[categorical_column_name] == display_order_list[i]][categorical_column_name]
             
-            # Plot the data labels for the higher values
+            # Get the x and y coordinates for the data labels of the higher values
             x_data_label_coordinates = x_coordinates.max()
             y_data_label_coordinates = y_coordinates.max()
+            
+            # Plot the data labels for the higher values
             ax.text(
                 x=x_data_label_coordinates,
                 y=y_data_label_coordinates,
@@ -285,6 +294,8 @@ def PlotDotPlot(dataframe,
             # Plot the data labels for the lower values
             x_data_label_coordinates = x_coordinates.min()
             y_data_label_coordinates = y_coordinates.min()
+            
+            # Plot the data labels for the lower values
             ax.text(
                 x=x_data_label_coordinates,
                 y=y_data_label_coordinates,
