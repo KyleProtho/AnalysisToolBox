@@ -199,7 +199,10 @@ def PlotDotPlot(dataframe,
                     
                     # If show_connect_line_labels_in_margin is True, plot the data labels in the margin to the right of the plot
                     if show_connect_line_labels_in_margin == True:
-                        x_line_label_coordinates = dataframe[value_column_name].max() * (1 + connect_line_label_margin_space)
+                        if dataframe[value_column_name].max() != 0:
+                            x_line_label_coordinates = dataframe[value_column_name].max() * (1 + connect_line_label_margin_space)
+                        else:
+                            x_line_label_coordinates = connect_line_label_margin_space * (1 + connect_line_label_margin_space)
                             
                     # Plot the line label
                     ax.text(
