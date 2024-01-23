@@ -29,8 +29,7 @@ def PlotCorrelationMatrix(dataframe,
                           caption_y_indent=-0.35,
                           caption_font_size=8,
                           # Plot saving arguments
-                          filepath_to_save_plot=None,
-                          plot_dpi=300):
+                          filepath_to_save_plot=None):
     """
     Plots a correlation matrix or pairplot for a given dataframe.
 
@@ -52,7 +51,6 @@ def PlotCorrelationMatrix(dataframe,
         subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.03.
         caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.35.
         filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
-        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
     """
     
     # Select relevant variables, keep complete cases only
@@ -199,7 +197,6 @@ def PlotCorrelationMatrix(dataframe,
             # Save plot
             plt.savefig(
                 filepath_to_save_plot, 
-                dpi=plot_dpi,
                 bbox_inches="tight"
             )
         

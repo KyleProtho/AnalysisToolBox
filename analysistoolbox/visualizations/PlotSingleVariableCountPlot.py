@@ -29,8 +29,7 @@ def PlotSingleVariableCountPlot(dataframe,
                                 subtitle_y_indent=1.1,
                                 caption_y_indent=-0.15,
                                 # Plot saving arguments
-                                filepath_to_save_plot=None,
-                                plot_dpi=300):
+                                filepath_to_save_plot=None):
     """
     Creates a bar chart for a single categorical variable.
 
@@ -55,7 +54,6 @@ def PlotSingleVariableCountPlot(dataframe,
         subtitle_y_indent (float, optional): The vertical indent for the subtitle. Defaults to 1.1.
         caption_y_indent (float, optional): The vertical indent for the caption. Defaults to -0.15.
         filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
-        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
     
     Returns:
         None
@@ -222,8 +220,7 @@ def PlotSingleVariableCountPlot(dataframe,
         
         # Save plot
         plt.savefig(
-            filepath_to_save_plot, 
-            dpi=plot_dpi,
+            filepath_to_save_plot,
             bbox_inches="tight"
         )
        

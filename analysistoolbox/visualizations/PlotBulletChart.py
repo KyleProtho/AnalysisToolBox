@@ -41,8 +41,7 @@ def PlotBulletChart(dataframe,
                     subtitle_y_indent=1.1,
                     caption_y_indent=-0.15,
                     # Plot saving arguments
-                    filepath_to_save_plot=None,
-                    plot_dpi=300):
+                    filepath_to_save_plot=None):
     """
     Plots a bullet chart using the specified dataframe, value column, and group column.
 
@@ -78,7 +77,6 @@ def PlotBulletChart(dataframe,
         subtitle_y_indent: float, optional. The y-indent of the subtitle of the chart. Default is 1.1.
         caption_y_indent: float, optional. The y-indent of the caption of the chart. Default is -0.15.
         filepath_to_save_plot: str, optional. The filepath to save the plot. Default is None.
-        plot_dpi: int, optional. The DPI (dots per inch) of the saved plot. Default is 300.
     """
     
     # Ensure that the number of unique values in the group column is equal to the number of rows in the dataframe
@@ -282,7 +280,6 @@ def PlotBulletChart(dataframe,
         # Save plot
         plt.savefig(
             filepath_to_save_plot, 
-            dpi=plot_dpi,
             bbox_inches="tight"
         ) 
      

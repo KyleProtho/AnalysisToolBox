@@ -26,8 +26,7 @@ def PlotBoxWhiskerByGroup(dataframe,
                           x_indent=-0.10,
                           figure_size=(8, 6),
                           # Plot saving arguments
-                          filepath_to_save_plot=None,
-                          plot_dpi=300):
+                          filepath_to_save_plot=None):
     """
     Create a box and whisker plot for a given outcome variable, grouped by one or two categorical variables.
 
@@ -51,7 +50,6 @@ def PlotBoxWhiskerByGroup(dataframe,
         x_indent (float, optional): The x-indent for the plot. Defaults to -0.128.
         figure_size (tuple, optional): The size of the plot. Defaults to (8, 6).
         filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
-        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
     """
     
     # If display_order_list is provided, check that it contains all of the categories in the dataframe
@@ -202,7 +200,6 @@ def PlotBoxWhiskerByGroup(dataframe,
         # Save plot
         plt.savefig(
             filepath_to_save_plot, 
-            dpi=plot_dpi,
             bbox_inches="tight"
         )
     

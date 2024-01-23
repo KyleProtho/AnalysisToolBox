@@ -31,8 +31,7 @@ def PlotTimeSeries(dataframe,
                    # Plot formatting arguments
                    figure_size=(8, 5),
                    # Plot saving arguments
-                   filepath_to_save_plot=None,
-                   plot_dpi=300):
+                   filepath_to_save_plot=None):
     """
     Plots a time series from a given dataframe.
 
@@ -58,7 +57,6 @@ def PlotTimeSeries(dataframe,
         caption_y_indent (float, optional): The y-indent for the plot caption. Defaults to -0.3.
         figure_size (tuple, optional): The size of the figure for the plot. Defaults to (8, 5).
         filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
-        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
     """
     
     # Create figure and axes
@@ -218,8 +216,7 @@ def PlotTimeSeries(dataframe,
         
         # Save plot
         plt.savefig(
-            filepath_to_save_plot, 
-            dpi=plot_dpi,
+            filepath_to_save_plot,
             bbox_inches="tight"
         )
     

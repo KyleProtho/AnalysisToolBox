@@ -30,8 +30,7 @@ def PlotBarChart(dataframe,
                  decimal_places_for_data_label=1,
                  data_label_fontsize=11,
                  # Plot saving arguments
-                 filepath_to_save_plot=None,
-                 plot_dpi=300):
+                 filepath_to_save_plot=None):
     """
     Generates a bar chart using the seaborn library.
 
@@ -56,7 +55,6 @@ def PlotBarChart(dataframe,
         decimal_places_for_data_label (int, optional): The number of decimal places to round the data labels to. Defaults to 2.
         data_label_fontsize (int, optional): The fontsize of the data labels. Defaults to 11.
         filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
-        plot_dpi (int, optional): The DPI (dots per inch) of the saved plot. Defaults to 300.
 
     Returns:
         None
@@ -215,7 +213,6 @@ def PlotBarChart(dataframe,
         # Save plot
         plt.savefig(
             filepath_to_save_plot, 
-            dpi=plot_dpi,
             bbox_inches="tight"
         )
         

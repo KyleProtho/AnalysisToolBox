@@ -26,8 +26,7 @@ def Plot100PercentStackedBarChart(dataframe,
                                   subtitle_y_indent=1.1,
                                   caption_y_indent=-0.15,
                                   # Plot saving arguments
-                                  filepath_to_save_plot=None,
-                                  plot_dpi=300):
+                                  filepath_to_save_plot=None):
     """
     Plots a 100% stacked bar chart based on the provided DataFrame.
     
@@ -50,7 +49,6 @@ def Plot100PercentStackedBarChart(dataframe,
         subtitle_y_indent (float, optional): The y-axis indent for the subtitle. Defaults to 1.1.
         caption_y_indent (float, optional): The y-axis indent for the caption. Defaults to -0.15.
         filepath_to_save_plot (str, optional): The filepath to save the plot. If provided, the plot will be saved as a PNG or JPG file. Defaults to None.
-        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
 
     Returns:
         None
@@ -206,7 +204,6 @@ def Plot100PercentStackedBarChart(dataframe,
         # Save plot
         plt.savefig(
             filepath_to_save_plot, 
-            dpi=plot_dpi,
             bbox_inches="tight"
         )
      

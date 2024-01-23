@@ -37,8 +37,7 @@ def PlotScatterplot(dataframe,
                     lower_right_quadrant_label=None,
                     lower_right_quadrant_fill_color=None,
                     # Plot saving arguments
-                    filepath_to_save_plot=None,
-                    plot_dpi=300):
+                    filepath_to_save_plot=None):
     """
     Generates a scatterplot using the provided dataframe and column names for x and y axes.
 
@@ -70,7 +69,6 @@ def PlotScatterplot(dataframe,
         lower_right_quadrant_label (str, optional): The label for the lower right quadrant. Defaults to None.
         lower_right_quadrant_fill_color (str, optional): The fill color for the lower right quadrant. Defaults to None.
         filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
-        plot_dpi (int, optional): The DPI (dots per inch) for the saved plot. Defaults to 300.
     """
     
     # Ensure that fitted_line_type is None, 'straight', or 'lowess'
@@ -590,8 +588,7 @@ def PlotScatterplot(dataframe,
         
         # Save plot
         plt.savefig(
-            filepath_to_save_plot, 
-            dpi=plot_dpi,
+            filepath_to_save_plot,
             bbox_inches="tight"
         )
         
