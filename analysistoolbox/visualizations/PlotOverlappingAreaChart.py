@@ -223,7 +223,8 @@ def PlotOverlappingAreaChart(dataframe,
         # Save plot
         plt.savefig(
             filepath_to_save_plot, 
-            dpi=plot_dpi
+            dpi=plot_dpi,
+            bbox_inches="tight"
         )
     
     # Show plot
