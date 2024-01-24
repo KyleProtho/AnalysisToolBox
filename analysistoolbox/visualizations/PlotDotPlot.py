@@ -26,7 +26,7 @@ def PlotDotPlot(dataframe,
                 connect_line_label_fontsize_fontweight='bold',
                 connect_line_label_color="#262626",
                 show_connect_line_labels_in_margin=False,
-                connect_line_label_margin_space=0.05,
+                connect_line_label_margin=0.5,
                 # Plot formatting arguments
                 zero_line_group=None,
                 display_order_list=None,
@@ -114,6 +114,10 @@ def PlotDotPlot(dataframe,
     if len(dataframe[[categorical_column_name, group_column_name]].drop_duplicates()) != len(dataframe):
         raise ValueError("Each row in the dataframe must be a unique combination of the categorical and group columns.")
     
+    # Ensure that connect_line_label_margin is between 0 and 1
+    if connect_line_label_margin < 0 or connect_line_label_margin > 1:
+        raise ValueError("connect_line_label_margin must be between 0 and 1.")
+    
     # Make a copy of the value column, add ' - Original' to the name
     dataframe[value_column_name + '- Original'] = dataframe[value_column_name]
     
@@ -193,16 +197,21 @@ def PlotDotPlot(dataframe,
                     x_coordinates = dataframe[dataframe[categorical_column_name] == key][value_column_name]
                     y_coordinates = dataframe[dataframe[categorical_column_name] == key][categorical_column_name]
                     
-                    # Get the x and y coordinates for the line label
-                    x_line_label_coordinates = (x_coordinates.min() + x_coordinates.max()) / 2
+                    # Get the y coordinates for the line label
                     y_line_label_coordinates = y_coordinates.min()
                     
                     # If show_connect_line_labels_in_margin is True, plot the data labels in the margin to the right of the plot
                     if show_connect_line_labels_in_margin == True:
-                        if dataframe[value_column_name].max() != 0:
-                            x_line_label_coordinates = dataframe[value_column_name].max() * (1 + connect_line_label_margin_space)
-                        else:
-                            x_line_label_coordinates = connect_line_label_margin_space * (1 + connect_line_label_margin_space)
+                        # Get the range of the x-axis
+                        value_range = dataframe[value_column_name].max() - dataframe[value_column_name].min()
+                        # Calculate the bin range of the x-axis
+                        bins = 6
+                        bin_range = value_range / bins
+                        # Add the bin range to the x_line_label_coordinates maximum
+                        x_line_label_coordinates = dataframe[value_column_name].max() + (bin_range * connect_line_label_margin)
+                    else:
+                        # Get the x coordinates for the line label
+                        x_line_label_coordinates = (x_coordinates.min() + x_coordinates.max()) / 2
                             
                     # Plot the line label
                     ax.text(
