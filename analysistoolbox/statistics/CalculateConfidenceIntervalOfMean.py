@@ -187,11 +187,3 @@ def CalculateConfidenceIntervalOfMean(sample_mean,
         # Clear plot
         plt.clf()
 
-
-# Test function
-for i in [5, 10, 20, 40, 80, 200, 411]:
-    print("Sample size:", i)
-    CalculateConfidenceIntervalOfMean(sample_mean=0,
-                                      sample_sd=1,
-                                      sample_size=i,
-                                      confidence_interval=.95)
