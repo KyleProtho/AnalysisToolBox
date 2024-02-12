@@ -66,7 +66,8 @@ def TTestOfMeanFromStats(sample_mean,
 
     # If sample size 30 or more, calculate z-stat. Otherwise, calculate t-stat
     if sample_size < 30:
-        test_threshold = stats.t.ppf(ppf_threshold)
+        test_threshold = stats.t.ppf(ppf_threshold,
+                                     df=sample_size-1)
     else:
         test_threshold = stats.norm.ppf(ppf_threshold)
 
@@ -171,6 +172,7 @@ def TTestOfMeanFromStats(sample_mean,
             # palette={True: "#FF0000", False: fill_color},
             alpha=fill_transparency,
             color=fill_color,
+            bins=30
         )
         
         # Remove top, left, and right spines. Set bottom spine to dark gray.

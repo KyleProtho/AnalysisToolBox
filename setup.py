@@ -12,7 +12,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url="https://github.com/KyleProtho/AnalysisToolBox/tree/master/analysistoolbox",
-    version='1.5.6',
+    version='1.6.0',
     author='Kyle Protho',
     author_email='kyletprotho@gmail.com',
     license='GNU GPLv3',
@@ -27,7 +27,7 @@ setup(
     python_requires='>=3.9',
     # package_dir={'': 'analysistoolbox'},
     packages=find_packages(),
-    install_requires=[
+    dependencies=[
         'beautifulsoup4',
         'folium',
         'fuzzywuzzy',
@@ -42,6 +42,7 @@ setup(
         'numpy',
         'openai',
         'pandas',
+        'psmpy',
         'pygris',
         'pymetalog',
         'PyPDF2',

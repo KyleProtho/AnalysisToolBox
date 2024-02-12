@@ -1,5 +1,6 @@
 from .ConductManifoldLearning import ConductManifoldLearning
 from .ConductPrincipalComponentAnalysis import ConductPrincipalComponentAnalysis
+from .ConductPropensityScoreMatching import ConductPropensityScoreMatching
 from .CreateAssociationRules import CreateAssociationRules
 from .CreateGaussianMixtureClusters import CreateGaussianMixtureClusters
 from .CreateHierarchicalClusters import CreateHierarchicalClusters

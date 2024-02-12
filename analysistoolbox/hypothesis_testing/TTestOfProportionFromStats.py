@@ -11,14 +11,16 @@ import textwrap
 def TTestOfProportionFromStats(sample_proportion,
                                sample_size,
                                hypothesized_proportion,
+                               # Hypothesis test parameters
                                alternative_hypothesis="two-sided",
                                confidence_interval=.95,
+                               # Plot parameters
                                plot_sample_distribution=True,
                                value_name="Value",
                                fill_color="#999999",
                                fill_transparency=0.6,
-                               title_for_plot="Hypothesis Test of a Mean",
-                               subtitle_for_plot="Shows the distribution of the sample mean and the hypothesized mean.",
+                               title_for_plot="Hypothesis Test of a Proportion",
+                               subtitle_for_plot="Shows the distribution of the sample proportion and the hypothesized proportion.",
                                caption_for_plot=None,
                                data_source_for_plot=None,
                                show_y_axis=False,
@@ -61,7 +63,8 @@ def TTestOfProportionFromStats(sample_proportion,
 
     # If sample size 30 or more, calculate z-stat. Otherwise, calculate t-stat
     if sample_size < 30:
-        test_threshold = stats.t.ppf(ppf_threshold)
+        test_threshold = stats.t.ppf(ppf_threshold,
+                                     df=sample_size-1)
     else:
         test_threshold = stats.norm.ppf(ppf_threshold)
 
@@ -124,11 +127,14 @@ def TTestOfProportionFromStats(sample_proportion,
                 print("p-value:", str(round(p_value, 3)))
             print("statistic:", str(round(test_stat, 3)))
     
+    # Show the confidence interval of the sample proportion
+    print("The sample proportion is", str(round(sample_proportion, 3)), "with a", str(round(confidence_interval*100, 1))+"% confidence interval of", str(round(sample_proportion - test_threshold*standard_error, 3)), "to", str(round(sample_proportion + test_threshold*standard_error, 3)))
+    
     # Generate plot of distribution of sample mean and hypothesized mean
     if plot_sample_distribution:
         # Generate an array of sample means
         sample_means = np.random.normal(
-            loc=sample_mean, 
+            loc=sample_proportion, 
             scale=standard_error, 
             size=10000
         )
@@ -140,18 +146,18 @@ def TTestOfProportionFromStats(sample_proportion,
         # # Flag values if they are outside of the confidence interval
         # if alternative_hypothesis=="two-sided":
         #     sample_means['Null Rejection Zone'] = np.where(
-        #         sample_means[value_name] < hypothesized_mean, True,
-        #         np.where(sample_means[value_name] > hypothesized_mean, True,
+        #         sample_means[value_name] < hypothesized_proportion, True,
+        #         np.where(sample_means[value_name] > hypothesized_proportion, True,
         #         False
         #     ))
         # elif alternative_hypothesis=="less":
         #     sample_means['Null Rejection Zone'] = np.where(
-        #         sample_means[value_name] < hypothesized_mean, True,
+        #         sample_means[value_name] < hypothesized_proportion, True,
         #         False
         #     )
         # elif alternative_hypothesis=="greater":
         #     sample_means['Null Rejection Zone'] = np.where(
-        #         sample_means[value_name] > hypothesized_mean, True,
+        #         sample_means[value_name] > hypothesized_proportion, True,
         #         False
         #     )
         
@@ -166,6 +172,7 @@ def TTestOfProportionFromStats(sample_proportion,
             # palette={True: "#FF0000", False: fill_color},
             alpha=fill_transparency,
             color=fill_color,
+            bins=30
         )
         
         # Remove top, left, and right spines. Set bottom spine to dark gray.
@@ -189,7 +196,7 @@ def TTestOfProportionFromStats(sample_proportion,
         
         # Show the hypothesis value as a vertical line with a label
         ax.axvline(
-            x=hypothesized_mean,
+            x=hypothesized_proportion,
             ymax=0.97-.02,
             color="#262626",
             linestyle="--",
@@ -197,9 +204,9 @@ def TTestOfProportionFromStats(sample_proportion,
             alpha=0.5
         )
         ax.text(
-            x=hypothesized_mean, 
+            x=hypothesized_proportion, 
             y=plt.ylim()[1] * 0.97, 
-            s='Hypothesized value: {:.2f}'.format(hypothesized_mean)+' ({:.1%})'.format(p_value),
+            s='Hypothesized value: {:.2f}'.format(hypothesized_proportion)+' ({:.1%})'.format(p_value),
             horizontalalignment='center',
             fontname="Arial",
             fontsize=9,
