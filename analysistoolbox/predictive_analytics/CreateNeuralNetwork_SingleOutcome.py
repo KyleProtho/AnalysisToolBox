@@ -13,15 +13,17 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
                                       list_of_predictor_variables,
                                       number_of_hidden_layers,
                                       is_outcome_categorical=True,
+                                      # Model training arguments
                                       test_size=0.2,
                                       scale_predictor_variables=True,
-                                      plot_loss=True,
-                                      plot_model_test_performance=True,
-                                      show_predictor_ranges=True,
                                       initial_learning_rate=0.01,
                                       number_of_steps_gradient_descent=100,
                                       lambda_for_regularization=0.001,
-                                      random_seed=412):
+                                      random_seed=412,
+                                      # Output arguments
+                                      print_peak_to_peak_range_of_each_predictor=False,
+                                      plot_loss=True,
+                                      plot_model_test_performance=True):
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
     
@@ -36,7 +38,7 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
         dataframe[list_of_predictor_variables] = pd.DataFrame(norm_predictor_variables.numpy(), columns=list_of_predictor_variables)
 
     # Show the peak-to-peak range of each predictor
-    if show_predictor_ranges:
+    if print_peak_to_peak_range_of_each_predictor:
         print("\nPeak-to-peak range of each predictor:")
         print(np.ptp(dataframe[list_of_predictor_variables], axis=0))
         

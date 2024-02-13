@@ -11,7 +11,7 @@ def ConductLinearRegressionAnalysis(dataframe,
                                     list_of_predictors,
                                     scale_predictors=False,
                                     show_diagnostic_plots_for_each_predictor=False,
-                                    show_help=True):
+                                    show_help=False):
     """
     Conducts a linear regression analysis on a given dataframe, using a specified outcome variable and list of predictor variables.
 
@@ -21,7 +21,7 @@ def ConductLinearRegressionAnalysis(dataframe,
         list_of_predictors (list): A list of strings, each containing the name of a column in the dataframe containing a predictor variable.
         scale_predictors (bool, optional): Whether or not to scale the predictor variables before running the analysis. Defaults to False.
         show_diagnostic_plots_for_each_predictor (bool, optional): Whether or not to show diagnostic plots for each predictor variable. Defaults to False.
-        show_help (bool, optional): Whether or not to show help text explaining how to access the output of the function. Defaults to True.
+        show_help (bool, optional): Whether or not to show help text explaining how to access the output of the function. Defaults to False.
 
     Returns:
         dict: A dictionary containing the fitted linear regression model, the model summary, a test dataset of predictors, and a test dataset of outcomes.

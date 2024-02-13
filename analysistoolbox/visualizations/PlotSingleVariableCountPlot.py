@@ -10,8 +10,8 @@ import textwrap
 def PlotSingleVariableCountPlot(dataframe,
                                 categorical_column_name, 
                                 # Plot formatting arguments
-                                color_palette="Set1",
-                                fill_color=None,
+                                fill_color="#8eb3de",
+                                color_palette=None,
                                 top_n_to_highlight=None,
                                 highlight_color="#b0170c",
                                 fill_transparency=0.8,
@@ -21,6 +21,7 @@ def PlotSingleVariableCountPlot(dataframe,
                                 figure_size=(8, 6),
                                 # Text formatting arguments
                                 data_label_fontsize=10,
+                                data_label_padding=None,
                                 title_for_plot=None,
                                 subtitle_for_plot=None,
                                 caption_for_plot=None,
@@ -84,11 +85,12 @@ def PlotSingleVariableCountPlot(dataframe,
             palette=["#b8b8b8" if x not in dataframe[categorical_column_name].value_counts().index[:top_n_to_highlight] else highlight_color for x in dataframe[categorical_column_name].value_counts().index],
             alpha=fill_transparency
         )
-    elif fill_color == None:
+    elif color_palette != None:
         ax = sns.countplot(
             data=dataframe,
             y=categorical_column_name,
             order=dataframe[categorical_column_name].value_counts(ascending=False).index,
+            hue=dataframe[categorical_column_name],
             palette=color_palette,
             alpha=fill_transparency
         )
@@ -104,26 +106,16 @@ def PlotSingleVariableCountPlot(dataframe,
     # Add space between the title and the plot
     plt.subplots_adjust(top=0.85)
     
-    # Wrap y axis label using textwrap
-    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column_name, 40, break_long_words=False))  # String wrap the variable name
-    ax.set_ylabel(wrapped_variable_name)
-    
-    # Format and wrap y axis tick labels using textwrap
-    y_tick_labels = ax.get_yticklabels()
-    wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 40, break_long_words=False)) for label in y_tick_labels]
-    ax.set_yticklabels(
-        wrapped_y_tick_labels, 
-        fontsize=10, 
-        # fontname="Arial", 
-        color="#262626"
-    )
-    
     # Move x-axis to the top
     ax.xaxis.tick_top()
     
     # Change x-axis colors to "#666666"
     ax.tick_params(axis='x', colors="#666666")
     ax.spines['top'].set_color("#666666")
+    
+    # Wrap y axis label using textwrap
+    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column_name, 40, break_long_words=False))  # String wrap the variable name
+    ax.set_ylabel(wrapped_variable_name)
     
     # Set x-axis title to "Count"
     ax.set_xlabel(
@@ -138,14 +130,25 @@ def PlotSingleVariableCountPlot(dataframe,
     ax.spines['right'].set_visible(False)
     ax.spines['left'].set_visible(False)
     
+    # Get the maximum value of the x-axis
+    if data_label_padding == None:
+        max_x = dataframe[categorical_column_name].value_counts().max()
+        data_label_padding = max_x * 0.025
+    
     # Add data labels
     abs_values = dataframe[categorical_column_name].value_counts(ascending=False)
     rel_values = dataframe[categorical_column_name].value_counts(ascending=False, normalize=True).values * 100
     lbls = [f'{p[0]} ({p[1]:.0f}%)' for p in zip(abs_values, rel_values)]
-    ax.bar_label(container=ax.containers[0],
-                 labels=lbls,
-                 padding=5,
-                 fontsize=data_label_fontsize)
+    for i, p in enumerate(ax.patches):
+        ax.text(
+            p.get_width() + data_label_padding,
+            p.get_y() + p.get_height() / 2,
+            lbls[i],
+            ha="left",
+            va="center",
+            fontsize=data_label_fontsize,
+            color="#262626"
+        )
     
     # Add rare category threshold line
     if add_rare_category_line:
@@ -156,7 +159,20 @@ def PlotSingleVariableCountPlot(dataframe,
             linestyle='--',
             label='Rare category threshold'
         )
-        
+    
+    # Set the y axis ticks
+    ax.set_yticks(range(len(dataframe[categorical_column_name].value_counts())))
+    
+    # Format and wrap y axis tick labels using textwrap
+    y_tick_labels = ax.get_yticklabels()
+    wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 40, break_long_words=False)) for label in y_tick_labels]
+    ax.set_yticklabels(
+        wrapped_y_tick_labels, 
+        fontsize=10, 
+        # fontname="Arial", 
+        color="#262626"
+    )
+    
     # Set the x indent of the plot titles and captions
     # Get longest y tick label
     longest_y_tick_label = max(wrapped_y_tick_labels, key=len)

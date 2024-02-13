@@ -13,6 +13,8 @@ def CreateLogisticRegressionModel(dataframe,
                                   outcome_variable,
                                   list_of_predictor_variables,
                                   scale_predictor_variables=False,
+                                  # Output arguments
+                                  print_peak_to_peak_range_of_each_predictor=False,
                                   test_size=0.2,
                                   show_classification_plot=True,
                                   lambda_for_regularization=0.001,
@@ -33,8 +35,9 @@ def CreateLogisticRegressionModel(dataframe,
         dataframe[list_of_predictor_variables] = scaler.fit_transform(dataframe[list_of_predictor_variables])
         
     # Show the peak-to-peak range of each predictor
-    print("\nPeak-to-peak range of each predictor:")
-    print(np.ptp(dataframe[list_of_predictor_variables], axis=0))
+    if print_peak_to_peak_range_of_each_predictor:
+        print("\nPeak-to-peak range of each predictor:")
+        print(np.ptp(dataframe[list_of_predictor_variables], axis=0))
     
     # Split dataframe into training and test sets
     train, test = train_test_split(

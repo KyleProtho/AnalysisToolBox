@@ -10,8 +10,8 @@ def PlotBoxWhiskerByGroup(dataframe,
                           grouping_column_name_1,
                           grouping_column_name_2=None,
                           # Plot formatting arguments
-                          fill_color=None,
-                          color_palette='Set2',
+                          fill_color="#8eb3de",
+                          color_palette=None,
                           display_order_list=None,
                           show_legend=True,
                           # Text formatting arguments

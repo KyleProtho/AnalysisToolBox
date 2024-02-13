@@ -17,6 +17,8 @@ def CreateBoostedTreeModel(dataframe,
                            test_size=0.2,
                            random_seed=412,
                            filter_nulls=False,
+                           # Output arguments
+                           print_model_training_performance=False,
                            # All plot arguments
                            data_source_for_plot=None,
                            # Model performance plot arguments
@@ -53,7 +55,7 @@ def CreateBoostedTreeModel(dataframe,
     # Drop rows with missing values if filter_nulls is True
     if filter_nulls:
         dataframe = dataframe.dropna()
-    print("Count of examples eligible for inclusion in model training and testing:", len(dataframe.index))
+    # print("Count of examples eligible for inclusion in model training and testing:", len(dataframe.index))
     
     # Split dataframe into training and test sets
     train, test = train_test_split(
@@ -81,14 +83,15 @@ def CreateBoostedTreeModel(dataframe,
     test['Predicted'] = model.predict(test[list_of_predictor_variables])
     
     # Show mean squared error and variance if outcome is numerical
-    if is_outcome_categorical == False:
-        print('Mean Squared Error:', metrics.mean_squared_error(test[outcome_variable], test['Predicted']))
-        print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
-        print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
-    # Show accuracy if outcome is categorical
-    else:
-        classifcation_report = metrics.classification_report(test[outcome_variable], test['Predicted'])
-        print("Classification Report:\n", classifcation_report, sep="")
+    if print_model_training_performance:
+        if is_outcome_categorical == False:
+            print('Mean Squared Error:', metrics.mean_squared_error(test[outcome_variable], test['Predicted']))
+            print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
+            print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
+        # Show accuracy if outcome is categorical
+        else:
+            classifcation_report = metrics.classification_report(test[outcome_variable], test['Predicted'])
+            print("Classification Report:\n", classifcation_report, sep="")
      
     # Print the confusion matrix if outcome is categorical
     if plot_model_test_performance:

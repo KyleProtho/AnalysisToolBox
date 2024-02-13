@@ -13,11 +13,13 @@ def ConductSurvivalAnalysis(dataframe,
                             outcome_column,
                             time_duration_column,
                             group_column=None,
+                            # Output arguments
                             return_time_table=True,
                             plot_survival_curve=True,
                             conduct_log_rank_test=True,
                             significance_level=0.05,
                             print_log_rank_test_results=True,
+                            # Survival curve plot arguments
                             line_color="#3269a8",
                             line_alpha=0.8,
                             sns_color_palette="Set2",

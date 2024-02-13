@@ -20,7 +20,7 @@ def CreateContentBasedRecommender(dataframe,
                                   scale_variables=True,
                                   plot_loss=True,
                                   plot_model_test_performance=True,
-                                  show_predictor_ranges=False,
+                                  print_peak_to_peak_range_of_each_predictor=False,
                                   initial_learning_rate=0.01,
                                   number_of_steps_gradient_descent=50,
                                   lambda_for_regularization=0.001,
@@ -48,7 +48,7 @@ def CreateContentBasedRecommender(dataframe,
         dataframe[outcome_variable] = scalerOutcome.transform(dataframe[outcome_variable].values.reshape(-1,1))
         
     # Show the peak-to-peak range of each predictor
-    if show_predictor_ranges:
+    if print_peak_to_peak_range_of_each_predictor:
         print("\nPeak-to-peak range of each predictor in user dataset:")
         print(np.ptp(dataframe[user_list_of_predictor_variables], axis=0))
         print("\nPeak-to-peak range of each predictor in item dataset:")

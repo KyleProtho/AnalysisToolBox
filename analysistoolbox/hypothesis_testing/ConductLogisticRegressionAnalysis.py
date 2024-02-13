@@ -11,7 +11,7 @@ def ConductLogisticRegressionAnalysis(dataframe,
                                       list_of_predictors,
                                       scale_predictors=False,
                                       show_diagnostic_plots_for_each_predictor=True,
-                                      show_help=True):
+                                      show_help=False):
     """
     Conducts a logistic regression analysis on the specified dataframe, using the specified outcome variable and list of predictors.
 
@@ -21,7 +21,7 @@ def ConductLogisticRegressionAnalysis(dataframe,
         list_of_predictors (list of str): A list of the names of the columns in the dataframe containing the predictor variables.
         scale_predictors (bool, optional): Whether or not to scale the predictor variables. Default is False.
         show_diagnostic_plots_for_each_predictor (bool, optional): Whether or not to show diagnostic plots for each predictor variable. Default is True.
-        show_help (bool, optional): Whether or not to show help text. Default is True.
+        show_help (bool, optional): Whether or not to show help text. Default is False.
 
     Returns:
         dict: A dictionary containing the fitted model and model summary.

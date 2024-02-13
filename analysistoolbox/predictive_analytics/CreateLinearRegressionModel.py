@@ -18,7 +18,9 @@ def CreateLinearRegressionModel(dataframe,
                                 test_size=0.2,
                                 fit_intercept=True,
                                 random_seed=412,
+                                # Output arguments
                                 print_peak_to_peak_range_of_each_predictor=False,
+                                print_model_training_performance=False,
                                 # All plot arguments
                                 data_source_for_plot=None,
                                 # Model performance plot arguments
@@ -106,10 +108,11 @@ def CreateLinearRegressionModel(dataframe,
     test['Predicted'] = model.predict(test[list_of_predictor_variables])
     
     # Show mean squared error if outcome is numerical
-    print('Mean Squared Error:', metrics.mean_squared_error(test[outcome_variable], test['Predicted']))
-    print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
-    print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
-    
+    if print_model_training_performance:
+        print('Mean Squared Error:', metrics.mean_squared_error(test[outcome_variable], test['Predicted']))
+        print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
+        print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
+        
     # Plot predicted and observed outputs if requested
     if plot_model_test_performance:
         # Set the size of the plot

@@ -14,7 +14,9 @@ def CreateKMeansClusters(dataframe,
                          column_name_for_clusters='K-Means Cluster',
                          random_seed=412,
                          maximum_iterations=300,
-                         scale_predictor_variables=True,
+                         scale_clustering_column_values=True,
+                         # Output arguments
+                         print_peak_to_peak_range_of_each_column=False,
                          show_cluster_summary_plots=True,
                          color_palette='Set2',
                          # Text formatting arguments
@@ -34,7 +36,7 @@ def CreateKMeansClusters(dataframe,
         list_of_value_columns_for_clustering (list, optional): The list of variables to base the clusters on. Defaults to None, which will use all variables in the dataframe.
         number_of_clusters (int, optional): The number of clusters to create. Defaults to None, which will use the elbow method to determine the optimal number of clusters.
         column_name_for_clusters (str, optional): The name of the new column containing the clusters. Defaults to 'K-Means Cluster'.
-        scale_predictor_variables (bool, optional): Whether to scale the predictor variables prior to analysis. Defaults to True.
+        scale_clustering_column_values (bool, optional): Whether to scale the predictor variables prior to analysis. Defaults to True.
         show_cluster_summary_plots (bool, optional): Whether to show cluster summary plots. Defaults to True.
         summary_plot_size (tuple, optional): The size of the summary plots. Defaults to (20, 20).
         random_seed (int, optional): The random seed to use for replication. Defaults to 412.
@@ -51,13 +53,14 @@ def CreateKMeansClusters(dataframe,
     dataframe_clusters = dataframe.dropna(subset=list_of_value_columns_for_clustering)
 
     # Scale the predictors, if requested
-    if scale_predictor_variables:
+    if scale_clustering_column_values:
         # Scale predictors
         dataframe_clusters[list_of_value_columns_for_clustering] = StandardScaler().fit_transform(dataframe_clusters[list_of_value_columns_for_clustering])
     
-    # # Show peak-to-peak range of each variable
-    # print("\nPeak-to-peak range of each value column/variable:")
-    # print(np.ptp(dataframe_clusters[list_of_value_columns_for_clustering], axis=0))
+    # Show peak-to-peak range of each variable
+    if print_peak_to_peak_range_of_each_column:
+        print("\nPeak-to-peak range of each value column/variable:")
+        print(np.ptp(dataframe_clusters[list_of_value_columns_for_clustering], axis=0))
     
     # If number of clusters not specified, use elbow to find "best" number
     if number_of_clusters == None:

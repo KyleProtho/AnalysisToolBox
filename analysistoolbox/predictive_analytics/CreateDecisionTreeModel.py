@@ -14,6 +14,8 @@ def CreateDecisionTreeModel(dataframe,
                             outcome_variable,
                             list_of_predictor_variables,
                             is_outcome_categorical=True,
+                            # Output arguments
+                            print_model_training_performance=False,
                             # Model training arguments
                             test_size=0.2,
                             categorical_splitting_criterion='entropy',
@@ -63,7 +65,7 @@ def CreateDecisionTreeModel(dataframe,
     # Drop rows with missing values if filter_nulls is True
     if filter_nulls:
         dataframe = dataframe.dropna()
-    print("Count of examples eligible for inclusion in model training and testing:", len(dataframe.index))
+    # print("Count of examples eligible for inclusion in model training and testing:", len(dataframe.index))
     
     # Split dataframe into training and test sets
     train, test = train_test_split(
@@ -95,14 +97,15 @@ def CreateDecisionTreeModel(dataframe,
     test['Predicted'] = model.predict(test[list_of_predictor_variables])
     
     # Show mean squared error and variance if outcome is numerical
-    if is_outcome_categorical == False:
-        print('Mean Squared Error:', metrics.mean_squared_error(test[outcome_variable], test['Predicted']))
-        print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
-        print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
-    # Show accuracy if outcome is categorical
-    else:
-        classifcation_report = metrics.classification_report(test[outcome_variable], test['Predicted'])
-        print("Classification Report:\n", classifcation_report, sep="")
+    if print_model_training_performance:
+        if is_outcome_categorical == False:
+            print('Mean Squared Error:', metrics.mean_squared_error(test[outcome_variable], test['Predicted']))
+            print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
+            print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
+        # Show accuracy if outcome is categorical
+        else:
+            classifcation_report = metrics.classification_report(test[outcome_variable], test['Predicted'])
+            print("Classification Report:\n", classifcation_report, sep="")
     
     # Print decision rules if requested
     if print_decision_rules:

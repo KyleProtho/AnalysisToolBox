@@ -11,8 +11,8 @@ def PlotBarChart(dataframe,
                  categorical_column_name, 
                  value_column_name,
                  # Bar formatting arguments
-                 color_palette="Set1",
-                 fill_color=None,
+                 fill_color="#8eb3de",
+                 color_palette=None,
                  top_n_to_highlight=None,
                  highlight_color="#b0170c",
                  fill_transparency=0.8,
@@ -29,6 +29,7 @@ def PlotBarChart(dataframe,
                  caption_y_indent=-0.15,
                  decimal_places_for_data_label=1,
                  data_label_fontsize=11,
+                 data_label_padding=None,
                  # Plot saving arguments
                  filepath_to_save_plot=None):
     """
@@ -90,11 +91,12 @@ def PlotBarChart(dataframe,
             order=display_order_list,
             alpha=fill_transparency
         )
-    elif fill_color == None:
+    elif color_palette != None:
         ax = sns.barplot(
             data=dataframe,
             y=categorical_column_name,
             x=value_column_name,
+            hue=dataframe[categorical_column_name],
             palette=color_palette,
             order=display_order_list,
             alpha=fill_transparency
@@ -112,9 +114,8 @@ def PlotBarChart(dataframe,
     # Add space between the title and the plot
     plt.subplots_adjust(top=0.85)
     
-    # Wrap y axis label using textwrap
-    wrapped_variable_name = "\n".join(textwrap.wrap(categorical_column_name, 40, break_long_words=False))  # String wrap the variable name
-    ax.set_ylabel(wrapped_variable_name)
+    # Set the y axis ticks
+    ax.set_yticks(range(len(dataframe[categorical_column_name].value_counts())))
     
     # Format and wrap y axis tick labels using textwrap
     y_tick_labels = ax.get_yticklabels()
@@ -138,16 +139,27 @@ def PlotBarChart(dataframe,
     ax.spines['right'].set_visible(False)
     ax.spines['left'].set_visible(False)
     
+    # Get the maximum value of the x-axis
+    if data_label_padding == None:
+        max_x = dataframe[categorical_column_name].value_counts().max()
+        data_label_padding = max_x * 0.10
+    
     # Add data labels
     abs_values = dataframe.sort_values(value_column_name, ascending=False)[value_column_name].round(decimal_places_for_data_label)
     # Create format code for data labels
     data_label_format = "{:." + str(decimal_places_for_data_label) + "f}"
     lbls = [data_label_format.format(p) for p in abs_values]
-    ax.bar_label(container=ax.containers[0],
-                 labels=lbls,
-                 padding=5,
-                 fontsize=data_label_fontsize)
-        
+    for i, p in enumerate(ax.patches):
+        ax.text(
+            p.get_width() + data_label_padding,
+            p.get_y() + p.get_height() / 2,
+            lbls[i],
+            ha="left",
+            va="center",
+            fontsize=data_label_fontsize,
+            color="#262626"
+        )
+    
     # Set the x indent of the plot titles and captions
     # Get longest y tick label
     longest_y_tick_label = max(wrapped_y_tick_labels, key=len)
