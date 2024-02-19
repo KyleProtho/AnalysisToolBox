@@ -53,7 +53,7 @@ def CreateLinearRegressionModel(dataframe,
     # Replace inf with nan, and drop rows with nan
     dataframe.replace([np.inf, -np.inf], np.nan, inplace=True)
     dataframe.dropna(inplace=True)
-    print("Count of examples eligible for inclusion in model training and testing:", len(dataframe.index))
+    # print("Count of examples eligible for inclusion in model training and testing:", len(dataframe.index))
     
     # Scale the predictors, if requested
     if scale_variables:
