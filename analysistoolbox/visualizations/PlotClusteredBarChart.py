@@ -92,7 +92,7 @@ def PlotClusteredBarChart(dataframe,
     
     # Format and wrap x axis tick labels using textwrap
     x_tick_labels = ax.ax.get_xticklabels()
-    wrapped_x_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 40, break_long_words=False)) for label in x_tick_labels]
+    wrapped_x_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 20, break_long_words=False)) for label in x_tick_labels]
     ax.ax.set_xticklabels(
         wrapped_x_tick_labels, 
         fontsize=10, 
