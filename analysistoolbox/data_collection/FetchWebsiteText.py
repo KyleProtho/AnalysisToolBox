@@ -1,6 +1,5 @@
 # Load packages
 from bs4 import BeautifulSoup
-from dotenv import load_dotenv
 from IPython.display import display, HTML, Markdown
 import json
 import os
@@ -19,14 +18,6 @@ def FetchWebsiteText(url,
     Returns:
         str: The text content of the website, with any occurrence of four or more newlines replaced with three newlines.
     """
-    
-    # If no API key is provided, try to load from .env file
-    if browserless_api_key is None:
-        load_dotenv()
-        try:
-            browserless_api_key = os.environ['BROWERLESS_API_KEY']
-        except:
-            raise ValueError("No API key provided and no .env file found. If you need a Browserless API key, visit https://www.browserless.io/")
     
     # Set payload to query
     payload = json.dumps({

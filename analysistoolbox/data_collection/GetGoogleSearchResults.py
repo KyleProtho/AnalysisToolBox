@@ -1,5 +1,4 @@
 # Load packages
-from dotenv import load_dotenv
 from IPython.display import display, HTML, Markdown
 import json
 import os
@@ -27,14 +26,6 @@ def GetGoogleSearchResults(query,
     Returns:
         dict: The response from the Serper API, containing the search results.
     """
-    
-    # If no API key is provided, load from .env file
-    if serper_api_key is None:
-        load_dotenv()
-        try:
-            serper_api_key = os.environ['SERPER_API_KEY']
-        except:
-            raise ValueError("No API key provided and no .env file found. If you need a Serper API key, visit https://serper.dev/")
     
     # Set Google Search URL
     url = "https://google.serper.dev/search"
