@@ -124,7 +124,7 @@ def PlotClusteredBarChart(dataframe,
         
         # Add the data label to the plot, using the specified number of decimal places
         value_label = "{:,.{decimal_places}f}".format(height, decimal_places=decimal_places_for_data_label)
-        if height > 0:
+        if height != 0:
             ax.ax.text(
                 x=p.get_x() + p.get_width() / 2.,
                 y=height + (min_value * 0.05),
