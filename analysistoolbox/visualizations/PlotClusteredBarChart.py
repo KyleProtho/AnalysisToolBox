@@ -124,15 +124,16 @@ def PlotClusteredBarChart(dataframe,
         
         # Add the data label to the plot, using the specified number of decimal places
         value_label = "{:,.{decimal_places}f}".format(height, decimal_places=decimal_places_for_data_label)
-        ax.ax.text(
-            x=p.get_x() + p.get_width() / 2.,
-            y=height + (min_value * 0.05),
-            s=value_label,
-            ha="center",
-            # fontname="Arial",
-            fontsize=10,
-            color="#262626"
-        )
+        if height > 0:
+            ax.ax.text(
+                x=p.get_x() + p.get_width() / 2.,
+                y=height + (min_value * 0.05),
+                s=value_label,
+                ha="center",
+                # fontname="Arial",
+                fontsize=10,
+                color="#262626"
+            )
         
     # Set the title with Arial font, size 14, and color #262626 at the top of the plot
     ax.ax.text(

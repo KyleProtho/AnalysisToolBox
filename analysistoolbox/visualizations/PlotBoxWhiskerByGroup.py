@@ -139,8 +139,7 @@ def PlotBoxWhiskerByGroup(dataframe,
     # String wrap group variable 1 tick labels
     group_variable_1_tick_labels = ax.get_xticklabels()
     group_variable_1_tick_labels = [label.get_text() for label in group_variable_1_tick_labels]
-    for label in group_variable_1_tick_labels:
-        label = textwrap.fill(label, 20, break_long_words=False)
+    group_variable_1_tick_labels = ['\n'.join(textwrap.wrap(label, 20, break_long_words=False)) for label in group_variable_1_tick_labels]
     ax.set_xticklabels(group_variable_1_tick_labels)
     
     # Set x-axis tick label font to Arial, size 9, and color #666666

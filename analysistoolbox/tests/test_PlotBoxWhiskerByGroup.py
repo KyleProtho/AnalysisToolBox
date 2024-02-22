@@ -10,7 +10,7 @@ class TestPlotBoxWhiskerByGroup(unittest.TestCase):
     def setUp(self):
         # Create a sample dataframe for testing
         self.dataframe = pd.DataFrame({
-            'Group1': ['A', 'A', 'B', 'B', 'C', 'C'],
+            'Group1': ['A', 'A', 'B', 'B', 'C - with a really long name for wrapping', 'C - with a really long name for wrapping'],
             'Group2': ['X', 'Y', 'X', 'Y', 'X', 'Y'],
             'Value': [1, 2, 3, 4, 5, 6]
         })
