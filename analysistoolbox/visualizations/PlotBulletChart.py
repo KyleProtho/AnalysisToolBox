@@ -22,6 +22,7 @@ def PlotBulletChart(dataframe,
                     background_alpha=0.8,
                     value_dot_size=200,
                     value_dot_color="#383838",
+                    value_dot_color_by_level=False,
                     value_dot_outline_color="#ffffff",
                     value_dot_outline_width=2,
                     target_line_color='#bf3228',
@@ -33,6 +34,9 @@ def PlotBulletChart(dataframe,
                     value_label_format="{:.0f}",
                     value_label_font_size=12,
                     value_label_spacing=.65,
+                    value_label_padding=0.3,
+                    value_label_background_color="#ffffff",
+                    value_label_background_alpha=0.85,
                     title_for_plot=None,
                     subtitle_for_plot=None,
                     caption_for_plot=None,
@@ -128,7 +132,7 @@ def PlotBulletChart(dataframe,
         # If limit columns are specified, plot the limit columns
         if list_of_limit_columns != None:
             # Get the colors from the specified color palette, using the number of limit columns
-            if background_color_palette == None:
+            if background_color_palette == None or value_dot_color_by_level == True:
                 # Create a greyscale palette
                 colors = sns.light_palette("#acacad", len(list_of_limit_columns) + 1)
                 # Reverse the palette
@@ -174,14 +178,44 @@ def PlotBulletChart(dataframe,
             )
 
         # Plot value as a large dot
-        ax.scatter(
-            value, 
-            group, 
-            color=value_dot_color, 
-            s=value_dot_size,
-            edgecolor=value_dot_outline_color,
-            linewidth=value_dot_outline_width
-        )
+        if value_dot_color_by_level==False:
+            ax.scatter(
+                value, 
+                group, 
+                color=value_dot_color, 
+                s=value_dot_size,
+                edgecolor=value_dot_outline_color,
+                linewidth=value_dot_outline_width
+            )
+        else:
+            # Get the colors from the specified color palette, using the number of limit columns
+            colors = sns.color_palette(background_color_palette, len(list_of_limit_columns) + 1)
+            
+            # Iterate through each row in the dataframe
+            for index, row in dataframe.iterrows():
+                # Get the value of the limit columns
+                limit_values = row[list_of_limit_columns]
+                
+                # Get the colors from the specified color palette, using the number of limit columns
+                colors = sns.color_palette(background_color_palette, len(list_of_limit_columns) + 1)
+                
+                # Assign the color of the dot based on the value of the limit columns
+                for i in range(len(limit_values)):
+                    if value <= limit_values[i]:
+                        value_dot_color = colors[i+1]
+                        break
+                    else:
+                        value_dot_color = "#383838"
+                
+                # Plot value as a large dot
+                ax.scatter(
+                    value, 
+                    group, 
+                    color=value_dot_color, 
+                    s=value_dot_size,
+                    edgecolor=value_dot_outline_color,
+                    linewidth=value_dot_outline_width
+                )
         
         # Add data label for the value, if requested
         if show_value_labels:
@@ -194,18 +228,34 @@ def PlotBulletChart(dataframe,
                 color=value_label_color,
                 verticalalignment="center",
                 horizontalalignment="center",
+                # Add a white background to the data label
+                bbox=dict(
+                    facecolor=value_label_background_color, 
+                    alpha=value_label_background_alpha, 
+                    edgecolor='none',
+                    boxstyle="round,pad="+str(value_label_padding)
+                )
             )
         
     # Add space between the title and the plot
     plt.subplots_adjust(top=0.85)
     
     # Format and wrap y axis tick labels using textwrap
-    y_tick_labels = ax.get_yticklabels()
-    wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 40, break_long_words=False)) for label in y_tick_labels]
-    ax.set_yticklabels(wrapped_y_tick_labels, fontsize=10, fontname="Arial", color="#262626")
+    wrapped_y_tick_labels = ['\n'.join(textwrap.wrap(label.get_text(), 30, break_long_words=False)) for label in ax.get_yticklabels()]
+    ax.set_yticklabels(
+        wrapped_y_tick_labels, 
+        fontsize=10, 
+        # fontname="Arial", 
+        color="#262626",
+    )
     
-    # Move x-axis to the top
-    ax.xaxis.tick_top()
+    # Set the x indent of the plot titles and captions
+    # Get longest y tick label
+    longest_y_tick_label = max(wrapped_y_tick_labels, key=len)
+    if len(longest_y_tick_label) >= 30:
+        x_indent = -0.3
+    else:
+        x_indent = -0.005 - (len(longest_y_tick_label) * 0.011)
     
     # Change x-axis colors to "#666666"
     ax.tick_params(axis='x', colors="#666666")
@@ -215,15 +265,10 @@ def PlotBulletChart(dataframe,
     ax.spines['bottom'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['left'].set_visible(False)
-        
-    # Set the x indent of the plot titles and captions
-    # Get longest y tick label
-    longest_y_tick_label = max(wrapped_y_tick_labels, key=len)
-    if len(longest_y_tick_label) >= 30:
-        x_indent = -0.3
-    else:
-        x_indent = -0.005 - (len(longest_y_tick_label) * 0.011)
-        
+    
+    # Move x-axis to the top
+    ax.xaxis.tick_top()
+    
     # Set the title with Arial font, size 14, and color #262626 at the top of the plot
     ax.text(
         x=x_indent,
