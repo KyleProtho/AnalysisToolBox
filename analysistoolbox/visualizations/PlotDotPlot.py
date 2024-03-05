@@ -12,8 +12,9 @@ def PlotDotPlot(dataframe,
                 # Dot formatting arguments
                 group_1_color="#4257f5",
                 group_2_color="#ccd2ff",
-                dot_size=2,
+                dot_size=20,
                 dot_alpha=1,
+                zero_line_group=None,
                 # Connecting line formatting arguments
                 connect_dots=True,
                 connect_line_color="#666666",
@@ -27,11 +28,19 @@ def PlotDotPlot(dataframe,
                 connect_line_label_color="#262626",
                 show_connect_line_labels_in_margin=False,
                 connect_line_label_margin=0.5,
+                # Vertical line formatting arguments
+                dict_of_vertical_lines=None,
+                vertical_line_label_fontsize=11,
+                vertical_line_label_fontsize_fontweight='bold',
+                vertical_line_color="#262626",
+                vertical_line_length=600,
+                vertical_line_width=5.0,
+                vertical_line_style='solid',
                 # Plot formatting arguments
-                zero_line_group=None,
                 display_order_list=None,
                 figure_size=(10, 6),
                 show_legend=True,
+                show_x_axis=False,
                 # Data label arguments
                 show_data_labels=True,
                 decimal_places_for_data_label=1,
@@ -106,10 +115,7 @@ def PlotDotPlot(dataframe,
     if zero_line_group != None:
         if zero_line_group not in dataframe[group_column_name].unique():
             raise ValueError("zero_line_group must a value in the " + group_column_name + " column.")
-    
-    # Select the necessary columns from the dataframe
-    dataframe = dataframe[[categorical_column_name, group_column_name, value_column_name]]
-    
+        
     # Ensure that each row is a unique combination of the categorical and group columns
     if len(dataframe[[categorical_column_name, group_column_name]].drop_duplicates()) != len(dataframe):
         raise ValueError("Each row in the dataframe must be a unique combination of the categorical and group columns.")
@@ -117,6 +123,14 @@ def PlotDotPlot(dataframe,
     # Ensure that connect_line_label_margin is between 0 and 1
     if connect_line_label_margin < 0 or connect_line_label_margin > 1:
         raise ValueError("connect_line_label_margin must be between 0 and 1.")
+    
+    # If zero_line_group is provided, sort the dataframe so that it is the first group
+    if zero_line_group != None:
+        dataframe[group_column_name] = pd.Categorical(dataframe[group_column_name], categories=[zero_line_group] + [x for x in dataframe[group_column_name].unique() if x != zero_line_group])
+        dataframe = dataframe.sort_values(group_column_name)
+    
+    # # Select the necessary columns from the dataframe
+    # dataframe = dataframe[[categorical_column_name, group_column_name, value_column_name]]
     
     # Make a copy of the value column, add ' - Original' to the name
     dataframe[value_column_name + '- Original'] = dataframe[value_column_name]
@@ -134,9 +148,6 @@ def PlotDotPlot(dataframe,
         
         # Reset the values of the other group to be the difference between the original and zero_line_group values
         df_temp[value_column_name] = df_temp[value_column_name] - df_temp[value_column_name + '_original']
-        
-        # Drop the original value column
-        df_temp = df_temp.drop(columns=[value_column_name + '_original'])
         
         # Set the values for the zero_line_group to zero
         df_temp.loc[df_temp[group_column_name] == zero_line_group, value_column_name] = 0
@@ -231,6 +242,36 @@ def PlotDotPlot(dataframe,
                         ) 
                     )
     
+    # Plot the line label
+    if dict_of_vertical_lines is not None:
+        # Ensure that the dict_of_vertical_lines contains the categories in the dataframe
+        if not set(dict_of_vertical_lines.keys()).issubset(set(dataframe[categorical_column_name].unique())):
+            raise ValueError("dict_of_vertical_lines must contain a subset of categories in the dataframe.")
+        
+        # Iterate through the dict_of_vertical_lines and plot them as vertical lines
+        for key, value in dict_of_vertical_lines.items():
+            # Get the x and y coordinates for the line of the current category
+            x_coordinates = dataframe[dataframe[categorical_column_name] == key][value_column_name]
+            y_coordinates = dataframe[dataframe[categorical_column_name] == key][categorical_column_name]
+            
+            # If a zero_line_group is provided, subtract the value of the zero_line_group from the value
+            if zero_line_group != None:
+                value = value - dataframe[
+                    (dataframe[group_column_name] == zero_line_group)
+                    & (dataframe[categorical_column_name] == key)
+                ][value_column_name + '- Original'].values[0]
+            
+            # Plot the vertical line for each category
+            ax.scatter(
+                x=value,
+                y=dataframe[dataframe[categorical_column_name] == key][categorical_column_name].values[0],
+                color=vertical_line_color,
+                marker='|',
+                s=vertical_line_length,
+                zorder=10,
+                linewidths=vertical_line_width,
+            )
+    
     # Create pointplot
     sns.pointplot(
         data=dataframe,
@@ -238,10 +279,10 @@ def PlotDotPlot(dataframe,
         y=categorical_column_name, 
         hue=group_column_name,
         order=display_order_list,
-        join=False,
+        linestyle='none',
         palette=[group_1_color, group_2_color],
         markers='o', 
-        scale=dot_size,
+        markersize=dot_size,
         ax=ax
     )
     
@@ -268,10 +309,14 @@ def PlotDotPlot(dataframe,
     
     # Move x-axis to the top
     ax.xaxis.tick_top()
-    
-    # Change x-axis colors to "#666666"
-    ax.tick_params(axis='x', colors="#666666")
-    ax.spines['top'].set_color("#666666")
+    if show_x_axis == False:
+        ax.xaxis.set_visible(False)
+        ax.spines['top'].set_color("white")
+    else:
+        ax.xaxis.set_visible(True)
+        # Change x-axis colors to "#666666"
+        ax.tick_params(axis='x', colors="#666666")
+        ax.spines['top'].set_color("#666666")
     
     # Remove bottom, left, and right spines
     ax.spines['bottom'].set_visible(False)
@@ -283,8 +328,22 @@ def PlotDotPlot(dataframe,
         # Plot the values on each dot
         for i in range(len(display_order_list)):
             # Get the x and y coordinates for the dots
-            x_coordinates = dataframe[dataframe[categorical_column_name] == display_order_list[i]][value_column_name]
-            y_coordinates = dataframe[dataframe[categorical_column_name] == display_order_list[i]][categorical_column_name]
+            # If the values for the zero_line_group are the same, do not create labels for them
+            if zero_line_group != None:
+                if dataframe[dataframe[categorical_column_name] == display_order_list[i]][value_column_name + '- Original'].max() == dataframe[dataframe[categorical_column_name] == display_order_list[i]][value_column_name + '- Original'].min():
+                    x_coordinates = dataframe[
+                        (dataframe[categorical_column_name] == display_order_list[i]) 
+                        & (dataframe[group_column_name] != zero_line_group)
+                    ]
+                    y_coordinates = dataframe[
+                        (dataframe[categorical_column_name] == display_order_list[i]) 
+                        & (dataframe[group_column_name] != zero_line_group)
+                    ]
+                else:
+                    x_coordinates = dataframe[dataframe[categorical_column_name] == display_order_list[i]]
+                    y_coordinates = dataframe[dataframe[categorical_column_name] == display_order_list[i]]
+            x_coordinates = x_coordinates[value_column_name]
+            y_coordinates = y_coordinates[categorical_column_name]
             
             # Get the x and y coordinates for the data labels of the higher values
             x_data_label_coordinates = x_coordinates.max()

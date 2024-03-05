@@ -13,7 +13,7 @@ def SendPromptToChatGPT(prompt_template,
                         # LLM parameters
                         openai_api_key=None,
                         temperature=0.0,
-                        chat_model_name="gpt-3.5-turbo",
+                        chat_model_name="gpt-4-1106-preview",
                         verbose=True):
     # If OpenAI API key is not provided, then try to load from .env file
     if openai_api_key is None:

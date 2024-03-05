@@ -76,7 +76,8 @@ def PlotClusteredBarChart(dataframe,
         alpha=fill_transparency, 
         height=figure_size[1],
         aspect=figure_size[0] / figure_size[1],
-        ci=None,
+        # ci=None,
+        errorbar=None,
     )
     
     # Remove the legend if show_legend is False

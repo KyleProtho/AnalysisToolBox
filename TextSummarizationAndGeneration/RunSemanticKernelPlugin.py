@@ -11,7 +11,7 @@ def RunSemanticKernelPlugin(plugin_directory,
                             # Kernel parameters
                             kernel=None,
                             kernel_platform="openai",
-                            kernel_platform_model_name="gpt-3.5-turbo",
+                            kernel_platform_model_name="gpt-4-1106-preview",
                             openai_api_key=None,
                             openai_org_id=None,
                             # Context parameters
@@ -20,7 +20,7 @@ def RunSemanticKernelPlugin(plugin_directory,
                             create_memory=False,
                             memory_store_name=None,
                             memory_text_completion_service="openai-completion",
-                            memory_text_completion_model="gpt-3.5-turbo",
+                            memory_text_completion_model="gpt-4-1106-preview",
                             memory_text_embedding_service="openai-embedding",
                             memory_text_embedding_model="text-embedding-ada-002"):
     # If kernel is not specified, create a new one

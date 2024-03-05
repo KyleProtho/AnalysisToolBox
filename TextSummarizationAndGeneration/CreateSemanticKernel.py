@@ -7,7 +7,7 @@ from semantic_kernel.connectors.ai.hugging_face import HuggingFaceTextCompletion
 def CreateSemanticKernel(kernel_platform="openai",
                          openai_api_key=None,
                          openai_org_id=None,
-                         platform_model_name="gpt-3.5-turbo"):
+                         platform_model_name="gpt-4-1106-preview"):
     # Create a kernel
     kernel = sk.Kernel()
     

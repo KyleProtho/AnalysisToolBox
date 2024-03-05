@@ -12,7 +12,7 @@ def ClassifyTextUsingChatGPT(text_to_classify,
                                 text: ```{text_to_classify}```""",
                              print_api_cost=True,
                              temperature=0.0,
-                             chat_model_name="gpt-3.5-turbo"):  
+                             chat_model_name="gpt-4-1106-preview"):  
     # Set the chat prompt template
     prompt_template = ChatPromptTemplate.from_template(my_prompt_template)
     

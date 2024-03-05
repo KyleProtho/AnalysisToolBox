@@ -13,5 +13,6 @@ from .CreateDataOverview import CreateDataOverview
 from .CreateRandomSampleGroups import CreateRandomSampleGroups
 from .CreateRareCategoryColumn import CreateRareCategoryColumn
 from .CreateStratifiedRandomSampleGroups import CreateStratifiedRandomSampleGroups
+from .GeocodeUSAddresses import GeocodeUSAddresses
 from .ImputeMissingValuesUsingNearestNeighbors import ImputeMissingValuesUsingNearestNeighbors
 from .VerifyGranularity import VerifyGranularity

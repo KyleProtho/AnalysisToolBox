@@ -14,7 +14,7 @@ def SummarizeTextWithChatGPT(text_to_summarize,
                              summarization_objective="Summarize the main points and key arguments of the given text.",
                              query_method="map_reduce",
                              temperature=0.0,
-                             chat_model_name="gpt-3.5-turbo",
+                             chat_model_name="gpt-4-1106-preview",
                              verbose=False,
                              # Text parsing parameters
                              splitter_chunk_size=None,
