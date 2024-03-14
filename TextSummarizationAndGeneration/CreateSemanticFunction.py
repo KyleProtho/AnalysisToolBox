@@ -1,6 +1,5 @@
 # Load packages
 import os
-import semantic_kernel as sk
 
 # Declare function
 def CreateSemanticFunction(kernel,
@@ -12,6 +11,9 @@ def CreateSemanticFunction(kernel,
                            export_as_plugin=False,
                            plugin_name=None,
                            plugin_folder=None):
+    # Lazy load uncommon packages
+    import semantic_kernel as sk
+    
     # Create the semantic function
     semantic_function = kernel.create_semantic_function(
         prompt_template=prompt_template,

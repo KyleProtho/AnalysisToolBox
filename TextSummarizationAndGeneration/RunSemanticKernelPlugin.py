@@ -1,8 +1,4 @@
-import semantic_kernel as sk
-from semantic_kernel.connectors.ai.hugging_face import HuggingFaceTextCompletion
-from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion, OpenAIChatCompletion, OpenAIChatCompletion, OpenAITextEmbedding
-from semantic_kernel.connectors.memory.chroma import ChromaMemoryStore
-import shutil
+# Load packages
 
 # Declare function
 def RunSemanticKernelPlugin(plugin_directory,
@@ -23,6 +19,13 @@ def RunSemanticKernelPlugin(plugin_directory,
                             memory_text_completion_model="gpt-4-1106-preview",
                             memory_text_embedding_service="openai-embedding",
                             memory_text_embedding_model="text-embedding-ada-002"):
+    # Lazy load uncommon packages
+    import semantic_kernel as sk
+    from semantic_kernel.connectors.ai.hugging_face import HuggingFaceTextCompletion
+    from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion, OpenAIChatCompletion, OpenAIChatCompletion, OpenAITextEmbedding
+    from semantic_kernel.connectors.memory.chroma import ChromaMemoryStore
+    import shutil
+    
     # If kernel is not specified, create a new one
     if kernel is None:
         # Create a kernel

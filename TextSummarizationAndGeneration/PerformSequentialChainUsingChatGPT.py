@@ -1,8 +1,4 @@
-from langchain.chains import SequentialChain
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
-from langchain.chains import LLMChain
-import openai
+# Load packages
 
 # Set arguments
 def PerformSequentialChainUsingChatGPT(dict_of_prompts,
@@ -20,6 +16,12 @@ def PerformSequentialChainUsingChatGPT(dict_of_prompts,
     Return:
     - response: The response from the sequential chain.
     """
+    # Lazy load uncommon packages
+    from langchain.chains import SequentialChain
+    from langchain.chat_models import ChatOpenAI
+    from langchain.prompts import ChatPromptTemplate
+    from langchain.chains import LLMChain
+    import openai
     
     # Get number of prompts in the prompt dictionary
     prompt_count = len(dict_of_prompts)

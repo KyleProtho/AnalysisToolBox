@@ -1,18 +1,6 @@
 # Load packages
-from langchain.chains.query_constructor.base import AttributeInfo
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.document_loaders import CSVLoader, Docx2txtLoader, JSONLoader, PyPDFLoader, SeleniumURLLoader, TextLoader, UnstructuredMarkdownLoader, UnstructuredPowerPointLoader, WebBaseLoader
-from langchain.indexes import VectorstoreIndexCreator
-from langchain.llms import OpenAIChat
-from langchain.retrievers import ContextualCompressionRetriever
-from langchain.retrievers.document_compressors import LLMChainExtractor
-from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTextSplitter, TokenTextSplitter, MarkdownHeaderTextSplitter, Language
-from langchain.vectorstores import Chroma, DocArrayInMemorySearch
-from langchain import debug as langchain_debug
 import os
-import openai
 import sys
-
 
 # Declare function
 def FindContentInDocuments(question,
@@ -35,6 +23,19 @@ def FindContentInDocuments(question,
                                 ("#####", "Header 5"),
                                 ("######", "Header 6")
                             ]):
+    # Lazy load uncommon packages
+    from langchain.chains.query_constructor.base import AttributeInfo
+    from langchain.embeddings.openai import OpenAIEmbeddings
+    from langchain.document_loaders import CSVLoader, Docx2txtLoader, JSONLoader, PyPDFLoader, SeleniumURLLoader, TextLoader, UnstructuredMarkdownLoader, UnstructuredPowerPointLoader, WebBaseLoader
+    from langchain.indexes import VectorstoreIndexCreator
+    from langchain.llms import OpenAIChat
+    from langchain.retrievers import ContextualCompressionRetriever
+    from langchain.retrievers.document_compressors import LLMChainExtractor
+    from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTextSplitter, TokenTextSplitter, MarkdownHeaderTextSplitter, Language
+    from langchain.vectorstores import Chroma, DocArrayInMemorySearch
+    from langchain import debug as langchain_debug
+    import openai
+    
     # Set debug mode
     langchain_debug = debug_mode
         

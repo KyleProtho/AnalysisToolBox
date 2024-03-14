@@ -1,7 +1,6 @@
 # Load packages
 import io
 import requests
-import zipfile
 
 # Declare function
 def GetZipFile(url,
@@ -18,6 +17,8 @@ def GetZipFile(url,
         unzip (bool, optional): Whether or not to unzip the file. Defaults to True.
         print_contents (bool, optional): Whether or not to print the contents of the zip file. Defaults to True.
     """
+    # Lazy load uncommon packages
+    import zipfile
     
     # Download the zip file from the url
     r = requests.get(url)

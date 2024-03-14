@@ -6,7 +6,6 @@ import seaborn as sns
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
 import textwrap
-from xgboost import XGBClassifier, XGBRegressor
 
 # Declare function
 def CreateBoostedTreeModel(dataframe,
@@ -46,6 +45,9 @@ def CreateBoostedTreeModel(dataframe,
                            title_y_indent_for_feature_importance_plot=1.15,
                            subtitle_y_indent_for_feature_importance_plot=1.1,
                            caption_y_indent_for_feature_importance_plot=-0.15,):
+    # Lazy load uncommon packages
+    from xgboost import XGBClassifier, XGBRegressor
+    
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
     

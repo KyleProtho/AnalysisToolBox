@@ -1,7 +1,4 @@
 # Import packages
-from lida import llm, Manager, TextGenerationConfig
-from lida.utils import plot_raster, plt
-import openai
 import pandas as pd
 from matplotlib import pyplot as plt
 import numpy as np
@@ -45,6 +42,11 @@ def GenerateEDAWithLIDA(dataframe,
     Returns:
         Pandas dataframe: A dataframe containing the data fields summary.
     """
+    # Lazy load uncommon packages
+    from lida import llm, Manager, TextGenerationConfig
+    from lida.utils import plot_raster, plt
+    import openai
+    
     # Set up LIDA and text generation model
     lida = Manager(text_gen=llm(
         provider=llm_provider,

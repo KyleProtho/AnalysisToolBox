@@ -1,8 +1,6 @@
 # Load packages
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
-from mlxtend.frequent_patterns import apriori, association_rules
-from mlxtend.preprocessing import TransactionEncoder
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -29,19 +27,35 @@ def CreateAssociationRules(dataframe,
                            title_y_indent=1.125,
                            subtitle_y_indent=1.05,
                            caption_y_indent=-0.3,):
-    """
-    This function creates association rules from a dataset.
-    
+    """Creates association rules from a dataset.
+
     Args:
         dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
         transaction_id_column (str): The column name containing the transaction ID.
         items_column (str): The column name containing the items.
-        support_threshold (float, optional): The threshold for the support for an association rule to be defined. Defaults to .20.
-        confidence_threshold (float, optional): The threshold for the confidence for an association rule to be defined. Defaults to .50.
-    
+        support_threshold (float, optional): The threshold for the support for an association rule to be defined. Defaults to .01.
+        confidence_threshold (float, optional): The threshold for the confidence for an association rule to be defined. Defaults to .05.
+        plot_lift (bool, optional): Whether to plot the association rules. Defaults to True.
+        dot_fill_color (str, optional): The fill color for the dots in the plot. Defaults to "#999999".
+        upper_left_quadrant_fill_color (str, optional): The fill color for the upper left quadrant in the plot. Defaults to "#32a852".
+        lower_right_quadrant_fill_color (str, optional): The fill color for the lower right quadrant in the plot. Defaults to "#d14a41".
+        draw_life_equals_1_line (bool, optional): Whether to draw a line where support and confidence are equal in the plot. Defaults to True.
+        title_for_plot (str, optional): The title for the plot. Defaults to "Association Rules".
+        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Confidence vs. Consequent Support".
+        caption_for_plot (str, optional): The caption for the plot. Defaults to "Lift is a measure of how much more likely it is for two items to occur together than expected by chance. A lift value of 1 means that the two items are independent of each other, while a lift value greater than 1 means that the two items are positively correlated, and a lift value less than 1 means that the two items are negatively correlated.".
+        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
+        x_indent (float, optional): The x-axis indent for the plot. Defaults to -0.128.
+        title_y_indent (float, optional): The title y-axis indent for the plot. Defaults to 1.125.
+        subtitle_y_indent (float, optional): The subtitle y-axis indent for the plot. Defaults to 1.05.
+        caption_y_indent (float, optional): The caption y-axis indent for the plot. Defaults to -0.3.
+
     Returns:
         Pandas dataframe: An updated Pandas dataframe with the association rules.
     """
+    # Lazy load uncommon packages
+    from mlxtend.frequent_patterns import apriori, association_rules
+    from mlxtend.preprocessing import TransactionEncoder
+    
     # Ensure that the support threshold is between 0 and 1
     if support_threshold < 0 or support_threshold > 1:
         raise ValueError("Support threshold must be between 0 and 1.")

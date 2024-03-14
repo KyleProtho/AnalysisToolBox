@@ -5,7 +5,6 @@ import pandas as pd
 import seaborn as sns
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
-import tensorflow as tf
 
 # Declare function
 def CreateNeuralNetwork_SingleOutcome(dataframe,
@@ -24,6 +23,9 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
                                       print_peak_to_peak_range_of_each_predictor=False,
                                       plot_loss=True,
                                       plot_model_test_performance=True):
+    # Lazy load uncommon packages
+    import tensorflow as tf
+    
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
     

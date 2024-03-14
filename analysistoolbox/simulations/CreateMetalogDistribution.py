@@ -3,7 +3,6 @@ from math import ceil
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import pymetalog as pm
 import seaborn as sns
 import textwrap
 
@@ -71,6 +70,8 @@ def CreateMetalogDistribution(dataframe,
     Returns:
         pandas.DataFrame or numpy.ndarray: The metalog distribution in the specified format.
     """
+    # Lazy load uncommon packages
+    import pymetalog as pm
     
     # Ensure that return_format is either 'dataframe' or 'array'
     if return_format not in ['dataframe', 'array']:

@@ -1,11 +1,13 @@
 # Load packages
-import semantic_kernel as sk
-from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion, OpenAIChatCompletion
-from semantic_kernel.connectors.ai.hugging_face import HuggingFaceTextCompletion
 
 # Declare function
 def CreateContextForKernel(kernel,
                            dict_context):
+    # Lazy load uncommon packages
+    import semantic_kernel as sk
+    from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion, OpenAIChatCompletion
+    from semantic_kernel.connectors.ai.hugging_face import HuggingFaceTextCompletion
+    
     # Create a context object
     my_context = kernel.create_new_context()
     

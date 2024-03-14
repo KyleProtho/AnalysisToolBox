@@ -1,18 +1,6 @@
+# Load packages
 from IPython.display import display, HTML, Markdown
 import json
-import langchain
-from langchain.chains import RetrievalQA, ConversationalRetrievalChain
-from langchain.chat_models import ChatOpenAI
-from langchain.document_loaders import CSVLoader, Docx2txtLoader, JSONLoader, PyPDFLoader, SeleniumURLLoader, TextLoader, UnstructuredMarkdownLoader, UnstructuredPowerPointLoader, WebBaseLoader
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.indexes import VectorstoreIndexCreator
-from langchain.memory import ConversationBufferMemory
-from langchain.retrievers import ContextualCompressionRetriever
-from langchain.retrievers.document_compressors import LLMChainExtractor
-from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTextSplitter, TokenTextSplitter, MarkdownHeaderTextSplitter, Language
-from langchain.vectorstores import FAISS, DocArrayInMemorySearch, Chroma
-import openai
-import tiktoken
 
 # Declare the function
 def ChatWithDocumentsUsingChatGPT(list_of_questions,
@@ -42,6 +30,21 @@ def ChatWithDocumentsUsingChatGPT(list_of_questions,
                                     ("######", "Header 6")
                                   ],
                                   chat_history_name="chat_history"):
+    # Lazy load uncommon packages
+    import langchain
+    from langchain.chains import RetrievalQA, ConversationalRetrievalChain
+    from langchain.chat_models import ChatOpenAI
+    from langchain.document_loaders import CSVLoader, Docx2txtLoader, JSONLoader, PyPDFLoader, SeleniumURLLoader, TextLoader, UnstructuredMarkdownLoader, UnstructuredPowerPointLoader, WebBaseLoader
+    from langchain.embeddings.openai import OpenAIEmbeddings
+    from langchain.indexes import VectorstoreIndexCreator
+    from langchain.memory import ConversationBufferMemory
+    from langchain.retrievers import ContextualCompressionRetriever
+    from langchain.retrievers.document_compressors import LLMChainExtractor
+    from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTextSplitter, TokenTextSplitter, MarkdownHeaderTextSplitter, Language
+    from langchain.vectorstores import FAISS, DocArrayInMemorySearch, Chroma
+    import openai
+    import tiktoken
+    
     # Set debug mode
     langchain.debug = debug_mode
     

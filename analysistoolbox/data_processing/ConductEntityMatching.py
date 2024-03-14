@@ -1,6 +1,4 @@
 # Load packages
-from fuzzywuzzy import fuzz
-import Levenshtein
 import numpy as np
 import pandas as pd
 
@@ -29,6 +27,9 @@ def ConductEntityMatching(dataframe_1,
     Returns:
         pandas.DataFrame: Dataframe of matched entities and their match scores.
     """
+    # Lazy load uncommon packages
+    from fuzzywuzzy import fuzz
+    import Levenshtein
     
     # Create list of valid match methods
     valid_match_methods = [

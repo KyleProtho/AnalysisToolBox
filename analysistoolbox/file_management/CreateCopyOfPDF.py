@@ -1,5 +1,4 @@
 # Load packages
-from PyPDF2 import PdfReader, PdfWriter
 
 # Declare function
 def CreateCopyOfPDF(input_file, 
@@ -15,6 +14,9 @@ def CreateCopyOfPDF(input_file,
         start_page (int, optional): The page number to start copying from. Defaults to None (first page).
         end_page (int, optional): The page number to stop copying at. Defaults to None (last page).
     """
+    # Lazy load uncommon packages
+    from PyPDF2 import PdfReader, PdfWriter
+    
     # If start_page is None, set to 0
     if start_page is None:
         start_page = 1

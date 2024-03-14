@@ -1,7 +1,6 @@
-import openai
-from langchain.prompts import ChatPromptTemplate
-from langchain.chat_models import ChatOpenAI
+# Load packages
 
+# Declare function
 def ClassifyTextUsingChatGPT(text_to_classify,
                              categories,
                              openai_api_key,
@@ -13,6 +12,11 @@ def ClassifyTextUsingChatGPT(text_to_classify,
                              print_api_cost=True,
                              temperature=0.0,
                              chat_model_name="gpt-4-1106-preview"):  
+    # Lazy load uncommon packages
+    import openai
+    from langchain.prompts import ChatPromptTemplate
+    from langchain.chat_models import ChatOpenAI
+    
     # Set the chat prompt template
     prompt_template = ChatPromptTemplate.from_template(my_prompt_template)
     

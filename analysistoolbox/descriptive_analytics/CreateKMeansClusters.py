@@ -5,7 +5,6 @@ import pandas as pd
 import seaborn as sns
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
-from yellowbrick.cluster import KElbowVisualizer
 
 # Declare function
 def CreateKMeansClusters(dataframe,
@@ -45,6 +44,9 @@ def CreateKMeansClusters(dataframe,
     Returns:
         Pandas dataframe: An updated Pandas dataframe with the clusters joined to the original data.
     """
+    # Lazy load uncommon packages
+    from yellowbrick.cluster import KElbowVisualizer
+    
     # If no list of variables specified, use all numeric variables
     if list_of_value_columns_for_clustering == None:
         list_of_value_columns_for_clustering = list(dataframe.select_dtypes(include=np.number).columns)

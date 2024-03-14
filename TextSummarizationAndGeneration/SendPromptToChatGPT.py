@@ -1,10 +1,5 @@
 # Load packages
-import openai
 import os
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
-from langchain.schema.output_parser import StrOutputParser
-from dotenv import load_dotenv
 
 # Declare functions
 def SendPromptToChatGPT(prompt_template,
@@ -15,13 +10,15 @@ def SendPromptToChatGPT(prompt_template,
                         temperature=0.0,
                         chat_model_name="gpt-4-1106-preview",
                         verbose=True):
+    # Lazy load uncommon packages
+    from langchain.chat_models import ChatOpenAI
+    from langchain.prompts import ChatPromptTemplate
+    from langchain.schema.output_parser import StrOutputParser
+    import openai
+    
     # If OpenAI API key is not provided, then try to load from .env file
     if openai_api_key is None:
-        load_dotenv()
-        try:
-            openai_api_key = os.environ['OPENAI_API_KEY']
-        except:
-            raise ValueError("No API key provided and no .env file found. If you need a OpenAI API key, visit https://platform.openai.com/")
+        raise ValueError("No API key provided. If you need a OpenAI API key, visit https://platform.openai.com/")
     
     # Ensure that user_input is a dictionary
     if type(user_input) != dict:

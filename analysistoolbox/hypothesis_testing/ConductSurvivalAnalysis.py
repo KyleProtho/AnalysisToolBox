@@ -1,6 +1,4 @@
 # Load packages
-from lifelines import KaplanMeierFitter
-from lifelines.statistics import logrank_test, multivariate_logrank_test
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -69,6 +67,9 @@ def ConductSurvivalAnalysis(dataframe,
     Returns:
         pandas.DataFrame: The time table, if return_time_table is True.
     """
+    # Lazy load uncommon packages
+    from lifelines import KaplanMeierFitter
+    from lifelines.statistics import logrank_test, multivariate_logrank_test
     
     # Select the columns to keep
     if group_column is None:

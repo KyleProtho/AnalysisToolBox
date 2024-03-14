@@ -1,9 +1,5 @@
 # Load packages
-import folium 
-import geopandas as gp
-import mapclassify
 import matplotlib.pyplot as plt 
-import pygris
 
 # Declare function
 def FetchUSShapefile(state=None,
@@ -26,6 +22,11 @@ def FetchUSShapefile(state=None,
     Returns:
         geopandas.GeoDataFrame: The fetched shapefile as a GeoDataFrame.
     """
+    # Lazy load uncommon packages
+    import folium 
+    import geopandas as gp
+    import mapclassify
+    import pygris
     
     # Ensure that geography is a valid option
     if geography not in ['nation', 'divisions', 'regions', 'states', 'counties', 'zipcodes', 'tract', 'block groups', 'blocks', 'school districts', 'county subdivisions', 'congressional districts', 'state legislative districts', 'voting districts']:

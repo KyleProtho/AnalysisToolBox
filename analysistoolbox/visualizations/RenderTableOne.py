@@ -1,7 +1,6 @@
 # Load packages
 from IPython.display import display, Markdown, HTML, Latex
 import pandas as pd
-from tableone import TableOne
 
 # Declare function
 def RenderTableOne(dataframe,
@@ -26,6 +25,8 @@ def RenderTableOne(dataframe,
     Returns:
         tableone.TableOne: The TableOne object, if return_table_object is True. Otherwise, None.
     """
+    # Lazy load uncommon packages
+    from tableone import TableOne
     
     # Select the columns to be included in the table
     dataframe = dataframe[[value_column_name, grouping_column_name] + list_of_row_variables]

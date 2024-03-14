@@ -1,7 +1,6 @@
 # Load packages
 import matplotlib.pyplot as plt
 import numpy as np
-import sympy
 
 # Declare function
 def FindDerivative(f_of_x,
@@ -22,6 +21,9 @@ def FindDerivative(f_of_x,
     Returns:
         d_f_of_x (function): The derivative of the function.
     """
+    # Lazy load uncommon packages
+    import sympy
+    
     # Compute the derivative of the higher-order function using sympy
     try:
         d_f_of_x = sympy.diff(f_of_x, x)

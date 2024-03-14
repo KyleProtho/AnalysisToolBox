@@ -1,11 +1,5 @@
 # Load packages
-from dotenv import load_dotenv
 from IPython.display import display, HTML, Markdown
-from langchain import PromptTemplate
-from langchain.chains.summarize import load_summarize_chain
-from langchain.chat_models import ChatOpenAI
-from langchain.document_loaders import Docx2txtLoader, PyPDFLoader, TextLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 # Declare function
 def SummarizeTextWithChatGPT(text_to_summarize,
@@ -20,13 +14,16 @@ def SummarizeTextWithChatGPT(text_to_summarize,
                              splitter_chunk_size=None,
                              splitter_chunk_overlap=None,
                              splitter_separators=[".  ", "\n", "\n\n"]):
+    # Lazy load uncommon packages
+    from langchain import PromptTemplate
+    from langchain.chains.summarize import load_summarize_chain
+    from langchain.chat_models import ChatOpenAI
+    from langchain.document_loaders import Docx2txtLoader, PyPDFLoader, TextLoader
+    from langchain.text_splitter import RecursiveCharacterTextSplitter
+    
     # If OpenAI API key is not provided, then try to load from .env file
     if openai_api_key is None:
-        load_dotenv()
-        try:
-            openai_api_key = os.environ['OPENAI_API_KEY']
-        except:
-            raise ValueError("No API key provided and no .env file found. If you need a OpenAI API key, visit https://platform.openai.com/")
+        raise ValueError("No API key provided. If you need a OpenAI API key, visit https://platform.openai.com/")
     
     # If chunk size is not provided, then set defaults
     if splitter_chunk_size is None:

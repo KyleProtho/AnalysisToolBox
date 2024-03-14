@@ -1,5 +1,4 @@
 # Load packages
-import PyPDF2
 import re
 
 # Delclare function
@@ -19,6 +18,8 @@ def ExtractTextFromPDF(filepath_to_pdf,
         end_page (int or None, optional): The page number of the PDF file that you want to stop extracting text from. If None, the function will extract text from all pages in the PDF file. Defaults to None.
         show_word_count (bool, optional): Whether or not to show the word count of the extracted text. Defaults to True.
     """
+    # Lazy load uncommon packages
+    import PyPDF2
     
     # Ensure that filepath_to_pdf is a string ending in .pdf
     if not isinstance(filepath_to_pdf, str) or not filepath_to_pdf.endswith('.pdf'):

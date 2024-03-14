@@ -1,6 +1,5 @@
 # Load packages
 import requests
-import PyPDF2
 
 # Declare function
 def FetchPDFFromURL(url, filename):
@@ -10,6 +9,8 @@ def FetchPDFFromURL(url, filename):
         url (str): The URL of the PDF file that you want to download.
         filename (str): The name of the file that you want to save the PDF to.
     """
+    # Lazy load uncommon packages
+    import PyPDF2
     
     # Send a GET request to the url and get the response
     response = requests.get(url)

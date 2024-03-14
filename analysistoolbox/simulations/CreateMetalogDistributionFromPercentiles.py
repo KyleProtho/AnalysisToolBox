@@ -1,7 +1,6 @@
 # Load packages
 import os
 import pandas as pd
-import pymetalog as pm
 from math import ceil
 from matplotlib import pyplot as plt
 import seaborn as sns
@@ -71,6 +70,8 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
     Returns:
         pandas.DataFrame or numpy.ndarray: The metalog distribution in the specified format.
     """
+    # Lazy load uncommon packages
+    import pymetalog as pm
     
     # Ensure that the list of values and list of percentiles are the same length
     if len(list_of_values) != len(list_of_percentiles):

@@ -6,7 +6,6 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import seaborn as sns
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
-import tensorflow as tf
 
 # Declare function
 def CreateContentBasedRecommender(dataframe,
@@ -25,6 +24,8 @@ def CreateContentBasedRecommender(dataframe,
                                   number_of_steps_gradient_descent=50,
                                   lambda_for_regularization=0.001,
                                   random_seed=412):
+    # Lazy load uncommon packages
+    import tensorflow as tf
     
     # Keep only the predictors from the user and item dataframes
     dataframe = dataframe[user_list_of_predictor_variables + item_list_of_predictor_variables + [outcome_variable]].copy()

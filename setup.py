@@ -12,7 +12,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url="https://github.com/KyleProtho/AnalysisToolBox/tree/master/analysistoolbox",
-    version='1.7.0',
+    version='1.7.1',
     author='Kyle Protho',
     author_email='kyletprotho@gmail.com',
     license='GNU GPLv3',
@@ -43,6 +43,7 @@ setup(
         'numpy',
         'openai',
         'pandas',
+        'pinecone',
         'psmpy',
         'pygris',
         'pymetalog',
@@ -50,13 +51,15 @@ setup(
         'python-dotenv',
         'pywin32',
         'requests',
+        'scikit-learn',  # sklearn
         'scipy',
         'seaborn',
-        'scikit-learn',  # sklearn
+        'sentence_transformers',
         'statsmodels',
         'sympy',
         'tableone',
         'tensorflow',
+        'tqdm',
         'xgboost',
         'yellowbrick'
     ],

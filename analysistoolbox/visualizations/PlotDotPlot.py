@@ -28,18 +28,9 @@ def PlotDotPlot(dataframe,
                 connect_line_label_color="#262626",
                 show_connect_line_labels_in_margin=False,
                 connect_line_label_margin=0.5,
-                # Vertical line formatting arguments
-                dict_of_vertical_lines=None,
-                vertical_line_label_fontsize=11,
-                vertical_line_label_fontsize_fontweight='bold',
-                vertical_line_color="#262626",
-                vertical_line_length=600,
-                vertical_line_width=5.0,
-                vertical_line_style='solid',
                 # Plot formatting arguments
                 display_order_list=None,
                 figure_size=(10, 6),
-                show_legend=True,
                 show_x_axis=False,
                 # Data label arguments
                 show_data_labels=True,
@@ -124,19 +115,18 @@ def PlotDotPlot(dataframe,
     if connect_line_label_margin < 0 or connect_line_label_margin > 1:
         raise ValueError("connect_line_label_margin must be between 0 and 1.")
     
-    # If zero_line_group is provided, sort the dataframe so that it is the first group
-    if zero_line_group != None:
-        dataframe[group_column_name] = pd.Categorical(dataframe[group_column_name], categories=[zero_line_group] + [x for x in dataframe[group_column_name].unique() if x != zero_line_group])
-        dataframe = dataframe.sort_values(group_column_name)
-    
-    # # Select the necessary columns from the dataframe
-    # dataframe = dataframe[[categorical_column_name, group_column_name, value_column_name]]
+    # Drop missing values from the dataframe and across the columns
+    dataframe = dataframe.dropna(subset=[categorical_column_name, value_column_name, group_column_name])
     
     # Make a copy of the value column, add ' - Original' to the name
     dataframe[value_column_name + '- Original'] = dataframe[value_column_name]
     
-    # If zero_line_group is provided, reset the values in the value column to be relative to the zero_line_group
-    if zero_line_group != None:    
+    # If zero_line_group is provided
+    if zero_line_group != None:
+        # Sort the dataframe so that it is the first group
+        dataframe[group_column_name] = pd.Categorical(dataframe[group_column_name], categories=[zero_line_group] + [x for x in dataframe[group_column_name].unique() if x != zero_line_group])
+        dataframe = dataframe.sort_values(group_column_name)
+          
         # Left join the original values of the zero_line_group to the dataframe
         df_temp = pd.merge(
             dataframe,
@@ -154,7 +144,7 @@ def PlotDotPlot(dataframe,
         
         # Set the dataframe to the new dataframe
         dataframe = df_temp
-
+    
     # If display_order_list is provided, check that it contains all of the categories in the dataframe
     if display_order_list != None:
         if not set(display_order_list).issubset(set(dataframe[categorical_column_name].unique())):
@@ -193,7 +183,8 @@ def PlotDotPlot(dataframe,
                 color=connect_line_color, 
                 alpha=connect_line_alpha, 
                 linestyle=connect_line_style, 
-                linewidth=connect_line_width
+                linewidth=connect_line_width,
+                zorder=1
             )
             
             # Plot the line label
@@ -239,56 +230,25 @@ def PlotDotPlot(dataframe,
                             facecolor='white',
                             edgecolor='white',
                             boxstyle='round'
-                        ) 
+                        ),
+                        zorder=2,
                     )
     
-    # Plot the line label
-    if dict_of_vertical_lines is not None:
-        # Ensure that the dict_of_vertical_lines contains the categories in the dataframe
-        if not set(dict_of_vertical_lines.keys()).issubset(set(dataframe[categorical_column_name].unique())):
-            raise ValueError("dict_of_vertical_lines must contain a subset of categories in the dataframe.")
-        
-        # Iterate through the dict_of_vertical_lines and plot them as vertical lines
-        for key, value in dict_of_vertical_lines.items():
-            # Get the x and y coordinates for the line of the current category
-            x_coordinates = dataframe[dataframe[categorical_column_name] == key][value_column_name]
-            y_coordinates = dataframe[dataframe[categorical_column_name] == key][categorical_column_name]
-            
-            # If a zero_line_group is provided, subtract the value of the zero_line_group from the value
-            if zero_line_group != None:
-                value = value - dataframe[
-                    (dataframe[group_column_name] == zero_line_group)
-                    & (dataframe[categorical_column_name] == key)
-                ][value_column_name + '- Original'].values[0]
-            
-            # Plot the vertical line for each category
-            ax.scatter(
-                x=value,
-                y=dataframe[dataframe[categorical_column_name] == key][categorical_column_name].values[0],
-                color=vertical_line_color,
-                marker='|',
-                s=vertical_line_length,
-                zorder=10,
-                linewidths=vertical_line_width,
-            )
-    
-    # Create pointplot
-    sns.pointplot(
-        data=dataframe,
-        x=value_column_name, 
-        y=categorical_column_name, 
-        hue=group_column_name,
-        order=display_order_list,
-        linestyle='none',
-        palette=[group_1_color, group_2_color],
-        markers='o', 
-        markersize=dot_size,
-        ax=ax
-    )
-    
-    # Remove legend if show_legend is False
-    if show_legend == False:
-        ax.legend_.remove()
+    # Create pointplot for each group
+    for group in dataframe[group_column_name].unique():
+        sns.pointplot(
+            data=dataframe[dataframe[group_column_name] == group],
+            y=categorical_column_name,
+            x=value_column_name,
+            order=display_order_list,
+            linestyles='none',
+            color=group_1_color if group == dataframe[group_column_name].unique()[0] else group_2_color,
+            markers='o',
+            markersize=dot_size,
+            alpha=dot_alpha,
+            ax=ax,
+            zorder=3 if group == dataframe[group_column_name].unique()[0] else 5,
+        )
     
     # Add space between the title and the plot
     plt.subplots_adjust(top=0.85)
@@ -325,59 +285,62 @@ def PlotDotPlot(dataframe,
     
     # Add data labels
     if show_data_labels:
-        # Plot the values on each dot
-        for i in range(len(display_order_list)):
-            # Get the x and y coordinates for the dots
-            # If the values for the zero_line_group are the same, do not create labels for them
-            if zero_line_group != None:
-                if dataframe[dataframe[categorical_column_name] == display_order_list[i]][value_column_name + '- Original'].max() == dataframe[dataframe[categorical_column_name] == display_order_list[i]][value_column_name + '- Original'].min():
-                    x_coordinates = dataframe[
-                        (dataframe[categorical_column_name] == display_order_list[i]) 
-                        & (dataframe[group_column_name] != zero_line_group)
-                    ]
-                    y_coordinates = dataframe[
-                        (dataframe[categorical_column_name] == display_order_list[i]) 
-                        & (dataframe[group_column_name] != zero_line_group)
-                    ]
+        # Iterate through each category
+        for category in dataframe[categorical_column_name].unique():
+            df_temp = dataframe[dataframe[categorical_column_name] == category]
+            # Iterate through each group
+            for group in df_temp[group_column_name].unique():
+                df_temp_2 = df_temp[df_temp[group_column_name] == group]
+                
+                # Get the x and y coordinates for the dots
+                x_coordinates = df_temp_2[df_temp_2[group_column_name] == group][value_column_name]
+                y_coordinates = df_temp_2[df_temp_2[group_column_name] == group][categorical_column_name]
+                
+                # Get the x and y coordinates for the data labels
+                x_data_label_coordinates = x_coordinates
+                y_data_label_coordinates = y_coordinates
+                
+                # If the current group is the zero_line_group, do not create labels for it
+                if group == zero_line_group or group == dataframe[group_column_name].unique()[0]:
+                    zorder = 4
                 else:
-                    x_coordinates = dataframe[dataframe[categorical_column_name] == display_order_list[i]]
-                    y_coordinates = dataframe[dataframe[categorical_column_name] == display_order_list[i]]
-            x_coordinates = x_coordinates[value_column_name]
-            y_coordinates = y_coordinates[categorical_column_name]
+                    zorder = 6
             
-            # Get the x and y coordinates for the data labels of the higher values
-            x_data_label_coordinates = x_coordinates.max()
-            y_data_label_coordinates = y_coordinates.max()
+                # Get the x and y coordinates for the data labels of the higher values
+                x_data_label_coordinates = x_coordinates.max()
+                y_data_label_coordinates = y_coordinates.max()
             
-            # Plot the data labels for the higher values
-            ax.text(
-                x=x_data_label_coordinates,
-                y=y_data_label_coordinates,
-                s=round(dataframe[dataframe[categorical_column_name] == display_order_list[i]][value_column_name + '- Original'].max(), decimal_places_for_data_label),
-                # fontname="Arial",
-                fontsize=data_label_fontsize,
-                fontweight=data_label_fontweight,
-                color=data_label_color,
-                horizontalalignment='center',
-                verticalalignment='center',
-            )
+                # Plot the data labels for the higher values
+                ax.text(
+                    x=x_data_label_coordinates,
+                    y=y_data_label_coordinates,
+                    s=round(df_temp_2[df_temp_2[group_column_name] == group][value_column_name + '- Original'].max(), decimal_places_for_data_label),
+                    # fontname="Arial",
+                    fontsize=data_label_fontsize,
+                    fontweight=data_label_fontweight,
+                    color=data_label_color,
+                    horizontalalignment='center',
+                    verticalalignment='center',
+                    zorder=zorder
+                )
             
-            # Plot the data labels for the lower values
-            x_data_label_coordinates = x_coordinates.min()
-            y_data_label_coordinates = y_coordinates.min()
+                # Plot the data labels for the lower values
+                x_data_label_coordinates = x_coordinates.min()
+                y_data_label_coordinates = y_coordinates.min()
             
-            # Plot the data labels for the lower values
-            ax.text(
-                x=x_data_label_coordinates,
-                y=y_data_label_coordinates,
-                s=round(dataframe[dataframe[categorical_column_name] == display_order_list[i]][value_column_name + '- Original'].min(), decimal_places_for_data_label),
-                # fontname="Arial",
-                fontsize=data_label_fontsize,
-                fontweight=data_label_fontweight,
-                color=data_label_color,
-                horizontalalignment='center',
-                verticalalignment='center',
-            )
+                # Plot the data labels for the lower values
+                ax.text(
+                    x=x_data_label_coordinates,
+                    y=y_data_label_coordinates,
+                    s=round(df_temp_2[df_temp_2[group_column_name] == group][value_column_name + '- Original'].min(), decimal_places_for_data_label),
+                    # fontname="Arial",
+                    fontsize=data_label_fontsize,
+                    fontweight=data_label_fontweight,
+                    color=data_label_color,
+                    horizontalalignment='center',
+                    verticalalignment='center',
+                    zorder=zorder
+                )
         
     # Set the x indent of the plot titles and captions
     # Get longest y tick label

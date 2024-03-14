@@ -1,7 +1,6 @@
 # Load packages
 import sys
 import os
-import win32com.client as client
 
 # Declare function
 def ConvertWordDocsToPDF(word_folder_path,
@@ -15,6 +14,8 @@ def ConvertWordDocsToPDF(word_folder_path,
         pdf_folder_path (str): The path to the folder where the PDF documents will be saved.
         open_each_doc (bool, optional): Whether to open each Word document as it is converted. Defaults to False.
     """
+    # Lazy load uncommon packages
+    import win32com.client as client
     
     # Create list of word files in the directory
     list_word_docs = [f for f in os.listdir(word_folder_path) if f.endswith(".docx")]

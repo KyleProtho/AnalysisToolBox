@@ -1,5 +1,4 @@
 # Load packages
-from lifelines import CoxPHFitter
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -56,6 +55,8 @@ def ConductCoxProportionalHazardRegression(dataframe,
     Returns:
         lifelines.CoxPHFitter: The Cox Proportional Hazard Regression model.
     """
+    # Lazy load uncommon packages
+    from lifelines import CoxPHFitter
     
     # Select the columns to keep
     dataframe = dataframe[[outcome_column, duration_column] + list_of_predictor_columns].copy()

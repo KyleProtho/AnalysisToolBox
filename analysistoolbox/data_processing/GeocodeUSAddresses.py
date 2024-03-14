@@ -1,6 +1,5 @@
 # Load packages
 import pandas as pd
-import censusgeocode as cg
 import numpy as np
 
 # Declare function
@@ -19,6 +18,9 @@ def GeocodeUSAddresses(dataframe,
     Returns:
         pandas.DataFrame: The dataframe with additional columns for latitude and longitude.
     """
+    # Lazy load uncommon packages
+    import censusgeocode as cg
+    
     # Define a function to handle geocoding for a single address
     def get_geocode(address):
         try:

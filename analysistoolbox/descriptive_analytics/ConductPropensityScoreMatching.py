@@ -1,6 +1,5 @@
 # Load packages
 import pandas as pd
-from psmpy import PsmPy
 
 # Delcare function
 def ConductPropensityScoreMatching(dataframe,
@@ -13,6 +12,8 @@ def ConductPropensityScoreMatching(dataframe,
                                    propensity_score_column_name="Propensity Score",
                                    propensity_logit_column_name="Propensity Logit",
                                    matched_id_column_name="Matched ID"):
+    # Lazy load uncommon packages
+    from psmpy import PsmPy
     
     # Ensure that the grouping column has only two unique values
     if len(dataframe[grouping_column_name].unique()) != 2:

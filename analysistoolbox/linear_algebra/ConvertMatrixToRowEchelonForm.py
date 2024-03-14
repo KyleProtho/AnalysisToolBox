@@ -1,6 +1,5 @@
 # Import packages
 import numpy as np
-import sympy as sp
 
 # Declare function
 def ConvertMatrixToRowEchelonForm(matrix,
@@ -15,6 +14,8 @@ def ConvertMatrixToRowEchelonForm(matrix,
     Returns:
         np.array: Matrix in row echelon form.
     """
+    # Lazy load uncommon packages
+    import sympy as sp
     
     # If matrix is list, convert it to a matrix
     if type(matrix) == list:
