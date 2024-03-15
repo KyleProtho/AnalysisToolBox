@@ -1,5 +1,4 @@
 # Load packages
-import os
 
 # Declare functions
 def SendPromptToChatGPT(prompt_template,
@@ -9,6 +8,7 @@ def SendPromptToChatGPT(prompt_template,
                         openai_api_key=None,
                         temperature=0.0,
                         chat_model_name="gpt-4-1106-preview",
+                        maximum_tokens=1000,
                         verbose=True):
     # Lazy load uncommon packages
     from langchain.chat_models import ChatOpenAI
@@ -33,7 +33,11 @@ def SendPromptToChatGPT(prompt_template,
     prompt = ChatPromptTemplate.from_template(prompt_template)
     
     # Create an instance of the ChatGPT chat model
-    chat_model = ChatOpenAI(openai_api_key=openai_api_key)
+    chat_model = ChatOpenAI(
+        openai_api_key=openai_api_key,
+        model_name=chat_model_name,
+        max_tokens=maximum_tokens
+    )
     
     # Create the ouput parser
     output_parser = StrOutputParser()
@@ -47,18 +51,3 @@ def SendPromptToChatGPT(prompt_template,
     # Return the response
     return response
 
- 
-# # Test function
-# response = SendPromptToChatGPT(
-#     prompt_template="""
-#     Break this key intelligence question into less than four sub-questions: {key_intelligence_question}
-#     """,
-#     user_input={
-#         "key_intelligence_question": "What targets are Hamas most likely to strike next in Israel?"
-#     },
-#     system_message="""
-#         You are a project manager. You specialize in taking a key intelligence question and breaking it down into sub-questions. 
-#         When creating the sub-questions, identify the main components of the original question. What are the essential elements or variables that the decision maker is concerned about?
-#     """,
-#     openai_api_key=open("C:/Users/oneno/OneDrive/Desktop/OpenAI key.txt", "r").read()
-# )
