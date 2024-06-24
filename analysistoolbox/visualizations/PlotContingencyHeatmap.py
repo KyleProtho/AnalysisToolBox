@@ -8,6 +8,7 @@ import textwrap
 def PlotContingencyHeatmap(dataframe,
                            categorical_column_name_1,
                            categorical_column_name_2,
+                           normalize_by="columns",
                            # Plot formatting arguments
                            color_palette="Blues",
                            show_legend=False,
@@ -43,12 +44,19 @@ def PlotContingencyHeatmap(dataframe,
         caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
         filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
     """
+    # Ensure that the normalize_by argument is valid
+    if normalize_by not in ["columns", "rows", "all"]:
+        raise ValueError("The normalize_by argument must be 'columns', 'rows', or 'all'.")
+    
+    # Convert normalize_by to an acceptable pd.crosstab argument
+    if normalize_by == "rows":
+        normalize_by = "index"
     
     # Create contingency table
     contingency_table = pd.crosstab(
         dataframe[categorical_column_name_1],
         dataframe[categorical_column_name_2],
-        normalize="columns"
+        normalize=normalize_by
     )
     
     # Create figure and axes
