@@ -7,8 +7,8 @@ import textwrap
 
 # Declare function
 def Plot100PercentStackedBarChart(dataframe,
-                                  group_column_name='Group',
-                                  value_column_name='Current Value',
+                                  group_column_name,
+                                  value_column_name,
                                   target_value_column_name=None,
                                   # Plot formatting arguments
                                   background_color='#e8e8ed',
@@ -67,7 +67,7 @@ def Plot100PercentStackedBarChart(dataframe,
         dataframe['Remaining'] = 100 - dataframe['Percentage']
     
     # Sort the DataFrame based on the 'Group' column to match the user's example
-    dataframe.sort_values(by='Group', inplace=True)
+    dataframe.sort_values(by=group_column_name, inplace=True)
     
     # Short by the 'Percentage' column to make the plot look better
     dataframe.sort_values(by='Percentage', inplace=True)
@@ -91,7 +91,7 @@ def Plot100PercentStackedBarChart(dataframe,
     
     # Plot the 'Percentage' bar horizontally
     ax.barh(
-        dataframe['Group'], 
+        dataframe[group_column_name], 
         dataframe['Percentage'], 
         color=colors,
         edgecolor='white',
@@ -100,7 +100,7 @@ def Plot100PercentStackedBarChart(dataframe,
     
     # Add the 'Remaining' bar horizontally behind the 'Percentage' bar
     ax.barh(
-        dataframe['Group'], 
+        dataframe[group_column_name], 
         dataframe['Remaining'], 
         left=dataframe['Percentage'], 
         color=background_color, 
