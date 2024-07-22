@@ -123,7 +123,6 @@ def PlotScatterplot(dataframe,
                     'size': size_by_column_name,
                     'size_norm': size_normalization,
                 },
-                linewidth=0.5,
                 edgecolor=dot_fill_color,
                 fit_reg=True,
                 line_kws={'color': line_color}
