@@ -1,5 +1,4 @@
 # Load packages
-from math import ceil
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -86,7 +85,7 @@ def CreateMetalogDistribution(dataframe,
     dataframe = dataframe[dataframe[variable] != np.inf]
     
     # Extract values from the dataframe
-    arr_variable = dataframe[variable].values
+    arr_variable = dataframe[variable]
     
     # Create a metalog distribution
     if lower_bound is None and upper_bound is None:
@@ -258,17 +257,17 @@ def CreateMetalogDistribution(dataframe,
         plt.xticks(fontname='Arial')
         
         # Add a word-wrapped caption if one is provided
-        if caption_for_plot != None or data_source_for_plot != None:
+        if caption_for_plot is not None or data_source_for_plot is not None:
             # Create starting point for caption
             wrapped_caption = ""
             
             # Add the caption to the plot, if one is provided
-            if caption_for_plot != None:
+            if caption_for_plot is not None:
                 # Word wrap the caption without splitting words
                 wrapped_caption = textwrap.fill(caption_for_plot, 110, break_long_words=False)
                 
             # Add the data source to the caption, if one is provided
-            if data_source_for_plot != None:
+            if data_source_for_plot is not None:
                 wrapped_caption = wrapped_caption + "\n\nSource: " + data_source_for_plot
             
             # Add the caption to the plot
@@ -293,4 +292,3 @@ def CreateMetalogDistribution(dataframe,
         return metalog_df
     else:
         return arr_metalog
-
