@@ -86,6 +86,7 @@ def CreateMetalogDistribution(dataframe,
     
     # Extract values from the dataframe
     arr_variable = dataframe[variable]
+    arr_variable = list(arr_variable)
     
     # Create a metalog distribution
     if lower_bound is None and upper_bound is None:
@@ -292,3 +293,4 @@ def CreateMetalogDistribution(dataframe,
         return metalog_df
     else:
         return arr_metalog
+
