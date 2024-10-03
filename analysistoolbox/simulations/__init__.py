@@ -1,6 +1,7 @@
 from .CreateMetalogDistributionFromPercentiles import CreateMetalogDistributionFromPercentiles
 from .CreateMetalogDistribution import CreateMetalogDistribution
 from .CreateSIPDataframe import CreateSIPDataframe
+from .CreateSLURPDistribution import CreateSLURPDistribution
 from .SimulateCountOfSuccesses import SimulateCountOfSuccesses
 from .SimulateCountOutcome import SimulateCountOutcome
 from .SimulateCountUntilFirstSuccess import SimulateCountUntilFirstSuccess
