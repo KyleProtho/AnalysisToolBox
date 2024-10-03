@@ -71,15 +71,27 @@ def CreateSLURPDistribution(training_dataframe,
     
     # If the minimum and maximum values are outside the bounds, set them to the bounds
     if lower_bound is not None and list_of_values[0] < lower_bound:
-        list_of_values[1] = float(lower_bound) * 1.00001
+        if lower_bound < 0:
+            list_of_values[0] = float(lower_bound) * 0.99999
+        else:
+            list_of_values[0] = float(lower_bound) * 1.00001
     if upper_bound is not None and list_of_values[2] > upper_bound:
-        list_of_values[2] = float(upper_bound) * 0.99999
+        if upper_bound < 0:
+            list_of_values[2] = float(upper_bound) * 1.00001
+        else:
+            list_of_values[2] = float(upper_bound) * 0.99999
         
     # If the mean is outside the bounds, slightly above/below the reference bound
     if lower_bound is not None and list_of_values[1] < lower_bound:
-        list_of_values[0] = list_of_values[0] * 1.00001
+        if lower_bound < 0:
+            list_of_values[1] = list_of_values[0] * 0.99999
+        else:
+            list_of_values[1] = list_of_values[0] * 1.00001
     if upper_bound is not None and list_of_values[1] > upper_bound:
-        list_of_values[0] = list_of_values[2] *  0.99999
+        if upper_bound < 0:
+            list_of_values[1] = list_of_values[2] * 1.00001
+        else:
+            list_of_values[1] = list_of_values[2] * 0.99999
     # print("Values after adjustment: ", list_of_values)
         
     # Set the list of percentiles
