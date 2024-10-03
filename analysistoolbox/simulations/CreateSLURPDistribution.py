@@ -65,25 +65,29 @@ def CreateSLURPDistribution(training_dataframe,
     
     # Get the list of mean, lower bound, and upper bound values from pred_interval
     list_of_values = []
-    for value in ['mean', 'obs_ci_lower', 'obs_ci_upper']:
+    for value in ['obs_ci_lower', 'mean', 'obs_ci_upper']:
         list_of_values.append(pred_interval[value].values[0])
-    print("Values before adjustment: ", list_of_values)
+    # print("Values before adjustment: ", list_of_values)
     
     # If the minimum and maximum values are outside the bounds, set them to the bounds
-    if lower_bound is not None and list_of_values[1] < lower_bound:
+    if lower_bound is not None and list_of_values[0] < lower_bound:
         list_of_values[1] = float(lower_bound) * 1.00001
     if upper_bound is not None and list_of_values[2] > upper_bound:
         list_of_values[2] = float(upper_bound) * 0.99999
         
     # If the mean is outside the bounds, slightly above/below the reference bound
-    if lower_bound is not None and list_of_values[0] < lower_bound:
-        list_of_values[0] = list_of_values[1] * 1.00001
-    if upper_bound is not None and list_of_values[0] > upper_bound:
+    if lower_bound is not None and list_of_values[1] < lower_bound:
+        list_of_values[0] = list_of_values[0] * 1.00001
+    if upper_bound is not None and list_of_values[1] > upper_bound:
         list_of_values[0] = list_of_values[2] *  0.99999
-    print("Values after adjustment: ", list_of_values)
+    # print("Values after adjustment: ", list_of_values)
         
     # Set the list of percentiles
-    list_of_percentiles = [0.5, (1 - prediction_interval) / 2, 1 - (1 - prediction_interval) / 2]
+    list_of_percentiles = [
+        (1 - prediction_interval) / 2,  # Lower bound
+        0.5,  # Middle
+        1 - (1 - prediction_interval) / 2  # Upper bound
+    ]
     # print("Percentiles: ", list_of_percentiles)
     
     # Use the prediction interval to simulate the prediction distribution
