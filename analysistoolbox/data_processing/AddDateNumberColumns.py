@@ -27,10 +27,6 @@ def AddDateNumberColumns(dataframe,
     new_column_name = date_column_name + '.Month'
     dataframe[new_column_name] = pd.DatetimeIndex(dataframe[date_column_name]).month
 
-    # Extract week number from date
-    new_column_name = date_column_name + '.Week'
-    dataframe[new_column_name] = pd.DatetimeIndex(dataframe[date_column_name]).week
-
     # Extract day from date
     new_column_name = date_column_name + '.Day'
     dataframe[new_column_name] = pd.DatetimeIndex(dataframe[date_column_name]).day
@@ -42,4 +38,3 @@ def AddDateNumberColumns(dataframe,
     
     # Return dataframe
     return(dataframe)
-
