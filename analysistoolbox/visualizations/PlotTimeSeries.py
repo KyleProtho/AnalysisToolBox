@@ -166,21 +166,23 @@ def PlotTimeSeries(dataframe,
         )
     
     # Move the y-axis label to the top of the y-axis, and set the font to Arial, size 9, and color #666666
-    ax.yaxis.set_label_coords(-0.1, 0.84)
+    ax.yaxis.set_label_coords(-0.1, 0.99)
     ax.yaxis.set_label_text(
-        value_column_name,
+        textwrap.fill(value_column_name, 30, break_long_words=False),
         # fontname="Arial",
         fontsize=10,
-        color="#666666"
+        color="#666666",
+        ha='right',
     )
     
     # Move the x-axis label to the right of the x-axis, and set the font to Arial, size 9, and color #666666
-    ax.xaxis.set_label_coords(0.9, -0.1)
+    ax.xaxis.set_label_coords(0.99, -0.1)
     ax.xaxis.set_label_text(
-        time_column_name,
+        textwrap.fill(time_column_name, 30, break_long_words=False),
         # fontname="Arial",
         fontsize=10,
-        color="#666666"
+        color="#666666",
+        ha='right',
     )
     
     # Add a word-wrapped caption if one is provided

@@ -127,7 +127,7 @@ def CreateLinearRegressionModel(dataframe,
             scatter_kws={
                 'color': dot_fill_color,
                 'alpha': 0.5,
-                'linewidth': 0.5,
+                # 'linewidth': 0.5,
                 'edgecolor': dot_fill_color
             },
             lowess=True,
@@ -180,21 +180,23 @@ def CreateLinearRegressionModel(dataframe,
         )
         
         # Move the y-axis label to the top of the y-axis, and set the font to Arial, size 9, and color #666666
-        ax.yaxis.set_label_coords(-0.1, 0.92)
+        ax.yaxis.set_label_coords(-0.1, 0.99)
         ax.yaxis.set_label_text(
             'Predicted',
             # fontname="Arial",
             fontsize=10,
-            color="#666666"
+            color="#666666",
+            ha='right',
         )
         
         # Move the x-axis label to the right of the x-axis, and set the font to Arial, size 9, and color #666666
-        ax.xaxis.set_label_coords(0.9, -0.1)
+        ax.xaxis.set_label_coords(0.99, -0.1)
         ax.xaxis.set_label_text(
-            outcome_variable,
+            textwrap.fill(outcome_variable, 30, break_long_words=False),
             # fontname="Arial",
             fontsize=10,
-            color="#666666"
+            color="#666666",
+            ha='right',
         )
         
         # Add a word-wrapped caption if one is provided
