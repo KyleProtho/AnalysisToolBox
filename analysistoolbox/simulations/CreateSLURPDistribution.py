@@ -7,9 +7,7 @@ import seaborn as sns
 import textwrap
 
 # Declare function
-def CreateSLURPDistribution(training_dataframe, 
-                            outcome_variable, 
-                            list_of_predictors,
+def CreateSLURPDistribution(linear_regression_model, 
                             # Simulation parameters
                             list_of_prediction_values,
                             number_of_trials=10000,
@@ -42,6 +40,20 @@ def CreateSLURPDistribution(training_dataframe,
     import statsmodels.api as sm
     import pymetalog as pm
     
+    # Ensure that the linear_regression_model is a statsmodels regression model
+    if not isinstance(linear_regression_model, sm.regression.linear_model.RegressionResultsWrapper):
+        raise ValueError("linear_regression_model must be a statsmodels regression model.")
+    
+    # Get the list of predictors from the model
+    list_of_predictors = linear_regression_model.model.exog_names
+    
+    # If 'const' is in the list of predictors, add 1 to the list_of_prediction_values
+    if 'const' in list_of_predictors:
+        list_of_prediction_values = [1] + list_of_prediction_values
+    
+    # Get the outcome variable from the model
+    outcome_variable = linear_regression_model.model.endog_names[0]
+    
     # Ensure that the length of the list_of_predictors and list_of_prediction_values are equal
     if len(list_of_predictors) != len(list_of_prediction_values):
         raise ValueError("The length of list_of_predictors and list_of_prediction_values must be equal.")
@@ -50,17 +62,8 @@ def CreateSLURPDistribution(training_dataframe,
     if prediction_interval <= 0 or prediction_interval >= 1:
         raise ValueError("prediction_interval must be between 0 and 1.")
     
-    # Drop missing values
-    training_dataframe = training_dataframe.dropna(subset=[outcome_variable] + list_of_predictors)
-    
-    # Fit the model
-    model = sm.OLS(
-        training_dataframe[outcome_variable], 
-        training_dataframe[list_of_predictors]
-    ).fit()
-    
     # Get the prediction interval
-    pred = model.get_prediction(list_of_prediction_values)
+    pred = linear_regression_model.get_prediction(list_of_prediction_values)
     pred_interval = pred.summary_frame(alpha=1-prediction_interval)
     
     # Get the list of mean, lower bound, and upper bound values from pred_interval
