@@ -149,6 +149,7 @@ There are several functions in the Data Collection submodule. The following is a
 * FetchPDFFromURL
 * FetchUSShapefile
 * FetchWebsiteText
+* GetCompanyFilings
 * GetGoogleSearchResults
 * GetZipFile
 
@@ -220,6 +221,26 @@ text = FetchWebsiteText(
 
 # Print the fetched text
 print(text)
+```
+
+#### GetCompanyFilings
+
+The **GetCompanyFilings** function fetches company filings from the SEC EDGAR database. It returns a list of filings for a given company CIK (Central Index Key) and filing type.
+
+```python
+# Import the function
+from analysistoolbox.data_collection import GetCompanyFilings
+
+# Call the function to get company filings for 'Online Dating' companies in 2024
+results = GetCompanyFilings(
+        search_keywords="Online Dating",
+        start_date="2024-01-01",
+        end_date="2024-12-31",
+        filing_type="all",
+    )
+
+# Print the results
+print(results)
 ```
 
 #### GetGoogleSearchResults

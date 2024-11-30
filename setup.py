@@ -30,6 +30,7 @@ setup(
     dependencies=[
         'beautifulsoup4',
         'censusgeocode',
+        'edgar_tool',
         'folium',
         'fuzzywuzzy',
         'geopandas',
