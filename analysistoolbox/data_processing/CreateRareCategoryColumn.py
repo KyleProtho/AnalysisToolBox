@@ -31,15 +31,16 @@ def CreateRareCategoryColumn(dataframe,
     # Get relative frequency of each category
     data_value_relative_frequency = dataframe[categorical_column_name].value_counts(normalize=True)
     data_value_relative_frequency = pd.DataFrame(data_value_relative_frequency)
+    data_value_relative_frequency.reset_index(inplace=True)
     
     # Add flag for rare categories
-    data_value_relative_frequency['rare'] = data_value_relative_frequency[categorical_column_name] < rare_category_threshold
+    data_value_relative_frequency['rare'] = data_value_relative_frequency['proportion'] < rare_category_threshold
     
     # Create new column name
     new_column_name = categorical_column_name + new_column_suffix
     
     # Get list of rare categories
-    rare_values = data_value_relative_frequency[data_value_relative_frequency['rare'] == True].index.tolist()
+    rare_values = data_value_relative_frequency[data_value_relative_frequency['rare'] == True][categorical_column_name].tolist()
     
     # Create new column in original dataframe with rare categories
     dataframe[new_column_name] = np.where(
