@@ -12,6 +12,34 @@ def ConductPropensityScoreMatching(dataframe,
                                    propensity_score_column_name="Propensity Score",
                                    propensity_logit_column_name="Propensity Logit",
                                    matched_id_column_name="Matched ID"):
+    """
+    This function conducts propensity score matching on a dataframe. The function uses the PsmPy package to perform the matching. 
+    The function returns the original dataframe with the propensity scores, propensity logits, and matched IDs appended to the dataframe. 
+    The function also returns the matched dataframe.
+
+    Args:
+        dataframe (pd.DataFrame): The dataframe to conduct the matching on.
+        subject_id_column_name (str): The name of the column that contains the subject IDs.
+        list_of_column_names_to_base_matching (list): A list of column names to base the matching on.
+        grouping_column_name (str): The name of the column that contains the grouping values.
+        control_group_name (str): The name of the control group.
+        max_matches_per_subject (int, optional): The maximum number of matches per subject. Defaults to 1.
+        balance_groups (bool, optional): Whether to balance the groups. Defaults to True.
+        propensity_score_column_name (str, optional): The name of the column that contains the propensity scores. Defaults to "Propensity Score".
+        propensity_logit_column_name (str, optional): The name of the column that contains the propensity logits. Defaults to "Propensity Logit".
+        matched_id_column_name (str, optional): The name of the column that contains the matched IDs. Defaults to "Matched ID".
+
+    Raises:
+        ValueError: The grouping column must have only two unique values.
+        ValueError: The control group name must be one of the unique values in the grouping column.
+        ValueError: The subject ID column must have unique values.
+        ValueError: The treatment group must have at least one row.
+        ValueError: The control group must have at least one row.
+
+    Returns:
+        pd.DataFrame: The matched dataframe.
+    """
+    
     # Lazy load uncommon packages
     from psmpy import PsmPy
     
