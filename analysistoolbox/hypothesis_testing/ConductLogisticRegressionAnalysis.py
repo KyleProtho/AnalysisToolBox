@@ -1,14 +1,16 @@
 # Load packages
-import pandas as pd
-import numpy as np
 from matplotlib import pyplot as plt
-import statsmodels.api as sm
+import numpy as np
+import pandas as pd
 import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+import statsmodels.api as sm
 
 # Declare function
 def ConductLogisticRegressionAnalysis(dataframe,
                                       outcome_variable,
                                       list_of_predictors,
+                                      add_constant=True,
                                       scale_predictors=False,
                                       show_diagnostic_plots_for_each_predictor=True,
                                       show_help=False):
@@ -35,7 +37,8 @@ def ConductLogisticRegressionAnalysis(dataframe,
     dataframe = dataframe[np.isfinite(dataframe).all(1)]
 
     # Add constant
-    dataframe = sm.add_constant(dataframe)
+    if add_constant:
+        dataframe = sm.add_constant(dataframe)
     
     # Scale the predictors, if requested
     if scale_predictors:
@@ -54,7 +57,10 @@ def ConductLogisticRegressionAnalysis(dataframe,
     # If there are more than two outcomes, conduct multinomial regression
     if number_of_unique_outcomes > 2:
         # Create multinomial regression model
-        model = sm.MNLogit(dataframe[outcome_variable], dataframe[['const'] + list_of_predictors])
+        if add_constant:
+            model = sm.MNLogit(dataframe[outcome_variable], dataframe[['const'] + list_of_predictors])
+        else:
+            model = sm.MNLogit(dataframe[outcome_variable], dataframe[list_of_predictors])
         try:
             model_res = model.fit()
         except:
@@ -62,7 +68,10 @@ def ConductLogisticRegressionAnalysis(dataframe,
             model_res = model.fit()
     else:
         # Create binomial regression model
-        model = sm.Logit(dataframe[outcome_variable], dataframe[['const'] + list_of_predictors])
+        if add_constant:
+            model = sm.Logit(dataframe[outcome_variable], dataframe[['const'] + list_of_predictors])
+        else:
+            model = sm.Logit(dataframe[outcome_variable], dataframe[list_of_predictors])
         try:
             model_res = model.fit()
         except:

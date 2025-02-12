@@ -9,6 +9,7 @@ import statsmodels.api as sm
 def ConductLinearRegressionAnalysis(dataframe,
                                     outcome_variable,
                                     list_of_predictors,
+                                    add_constant=False,
                                     scale_predictors=False,
                                     show_diagnostic_plots_for_each_predictor=False,
                                     show_help=False):
@@ -35,7 +36,8 @@ def ConductLinearRegressionAnalysis(dataframe,
     dataframe = dataframe[np.isfinite(dataframe).all(1)]
 
     # Add constant
-    dataframe = sm.add_constant(dataframe)
+    if add_constant:
+        dataframe = sm.add_constant(dataframe)
     
     # Scale the predictors, if requested
     if scale_predictors:
@@ -49,7 +51,10 @@ def ConductLinearRegressionAnalysis(dataframe,
         dataframe[list_of_predictors] = StandardScaler().fit_transform(dataframe[list_of_predictors])
     
     # Create linear regression model
-    model = sm.OLS(dataframe[outcome_variable], dataframe[['const'] + list_of_predictors])
+    if add_constant:
+        model = sm.OLS(dataframe[outcome_variable], dataframe[['const'] + list_of_predictors])
+    else:
+        model = sm.OLS(dataframe[outcome_variable], dataframe[list_of_predictors])
     model_res = model.fit()
     model_summary = model_res.summary()
     
