@@ -951,6 +951,90 @@ df_summary = GenerateEDAWithLIDA(
 
 ### File Management
 
+There are several functions in the File Management submodule. The following is a list of the functions:
+
+* ImportDataFromFolder
+* CreateFileTree
+* CreateCopyOfPDF
+* ConvertWordDocsToPDF
+
+#### ImportDataFromFolder
+
+The **ImportDataFromFolder** function imports all CSV and Excel files from a specified folder and combines them into a single DataFrame. It ensures that column names match across all files if specified.
+
+```python
+# Import necessary packages
+from analysistoolbox.file_management import ImportDataFromFolder
+
+# Specify the folder path
+folder_path = "path/to/your/folder"
+
+# Call the ImportDataFromFolder function
+combined_df = ImportDataFromFolder(
+    folder_path=folder_path,
+    force_column_names_to_match=True
+)
+```
+
+#### CreateFileTree
+
+The **CreateFileTree** function recursively walks a directory tree and prints a diagram of all the subdirectories and files.
+
+```python
+# Import necessary packages
+from analysistoolbox.file_management import CreateFileTree
+
+# Specify the directory path
+directory_path = "path/to/your/directory"
+
+# Call the CreateFileTree function
+CreateFileTree(
+    path=directory_path,
+    indent_spaces=2
+)
+```
+
+#### CreateCopyOfPDF
+
+The **CreateCopyOfPDF** function creates a copy of a PDF file, with options to specify the start and end pages.
+
+```python
+# Import necessary packages
+from analysistoolbox.file_management import CreateCopyOfPDF
+
+# Specify the input and output file paths
+input_pdf = "path/to/input.pdf"
+output_pdf = "path/to/output.pdf"
+
+# Call the CreateCopyOfPDF function
+CreateCopyOfPDF(
+    input_file=input_pdf,
+    output_file=output_pdf,
+    start_page=1,
+    end_page=5
+)
+```
+
+#### ConvertWordDocsToPDF
+
+The **ConvertWordDocsToPDF** function converts all Word documents in a specified folder to PDF format.
+
+```python
+# Import necessary packages
+from analysistoolbox.file_management import ConvertWordDocsToPDF
+
+# Specify the folder paths
+word_folder = "path/to/word/documents"
+pdf_folder = "path/to/save/pdf/documents"
+
+# Call the ConvertWordDocsToPDF function
+ConvertWordDocsToPDF(
+    word_folder_path=word_folder,
+    pdf_folder_path=pdf_folder,
+    open_each_doc=False
+)
+```
+
 ### Hypothesis Testing
 
 ### Linear Algebra
