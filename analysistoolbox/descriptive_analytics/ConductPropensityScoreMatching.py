@@ -113,16 +113,35 @@ def ConductPropensityScoreMatching(dataframe,
     # Get the matched subject IDs
     dataframe_matched = psm.matched_ids
     
-    # Rename the matched ID column to the "Matched ID" column
-    dataframe_matched.columns = [subject_id_column_name, matched_id_column_name]
+    # For multiple matches, the matched_ids dataframe will have multiple columns
+    # Rename columns to be consistent
+    new_cols = [subject_id_column_name] + [f"{matched_id_column_name}_{i+1}" for i in range(max_matches_per_subject)]
+    dataframe_matched.columns = new_cols
     
-    # Flip the matched subject IDs and the original subject IDs
+    # Melt the matched ID columns into a single column
+    id_vars = [subject_id_column_name]
+    value_vars = [col for col in dataframe_matched.columns if col.startswith(matched_id_column_name)]
+    dataframe_matched = dataframe_matched.melt(
+        id_vars=id_vars,
+        value_vars=value_vars,
+        var_name='match_number',
+        value_name=matched_id_column_name
+    )
+    
+    # Drop the match_number column and remove any rows where matched_id is None
+    dataframe_matched = dataframe_matched.drop('match_number', axis=1)
+    dataframe_matched = dataframe_matched.dropna(subset=[matched_id_column_name])
+    
+    # Create reciprocal matches (if A is matched to B, B should be matched to A)
     data_matched_2 = dataframe_matched[[matched_id_column_name, subject_id_column_name]]
     data_matched_2.columns = [subject_id_column_name, matched_id_column_name]
     
     # Row bind the flipped matched subject IDs with the original matched subject IDs
     data_matched = pd.concat([dataframe_matched, data_matched_2], axis=0)
     del(data_matched_2)
+    
+    # Remove any duplicate matches
+    data_matched = data_matched.drop_duplicates()
     
     # Merge the matched subject IDs with the original dataframe
     dataframe = dataframe.merge(
@@ -134,4 +153,3 @@ def ConductPropensityScoreMatching(dataframe,
     
     # Return the matched dataframe
     return dataframe
-
