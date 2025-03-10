@@ -1,5 +1,9 @@
 # Analysis Tool Box
 
+<p align="center">
+  <img src="Square logo - White background.png" width="40%">
+</p>
+
 ## Description
 
 Analysis Tool Box (i.e. "analysistoolbox") is a collection of tools in Python for data collection and processing, statisitics, analytics, and intelligence analysis.
@@ -22,29 +26,122 @@ sns.set(
 )
 ```
 
-## Usage
+## Table of Contents / Usage
 
 There are many modules in the analysistoolbox package, each with their own functions. The following is a list of the modules:
 
-* Calculus
-* Data collection
-* Data processing
-* Descriptive analytics
-* File management
-* Hypothesis testing
-* Linear algebra
-* Predictive analytics
-* Statistics
-* Visualizations
+- [Calculus](#calculus)
+  - [FindDerivative](#findderivative)
+  - [FindLimitOfFunction](#findlimitoffunction)
+  - [FindMinimumSquareLoss](#findminimumsquareloss)
+  - [PlotFunction](#plotfunction)
+- [Data Collection](#data-collection)
+  - [ExtractTextFromPDF](#extracttextfrompdf)
+  - [FetchPDFFromURL](#fetchpdffromurl)
+  - [FetchUSShapefile](#fetchusshapefile)
+  - [FetchWebsiteText](#fetchwebsitetext)
+  - [GetCompanyFilings](#getcompanyfilings)
+  - [GetGoogleSearchResults](#getgooglesearchresults)
+  - [GetZipFile](#getzipfile)
+- [Data Processing](#data-processing)
+  - [AddDateNumberColumns](#adddatenumbercolumns)
+  - [AddLeadingZeros](#addleadingzeros)
+  - [AddRowCountColumn](#addrowcountcolumn)
+  - [AddTPeriodColumn](#addtperiodcolumn)
+  - [AddTukeyOutlierColumn](#addtukeyoutliercolumn)
+  - [CleanTextColumns](#cleantextcolumns)
+  - [ConductAnomalyDetection](#conductanomalydetection)
+  - [ConductEntityMatching](#conductentitymatching)
+  - [ConvertOddsToProbability](#convertdoddsprobability)
+  - [CountMissingDataByGroup](#countmissingdatabygroup)
+  - [CreateBinnedColumn](#createbinnedcolumn)
+  - [CreateDataOverview](#createdataoverview)
+  - [CreateRandomSampleGroups](#createrandomsamplegroups)
+  - [CreateRareCategoryColumn](#createrarecategorycolumn)
+  - [CreateStratifiedRandomSampleGroups](#createstratifiedrandomsamplegroups)
+  - [ImputeMissingValuesUsingNearestNeighbors](#imputemissingvaluesusingnearestneighbors)
+  - [VerifyGranularity](#verifygranularity)
+- [Descriptive Analytics](#descriptive-analytics)
+  - [ConductManifoldLearning](#conductmanifoldlearning)
+  - [ConductPrincipalComponentAnalysis](#conductprincipalcomponentanalysis)
+  - [CreateAssociationRules](#createassociationrules)
+  - [CreateGaussianMixtureClusters](#creategaussianmixtureclusters)
+  - [CreateHierarchicalClusters](#createhierarchicalclusters)
+  - [CreateKMeansClusters](#createkmeansclusters)
+  - [GenerateEDAWithLIDA](#generatedewithlida)
+- [File Management](#file-management)
+  - [ImportDataFromFolder](#importdatafromfolder)
+  - [CreateFileTree](#createfiletree)
+  - [CreateCopyOfPDF](#createcopyofpdf)
+  - [ConvertWordDocsToPDF](#convertworddocstopdf)
+- [Hypothesis Testing](#hypothesis-testing)
+  - [ChiSquareTestOfIndependence](#chisquaretestofindependence)
+  - [ChiSquareTestOfIndependenceFromTable](#chisquaretestofindependencefromtable)
+  - [ConductCoxProportionalHazardRegression](#conductcoxproportionalhazardregression)
+  - [ConductLinearRegressionAnalysis](#conductlinearregressionanalysis)
+  - [ConductLogisticRegressionAnalysis](#conductlogisticregressionanalysis)
+  - [OneSampleTTest](#onesamplettest)
+  - [OneWayANOVA](#onewayanova)
+  - [TTestOfMeanFromStats](#ttestofmeanfromstats)
+  - [TTestOfProportionFromStats](#ttestofproportionfromstats)
+  - [TTestOfTwoMeansFromStats](#ttestoftwomeansfromstats)
+  - [TwoSampleTTestOfIndependence](#twosampletestofindependence)
+  - [TwoSampleTTestPaired](#twosampletestpaired)
+- [Linear Algebra](#linear-algebra)
+  - [CalculateEigenvalues](#calculateeigenvalues)
+  - [ConvertMatrixToRowEchelonForm](#convertmatrixtorowechelonform)
+  - [ConvertSystemOfEquationsToMatrix](#convertsystemofequationstomatrix)
+  - [PlotVectors](#plotvectors)
+  - [SolveSystemOfEquations](#solvesystemofequations)
+  - [VisualizeMatrixAsLinearTransformation](#visualizematrixaslineartransformation)
+- [Predictive Analytics](#predictive-analytics)
+  - [CreateARIMAModel](#createarimamodel)
+  - [CreateBoostedTreeModel](#createboostedtreemodel)
+  - [CreateDecisionTreeModel](#createdecisiontreemodel)
+  - [CreateLinearRegressionModel](#createlinearregressionmodel)
+  - [CreateLogisticRegressionModel](#createlogisticregressionmodel)
+  - [CreateNeuralNetwork_SingleOutcome](#createneuralnetwork_singleoutcome)
+- [Prescriptive Analytics](#prescriptive-analytics)
+  - [CreateContentBasedRecommender](#createcontentbasedrecommender)
+- [Probability](#probability)
+  - [ProbabilityOfAtLeastOne](#probabilityofatleastone)
+- [Simulations](#simulations)
+  - [CreateMetalogDistribution](#createmetalogdistribution)
+  - [CreateMetalogDistributionFromPercentiles](#createmetalogdistributionfrompercentiles)
+  - [CreateSIPDataframe](#createsipdataframe)
+  - [CreateSLURPDistribution](#createslurpdistribution)
+  - [SimulateCountOfSuccesses](#simulatecountofsuccesses)
+  - [SimulateCountOutcome](#simulatecountoutcome)
+  - [SimulateCountUntilFirstSuccess](#simulatecountuntilfirstsuccess)
+  - [SimulateNormallyDistributedOutcome](#simulatenormallydistributedoutcome)
+  - [SimulateTDistributedOutcome](#simulatetdistributedoutcome)
+  - [SimulateTimeBetweenEvents](#simulatetimebetweenevents)
+  - [SimulateTimeUntilNEvents](#simulatetimeuntilnevents)
+- [Statistics](#statistics)
+  - [CalculateConfidenceIntervalOfMean](#calculateconfidenceintervalofmean)
+  - [CalculateConfidenceIntervalOfProportion](#calculateconfidenceintervalofproportion)
+- [Visualizations](#visualizations)
+  - [Plot100PercentStackedBarChart](#plot100percentstackedbarchart)
+  - [PlotBarChart](#plotbarchart)
+  - [PlotBoxWhiskerByGroup](#plotboxwhiskerbygroup)
+  - [PlotBulletChart](#plotbulletchart)
+  - [PlotCard](#plotcard)
+  - [PlotClusteredBarChart](#plotclusteredbarchart)
+  - [PlotContingencyHeatmap](#plotcontingencyheatmap)
+  - [PlotCorrelationMatrix](#plotcorrelationmatrix)
+  - [PlotDensityByGroup](#plotdensitybygroup)
+  - [PlotDotPlot](#plotdotplot)
+  - [PlotHeatmap](#plotheatmap)
+  - [PlotOverlappingAreaChart](#plotoverlappingareachart)
+  - [PlotRiskTolerance](#plotrisktolerance)
+  - [PlotScatterplot](#plotscatterplot)
+  - [PlotSingleVariableCountPlot](#plotsinglevariablecountplot)
+  - [PlotSingleVariableHistogram](#plotsinglevariablehistogram)
+  - [PlotTimeSeries](#plottimeseries)
+  - [RenderTableOne](#rendertableone)
+
 
 ### Calculus
-
-There are several functions in the Calculus submodule. The following is a list of the functions:
-
-* FindDerivative
-* FindLimitOfFunction
-* FindMinimumSquareLoss
-* PlotFunction
 
 #### FindDerivative
 
@@ -142,16 +239,6 @@ PlotFunction(f_of_x)
 ```
 
 ### Data Collection
-
-There are several functions in the Data Collection submodule. The following is a list of the functions:
-
-* ExtractTextFromPDF
-* FetchPDFFromURL
-* FetchUSShapefile
-* FetchWebsiteText
-* GetCompanyFilings
-* GetGoogleSearchResults
-* GetZipFile
 
 #### ExtractTextFromPDF
 
@@ -281,26 +368,6 @@ GetZipFile(
 ```
 
 ### Data Processing
-
-There are several functions in the Data Processing submodule. The following is a list of the functions:
-
-* AddDateNumberColumns
-* AddLeadingZeros
-* AddRowCountColumn
-* AddTPeriodColumn
-* AddTukeyOutlierColumn
-* CleanTextColumns
-* ConductAnomalyDetection
-* ConductEntityMatching
-* ConvertOddsToProbability
-* CountMissingDataByGroup
-* CreateBinnedColumn
-* CreateDataOverview
-* CreateRandomSampleGroups
-* CreateRareCategoryColumn
-* CreateStratifiedRandomSampleGroups
-* ImputeMissingValuesUsingNearestNeighbors
-* VerifyGranularity
 
 #### AddDateNumberColumns
 
@@ -748,16 +815,6 @@ VerifyGranularity(
 
 ### Descriptive Analytics
 
-There are several functions in the Descriptive Analytics submodule. The following is a list of the functions:
-
-* ConductManifoldLearning
-* ConductPrincipalComponentAnalysis
-* CreateAssociationRules
-* CreateGaussianMixtureClusters
-* CreateHierarchicalClusters
-* CreateKMeansClusters
-* GenerateEDAWithLIDA
-
 #### ConductManifoldLearning
 
 The **ConductManifoldLearning** function performs manifold learning on a given dataframe and returns a new dataframe with the original columns and the new manifold learning components. Manifold learning is a type of unsupervised learning that is used to reduce the dimensionality of the data.
@@ -779,6 +836,7 @@ new_df = ConductManifoldLearning(
     number_of_components=2, 
     random_seed=42, 
     show_component_summary_plots=True, 
+    sns_color_palette='Set2',
     summary_plot_size=(10, 10)
 )
 ```
@@ -951,13 +1009,6 @@ df_summary = GenerateEDAWithLIDA(
 
 ### File Management
 
-There are several functions in the File Management submodule. The following is a list of the functions:
-
-* ImportDataFromFolder
-* CreateFileTree
-* CreateCopyOfPDF
-* ConvertWordDocsToPDF
-
 #### ImportDataFromFolder
 
 The **ImportDataFromFolder** function imports all CSV and Excel files from a specified folder and combines them into a single DataFrame. It ensures that column names match across all files if specified.
@@ -1037,20 +1088,1035 @@ ConvertWordDocsToPDF(
 
 ### Hypothesis Testing
 
+#### ChiSquareTestOfIndependence
+
+The **ChiSquareTestOfIndependence** function performs a chi-square test of independence to determine if there is a significant relationship between two categorical variables.
+
+```python
+from analysistoolbox.hypothesis_testing import ChiSquareTestOfIndependence
+
+# Create sample data
+data = {
+    'Education': ['High School', 'College', 'High School', 'Graduate', 'College'],
+    'Employment': ['Employed', 'Unemployed', 'Employed', 'Employed', 'Unemployed']
+}
+df = pd.DataFrame(data)
+
+# Conduct chi-square test
+ChiSquareTestOfIndependence(
+    dataframe=df,
+    first_categorical_column='Education',
+    second_categorical_column='Employment',
+    plot_contingency_table=True
+)
+```
+
+#### ChiSquareTestOfIndependenceFromTable
+
+The **ChiSquareTestOfIndependenceFromTable** function performs a chi-square test using a pre-computed contingency table.
+
+```python
+from analysistoolbox.hypothesis_testing import ChiSquareTestOfIndependenceFromTable
+
+# Create contingency table
+contingency_table = pd.DataFrame({
+    'Online': [100, 150],
+    'In-Store': [200, 175]
+}, index=['Male', 'Female'])
+
+# Conduct chi-square test
+ChiSquareTestOfIndependenceFromTable(
+    contingency_table=contingency_table,
+    plot_contingency_table=True
+)
+```
+
+#### ConductCoxProportionalHazardRegression
+
+The **ConductCoxProportionalHazardRegression** function performs survival analysis using Cox Proportional Hazard regression.
+
+```python
+from analysistoolbox.hypothesis_testing import ConductCoxProportionalHazardRegression
+
+# Conduct Cox regression
+model = ConductCoxProportionalHazardRegression(
+    dataframe=df,
+    outcome_column='event',
+    duration_column='time',
+    list_of_predictor_columns=['age', 'sex', 'treatment'],
+    plot_survival_curve=True
+)
+```
+
+#### ConductLinearRegressionAnalysis
+
+The **ConductLinearRegressionAnalysis** function performs linear regression analysis with optional plotting.
+
+```python
+from analysistoolbox.hypothesis_testing import ConductLinearRegressionAnalysis
+
+# Conduct linear regression
+results = ConductLinearRegressionAnalysis(
+    dataframe=df,
+    outcome_column='sales',
+    list_of_predictor_columns=['advertising', 'price'],
+    plot_regression_diagnostic=True
+)
+```
+
+#### ConductLogisticRegressionAnalysis
+
+The **ConductLogisticRegressionAnalysis** function performs logistic regression for binary outcomes.
+
+```python
+from analysistoolbox.hypothesis_testing import ConductLogisticRegressionAnalysis
+
+# Conduct logistic regression
+results = ConductLogisticRegressionAnalysis(
+    dataframe=df,
+    outcome_column='purchased',
+    list_of_predictor_columns=['age', 'income'],
+    plot_regression_diagnostic=True
+)
+```
+
+#### OneSampleTTest
+
+The **OneSampleTTest** function performs a one-sample t-test to compare a sample mean to a hypothesized population mean.
+
+```python
+from analysistoolbox.hypothesis_testing import OneSampleTTest
+
+# Conduct one-sample t-test
+OneSampleTTest(
+    dataframe=df,
+    outcome_column='score',
+    hypothesized_mean=70,
+    alternative_hypothesis='two-sided',
+    confidence_interval=0.95
+)
+```
+
+#### OneWayANOVA
+
+The **OneWayANOVA** function performs a one-way analysis of variance to compare means across multiple groups.
+
+```python
+from analysistoolbox.hypothesis_testing import OneWayANOVA
+
+# Conduct one-way ANOVA
+OneWayANOVA(
+    dataframe=df,
+    outcome_column='performance',
+    grouping_column='treatment_group',
+    plot_sample_distributions=True
+)
+```
+
+#### TTestOfMeanFromStats
+
+The **TTestOfMeanFromStats** function performs a t-test using summary statistics rather than raw data.
+
+```python
+from analysistoolbox.hypothesis_testing import TTestOfMeanFromStats
+
+# Conduct t-test from statistics
+TTestOfMeanFromStats(
+    sample_mean=75,
+    sample_size=30,
+    sample_standard_deviation=10,
+    hypothesized_mean=70,
+    alternative_hypothesis='greater'
+)
+```
+
+#### TTestOfProportionFromStats
+
+The **TTestOfProportionFromStats** function tests a sample proportion against a hypothesized value.
+
+```python
+from analysistoolbox.hypothesis_testing import TTestOfProportionFromStats
+
+# Test proportion from statistics
+TTestOfProportionFromStats(
+    sample_proportion=0.65,  # 65% proportion
+    sample_size=200,         # 200 survey responses
+    hypothesized_proportion=0.50,
+    alternative_hypothesis='two-sided'
+)
+```
+
+#### TTestOfTwoMeansFromStats
+
+The **TTestOfTwoMeansFromStats** function compares two means using summary statistics.
+
+```python
+from analysistoolbox.hypothesis_testing import TTestOfTwoMeansFromStats
+
+# Compare two means from statistics
+TTestOfTwoMeansFromStats(
+    first_sample_mean=75,
+    first_sample_size=30,
+    first_sample_standard_deviation=10,
+    second_sample_mean=70,
+    second_sample_size=30,
+    second_sample_standard_deviation=12
+)
+```
+
+#### TwoSampleTTestOfIndependence
+
+The **TwoSampleTTestOfIndependence** function performs an independent samples t-test to compare means between two groups.
+
+```python
+from analysistoolbox.hypothesis_testing import TwoSampleTTestOfIndependence
+
+# Conduct independent samples t-test
+TwoSampleTTestOfIndependence(
+    dataframe=df,
+    outcome_column='score',
+    grouping_column='group',
+    alternative_hypothesis='two-sided',
+    homogeneity_of_variance=True
+)
+```
+
+#### TwoSampleTTestPaired
+
+The **TwoSampleTTestPaired** function performs a paired samples t-test for before-after comparisons.
+
+```python
+from analysistoolbox.hypothesis_testing import TwoSampleTTestPaired
+
+# Conduct paired samples t-test
+TwoSampleTTestPaired(
+    dataframe=df,
+    first_outcome_column='pre_score',
+    second_outcome_column='post_score',
+    alternative_hypothesis='greater'
+)
+```
+
 ### Linear Algebra
+
+#### CalculateEigenvalues
+
+The **CalculateEigenvalues** function calculates and visualizes the eigenvalues and eigenvectors of a matrix.
+
+```python
+from analysistoolbox.linear_algebra import CalculateEigenvalues
+import numpy as np
+
+# Create a 2x2 matrix
+matrix = np.array([
+    [4, -2],
+    [1, 1]
+])
+
+# Calculate eigenvalues and eigenvectors
+CalculateEigenvalues(
+    matrix=matrix,
+    plot_eigenvectors=True,
+    plot_transformation=True
+)
+```
+
+#### ConvertMatrixToRowEchelonForm
+
+The **ConvertMatrixToRowEchelonForm** function converts a matrix to row echelon form using Gaussian elimination.
+
+```python
+from analysistoolbox.linear_algebra import ConvertMatrixToRowEchelonForm
+import numpy as np
+
+# Create a matrix
+matrix = np.array([
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+])
+
+# Convert to row echelon form
+row_echelon = ConvertMatrixToRowEchelonForm(
+    matrix=matrix,
+    show_pivot_columns=True
+)
+```
+
+#### ConvertSystemOfEquationsToMatrix
+
+The **ConvertSystemOfEquationsToMatrix** function converts a system of linear equations to matrix form.
+
+```python
+from analysistoolbox.linear_algebra import ConvertSystemOfEquationsToMatrix
+import numpy as np
+
+# Define system of equations: 
+# 2x + 3y = 8
+# 4x - y = 1
+coefficients = np.array([
+    [2, 3],
+    [4, -1]
+])
+constants = np.array([8, 1])
+
+# Convert to matrix form
+matrix = ConvertSystemOfEquationsToMatrix(
+    coefficients=coefficients,
+    constants=constants,
+    show_determinant=True
+)
+```
+
+#### PlotVectors
+
+The **PlotVectors** function visualizes vectors in 2D or 3D space.
+
+```python
+from analysistoolbox.linear_algebra import PlotVectors
+import numpy as np
+
+# Define vectors
+vectors = [
+    [3, 2],    # First vector
+    [-1, 4],   # Second vector
+    [2, -3]    # Third vector
+]
+
+# Plot vectors
+PlotVectors(
+    list_of_vectors=vectors,
+    origin=[0, 0],
+    plot_sum=True,
+    grid=True
+)
+```
+
+#### SolveSystemOfEquations
+
+The **SolveSystemOfEquations** function solves a system of linear equations and optionally visualizes the solution.
+
+```python
+from analysistoolbox.linear_algebra import SolveSystemOfEquations
+import numpy as np
+
+# Define system of equations:
+# 2x + y = 5
+# x - 3y = -1
+coefficients = np.array([
+    [2, 1],
+    [1, -3]
+])
+constants = np.array([5, -1])
+
+# Solve the system
+solution = SolveSystemOfEquations(
+    coefficients=coefficients,
+    constants=constants,
+    show_plot=True,
+    plot_boundary=10
+)
+```
+
+#### VisualizeMatrixAsLinearTransformation
+
+The **VisualizeMatrixAsLinearTransformation** function visualizes how a matrix transforms space as a linear transformation.
+
+```python
+from analysistoolbox.linear_algebra import VisualizeMatrixAsLinearTransformation
+import numpy as np
+
+# Define transformation matrix
+transformation_matrix = np.array([
+    [2, -1],
+    [1, 1]
+])
+
+# Visualize the transformation
+VisualizeMatrixAsLinearTransformation(
+    transformation_matrix=transformation_matrix,
+    plot_grid=True,
+    plot_unit_vectors=True,
+    animation_frames=30
+)
+```
 
 ### Predictive Analytics
 
+#### CreateARIMAModel
+
+Builds an ARIMA (Autoregressive Integrated Moving Average) model for time series forecasting.
+
+```python
+from analysistoolbox.predictive_analytics import CreateARIMAModel
+import pandas as pd
+
+# Create time series forecast
+forecast = CreateARIMAModel(
+    dataframe=df,
+    time_column='date',
+    value_column='sales',
+    forecast_periods=12
+)
+```
+
+#### CreateBoostedTreeModel
+
+Creates a gradient boosted tree model for classification or regression tasks, offering high performance and feature importance analysis.
+
+```python
+from analysistoolbox.predictive_analytics import CreateBoostedTreeModel
+
+# Train a boosted tree classifier
+model = CreateBoostedTreeModel(
+    dataframe=df,
+    outcome_variable='churn',
+    list_of_predictor_variables=['usage', 'tenure', 'satisfaction'],
+    is_outcome_categorical=True,
+    plot_model_test_performance=True
+)
+```
+
+#### CreateDecisionTreeModel
+
+Builds an interpretable decision tree for classification or regression, with visualization options.
+
+```python
+from analysistoolbox.predictive_analytics import CreateDecisionTreeModel
+
+# Create a decision tree for predicting house prices
+model = CreateDecisionTreeModel(
+    dataframe=df,
+    outcome_variable='price',
+    list_of_predictor_variables=['sqft', 'bedrooms', 'location'],
+    is_outcome_categorical=False,
+    maximum_depth=5
+)
+```
+
+#### CreateLinearRegressionModel
+
+Fits a linear regression model with optional scaling and comprehensive performance visualization.
+
+```python
+from analysistoolbox.predictive_analytics import CreateLinearRegressionModel
+
+# Predict sales based on advertising spend
+model = CreateLinearRegressionModel(
+    dataframe=df,
+    outcome_variable='sales',
+    list_of_predictor_variables=['tv_ads', 'radio_ads', 'newspaper_ads'],
+    scale_variables=True,
+    plot_model_test_performance=True
+)
+```
+
+#### CreateLogisticRegressionModel
+
+Implements logistic regression for binary classification tasks with regularization options.
+
+```python
+from analysistoolbox.predictive_analytics import CreateLogisticRegressionModel
+
+# Predict customer churn probability
+model = CreateLogisticRegressionModel(
+    dataframe=df,
+    outcome_variable='churn',
+    list_of_predictor_variables=['usage', 'complaints', 'satisfaction'],
+    scale_predictor_variables=True,
+    show_classification_plot=True
+)
+```
+
+#### CreateNeuralNetwork_SingleOutcome
+
+Builds and trains a neural network for single-outcome prediction tasks, with customizable architecture.
+
+```python
+from analysistoolbox.predictive_analytics import CreateNeuralNetwork_SingleOutcome
+
+# Create a neural network for image classification
+model = CreateNeuralNetwork_SingleOutcome(
+    dataframe=df,
+    outcome_variable='label',
+    list_of_predictor_variables=feature_columns,
+    number_of_hidden_layers=3,
+    is_outcome_categorical=True,
+    plot_loss=True
+)
+```
+
 ### Prescriptive Analytics
+
+The prescriptive analytics module provides tools for making data-driven recommendations and decisions:
+
+#### CreateContentBasedRecommender
+
+Builds a content-based recommendation system using neural networks to learn user and item embeddings.
+
+```python
+from analysistoolbox.prescriptive_analytics import CreateContentBasedRecommender
+import pandas as pd
+
+# Create a movie recommendation system
+recommender = CreateContentBasedRecommender(
+    dataframe=movie_ratings_df,
+    outcome_variable='rating',
+    user_list_of_predictor_variables=['age', 'gender', 'occupation'],
+    item_list_of_predictor_variables=['genre', 'year', 'director', 'budget'],
+    user_number_of_hidden_layers=2,
+    item_number_of_hidden_layers=2,
+    number_of_recommendations=5,
+    scale_variables=True,
+    plot_loss=True
+)
+```
+
+### Probability
+
+The probability module provides tools for working with probability distributions and statistical models:
+
+#### ProbabilityOfAtLeastOne
+
+Calculates and visualizes the probability of at least one event occurring in a series of independent trials.
+
+```python
+from analysistoolbox.probability import ProbabilityOfAtLeastOne
+
+# Calculate probability of at least one defect in 10 products
+# given a 5% defect rate per product
+prob = ProbabilityOfAtLeastOne(
+    probability_of_event=0.05,
+    number_of_events=10,
+    format_as_percent=True,
+    show_plot=True,
+    risk_tolerance=0.20  # Highlight 20% risk threshold
+)
+
+# Calculate probability of at least one successful sale
+# given 30 customer interactions with 15% success rate
+prob = ProbabilityOfAtLeastOne(
+    probability_of_event=0.15,
+    number_of_events=30,
+    format_as_percent=True,
+    show_plot=True,
+    title_for_plot="Sales Success Probability",
+    subtitle_for_plot="Probability of at least one sale in 30 customer interactions"
+)
+```
 
 ### Simulations
 
+The simulations module provides a comprehensive set of tools for statistical simulations and probability distributions:
+
+#### CreateMetalogDistribution
+
+Creates a flexible metalog distribution from data, useful for modeling complex probability distributions.
+
+```python
+from analysistoolbox.simulations import CreateMetalogDistribution
+
+# Create a metalog distribution from historical data
+distribution = CreateMetalogDistribution(
+    dataframe=df,
+    variable='sales',
+    lower_bound=0,
+    number_of_samples=10000,
+    plot_metalog_distribution=True
+)
+```
+
+#### CreateMetalogDistributionFromPercentiles
+
+Builds a metalog distribution from known percentile values.
+
+```python
+from analysistoolbox.simulations import CreateMetalogDistributionFromPercentiles
+
+# Create distribution from percentiles
+distribution = CreateMetalogDistributionFromPercentiles(
+    list_of_values=[10, 20, 30, 50],
+    list_of_percentiles=[0.1, 0.25, 0.75, 0.9],
+    lower_bound=0,
+    show_distribution_plot=True
+)
+```
+
+#### CreateSIPDataframe
+
+Generates Stochastically Indexed Percentiles (SIP) for uncertainty analysis.
+
+```python
+from analysistoolbox.simulations import CreateSIPDataframe
+
+# Create SIP dataframe for risk analysis
+sip_df = CreateSIPDataframe(
+    number_of_percentiles=10,
+    number_of_trials=1000
+)
+```
+
+#### CreateSLURPDistribution
+Creates a SIP with relationships preserved (SLURP) based on a linear regression model's prediction interval.
+
+```python
+from analysistoolbox.simulations import CreateSLURPDistribution
+
+# Create a SLURP distribution from a linear regression model
+slurp_dist = CreateSLURPDistribution(
+    linear_regression_model=model,  # statsmodels regression model
+    list_of_prediction_values=[x1, x2, ...],  # values for predictors
+    number_of_trials=10000,  # number of samples to generate
+    prediction_interval=0.95,  # confidence level for prediction interval
+    lower_bound=None,  # optional lower bound constraint
+    upper_bound=None  # optional upper bound constraint
+)
+```
+
+#### SimulateCountOfSuccesses
+
+Simulates binomial outcomes (number of successes in fixed trials).
+
+```python
+from analysistoolbox.simulations import SimulateCountOfSuccesses
+
+# Simulate customer conversion rates
+results = SimulateCountOfSuccesses(
+    probability_of_success=0.15,
+    sample_size_per_trial=100,
+    number_of_trials=10000,
+    plot_simulation_results=True
+)
+```
+
+#### SimulateCountOutcome
+
+Simulates Poisson-distributed count data.
+
+```python
+from analysistoolbox.simulations import SimulateCountOutcome
+
+# Simulate daily customer arrivals
+arrivals = SimulateCountOutcome(
+    expected_count=25,
+    number_of_trials=10000,
+    plot_simulation_results=True
+)
+```
+
+#### SimulateCountUntilFirstSuccess
+
+Simulates geometric distributions (trials until first success).
+
+```python
+from analysistoolbox.simulations import SimulateCountUntilFirstSuccess
+
+# Simulate number of attempts until success
+attempts = SimulateCountUntilFirstSuccess(
+    probability_of_success=0.2,
+    number_of_trials=10000,
+    plot_simulation_results=True
+)
+```
+
+#### SimulateNormallyDistributedOutcome
+Generates normally distributed random variables.
+
+```python
+from analysistoolbox.simulations import SimulateNormallyDistributedOutcome
+
+# Simulate product weights
+weights = SimulateNormallyDistributedOutcome(
+    mean=100,
+    standard_deviation=5,
+    number_of_trials=10000,
+    plot_simulation_results=True
+)
+```
+
+#### SimulateTDistributedOutcome
+Generates Student's t-distributed random variables.
+
+```python
+from analysistoolbox.simulations import SimulateTDistributedOutcome
+
+# Simulate with heavy-tailed distribution
+values = SimulateTDistributedOutcome(
+    degrees_of_freedom=5,
+    number_of_trials=10000,
+    plot_simulation_results=True
+)
+```
+
+#### SimulateTimeBetweenEvents
+
+Simulates exponentially distributed inter-arrival times.
+
+```python
+from analysistoolbox.simulations import SimulateTimeBetweenEvents
+
+# Simulate time between customer arrivals
+times = SimulateTimeBetweenEvents(
+    average_time_between_events=30,
+    number_of_trials=10000,
+    plot_simulation_results=True
+)
+```
+
+#### SimulateTimeUntilNEvents
+Simulates Erlang-distributed waiting times.
+
+```python
+from analysistoolbox.simulations import SimulateTimeUntilNEvents
+
+# Simulate time until 5 events occur
+wait_time = SimulateTimeUntilNEvents(
+    average_time_between_events=10,
+    number_of_events=5,
+    number_of_trials=10000,
+    plot_simulation_results=True
+)
+```
+
+### Statistics
+
+The statistics module provides essential tools for statistical inference and estimation:
+
+#### CalculateConfidenceIntervalOfMean
+
+Calculates confidence intervals for population means, automatically handling both large (z-distribution) and small (t-distribution) sample sizes.
+
+```python
+from analysistoolbox.statistics import CalculateConfidenceIntervalOfMean
+
+# Calculate 95% confidence interval for average customer spending
+ci_results = CalculateConfidenceIntervalOfMean(
+    sample_mean=45.2,
+    sample_standard_deviation=12.5,
+    sample_size=100,
+    confidence_interval=0.95,
+    plot_sample_distribution=True,
+    value_name="Average Spending ($)"
+)
+```
+
+#### CalculateConfidenceIntervalOfProportion
+
+Calculates confidence intervals for population proportions, with automatic selection of the appropriate distribution based on sample size.
+
+```python
+from analysistoolbox.statistics import CalculateConfidenceIntervalOfProportion
+
+# Calculate 95% confidence interval for customer satisfaction rate
+ci_results = CalculateConfidenceIntervalOfProportion(
+    sample_proportion=0.78,  # 78% satisfaction rate
+    sample_size=200,         # 200 survey responses
+    confidence_interval=0.95,
+    plot_sample_distribution=True,
+    value_name="Satisfaction Rate"
+)
+```
+
 ### Visualizations
+
+The visualizations module provides a comprehensive set of tools for creating publication-quality statistical plots and charts:
+
+#### Plot100PercentStackedBarChart
+Creates a 100% stacked bar chart for comparing proportional compositions across categories.
+
+```python
+from analysistoolbox.visualizations import Plot100PercentStackedBarChart
+
+# Create a stacked bar chart showing customer segments by region
+chart = Plot100PercentStackedBarChart(
+    dataframe=df,
+    categorical_column_name='Region',
+    value_column_name='Customers',
+    grouping_column_name='Segment'
+)
+```
+
+#### PlotBarChart
+
+Creates a customizable bar chart with options for highlighting specific categories.
+
+```python
+from analysistoolbox.visualizations import PlotBarChart
+
+# Create a bar chart of sales by product
+chart = PlotBarChart(
+    dataframe=df,
+    categorical_column_name='Product',
+    value_column_name='Sales',
+    top_n_to_highlight=3,
+    highlight_color="#b0170c"
+)
+```
+
+#### PlotBoxWhiskerByGroup
+
+Creates box-and-whisker plots for comparing distributions across groups.
+
+```python
+from analysistoolbox.visualizations import PlotBoxWhiskerByGroup
+
+# Compare salary distributions across departments
+plot = PlotBoxWhiskerByGroup(
+    dataframe=df,
+    value_column_name='Salary',
+    grouping_column_name='Department'
+)
+```
+
+#### PlotBulletChart
+
+Creates bullet charts for comparing actual values against targets with optional range bands.
+
+```python
+from analysistoolbox.visualizations import PlotBulletChart
+
+# Create bullet chart comparing actual vs target sales
+chart = PlotBulletChart(
+    dataframe=df,
+    value_column_name='Actual_Sales',
+    grouping_column_name='Region',
+    target_value_column_name='Target_Sales',
+    list_of_limit_columns=['Min_Sales', 'Max_Sales']
+)
+```
+
+#### PlotCard
+
+Creates a simple card-style visualization with a value and an optional value label.
+
+```python
+from analysistoolbox.visualizations import PlotCard
+
+# Create a simple KPI card
+card = PlotCard(
+    value=125000,  # main value to display
+    value_label="Monthly Revenue",  # optional label
+    value_font_size=30,  # size of the main value
+    value_label_font_size=14,  # size of the label
+    figure_size=(3, 2)  # dimensions of the card
+)
+```
+
+#### PlotClusteredBarChart
+
+Creates grouped bar charts for comparing multiple categories across groups.
+
+```python
+from analysistoolbox.visualizations import PlotClusteredBarChart
+
+# Create clustered bar chart of sales by product and region
+chart = PlotClusteredBarChart(
+    dataframe=df,
+    categorical_column_name='Product',
+    value_column_name='Sales',
+    grouping_column_name='Region'
+)
+```
+
+#### PlotContingencyHeatmap
+
+Creates a heatmap visualization of contingency tables.
+
+```python
+from analysistoolbox.visualizations import PlotContingencyHeatmap
+
+# Create heatmap of customer segments vs purchase categories
+heatmap = PlotContingencyHeatmap(
+    dataframe=df,
+    categorical_column_name_1='Customer_Segment',
+    categorical_column_name_2='Purchase_Category',
+    normalize_by="columns"
+)
+```
+
+#### PlotCorrelationMatrix
+
+Creates correlation matrix visualizations with optional scatter plots.
+
+```python
+from analysistoolbox.visualizations import PlotCorrelationMatrix
+
+# Create correlation matrix of numeric variables
+matrix = PlotCorrelationMatrix(
+    dataframe=df,
+    list_of_value_column_names=['Age', 'Income', 'Spending'],
+    show_as_pairplot=True
+)
+```
+
+#### PlotDensityByGroup
+
+Creates density plots for comparing distributions across groups.
+
+```python
+from analysistoolbox.visualizations import PlotDensityByGroup
+
+# Compare age distributions across customer segments
+plot = PlotDensityByGroup(
+    dataframe=df,
+    value_column_name='Age',
+    grouping_column_name='Customer_Segment'
+)
+```
+
+#### PlotDotPlot
+
+Creates dot plots with optional connecting lines between groups.
+
+```python
+from analysistoolbox.visualizations import PlotDotPlot
+
+# Compare before/after measurements
+plot = PlotDotPlot(
+    dataframe=df,
+    categorical_column_name='Metric',
+    value_column_name='Value',
+    group_column_name='Time_Period',
+    connect_dots=True
+)
+```
+
+#### PlotHeatmap
+
+Creates customizable heatmaps for visualizing two-dimensional data.
+
+```python
+from analysistoolbox.visualizations import PlotHeatmap
+
+# Create heatmap of customer activity by hour and day
+heatmap = PlotHeatmap(
+    dataframe=df,
+    x_axis_column_name='Hour',
+    y_axis_column_name='Day',
+    value_column_name='Activity',
+    color_palette="RdYlGn"
+)
+```
+
+#### PlotOverlappingAreaChart
+
+Creates stacked or overlapping area charts for time series data.
+
+```python
+from analysistoolbox.visualizations import PlotOverlappingAreaChart
+
+# Show product sales trends over time
+chart = PlotOverlappingAreaChart(
+    dataframe=df,
+    time_column_name='Date',
+    value_column_name='Sales',
+    variable_column_name='Product'
+)
+```
+
+#### PlotRiskTolerance
+
+Creates specialized plots for risk analysis and tolerance visualization.
+
+```python
+from analysistoolbox.visualizations import PlotRiskTolerance
+
+# Visualize risk tolerance levels
+plot = PlotRiskTolerance(
+    dataframe=df,
+    value_column_name='Risk_Score',
+    tolerance_level_column_name='Tolerance'
+)
+```
+
+#### PlotScatterplot
+
+Creates scatter plots with optional trend lines and grouping.
+
+```python
+from analysistoolbox.visualizations import PlotScatterplot
+
+# Create scatter plot of age vs income
+plot = PlotScatterplot(
+    dataframe=df,
+    x_axis_column_name='Age',
+    y_axis_column_name='Income',
+    color_by_column_name='Education'
+)
+```
+
+#### PlotSingleVariableCountPlot
+
+Creates count plots for categorical variables.
+
+```python
+from analysistoolbox.visualizations import PlotSingleVariableCountPlot
+
+# Show distribution of customer types
+plot = PlotSingleVariableCountPlot(
+    dataframe=df,
+    categorical_column_name='Customer_Type',
+    top_n_to_highlight=2
+)
+```
+
+#### PlotSingleVariableHistogram
+
+Creates histograms for continuous variables.
+
+```python
+from analysistoolbox.visualizations import PlotSingleVariableHistogram
+
+# Create histogram of transaction amounts
+plot = PlotSingleVariableHistogram(
+    dataframe=df,
+    value_column_name='Transaction_Amount',
+    show_mean=True,
+    show_median=True
+)
+```
+
+#### PlotTimeSeries
+
+Creates time series plots with optional grouping and marker sizes.
+
+```python
+from analysistoolbox.visualizations import PlotTimeSeries
+
+# Plot monthly sales with grouping
+plot = PlotTimeSeries(
+    dataframe=df,
+    time_column_name='Date',
+    value_column_name='Sales',
+    grouping_column_name='Region',  # optional grouping
+    marker_size_column_name='Volume',  # optional markers
+    line_color='#3269a8',
+    figure_size=(8, 5)
+)
+```
+
+#### RenderTableOne
+
+Creates publication-ready summary statistics tables comparing variables across groups.
+
+```python
+from analysistoolbox.visualizations import RenderTableOne
+
+# Create summary statistics table comparing age, education by department
+table = RenderTableOne(
+    dataframe=df,
+    value_column_name='Age',  # outcome variable
+    grouping_column_name='Department',  # grouping variable
+    list_of_row_variables=['Education', 'Experience'],  # variables to compare
+    table_format='html',  # output format
+    show_p_value=True  # include statistical tests
+)
+```
 
 ## Contributions
 
-To report an issue, request a feature, or contribute to the project, please see the [CONTRIBUTING.md](CONTRIBUTING.md) file (in progress).
+Contributions to the analysistoolbox package are welcome! Please submit a pull request with your changes.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+The analysistoolbox package is licensed under the GNU License. Read more about the GNU License at [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html).
