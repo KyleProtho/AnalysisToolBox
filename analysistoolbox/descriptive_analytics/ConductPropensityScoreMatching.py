@@ -11,7 +11,8 @@ def ConductPropensityScoreMatching(dataframe,
                                    balance_groups=True,
                                    propensity_score_column_name="Propensity Score",
                                    propensity_logit_column_name="Propensity Logit",
-                                   matched_id_column_name="Matched ID"):
+                                   matched_id_column_name="Matched ID",
+                                   random_seed=412):
     """
     This function conducts propensity score matching on a dataframe. The function uses the PsmPy package to perform the matching. 
     The function returns the original dataframe with the propensity scores, propensity logits, and matched IDs appended to the dataframe. 
@@ -28,6 +29,7 @@ def ConductPropensityScoreMatching(dataframe,
         propensity_score_column_name (str, optional): The name of the column that contains the propensity scores. Defaults to "Propensity Score".
         propensity_logit_column_name (str, optional): The name of the column that contains the propensity logits. Defaults to "Propensity Logit".
         matched_id_column_name (str, optional): The name of the column that contains the matched IDs. Defaults to "Matched ID".
+        random_seed (int, optional): The random seed to use for the matching. Defaults to 412.
 
     Raises:
         ValueError: The grouping column must have only two unique values.
@@ -80,7 +82,8 @@ def ConductPropensityScoreMatching(dataframe,
         dataframe_psm, 
         treatment=grouping_column_name, 
         indx=subject_id_column_name,
-        exclude=[]
+        exclude=[],
+        seed=random_seed,
     )
     
     # Calculate logistic propensity scores/logits
