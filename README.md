@@ -64,6 +64,7 @@ There are many modules in the analysistoolbox package, each with their own funct
 - [Descriptive Analytics](#descriptive-analytics)
   - [ConductManifoldLearning](#conductmanifoldlearning)
   - [ConductPrincipalComponentAnalysis](#conductprincipalcomponentanalysis)
+  - [ConductPropensityScoreMatching](#conductpropensityscorematching)
   - [CreateAssociationRules](#createassociationrules)
   - [CreateGaussianMixtureClusters](#creategaussianmixtureclusters)
   - [CreateHierarchicalClusters](#createhierarchicalclusters)
@@ -860,6 +861,29 @@ result = ConductPrincipalComponentAnalysis(
     dataframe=iris_df,
     list_of_numeric_columns=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
     number_of_components=2
+)
+```
+
+#### ConductPropensityScoreMatching
+
+Conducts propensity score matching to create balanced treatment and control groups for causal inference analysis.
+
+```python
+from analysistoolbox.descriptive_analytics import ConductPropensityScoreMatching
+import pandas as pd
+
+# Create matched groups based on age, education, and experience
+matched_df = ConductPropensityScoreMatching(
+    dataframe=df,
+    subject_id_column_name='employee_id',
+    list_of_column_names_to_base_matching=['age', 'education', 'years_experience'],
+    grouping_column_name='received_training',
+    control_group_name='No',
+    max_matches_per_subject=1,
+    balance_groups=True,
+    propensity_score_column_name="PS_Score",
+    matched_id_column_name="Matched_Employee_ID",
+    random_seed=412
 )
 ```
 
