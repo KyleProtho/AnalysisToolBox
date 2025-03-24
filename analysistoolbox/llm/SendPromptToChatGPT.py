@@ -7,7 +7,7 @@ def SendPromptToChatGPT(prompt_template,
                         # LLM parameters
                         openai_api_key=None,
                         temperature=0.0,
-                        chat_model_name="gpt-4-1106-preview",
+                        chat_model_name='gpt-4o-mini',
                         maximum_tokens=1000,
                         verbose=True):
     # Lazy load uncommon packages

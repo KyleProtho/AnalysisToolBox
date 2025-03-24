@@ -95,6 +95,9 @@ There are many modules in the analysistoolbox package, each with their own funct
   - [PlotVectors](#plotvectors)
   - [SolveSystemOfEquations](#solvesystemofequations)
   - [VisualizeMatrixAsLinearTransformation](#visualizematrixaslineartransformation)
+- [LLM](#llm)
+  - [SendPromptToAnthropic](#sendprompttoanthropic)
+  - [SendPromptToChatGPT](#sendprompttochatgpt)
 - [Predictive Analytics](#predictive-analytics)
   - [CreateARIMAModel](#createarimamodel)
   - [CreateBoostedTreeModel](#createboostedtreemodel)
@@ -1463,6 +1466,66 @@ VisualizeMatrixAsLinearTransformation(
     plot_unit_vectors=True,
     animation_frames=30
 )
+```
+
+### LLM
+
+#### SendPromptToAnthropic
+
+The **SendPromptToAnthropic** function sends a prompt to Anthropic's Claude API using LangChain. It supports template-based prompting and requires an Anthropic API key.
+
+```python
+from analysistoolbox.llm import SendPromptToAnthropic
+
+# Define your prompt template with variables in curly braces
+prompt_template = "Given the text: {text}\nSummarize the main points in bullet form."
+
+# Create a dictionary with your input variables
+user_input = {
+    "text": "Your text to analyze goes here..."
+}
+
+# Send the prompt to Claude
+response = SendPromptToAnthropic(
+    prompt_template=prompt_template,
+    user_input=user_input,
+    system_message="You are a helpful assistant.",
+    anthropic_api_key="your-api-key-here",
+    temperature=0.0,
+    chat_model_name="claude-3-opus-20240229",
+    maximum_tokens=1000
+)
+
+print(response)
+```
+
+#### SendPromptToChatGPT
+
+The **SendPromptToChatGPT** function sends a prompt to OpenAI's ChatGPT API using LangChain. It supports template-based prompting and requires an OpenAI API key.
+
+```python
+from analysistoolbox.llm import SendPromptToChatGPT
+
+# Define your prompt template with variables in curly braces
+prompt_template = "Analyze the following data: {data}\nProvide key insights."
+
+# Create a dictionary with your input variables
+user_input = {
+    "data": "Your data to analyze goes here..."
+}
+
+# Send the prompt to ChatGPT
+response = SendPromptToChatGPT(
+    prompt_template=prompt_template,
+    user_input=user_input,
+    system_message="You are a helpful assistant.",
+    openai_api_key="your-api-key-here",
+    temperature=0.0,
+    chat_model_name="gpt-4o-mini",
+    maximum_tokens=1000
+)
+
+print(response)
 ```
 
 ### Predictive Analytics
