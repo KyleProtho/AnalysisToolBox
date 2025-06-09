@@ -172,12 +172,34 @@ def ConductEntityMatching(dataframe_1,
     # Drop duplicates
     data_match_results.drop_duplicates(inplace=True)
     
-    # Convert to wide-form dataframe
-    data_match_results = data_match_results.pivot(index=['Entity_1', 'Entity_2'], columns='Match Method', values='Match Score')
-    # Reset index of dataframe
-    data_match_results['Entity 1'] = data_match_results.index.get_level_values(0)
-    data_match_results['Entity 2'] = data_match_results.index.get_level_values(1)
-    data_match_results.reset_index(drop=True, inplace=True)
+    # If there are no matches, create an empty dataframe with the right structure
+    if data_match_results.empty:
+        # Create a dataframe with all entity combinations
+        entity_pairs = entity_combinations[['Entity_1', 'Entity_2']].copy()
+        
+        # Create an empty DataFrame with the correct structure
+        data_match_results = pd.DataFrame()
+        
+        # Add entity columns
+        data_match_results['Entity 1'] = entity_pairs['Entity_1']
+        data_match_results['Entity 2'] = entity_pairs['Entity_2']
+        
+        # Add empty columns for each match method
+        for method in match_methods:
+            data_match_results[method] = np.nan
+    else:
+        # Convert to wide-form dataframe
+        data_match_results = data_match_results.pivot(index=['Entity_1', 'Entity_2'], columns='Match Method', values='Match Score')
+        
+        # Ensure all specified match methods are present as columns
+        for method in match_methods:
+            if method not in data_match_results.columns:
+                data_match_results[method] = np.nan
+        
+        # Reset index of dataframe
+        data_match_results['Entity 1'] = data_match_results.index.get_level_values(0)
+        data_match_results['Entity 2'] = data_match_results.index.get_level_values(1)
+        data_match_results.reset_index(drop=True, inplace=True)
     
     # Move entity columns to front
     data_match_results = data_match_results[['Entity 1', 'Entity 2'] + [col for col in data_match_results.columns if col not in ['Entity 1', 'Entity 2']]]
