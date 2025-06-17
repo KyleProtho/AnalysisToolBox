@@ -87,7 +87,22 @@ def CreateMetalogDistribution(dataframe,
     # Extract values from the dataframe
     arr_variable = dataframe[variable]
     arr_variable = list(arr_variable)
+
+    # If there is a lower_bound, print a warning and filter the data
+    if lower_bound is not None:
+        if min(arr_variable) < lower_bound:
+            print(f"Warning: There are observations that are lower than the lower bound of {lower_bound}. Filtering data...")
+            arr_variable = [x for x in arr_variable if x >= lower_bound]
     
+    # If there is an upper_bound, print a warning and filter the data
+    if upper_bound is not None:
+        if max(arr_variable) > upper_bound:
+            print(f"Warning: There are observations that are higher than the upper bound of {upper_bound}. Filtering data...")
+            arr_variable = [x for x in arr_variable if x <= upper_bound]
+    
+    # Turn off warnings
+    import warnings
+    warnings.filterwarnings("ignore")
     # Create a metalog distribution
     if lower_bound is None and upper_bound is None:
         metalog_dist = pm.metalog(
@@ -294,3 +309,34 @@ def CreateMetalogDistribution(dataframe,
     else:
         return arr_metalog
 
+
+# Test the function using upper and lower bounds
+from sklearn.datasets import load_iris
+iris_df = pd.DataFrame(load_iris().data, columns=load_iris().feature_names)
+CreateMetalogDistribution(
+    dataframe=iris_df,
+    variable='sepal length (cm)',
+    lower_bound=2,
+    upper_bound=7,
+    learning_rate=0.01,
+    term_maximum=9,
+    term_minimum=2,
+    term_for_random_sample=None,
+    number_of_samples=10000,
+    show_summary=True,
+    return_format='dataframe',
+    plot_metalog_distribution=True,
+    fill_color="#999999",
+    fill_transparency=0.6,
+    figure_size=(8, 6),
+    show_mean=True,
+    show_median=True,
+    title_for_plot="Metalog Distribution",
+    subtitle_for_plot="Showing the metalog distribution of the variable",
+    caption_for_plot=None,
+    data_source_for_plot=None,
+    show_y_axis=False,
+    title_y_indent=1.1,
+    subtitle_y_indent=1.05,
+    caption_y_indent=-0.15
+)
