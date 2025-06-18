@@ -1,3 +1,4 @@
+from .CreateCorrelatedSIPs import CreateCorrelatedSIPs
 from .CreateMetalogDistributionFromPercentiles import CreateMetalogDistributionFromPercentiles
 from .CreateMetalogDistribution import CreateMetalogDistribution
 from .CreateSIPDataframe import CreateSIPDataframe
