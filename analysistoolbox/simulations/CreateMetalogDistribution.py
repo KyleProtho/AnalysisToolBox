@@ -310,3 +310,10 @@ def CreateMetalogDistribution(dataframe,
         return metalog_df
     else:
         return arr_metalog
+
+
+# Test
+CreateMetalogDistribution(
+    dataframe=pd.DataFrame({'variable': [1, 2, 3, 4, 5]}), 
+    variable='variable'
+)

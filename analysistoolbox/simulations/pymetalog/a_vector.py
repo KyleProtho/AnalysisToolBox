@@ -1,13 +1,8 @@
 import pandas as pd
 import numpy as np
-import scipy as sp
-
 from scipy.optimize import linprog, minimize, NonlinearConstraint
 from .pdf_quantile_functions import pdf_quantile_builder
 from .support import diffMatMetalog, pdfMetalog, quantileMetalog, newtons_method_metalog
-
-import time
-import warnings
 
 def a_vector_OLS_and_LP(m_dict,
            bounds,

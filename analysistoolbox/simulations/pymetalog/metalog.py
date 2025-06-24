@@ -261,7 +261,8 @@ class metalog():
             fit_method = self.fit_method,
             alpha = self.alpha,
             diff_error = .001,
-            diff_step = 0.001)
+            diff_step = 0.001
+        )
 
 
     # input validation...

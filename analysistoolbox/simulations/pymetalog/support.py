@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 
-
 def MLprobs(x_old, step_len):
   """ Returns the quantile values x['x'] and corresponding bins x['y'].
       Called during metalog.__init__ method call.
