@@ -38,8 +38,8 @@ def CreateSLURPDistribution(linear_regression_model,
                             caption_y_indent=-0.15):
     # Lazy load uncommon packages
     import statsmodels.api as sm
-    import pymetalog as pm
-    
+    from pymetalog import pymetalog as pm
+
     # Ensure that the linear_regression_model is a statsmodels regression model
     if not isinstance(linear_regression_model, sm.regression.linear_model.RegressionResultsWrapper):
         raise ValueError("linear_regression_model must be a statsmodels regression model.")

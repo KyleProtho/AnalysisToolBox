@@ -70,7 +70,7 @@ def CreateMetalogDistribution(dataframe,
         pandas.DataFrame or numpy.ndarray: The metalog distribution in the specified format.
     """
     # Lazy load uncommon packages
-    import pymetalog as pm
+    from pymetalog import pymetalog as pm
     
     # Ensure that return_format is either 'dataframe' or 'array'
     if return_format not in ['dataframe', 'array']:
@@ -310,7 +310,7 @@ def CreateMetalogDistribution(dataframe,
         return arr_metalog
 
 
-# Test the function using upper and lower bounds
+# Test the function
 from sklearn.datasets import load_iris
 iris_df = pd.DataFrame(load_iris().data, columns=load_iris().feature_names)
 CreateMetalogDistribution(
