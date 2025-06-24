@@ -2,7 +2,7 @@ from .metalog import metalog
 from .class_method import rmetalog, plot, qmetalog, pmetalog, dmetalog, summary, update
 
 # Create a pymetalog module that can be imported
-class PyMetalog:
+class pymetalog:
     def __init__(self):
         self.metalog = metalog
         self.rmetalog = rmetalog
@@ -13,7 +13,3 @@ class PyMetalog:
         self.summary = summary
         self.update = update
 
-        name = "pymetalog"
-
-# Create an instance of PyMetalog that can be imported
-pymetalog = PyMetalog()

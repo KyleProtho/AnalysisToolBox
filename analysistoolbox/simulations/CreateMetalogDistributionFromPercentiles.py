@@ -71,7 +71,7 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
         pandas.DataFrame or numpy.ndarray: The metalog distribution in the specified format.
     """
     # Lazy load uncommon packages
-    from pymetalog import pymetalog as pm
+    from .pymetalog import pymetalog as pm
     
     # Ensure that the list of values and list of percentiles are the same length
     if len(list_of_values) != len(list_of_percentiles):

@@ -70,7 +70,7 @@ def CreateMetalogDistribution(dataframe,
         pandas.DataFrame or numpy.ndarray: The metalog distribution in the specified format.
     """
     # Lazy load uncommon packages
-    from pymetalog import pymetalog as pm
+    from .pymetalog import pymetalog as pm
     
     # Ensure that return_format is either 'dataframe' or 'array'
     if return_format not in ['dataframe', 'array']:
@@ -308,35 +308,3 @@ def CreateMetalogDistribution(dataframe,
         return metalog_df
     else:
         return arr_metalog
-
-
-# Test the function
-from sklearn.datasets import load_iris
-iris_df = pd.DataFrame(load_iris().data, columns=load_iris().feature_names)
-CreateMetalogDistribution(
-    dataframe=iris_df,
-    variable='sepal length (cm)',
-    lower_bound=2,
-    upper_bound=7,
-    learning_rate=0.01,
-    term_maximum=9,
-    term_minimum=2,
-    term_for_random_sample=None,
-    number_of_samples=10000,
-    show_summary=True,
-    return_format='dataframe',
-    plot_metalog_distribution=True,
-    fill_color="#999999",
-    fill_transparency=0.6,
-    figure_size=(8, 6),
-    show_mean=True,
-    show_median=True,
-    title_for_plot="Metalog Distribution",
-    subtitle_for_plot="Showing the metalog distribution of the variable",
-    caption_for_plot=None,
-    data_source_for_plot=None,
-    show_y_axis=False,
-    title_y_indent=1.1,
-    subtitle_y_indent=1.05,
-    caption_y_indent=-0.15
-)
