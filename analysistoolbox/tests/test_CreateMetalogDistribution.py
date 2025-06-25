@@ -9,4 +9,5 @@ test_df = pd.DataFrame({
 
 # Test the CreateMetalogDistribution function
 CreateMetalogDistribution(test_df, 'x')
+CreateMetalogDistribution(test_df, 'x', lower_bound=0, upper_bound=6)
 
