@@ -20,7 +20,7 @@ class pymetalog:
         self.specified_term = specified_term
         self.my_metalog = None
     
-    def metalog(self, x, bounds, boundedness, term_limit, term_lower_bound, step_len, probs, fit_method, penalty, alpha):
+    def metalog(self, x=self.x, bounds=self.bounds, boundedness=self.boundedness, term_limit=self.term_limit, term_lower_bound=self.term_lower_bound, step_len=self.step_len, probs=self.probs, fit_method=self.fit_method, penalty=self.penalty, alpha=self.alpha):
         """
         Fit a metalog distribution to the data
         """
