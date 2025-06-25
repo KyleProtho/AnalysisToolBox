@@ -20,12 +20,24 @@ class pymetalog:
         self.specified_term = specified_term
         self.my_metalog = None
     
-    def metalog(self, x=x, bounds=bounds, boundedness=boundedness, term_limit=term_limit, term_lower_bound=term_lower_bound, step_len=step_len, probs=probs, fit_method=fit_method, penalty=penalty, alpha=alpha):
+    def metalog(self, x=None, bounds=None, boundedness=None, term_limit=None, term_lower_bound=None, step_len=None, probs=None, fit_method=None, penalty=None, alpha=None):
         """
         Fit a metalog distribution to the data
         """
         if self.my_metalog is None:
-            self.my_metalog = metalog(x, bounds, boundedness, term_limit, term_lower_bound, step_len, probs, fit_method, penalty, alpha)
+            # Use provided parameters or fall back to instance variables
+            x_val = x if x is not None else self.x
+            bounds_val = bounds if bounds is not None else self.bounds
+            boundedness_val = boundedness if boundedness is not None else self.boundedness
+            term_limit_val = term_limit if term_limit is not None else self.term_limit
+            term_lower_bound_val = term_lower_bound if term_lower_bound is not None else self.term_lower_bound
+            step_len_val = step_len if step_len is not None else self.step_len
+            probs_val = probs if probs is not None else self.probs
+            fit_method_val = fit_method if fit_method is not None else self.fit_method
+            penalty_val = penalty if penalty is not None else self.penalty
+            alpha_val = alpha if alpha is not None else self.alpha
+            
+            self.my_metalog = metalog(x_val, bounds_val, boundedness_val, term_limit_val, term_lower_bound_val, step_len_val, probs_val, fit_method_val, penalty_val, alpha_val)
         return self.my_metalog
 
     def rmetalog(self, metalog_obj=None, random_draws=1, specified_term=2, random_generator='rand'):
