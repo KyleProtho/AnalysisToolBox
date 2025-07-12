@@ -2,7 +2,6 @@
 *.pkl
 *.bin
 .env
-TextSummarizationAndGeneration/.chroma
 .github
 .pypirc
 DEV.md
@@ -12,3 +11,4 @@ dist
 analysistoolbox.egg-info
 __pycache__
 .vscode
+In Development

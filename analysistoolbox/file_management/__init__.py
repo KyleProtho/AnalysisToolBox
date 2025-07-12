@@ -1,4 +1,5 @@
 from .ConvertWordDocsToPDF import ConvertWordDocsToPDF
+from .ConvertWordToHTML import ConvertWordToHTML
 from .CreateCopyOfPDF import CreateCopyOfPDF
 from .CreateFileTree import CreateFileTree
 from .ImportDataFromFolder import ImportDataFromFolder
