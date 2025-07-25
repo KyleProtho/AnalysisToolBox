@@ -14,6 +14,8 @@ def CreateCorrelatedSIPs(mean_of_variable_1,
                          number_of_samples=10000,
                          variable_1_name='Variable 1',
                          variable_2_name='Variable 2',
+                         # Printing arguments
+                         print_simulation_result_summary=False,
                          # Scatterplot arguments
                          show_scatterplot=True,
                          dot_fill_color="#999999",
@@ -79,12 +81,14 @@ def CreateCorrelatedSIPs(mean_of_variable_1,
 
     # Calculate the correlation between the two variables
     simulated_correlation = dataframe[variable_1_name].corr(dataframe[variable_2_name])
-    print("Correlation between the two variables in the simulated data: ", simulated_correlation)
+    if print_simulation_result_summary:
+        print("Correlation between the two variables in the simulated data: ", simulated_correlation)
 
     # Show the summary statistics of the dataframe
     simulation_summary = dataframe.describe()
-    print("Summary statistics of the simulated data:")
-    print(simulation_summary)
+    if print_simulation_result_summary:
+        print("Summary statistics of the simulated data:")
+        print(simulation_summary)
 
     # If scatterplot requested, generate plot
     if show_scatterplot:
