@@ -106,6 +106,7 @@ There are many modules in the analysistoolbox package, each with their own funct
   - [CreateLogisticRegressionModel](#createlogisticregressionmodel)
   - [CreateNeuralNetwork_SingleOutcome](#createneuralnetwork_singleoutcome)
 - [Prescriptive Analytics](#prescriptive-analytics)
+  - [ConductLinearOptimization](#conductlinearoptimization)
   - [CreateContentBasedRecommender](#createcontentbasedrecommender)
 - [Probability](#probability)
   - [ProbabilityOfAtLeastOne](#probabilityofatleastone)
@@ -1636,6 +1637,37 @@ model = CreateNeuralNetwork_SingleOutcome(
 ### Prescriptive Analytics
 
 The prescriptive analytics module provides tools for making data-driven recommendations and decisions:
+
+#### ConductLinearOptimization
+
+Conducts linear optimization to find the optimal input values for a given output variable, with optional constraints.
+
+```python
+import pandas as pd
+from analysistoolbox.prescriptive_analytics.ConductLinearOptimization import ConductLinearOptimization
+
+# Sample data
+data = pd.DataFrame({
+    'input1': [1, 2, 3, 4, 5],
+    'input2': [2, 4, 6, 8, 10],
+    'output': [10, 20, 30, 40, 50]
+})
+
+# Define constraints (optional)
+constraints = {
+    'input1': (0, 10),  # input1 between 0 and 10
+    'input2': (None, 15)  # input2 maximum 15, no minimum
+}
+
+# Run optimization
+results = ConductLinearOptimization(
+    dataframe=data,
+    output_variable='output',
+    list_of_input_variables=['input1', 'input2'],
+    optimization_type='maximize',
+    input_constraints=constraints
+)
+```
 
 #### CreateContentBasedRecommender
 
