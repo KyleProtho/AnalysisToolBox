@@ -12,7 +12,10 @@ def SendDeepResearchQuery(query_text,
                           research_tools=[
                             {"type": "web_search_preview"},
                         ],
-                          skip_clarification=False):
+                          show_report=True,
+                          filepath_to_save_report=None,
+                          filepath_to_save_research_results=None,
+                        skip_clarification=False):
     """
     Send a deep research query to OpenAI's Deep Research API with clarifying questions.
     
@@ -35,6 +38,12 @@ def SendDeepResearchQuery(query_text,
         Controls randomness in the response (0.0 = deterministic).
     verbose : bool, default=True
         Whether to print status messages.
+    show_report : bool, default=True
+        Whether to show the report in Markdown format.
+    filepath_to_save_report : str, default=None
+        The path to save the report.
+    filepath_to_save_research_results : str, default=None
+        The path to save the research results.
     skip_clarification : bool, default=False
         If True, skips the clarification phase and goes directly to research.
     
@@ -74,8 +83,19 @@ def SendDeepResearchQuery(query_text,
         except:
             raise ValueError("No API key provided. If you need an OpenAI API key, visit https://platform.openai.com/")
     
+    # Check if the query_text is valid
     if not query_text or not query_text.strip():
         raise ValueError("query_text cannot be empty.")
+    
+    # Check if the filepath_to_save_report is valid as .md
+    if filepath_to_save_report:
+        if not filepath_to_save_report.endswith('.md'):
+            raise ValueError("filepath_to_save_report must be a valid .md file path.")
+    
+    # Check if the filepath_to_save_research_results is valid as .txt
+    if filepath_to_save_research_results:
+        if not filepath_to_save_research_results.endswith('.txt'):
+            raise ValueError("filepath_to_save_research_results must be a valid .txt file path.")
     
     # Clean the query text
     query_text = query_text.strip()
@@ -204,7 +224,7 @@ Examples:
   to respond in this language, unless the user query explicitly asks for the
   response in a different language.
 
-8. **Sources**
+8. **Sources and Citations**
 - If specific sources should be prioritized, specify them in the prompt.
 - For product and travel research, prefer linking directly to official or
   primary websites (e.g., official brand sites, manufacturer pages, or
@@ -215,6 +235,14 @@ Examples:
   summaries.
 - If the query is in a specific language, prioritize sources published in that
   language.
+- **Citation Format**: Format all citations as endnotes similar to Wikipedia pages:
+  - Use superscript numbers (¹, ², ³, etc.) in the main text to reference sources
+  - Include a "References" or "Sources" section at the end of the response
+  - List all sources numerically with full bibliographic information including:
+    - Author(s) name(s) if available
+    - Title of the work
+    - URL or publication source
+  - Example format: "¹ Smith, John. "Article Title." https://example.com."
 """
         
         # Use the enhanced query (with user input) or original query for research plan creation
@@ -257,8 +285,14 @@ Examples:
             print("Research query completed successfully.")
             
         # Show the report in Markdown format
-        from IPython.display import Markdown
-        Markdown(response.output_text)
+        if show_report:
+            from IPython.display import Markdown
+            Markdown(response.output_text)
+            
+        # Save the report to a file
+        if filepath_to_save_report:
+            with open(filepath_to_save_report, 'w') as f:
+                f.write(response.output_text)
         
         # Extract the research results
         research_data = response.model_dump()
@@ -292,6 +326,11 @@ Examples:
             }
         result['sources'] = sources_dict
         
+        # Save the research results to a file
+        if filepath_to_save_research_results:
+            with open(filepath_to_save_research_results, 'w') as f:
+                f.write(response.output_text)
+        
         # Return the results
         return result
         
@@ -306,3 +345,4 @@ Examples:
         if verbose:
             print(f"Error: {error_msg}")
         raise Exception(error_msg)
+
