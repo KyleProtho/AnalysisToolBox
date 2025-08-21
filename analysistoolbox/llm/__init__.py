@@ -1,2 +1,3 @@
 from .SendPromptToAnthropic import SendPromptToAnthropic
 from .SendPromptToChatGPT import SendPromptToChatGPT
+from .SendDeepResearchQuery import SendDeepResearchQuery
