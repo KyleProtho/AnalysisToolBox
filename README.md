@@ -102,6 +102,7 @@ There are many modules in the analysistoolbox package, each with their own funct
   - [CreateARIMAModel](#createarimamodel)
   - [CreateBoostedTreeModel](#createboostedtreemodel)
   - [CreateDecisionTreeModel](#createdecisiontreemodel)
+  - [CreateExponentialSmoothingModel](#createexponentialsmoothingmodel)
   - [CreateLinearRegressionModel](#createlinearregressionmodel)
   - [CreateLogisticRegressionModel](#createlogisticregressionmodel)
   - [CreateNeuralNetwork_SingleOutcome](#createneuralnetwork_singleoutcome)
@@ -1579,6 +1580,26 @@ model = CreateDecisionTreeModel(
     list_of_predictor_variables=['sqft', 'bedrooms', 'location'],
     is_outcome_categorical=False,
     maximum_depth=5
+)
+```
+
+#### CreateExponentialSmoothingModel
+
+Builds an exponential smoothing model for time series forecasting.
+```python
+from analysistoolbox.predictive_analytics import CreateExponentialSmoothingModel
+
+# Create sample time series data
+dates = pd.date_range(start='2020-01-01', periods=24, freq='M')
+np.random.seed(42)
+values = 100 + np.cumsum(np.random.randn(24)) + 5 * np.sin(np.arange(24) * 2 * np.pi / 12)
+df = pd.DataFrame({'date': dates, 'sales': values})
+
+# Create an exponential smoothing model for time series forecasting
+results = CreateExponentialSmoothingModel(
+    dataframe=df,
+    time_column='date',
+    outcome_column='sales'
 )
 ```
 
