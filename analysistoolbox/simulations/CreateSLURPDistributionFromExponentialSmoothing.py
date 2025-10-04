@@ -8,7 +8,7 @@ import textwrap
 import numpy as np
 
 # Declare function
-def CreateSLURPDistributionForExponentialSmoothing(exponential_smoothing_model, 
+def CreateSLURPDistributionFromExponentialSmoothing(exponential_smoothing_model, 
                                                   # Simulation parameters
                                                   forecast_steps=1,
                                                   number_of_trials=10000,
