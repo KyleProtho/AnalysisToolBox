@@ -7,7 +7,7 @@ import seaborn as sns
 import textwrap
 
 # Declare function
-def CreateSLURPDistribution(linear_regression_model, 
+def CreateSLURPDistributionFromLinearRegression(linear_regression_model, 
                             # Simulation parameters
                             list_of_prediction_values,
                             number_of_trials=10000,

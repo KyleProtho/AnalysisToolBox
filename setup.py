@@ -12,7 +12,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url="https://github.com/KyleProtho/AnalysisToolBox/tree/master/analysistoolbox",
-    version='3.1.0',
+    version='3.2.0',
     author='Kyle Protho',
     author_email='kyletprotho@gmail.com',
     license='MIT',
