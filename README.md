@@ -115,7 +115,9 @@ There are many modules in the analysistoolbox package, each with their own funct
   - [CreateMetalogDistribution](#createmetalogdistribution)
   - [CreateMetalogDistributionFromPercentiles](#createmetalogdistributionfrompercentiles)
   - [CreateSIPDataframe](#createsipdataframe)
-  - [CreateSLURPDistribution](#createslurpdistribution)
+  - [CreateSLURPDistributionFromLinearRegression](#createslurpdistributionfromlinearregression)
+  - [CreateSLURPDistributionFromLogisticRegression](#createslurpdistributionfromlogisticregression)
+  - [CreateSLURPDistributionFromExponentialSmoothing](#createslurpdistributionfromexponentialsmoothing)
   - [SimulateCountOfSuccesses](#simulatecountofsuccesses)
   - [SimulateCountOutcome](#simulatecountoutcome)
   - [SimulateCountUntilFirstSuccess](#simulatecountuntilfirstsuccess)
@@ -1796,20 +1798,56 @@ sip_df = CreateSIPDataframe(
 )
 ```
 
-#### CreateSLURPDistribution
+#### CreateSLURPDistributionFromLinearRegression
 Creates a SIP with relationships preserved (SLURP) based on a linear regression model's prediction interval.
 
 ```python
-from analysistoolbox.simulations import CreateSLURPDistribution
+from analysistoolbox.simulations import CreateSLURPDistributionFromLinearRegression
 
 # Create a SLURP distribution from a linear regression model
-slurp_dist = CreateSLURPDistribution(
+slurp_dist = CreateSLURPDistributionFromLinearRegression(
     linear_regression_model=model,  # statsmodels regression model
     list_of_prediction_values=[x1, x2, ...],  # values for predictors
     number_of_trials=10000,  # number of samples to generate
     prediction_interval=0.95,  # confidence level for prediction interval
     lower_bound=None,  # optional lower bound constraint
     upper_bound=None  # optional upper bound constraint
+)
+```
+
+#### CreateSLURPDistributionFromLogisticRegression
+Creates a SLURP distribution for logistic regression models using confidence intervals for predicted probabilities.
+
+```python
+from analysistoolbox.simulations import CreateSLURPDistributionFromLogisticRegression
+
+# Create a SLURP distribution from a logistic regression model
+slurp_dist = CreateSLURPDistributionFromLogisticRegression(
+    logistic_regression_model=model,  # statsmodels logistic regression model
+    list_of_prediction_values=[x1, x2, ...],  # values for predictors
+    number_of_trials=10000,  # number of samples to generate
+    prediction_interval=0.95,  # confidence level for predicted probabilities
+    lower_bound=0,  # lower bound for probabilities (default: 0)
+    upper_bound=1,  # upper bound for probabilities (default: 1)
+    show_distribution_plot=True  # show the probability distribution plot
+)
+```
+
+#### CreateSLURPDistributionFromExponentialSmoothing
+Creates a SLURP distribution for exponential smoothing models using prediction intervals for time series forecasts.
+
+```python
+from analysistoolbox.simulations import CreateSLURPDistributionFromExponentialSmoothing
+
+# Create a SLURP distribution from an exponential smoothing model
+slurp_dist = CreateSLURPDistributionFromExponentialSmoothing(
+    exponential_smoothing_model=model,  # statsmodels exponential smoothing model
+    forecast_steps=1,  # number of steps ahead to forecast
+    number_of_trials=10000,  # number of samples to generate
+    prediction_interval=0.95,  # confidence level for prediction interval
+    lower_bound=None,  # optional lower bound constraint
+    upper_bound=None,  # optional upper bound constraint
+    show_distribution_plot=True  # show the forecast distribution plot
 )
 ```
 
