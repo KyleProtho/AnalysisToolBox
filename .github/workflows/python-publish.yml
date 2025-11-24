@@ -1,4 +1,4 @@
-# This workflow will upload a Python Package using Twine when a release is created
+# This workflow will upload a Python Package to PyPI when setup.py version changes
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python#publishing-to-package-registries
 
 # This workflow uses actions that are not certified by GitHub.
@@ -9,31 +9,68 @@
 name: Upload Python Package
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'setup.py'
 
 permissions:
   contents: read
 
 jobs:
   deploy:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 2  # Fetch last 2 commits to compare versions
+    
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
         python-version: '3.x'
+    
+    - name: Extract version from setup.py
+      id: extract_version
+      run: |
+        VERSION=$(python -c "import re; content = open('setup.py').read(); match = re.search(r\"version=['\\\"]([^'\\\"]+)['\\\"]\", content); print(match.group(1) if match else '')")
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Current version: $VERSION"
+    
+    - name: Check if version changed
+      id: check_version
+      run: |
+        CURRENT_VERSION="${{ steps.extract_version.outputs.version }}"
+        PREVIOUS_VERSION=$(git show HEAD~1:setup.py 2>/dev/null | python -c "import re, sys; content = sys.stdin.read(); match = re.search(r\"version=['\\\"]([^'\\\"]+)['\\\"]\", content); print(match.group(1) if match else '')" || echo "")
+        
+        if [ -z "$PREVIOUS_VERSION" ]; then
+          echo "No previous version found, will publish"
+          echo "should_publish=true" >> $GITHUB_OUTPUT
+        elif [ "$CURRENT_VERSION" != "$PREVIOUS_VERSION" ]; then
+          echo "Version changed from $PREVIOUS_VERSION to $CURRENT_VERSION, will publish"
+          echo "should_publish=true" >> $GITHUB_OUTPUT
+        else
+          echo "Version unchanged ($CURRENT_VERSION), skipping publish"
+          echo "should_publish=false" >> $GITHUB_OUTPUT
+        fi
+    
     - name: Install dependencies
+      if: steps.check_version.outputs.should_publish == 'true'
       run: |
         python -m pip install --upgrade pip
-        pip install build
+        pip install build twine
+    
     - name: Build package
+      if: steps.check_version.outputs.should_publish == 'true'
       run: python -m build
-    - name: Publish package
+    
+    - name: Publish package to PyPI
+      if: steps.check_version.outputs.should_publish == 'true'
       uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
+        repository_url: https://upload.pypi.org/legacy/
