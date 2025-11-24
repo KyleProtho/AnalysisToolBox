@@ -107,7 +107,7 @@ def CreateSLURPDistributionFromExponentialSmoothing(exponential_smoothing_model,
     """
     # Lazy load uncommon packages
     import statsmodels.api as sm
-    from statsmodels.tsa.exponential_smoothing import ExponentialSmoothing
+    from statsmodels.tsa.holtwinters import ExponentialSmoothing
     from statsmodels.tsa.exponential_smoothing.ets import ETSResults
     from .pymetalog import pymetalog
     # Create an instance of the pymetalog class
