@@ -6,6 +6,8 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 import textwrap
 import numpy as np
+import statsmodels.api as sm
+from scipy import stats
 
 # Declare function
 def CreateSLURPDistributionFromExponentialSmoothing(exponential_smoothing_model, 
@@ -113,9 +115,9 @@ def CreateSLURPDistributionFromExponentialSmoothing(exponential_smoothing_model,
     # Create an instance of the pymetalog class
     pm = pymetalog()
 
-    # Ensure that the exponential_smoothing_model is a statsmodels exponential smoothing model
-    if not isinstance(exponential_smoothing_model, ExponentialSmoothing):
-        raise ValueError("exponential_smoothing_model must be a fitted statsmodels ExponentialSmoothing model.")
+    # # Ensure that the exponential_smoothing_model is a statsmodels exponential smoothing model
+    # if not isinstance(exponential_smoothing_model, ExponentialSmoothing):
+    #     raise ValueError("exponential_smoothing_model must be a fitted statsmodels ExponentialSmoothing model.")
     
     # Ensure that prediction_interval is between 0 and 1
     if prediction_interval <= 0 or prediction_interval >= 1:
@@ -132,7 +134,7 @@ def CreateSLURPDistributionFromExponentialSmoothing(exponential_smoothing_model,
     
     # Calculate z-score for the prediction interval
     alpha = 1 - prediction_interval
-    z_score = 1.96 if prediction_interval == 0.95 else np.abs(sm.stats.stattools.invnorm(alpha/2))
+    z_score = 1.96 if prediction_interval == 0.95 else np.abs(stats.norm.ppf(1 - alpha/2))
     
     # Get the forecast value (mean)
     forecast_mean = forecast_result.iloc[-1]  # Get the last forecast value
