@@ -114,7 +114,7 @@ def CreateSLURPDistributionFromExponentialSmoothing(exponential_smoothing_model,
     pm = pymetalog()
 
     # Ensure that the exponential_smoothing_model is a statsmodels exponential smoothing model
-    if not isinstance(exponential_smoothing_model, ETSResults):
+    if not isinstance(exponential_smoothing_model, ExponentialSmoothing):
         raise ValueError("exponential_smoothing_model must be a fitted statsmodels ExponentialSmoothing model.")
     
     # Ensure that prediction_interval is between 0 and 1
