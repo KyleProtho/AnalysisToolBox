@@ -75,6 +75,8 @@ There are many modules in the analysistoolbox package, each with their own funct
   - [CreateFileTree](#createfiletree)
   - [CreateCopyOfPDF](#createcopyofpdf)
   - [ConvertWordDocsToPDF](#convertworddocstopdf)
+- [Geospatial Analysis](#geospatial-analysis)
+  - [ConductClusterAnalysis](#conductclusteranalysis)
 - [Hypothesis Testing](#hypothesis-testing)
   - [ChiSquareTestOfIndependence](#chisquaretestofindependence)
   - [ChiSquareTestOfIndependenceFromTable](#chisquaretestofindependencefromtable)
@@ -1115,6 +1117,38 @@ ConvertWordDocsToPDF(
     pdf_folder_path=pdf_folder,
     open_each_doc=False
 )
+```
+
+
+### Geospatial Analysis
+
+#### ConductClusterAnalysis
+
+The **ConductClusterAnalysis** function groups geospatial data points into clusters based on their proximity using the DBSCAN algorithm. It mimics the functionality of Bellingcat's geoclustering tool and can optionally display a map of the clusters.
+
+```python
+# Import the function
+from analysistoolbox.geospatial_analysis import ConductClusterAnalysis
+import pandas as pd
+
+# Create a sample dataframe
+df = pd.DataFrame({
+    'lat': [40.7128, 40.7130, 34.0522, 34.0525],
+    'lon': [-74.0060, -74.0065, -118.2437, -118.2440]
+})
+
+# Run cluster analysis
+summary = ConductClusterAnalysis(
+    dataframe=df,
+    longitude_column='lon',
+    latitude_column='lat',
+    distance_km=0.5,
+    min_samples=2,
+    map_clusters=True
+)
+
+# Print summary
+print(summary)
 ```
 
 ### Hypothesis Testing

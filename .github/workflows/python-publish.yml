@@ -69,8 +69,10 @@ jobs:
     
     - name: Publish package to PyPI
       if: steps.check_version.outputs.should_publish == 'true'
-      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: __token__
+        # Note: PYPI_API_TOKEN must be a PyPI API token starting with "pypi-"
+        # Generate one at: https://pypi.org/manage/account/token/
         password: ${{ secrets.PYPI_API_TOKEN }}
         repository_url: https://upload.pypi.org/legacy/

@@ -4,6 +4,7 @@
 .env
 .github
 .pypirc
+.gitbook
 DEV.md
 analysistoolbox/analysistoolbox.egg-info
 build
