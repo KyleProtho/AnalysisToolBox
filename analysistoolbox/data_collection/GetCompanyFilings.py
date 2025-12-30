@@ -13,20 +13,103 @@ def GetCompanyFilings(search_keywords: str,
                       results_csv_filepath = None,
                       results_log_filepath = None) -> pd.DataFrame:
     """
-    Search EDGAR filings based on provided parameters. This function uses the EDGAR tool from the SEC to search for filings.
+    Search and retrieve company filings from the SEC EDGAR database.
 
-    Parameters:
-        search_keywords (str): Keywords to search for in filings.
-        start_date (str): Start date for the search in 'YYYY-MM-DD' format.
-        end_date (str): End date for the search in 'YYYY-MM-DD' format.
-        filing_type (str): Type of filings to search. Default is "all".
-        company_cik (str): Company CIK to filter results. Default is "" (no filter).
-        filter_by_location (str): Type of location filter, either "Incorporated in" or 
-                                  "Principal executive offices in". Default is "" (no filter).
-        location (str): Specific location to filter by. Default is "" (no filter).
+    This function provides programmatic access to the U.S. Securities and Exchange Commission's
+    EDGAR (Electronic Data Gathering, Analysis, and Retrieval) system, which contains financial
+    and business disclosure documents filed by public companies. The function wraps the EDGAR
+    tool to search for specific filings based on keywords, date ranges, filing types, and
+    company identifiers.
 
-    Returns:
-        pd.DataFrame: A DataFrame containing the search results.
+    EDGAR filings are essential for:
+      * Financial analysis and investment research
+      * Due diligence and corporate intelligence
+      * Regulatory compliance monitoring
+      * Competitive analysis and market research
+      * Risk assessment and fraud detection
+      * Academic research on corporate behavior
+      * Tracking mergers, acquisitions, and corporate actions
+
+    The function supports filtering by multiple criteria including company CIK (Central Index Key),
+    filing type (e.g., 10-K, 10-Q, 8-K), date range, and company location. Results are returned
+    as a pandas DataFrame for easy analysis and can optionally be saved to CSV for archival.
+
+    Parameters
+    ----------
+    search_keywords
+        Keywords to search for within filing documents. Use empty string for no keyword filter.
+        Supports boolean operators and phrase searching.
+    start_date
+        Start date for the search period in 'YYYY-MM-DD' format. Only filings submitted on or
+        after this date will be included.
+    end_date
+        End date for the search period in 'YYYY-MM-DD' format. Only filings submitted on or
+        before this date will be included.
+    filing_type
+        Type of SEC filing to search for (e.g., '10-K', '10-Q', '8-K', 'DEF 14A'). Use 'all'
+        to search across all filing types. Defaults to 'all'.
+    company_cik
+        Central Index Key (CIK) number to filter results to a specific company. Use empty
+        string for no company filter. Defaults to '' (no filter).
+    filter_by_location
+        Type of location filter to apply. Must be either 'Incorporated in' or
+        'Principal executive offices in'. Use empty string for no location filter.
+        Defaults to '' (no filter).
+    location
+        Specific location (state or country) to filter by when using filter_by_location.
+        Use empty string for no location filter. Defaults to '' (no filter).
+    results_csv_filepath
+        File path where search results should be saved as CSV. If None, a timestamped
+        filename will be automatically generated. Defaults to None.
+    results_log_filepath
+        File path where search logs should be saved. If None, a timestamped log file
+        will be automatically generated. Defaults to None.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing search results with columns for company name, CIK, filing type,
+        filing date, and document links. Returns empty DataFrame if no results are found.
+
+    Examples
+    --------
+    # Search for all 10-K filings mentioning 'artificial intelligence' in 2023
+    filings = GetCompanyFilings(
+        search_keywords='artificial intelligence',
+        start_date='2023-01-01',
+        end_date='2023-12-31',
+        filing_type='10-K'
+    )
+
+    # Search for all filings from a specific company using CIK
+    apple_filings = GetCompanyFilings(
+        search_keywords='',
+        start_date='2022-01-01',
+        end_date='2023-12-31',
+        company_cik='0000320193',  # Apple Inc.
+        filing_type='all'
+    )
+
+    # Search for 8-K filings from companies incorporated in Delaware
+    delaware_8k = GetCompanyFilings(
+        search_keywords='merger',
+        start_date='2023-01-01',
+        end_date='2023-12-31',
+        filing_type='8-K',
+        filter_by_location='Incorporated in',
+        location='DE'
+    )
+
+    # Save results to a custom location
+    filings = GetCompanyFilings(
+        search_keywords='cybersecurity',
+        start_date='2023-01-01',
+        end_date='2023-12-31',
+        filing_type='10-Q',
+        results_csv_filepath='cybersecurity_filings.csv',
+        results_log_filepath='search_log.log'
+    )
+
     """
     # Lazy load the EDGAR tool to avoid unnecessary imports
     from edgar_tool.cli import SecEdgarScraperCli as edgar_tool

@@ -7,20 +7,81 @@ def FetchUSShapefile(state=None,
                      geography='census tract',
                      census_year=2021):
     """
-    Fetches a geographical shapefile from the TIGER database of the U.S. Census Bureau.
+    Fetch a geographical shapefile from the U.S. Census Bureau's TIGER database.
 
-    Parameters:
-        state (str, optional): The state for which the shapefile is to be fetched. Default is None.
-        county (str, optional): The county for which the shapefile is to be fetched. Default is None.
-        geography (str, optional): The type of geographical unit for which the shapefile is to be fetched. 
-                                Must be one of the following: 'nation', 'divisions', 'regions', 'states', 
-                                'counties', 'zipcodes', 'tract', 'block groups', 'blocks', 'school districts', 
-                                'county subdivisions', 'congressional districts', 'state legislative districts', 
-                                'voting districts'. Default is 'census tract'.
-        census_year (int, optional): The census year for which the shapefile is to be fetched. Default is 2021.
+    This function retrieves geographical boundary data (shapefiles) from the U.S. Census Bureau's
+    TIGER (Topologically Integrated Geographic Encoding and Referencing) database. The data is
+    returned as a GeoDataFrame, ready for spatial analysis and visualization. This provides an
+    easy interface to download official U.S. Census geographic boundaries without manual file
+    management or data conversion.
 
-    Returns:
-        geopandas.GeoDataFrame: The fetched shapefile as a GeoDataFrame.
+    TIGER shapefiles are the authoritative source for U.S. Census geographic boundaries and
+    are essential for:
+      * Demographic and socioeconomic spatial analysis
+      * Electoral district mapping and redistricting analysis
+      * Public health surveillance and healthcare resource planning
+      * Crime mapping and law enforcement jurisdiction analysis
+      * Educational planning and school district analysis
+      * Market research and business location intelligence
+
+    The function supports multiple geographic levels (from nation-wide down to census blocks)
+    and allows filtering by state and county when applicable. The underlying pygris library
+    handles caching to improve performance on repeated requests.
+
+    Parameters
+    ----------
+    state
+        Two-letter state abbreviation or full state name for which to fetch the shapefile.
+        Required for most geography types (e.g., counties, tracts) but not for nation-level
+        geographies. Defaults to None.
+    county
+        County name for which to fetch the shapefile. Required for fine-grained geographies
+        like census tracts, block groups, and blocks. Ignored for broader geographies.
+        Defaults to None.
+    geography
+        Type of geographical unit to fetch. Must be one of: 'nation', 'divisions', 'regions',
+        'states', 'counties', 'zipcodes', 'tract', 'block groups', 'blocks', 'school districts',
+        'county subdivisions', 'congressional districts', 'state legislative districts',
+        'voting districts'. Defaults to 'census tract'.
+    census_year
+        Census year for which to fetch the shapefile. Different years may have different
+        boundaries due to redistricting or geographic changes. Defaults to 2021.
+
+    Returns
+    -------
+    geopandas.GeoDataFrame
+        A GeoDataFrame containing the requested geographic boundaries with associated
+        attributes (FIPS codes, names, etc.) and geometry information.
+
+    Examples
+    --------
+    # Fetch all census tracts for a specific state
+    tracts_gdf = FetchUSShapefile(
+        state='CA',
+        geography='tract',
+        census_year=2021
+    )
+
+    # Fetch all counties in the United States
+    counties_gdf = FetchUSShapefile(
+        geography='counties',
+        census_year=2020
+    )
+
+    # Fetch census block groups for a specific county
+    block_groups_gdf = FetchUSShapefile(
+        state='TX',
+        county='Harris',
+        geography='block groups',
+        census_year=2021
+    )
+
+    # Fetch ZIP code tabulation areas (ZCTAs) for a state
+    zipcodes_gdf = FetchUSShapefile(
+        state='NY',
+        geography='zipcodes'
+    )
+
     """
     # Lazy load uncommon packages
     import folium 

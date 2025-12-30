@@ -9,14 +9,61 @@ def ExtractTextFromPDF(filepath_to_pdf,
                        show_word_count=False,
                        show_estimated_token_count=False):
     """
-    This function extracts text from a PDF file, cleans it, then saves it to a text file.
+    Extract text from a PDF file, clean it, and save to a text file.
 
-    Args:
-        filepath_to_pdf (str): The path to the PDF file that you want to extract text from.
-        filepath_for_exported_text (str): The path to the text file that you want to save the extracted text to.
-        start_page (int, optional): The page number of the PDF file that you want to start extracting text from. Defaults to 1.
-        end_page (int or None, optional): The page number of the PDF file that you want to stop extracting text from. If None, the function will extract text from all pages in the PDF file. Defaults to None.
-        show_word_count (bool, optional): Whether or not to show the word count of the extracted text. Defaults to True.
+    This function reads a PDF document page by page, extracts the text content,
+    applies basic cleaning operations (removing extra whitespace, handling hyphenation),
+    and writes the cleaned text to a specified output file. Optionally, it can display
+    word count and estimated token count statistics for the extracted content.
+
+    Text cleaning operations include:
+      * Stripping leading and trailing whitespace
+      * Removing duplicate spaces
+      * Handling hyphenation at line breaks
+      * Removing line breaks between continuous words
+
+    This is particularly useful for preparing PDF content for further text analysis,
+    machine learning applications, or creating clean text corpora from document collections.
+
+    Parameters
+    ----------
+    filepath_to_pdf
+        Path to the PDF file to extract text from. Must be a string ending in '.pdf'.
+    filepath_for_exported_text
+        Path where the extracted text will be saved. Must be a string ending in '.txt'.
+    start_page
+        Page number to start extracting text from (1-indexed). Defaults to 1.
+    end_page
+        Page number to stop extracting text from. If None, extracts text from all pages
+        in the PDF file. Defaults to None.
+    show_word_count
+        If True, displays the word count of the extracted text. Defaults to False.
+    show_estimated_token_count
+        If True, displays an estimated token count based on word count. Defaults to False.
+
+    Returns
+    -------
+    None
+        This function writes to a file and optionally prints statistics, but does not
+        return a value.
+
+    Examples
+    --------
+    # Extract all text from a PDF and save to a text file
+    ExtractTextFromPDF(
+        filepath_to_pdf='document.pdf',
+        filepath_for_exported_text='output.txt',
+        show_word_count=True
+    )
+
+    # Extract text from pages 5 through 10 only
+    ExtractTextFromPDF(
+        filepath_to_pdf='document.pdf',
+        filepath_for_exported_text='output.txt',
+        start_page=5,
+        end_page=10
+    )
+
     """
     # Lazy load uncommon packages
     import PyPDF2
