@@ -77,6 +77,7 @@ There are many modules in the analysistoolbox package, each with their own funct
   - [ConvertWordDocsToPDF](#convertworddocstopdf)
 - [Geospatial Analysis](#geospatial-analysis)
   - [ConductClusterAnalysis](#conductclusteranalysis)
+  - [ConductSpatialAutocorrelation](#conductspatialautocorrelation)
 - [Hypothesis Testing](#hypothesis-testing)
   - [ChiSquareTestOfIndependence](#chisquaretestofindependence)
   - [ChiSquareTestOfIndependenceFromTable](#chisquaretestofindependencefromtable)
@@ -1149,6 +1150,36 @@ summary = ConductClusterAnalysis(
 
 # Print summary
 print(summary)
+```
+
+#### ConductSpatialAutocorrelation
+
+The **ConductSpatialAutocorrelation** function identifies spatial clusters and outliers using Local Moran's I. Spatial autocorrelation measures how much a variable at a location is correlated with the same variable at neighboring locations, effectively identifying if similar values cluster together (hotspots/coldspots) or if dissimilar values are near each other (spatial outliers).
+
+```python
+# Import the function
+from analysistoolbox.geospatial_analysis import ConductSpatialAutocorrelation
+import pandas as pd
+
+# Create a sample dataframe
+df = pd.DataFrame({
+    'lat': [40.7128, 40.7130, 34.0522, 34.0525, 34.0500],
+    'lon': [-74.0060, -74.0065, -118.2437, -118.2440, -118.2500],
+    'value': [100, 105, 10, 15, 8]
+})
+
+# Run spatial autocorrelation analysis
+results = ConductSpatialAutocorrelation(
+    dataframe=df,
+    longitude_column='lon',
+    latitude_column='lat',
+    value_column='value',
+    k=5,
+    plot=True
+)
+
+# Print results
+print(results[['lat', 'lon', 'value', 'cluster_category']])
 ```
 
 ### Hypothesis Testing
