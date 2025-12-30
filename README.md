@@ -26,6 +26,12 @@ sns.set(
 )
 ```
 
+## Documentation Standards
+
+To verify that the library remains accessible to students and professionals alike, all functions in the library should include a **Teaching Note** in their docstring. This note should explain *why* the function matters, how it aids in "sense-making," or what qualitative insights it reveals, rather than just describing the mechanics of the code.
+
+See `analysistoolbox.calculus.PlotFunction` for a canonical example.
+
 ## Table of Contents / Usage
 
 There are many modules in the analysistoolbox package, each with their own functions. The following is a list of the modules:

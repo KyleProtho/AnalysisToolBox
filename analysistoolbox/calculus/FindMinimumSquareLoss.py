@@ -4,19 +4,71 @@ import numpy as np
 import seaborn as sns
 
 # Declare function
-def FindMinimumSquareLoss(observed_values,
-                          predicted_values,
-                          show_plot=True):
+def FindMinimumSquareLoss(
+    observed_values,
+    predicted_values,
+    show_plot: bool = False,
+    **plot_kwargs
+):
     """
-    This function calculates the minimum square loss between observed and predicted values.
+    Find the parameter value that minimizes squared loss between observed data
+    and a model function.
 
-    Args:
-        observed_values: A list of observed values.
-        predicted_values: A list of predicted values.
+    Squared loss measures the total discrepancy between observed values and
+    model-predicted values by summing the squared residuals. Minimizing this
+    quantity yields the parameter value that best fits the data under a
+    least-squares criterion.
 
-    Returns:
-        The minimum square loss between the observed and predicted values.
+    In analytic practice, least-squares minimization formalizes a common
+    reasoning task: choosing the explanation, model, or parameterization that
+    best accounts for observed evidence while penalizing large errors more
+    heavily than small ones.
+
+    This function:
+      * Constructs a squared loss function based on the difference between
+        observed `y_values` and the model's predictions.
+      * Symbolically differentiates the loss with respect to the model
+        parameter.
+      * Solves for the parameter value that minimizes total squared error.
+      * Optionally prints intermediate results and visualizes the fit.
+
+    Parameters
+    ----------
+    observed_values
+        Observed dependent variable values (e.g., incidents, biomarker levels,
+        risk scores).
+    predicted_values
+        Predicted dependent variable values (e.g., incidents, biomarker levels,
+        risk scores).
+    show_plot
+        If True, plots observed data against the fitted model.
+    **plot_kwargs
+        Additional keyword arguments passed to the plotting routine.
+
+    Returns
+    -------
+    The parameter value that minimizes the squared loss between observed data
+    and the model.
+
+    Examples
+    --------
+    # Fit a linear trend to observed incident counts
+    x, a = sympy.symbols('x a')
+    model = a * x
+    FindMinimumSquareLoss(
+        observed_values=[1, 2, 3, 4],
+        predicted_values=[2.1, 4.2, 5.9, 8.3],
+        show_plot=True
+    )
+
+    Teaching Note
+    -------------
+    Squared loss grows rapidly as errors increase. This makes least-squares
+    methods especially sensitive to large deviations, which is often desirable
+    when large errors correspond to analytically meaningful failures rather
+    than random noise.
     """
+
     # Check if the number of observed values is equal to the number of predicted values.
     if len(observed_values) != len(predicted_values):
         raise ValueError("The number of observed values must be equal to the number of predicted values.")

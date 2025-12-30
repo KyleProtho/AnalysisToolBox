@@ -3,33 +3,77 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Declare function
-def FindLimitOfFunction(f_of_x,
-                        point,
-                        step=0.0001,
-                        plot_function=True,
-                        plot_tangent_line=True,
-                        x_minimum=-10,
-                        x_maximum=10,
-                        n=100,
-                        tangent_line_window=None):
+def FindLimitOfFunction(
+    f_of_x,
+    point,
+    step: float = 0.001,
+    plot_function: bool = False,
+    x_minimum: float = None,
+    x_maximum: float = None,
+    n: int = 500,
+    tangent_line_window: float = 1.0,
+    **plot_kwargs
+) -> sympy.Expr:
     """
-    This function finds the x_tangent of a function at a given point. 
-    It also plots the function and the tangent line at the point of interest.
+    Compute and visualize the limit of a mathematical function as its input
+    approaches a specified point.
 
-    Args:
-        f_of_x (lambda): The function of x.
-        point (int or float): The point at which to find the x_tangent.
-        step (float, optional): The step size to use when calculating the x_tangent. Defaults to 0.0001.
-        plot_function (bool, optional): Whether or not to plot the function. Defaults to True.
-        x_minimum (int, optional): The minimum value of x to use when plotting the function. Defaults to -10.
-        x_maximum (int, optional): The maximum value of x to use when plotting the function. Defaults to 10.
-        n (int, optional): The number of points to use when plotting the function. Defaults to 100.
-        tangent_line_window (_type_, optional): The window to use when plotting the tangent line. Defaults to None, which will use 1/5 of the x range.
-        
-    Returns:
-        float: The x_tangent at the point of interest.
+    In calculus, a *limit* describes the value that a function’s output
+    approaches as its input gets arbitrarily close to a given point, even
+    if the function is not defined at that point itself. Limits underpin
+    many core ideas in analysis — including continuity, derivatives, and
+    asymptotic behavior — and have practical interpretive value in analytic
+    domains.
+
+    This function:
+      * Uses SymPy’s symbolic `limit` capability to compute the limit of
+        `f_of_x` as its independent variable approaches `point`.
+      * Optionally plots the function near `point` and overlays a tangent
+        line to illustrate the local approach behavior.
+      * Returns the symbolic limit expression for programmatic inspection.
+
+    Parameters
+    ----------
+    f_of_x
+        A symbolic or numeric expression representing f(x). Limits can
+        reveal behavior near discontinuities or indeterminate forms.:contentReference[oaicite:1]{index=1}
+    point
+        The input value that x approaches (e.g., 0, infinity, or a finite
+        critical point).
+    step
+        Step size used for numerical approximation or plotting.
+    plot_function
+        If True, generate a matplotlib plot of `func` near `point`.
+    x_minimum, x_maximum
+        The range over which to plot `func`. If None, a default window
+        around `point` is chosen.
+    n
+        Number of points used for plotting.
+    tangent_line_window
+        Width of the window around `point` over which the tangent line is
+        drawn.
+    **plot_kwargs
+        Additional keyword arguments passed to the plotting routine.
+
+    Returns
+    -------
+    A symbolic SymPy expression representing the limit of `func` as x→`point`.
+
+    Examples
+    --------
+    # Symbolically compute the limit of sin(x)/x as x→0
+    x = sympy.symbols('x')
+    FindLimitOfFunction(sympy.sin(x)/x, point=0, plot_function=True)
+
+    Teaching Note
+    -------------
+    A limit expresses the *behavior* of a function in the vicinity of a value:
+    it does not require the function to be defined at that exact point. For
+    instance, sin(x)/x is undefined at x=0, yet its limit as x approaches
+    0 is 1 — reflecting the function’s approach behavior, not its value at
+    the point.
     """
-    
+
     # Create array of values based on the function
     x = np.linspace(x_minimum, x_maximum, n)
     y = np.zeros(len(x))
