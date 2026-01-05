@@ -10,19 +10,88 @@ def CreateBinnedColumn(dataframe,
                        binning_strategy='kmeans',
                        new_column_name=None):
     """
-    This function creates a binned column in a dataframe based on a numeric variable. 
-    The default is to create 6 bins using the k-means binning strategy. 
-    The new column name is the name of the variable to bin with '- Binned' appended to it.
+    Discretize continuous numeric data into discrete bins using specified strategies.
 
-    Args:
-        dataframe (Pandas dataframe): Pandas dataframe
-        numeric_column_name (str): The name of the variable to bin. Should be a numeric variable.
-        number_of_bins (int, optional): The number of bins to create. Defaults to 6.
-        binning_strategy (str, optional): The strategy to use to create the bins. Defaults to 'kmeans'.
-        new_column_name (str, optional): The name of the new column containing the bins. Defaults to None.
+    This function transforms a continuous variable into a categorical one by grouping
+    values into bins. It utilizes scikit-learn's `KBinsDiscretizer` to perform the
+    binning, supporting various strategies like equal width, equal frequency (quantiles), or
+    k-means clustering. This is essential for converting numeric features into features 
+    suitable for algorithms that require categorical input or for simplifying 
+    complex distributions for analysis.
 
-    Returns:
-        Pandas dataframe: An updated Pandas dataframe with the bins for the variable to bin
+    The function is particularly useful for:
+      * Feature engineering for machine learning models (e.g., decision trees, naïve bayes)
+      * Segmenting customers into groups (e.g., age groups, income brackets)
+      * Reducing noise and handling outliers in continuous data
+      * Creating histograms or grouped summaries for exploratory data analysis
+      * Simplifying the interpretation of complex numeric distributions
+      * Identifying natural clusters within a single dimension using k-means
+
+    The function handles missing and non-finite values by excluding them from the binning 
+    calculation and returning them as NaN in the resulting column.
+
+    Parameters
+    ----------
+    dataframe
+        A pandas DataFrame containing high-cardinality numeric data.
+    numeric_column_name
+        The name of the column containing the continuous numeric values to be binned.
+    number_of_bins
+        The number of bins to create. Defaults to 6.
+    binning_strategy
+        The strategy used to define the widths of the bins. Options include:
+          * 'uniform': All bins in each feature have identical widths.
+          * 'quantile': All bins in each feature have the same number of points.
+          * 'kmeans': Values in each bin have the same nearest center of a 1D k-means cluster.
+        Defaults to 'kmeans'.
+    new_column_name
+        The name of the new column to be added to the DataFrame. If None, the column 
+        will be named '{numeric_column_name}- Binned'. Defaults to None.
+
+    Returns
+    -------
+    pd.DataFrame
+        An updated pandas DataFrame containing the original columns plus a new column 
+        with ordinal bin identifiers (labeled 0, 1, 2, ...).
+
+    Examples
+    --------
+    # Create age groups using k-means clustering
+    import pandas as pd
+    demographics = pd.DataFrame({
+        'user_id': range(1, 7),
+        'age': [18, 22, 35, 42, 58, 65]
+    })
+    demographics = CreateBinnedColumn(
+        demographics, 
+        numeric_column_name='age', 
+        number_of_bins=3
+    )
+    # Adds 'age- Binned' column with values 0, 1, or 2
+
+    # Segment income into equal-width bins
+    financial_data = pd.DataFrame({
+        'income': [20000, 45000, 50000, 120000, 250000, 80000]
+    })
+    financial_data = CreateBinnedColumn(
+        financial_data, 
+        numeric_column_name='income', 
+        binning_strategy='uniform',
+        number_of_bins=5,
+        new_column_name='income_segment'
+    )
+
+    # Use quantiles to ensure equal distribution of users across bins
+    web_traffic = pd.DataFrame({
+        'session_duration': [10, 12, 11, 100, 200, 150, 15, 18]
+    })
+    web_traffic = CreateBinnedColumn(
+        web_traffic, 
+        numeric_column_name='session_duration', 
+        binning_strategy='quantile',
+        number_of_bins=4
+    )
+
     """
     
     # Create new column name if not provided

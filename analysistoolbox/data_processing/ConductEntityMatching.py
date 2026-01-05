@@ -12,20 +12,143 @@ def ConductEntityMatching(dataframe_1,
                           columns_to_compare=None,
                           match_methods=['Partial Token Set Ratio', 'Weighted Ratio']):
     """
-    Conducts entity matching between two dataframes using various fuzzy matching algorithms.
-    
-    Args:
-        dataframe_1 (pandas.DataFrame): First dataframe to match.
-        dataframe_1_primary_key (str): Name of the primary key column in dataframe_1.
-        dataframe_2 (pandas.DataFrame): Second dataframe to match.
-        dataframe_2_primary_key (str): Name of the primary key column in dataframe_2.
-        levenshtein_distance_filter (int, optional): Maximum Levenshtein distance between two entities to consider a match. Defaults to None.
-        match_score_threshold (int, optional): Minimum match score to consider a match. Defaults to 95.
-        columns_to_compare (list of str, optional): List of columns to compare between the two dataframes. If None, all columns are compared. Defaults to None.
-        match_methods (list of str, optional): List of fuzzy matching algorithms to use. Defaults to ['Partial Token Set Ratio', 'Weighted Ratio'].
-        
-    Returns:
-        pandas.DataFrame: Dataframe of matched entities and their match scores.
+    Match and link records across two DataFrames using fuzzy string matching algorithms.
+
+    This function performs entity resolution (also known as record linkage or deduplication) by
+    comparing text fields between two DataFrames and identifying potential matches based on
+    string similarity. It uses multiple fuzzy matching algorithms from the fuzzywuzzy library
+    to compute match scores and can optionally filter candidates using Levenshtein distance.
+    This is essential for linking records that refer to the same real-world entity despite
+    variations in naming, spelling, or formatting.
+
+    The function is particularly useful for:
+      * Customer data deduplication across multiple systems
+      * Merging company records from different databases
+      * Matching product catalogs from various vendors
+      * Linking person records with name variations
+      * Data integration and master data management
+      * Matching addresses with different formatting
+      * Reconciling financial records across sources
+
+    The function generates all possible pairs between the two DataFrames, calculates similarity
+    scores using the specified fuzzy matching methods, and returns only pairs exceeding the
+    match score threshold. Multiple matching algorithms can be used simultaneously to improve
+    accuracy. Results include both the match scores and the original column values from both
+    DataFrames for manual review.
+
+    Parameters
+    ----------
+    dataframe_1
+        First pandas DataFrame containing records to match. Must include the primary key
+        column and the columns specified in columns_to_compare.
+    dataframe_1_primary_key
+        Name of the column in dataframe_1 that serves as the unique identifier for each
+        record. This will be included in the output for reference.
+    dataframe_2
+        Second pandas DataFrame containing records to match against dataframe_1. Must
+        include the primary key column and the columns specified in columns_to_compare.
+    dataframe_2_primary_key
+        Name of the column in dataframe_2 that serves as the unique identifier for each
+        record. This will be included in the output for reference.
+    levenshtein_distance_filter
+        If specified, only pairs with Levenshtein edit distance less than or equal to
+        this value are evaluated with fuzzy matching algorithms. This pre-filters candidates
+        to improve performance. If None, no filtering is applied. Defaults to None.
+    match_score_threshold
+        Minimum similarity score (0-100) required for a pair to be included in results.
+        Higher values are more restrictive and return only very similar matches. Typical
+        values are 80-95 for fuzzy matching. Defaults to 95.
+    columns_to_compare
+        List of column names to use for entity matching. These columns are concatenated
+        (with spaces) to create the comparison strings. If None, all common columns between
+        the two DataFrames are used. Defaults to None.
+    match_methods
+        List of fuzzy matching algorithms to apply. Valid options are:
+          * 'Ratio': Basic string similarity using difflib
+          * 'Partial Ratio': Matches shortest string against substrings
+          * 'Token Sort Ratio': Sorts tokens alphabetically before comparison
+          * 'Partial Token Sort Ratio': Combination of partial and token sort
+          * 'Token Set Ratio': Uses intersection of token sets
+          * 'Partial Token Set Ratio': Combination of partial and token set
+          * 'Weighted Ratio': Weighted average of multiple methods (recommended)
+        Defaults to ['Partial Token Set Ratio', 'Weighted Ratio'].
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing potential matches with the following structure:
+          * Primary key columns from both DataFrames (renamed with _Entity 1/_Entity 2)
+          * 'Entity 1': Concatenated comparison string from dataframe_1
+          * 'Entity 2': Concatenated comparison string from dataframe_2
+          * One column per match method containing similarity scores (0-100)
+          * Original columns from columns_to_compare (with _Entity 1/_Entity 2 suffixes)
+        Each row represents a potential match between records from the two DataFrames.
+        If no matches are found, returns an empty DataFrame with the correct structure.
+
+    Examples
+    --------
+    # Match customer records from two different systems
+    import pandas as pd
+    customers_db1 = pd.DataFrame({
+        'customer_id': [1, 2, 3],
+        'company_name': ['Acme Corporation', 'Tech Innovations Inc', 'Global Solutions Ltd'],
+        'city': ['New York', 'Boston', 'Chicago']
+    })
+    customers_db2 = pd.DataFrame({
+        'client_id': [101, 102, 103],
+        'company_name': ['ACME Corp', 'Tech Innovations Incorporated', 'Global Solutns'],
+        'city': ['New York', 'Boston', 'Chicago']
+    })
+    matches = ConductEntityMatching(
+        customers_db1,
+        'customer_id',
+        customers_db2,
+        'client_id',
+        columns_to_compare=['company_name', 'city'],
+        match_score_threshold=85
+    )
+    # Returns matches like: 'Acme Corporation' → 'ACME Corp' with high scores
+
+    # Deduplicate product records with Levenshtein pre-filter
+    products_current = pd.DataFrame({
+        'sku': ['P001', 'P002', 'P003'],
+        'product_name': ['Apple iPhone 13 Pro', 'Samsung Galaxy S21', 'Dell XPS 15']
+    })
+    products_incoming = pd.DataFrame({
+        'new_sku': ['N001', 'N002', 'N003'],
+        'product_name': ['Apple iPhone 13Pro', 'Samsung Galaxy S21 Ultra', 'Dell XPS Laptop']
+    })
+    matches = ConductEntityMatching(
+        products_current,
+        'sku',
+        products_incoming,
+        'new_sku',
+        levenshtein_distance_filter=10,  # Pre-filter candidates
+        match_score_threshold=80,
+        columns_to_compare=['product_name'],
+        match_methods=['Weighted Ratio', 'Token Set Ratio']
+    )
+
+    # Match person names with multiple matching methods
+    employees = pd.DataFrame({
+        'emp_id': [1, 2, 3],
+        'full_name': ['John Smith', 'Mary Johnson', 'Robert Williams']
+    })
+    contractors = pd.DataFrame({
+        'contractor_id': [10, 20, 30],
+        'full_name': ['Smith, John', 'Mary A. Johnson', 'Bob Williams']
+    })
+    matches = ConductEntityMatching(
+        employees,
+        'emp_id',
+        contractors,
+        'contractor_id',
+        columns_to_compare=['full_name'],
+        match_score_threshold=90,
+        match_methods=['Ratio', 'Partial Ratio', 'Token Sort Ratio', 'Weighted Ratio']
+    )
+    # Multiple methods help catch different name format variations
+
     """
     # Lazy load uncommon packages
     from fuzzywuzzy import fuzz

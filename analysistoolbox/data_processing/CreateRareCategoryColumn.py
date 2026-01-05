@@ -9,19 +9,77 @@ def CreateRareCategoryColumn(dataframe,
                              rare_category_threshold=0.01,
                              new_column_suffix=None):
     """
-    This function creates a new column in a dataframe with rare categories. 
-    The default is to label rare categories as "Other". 
-    The default threshold is 1%. If new_column_suffix is not specified, the new column name is the original column name with " (with Other)" appended to it.
-    
-    Args:
-        dataframe (Pandas dataframe): Pandas dataframe
-        categorical_column_name (str): The name of the column containing the categorical variable.
-        rare_category_label (str, optional): The label to use for rare categories. Defaults to "Other".
-        rare_category_threshold (float, optional): The relative frequency threshold for rare categories. Defaults to 0.01.
-        new_column_suffix (str, optional): The suffix to append to the original column name to create the new column name. Defaults to None.
+    Consolidate low-frequency categorical values into a single catch-all category.
 
-    Returns:
-        Pandas dataframe: An updated Pandas dataframe with the new column containing rare categories
+    This function identifies categories within a specified column that appear less 
+    frequently than a given threshold (percentage of total rows) and replaces them 
+    with a single label (e.g., "Other"). This is a common preprocessing step to 
+    reduce dimensionality and improve the stability of statistical models.
+
+    The function is particularly useful for:
+      * Reducing high cardinality in categorical features
+      * Improving the performance and stability of machine learning models
+      * Simplifying visualizations by grouping long tails of rare categories
+      * Handling sparse categories that lack statistical significance
+      * Data cleaning where numerous variations of minor labels exist
+      * Standardizing categorical data for reporting and dashboards
+
+    By default, the function creates a new column to preserve the original data, 
+    appending a descriptive suffix to the original column name.
+
+    Parameters
+    ----------
+    dataframe
+        A pandas DataFrame containing categorical data.
+    categorical_column_name
+        The name of the column containing the categorical variable to analyze. 
+        Supports string or object dtypes.
+    rare_category_label
+        The string label to assign to any category that falls below the threshold.
+        Defaults to "Other".
+    rare_category_threshold
+        The minimum relative frequency (as a float between 0 and 1) required for 
+        a category to remain distinct. Categories with a frequency lower than 
+        this value will be grouped. Defaults to 0.01 (1%).
+    new_column_suffix
+        The suffix to append to the original column name for the new binned 
+        column. If None, it defaults to " (with {rare_category_label})".
+        Defaults to None.
+
+    Returns
+    -------
+    pd.DataFrame
+        The input DataFrame with a new column added, where infrequent categories 
+        have been replaced by the `rare_category_label`.
+
+    Examples
+    --------
+    # Group rare industries into "Other" (threshold 15%)
+    import pandas as pd
+    clients = pd.DataFrame({
+        'company': ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+        'industry': ['Tech', 'Tech', 'Tech', 'Finance', 'Finance', 'Retail', 'Agri', 'Hosp', 'Edu', 'Gov']
+    })
+    clients = CreateRareCategoryColumn(
+        clients, 
+        'industry', 
+        rare_category_threshold=0.15
+    )
+    # 'Agri', 'Hosp', 'Edu', 'Gov' each appear only 10% and will be grouped into 'Other'
+
+    # Use a custom label and specific suffix
+    cities = pd.DataFrame({
+        'city': ['NYC', 'NYC', 'NYC', 'LA', 'LA', 'SF', 'CHI', 'MIA']
+    })
+    cities = CreateRareCategoryColumn(
+        cities, 
+        'city', 
+        rare_category_label='Minor City', 
+        rare_category_threshold=0.20,
+        new_column_suffix='_binned'
+    )
+    # NYC (37.5%) and LA (25%) stay; SF, CHI, MIA (12.5% each) become 'Minor City'
+
     """
     
     # If new column name is not provided, create one

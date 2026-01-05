@@ -8,18 +8,72 @@ def VerifyGranularity(dataframe,
                       set_key_as_index=True,
                       print_as_markdown=True):
     """
-    Verifies the granularity of a given dataframe based on a list of key columns.
-    This function creates a key column from the provided list of key columns and checks if the number of rows in the dataframe equals the number of distinct values in the key column. If the counts do not match, a warning message is printed. 
-    The function can optionally set the key column as the dataframe's index and print the results as markdown.
+    Verify and enforce a unique level of granularity for a DataFrame.
 
-    Args:
-        dataframe (pd.DataFrame): The dataframe to verify.
-        list_of_key_columns (list): The list of columns to use for creating the key column.
-        set_key_as_index (bool, optional): If True, sets the key column as the dataframe's index. Defaults to True.
-        print_as_markdown (bool, optional): If True, prints the results as markdown. Defaults to True.
+    This function validates whether a specified combination of columns uniquely
+    identifies each row in the DataFrame. It creates a composite 'Dataset Key' by
+    concatenating the specified columns and compares the total row count against
+    the number of unique keys. This is a critical step in data validation to ensure
+    integrity before joining datasets or performing aggregations.
 
-    Returns:
-        pd.DataFrame: The updated dataframe with the key column set as the index, if requested.
+    The function is particularly useful for:
+      * Validating primary key assumptions in new datasets
+      * Ensuring data integrity before performing table joins
+      * Identifying unexpected duplicates in transactional logs
+      * Documenting the grain/level of analysis for a dataset
+      * Preparing DataFrames for indexing in specialized time-series or panel data
+      * Debugging ETL pipelines where row duplication may have occurred
+
+    The function provides visual feedback (check marks or warnings) and can
+    optionally transform the composite key into the DataFrame's primary index.
+
+    Parameters
+    ----------
+    dataframe
+        The pandas DataFrame to investigate.
+    list_of_key_columns
+        A list of column names that are expected to form a unique identifier for
+        each row. Columns will be concatenated with a ' -- ' separator.
+    set_key_as_index
+        If True, the calculated composite key will be set as the DataFrame's
+        index, and the temporary 'Dataset Key' column will be removed.
+        Defaults to True.
+    print_as_markdown
+        If True, results and warnings are formatted using IPython Markdown for
+        rich display in Jupyter Notebooks. If False, standard print statements
+        are used. Defaults to True.
+
+    Returns
+    -------
+    pd.DataFrame
+        If `set_key_as_index` is True, returns the modified DataFrame with the
+        composite key as its index. Otherwise, returns the updated DataFrame
+        (though the original may be modified in-place).
+
+    Examples
+    --------
+    # Verify granularity of sales data by Date and StoreID
+    import pandas as pd
+    sales = pd.DataFrame({
+        'Date': ['2023-01-01', '2023-01-01', '2023-01-02'],
+        'StoreID': [101, 102, 101],
+        'Revenue': [5000, 6200, 4800]
+    })
+    sales_indexed = VerifyGranularity(
+        sales, 
+        ['Date', 'StoreID'], 
+        set_key_as_index=True
+    )
+    # Prints success message and sets index to '2023-01-01 -- 101', etc.
+
+    # Detect duplicates in customer records
+    customers = pd.DataFrame({
+        'Email': ['test@abc.com', 'test@abc.com', 'user2@abc.com'],
+        'Name': ['John', 'John Doe', 'Jane']
+    })
+    VerifyGranularity(customers, ['Email'], print_as_markdown=False)
+    # Prints a warning: counts will not match due to the duplicate Email.
+
     """
     
     # Create key column from list of key columns

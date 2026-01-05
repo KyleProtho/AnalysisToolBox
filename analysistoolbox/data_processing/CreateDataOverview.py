@@ -8,15 +8,78 @@ from textwrap import wrap
 def CreateDataOverview(dataframe,
                        plot_missingness=False):
     """
-    This function creates an overview of the data in a dataframe, showing the data type, missing count, missing percentage, and summary statistics for each variable.
-    Tip: This function is useful for creating a data dictionary.
+    Generate a comprehensive technical summary and data dictionary for a DataFrame.
 
-    Args:
-        dataframe (Pandas dataframe): Pandas dataframe
-        plot_missingness (bool, optional): Generates a plot to show missingness in each variable. Defaults to False.
+    This function analyzes a pandas DataFrame to create an overview of its structure,
+    content, and quality. It calculates essential metrics for each variable, including
+    data types, missing value counts, missing percentages, and summary statistics
+    such as unique value counts, top values, frequency, minimums, maximums, and ranges.
+    This consolidated view is essential for understanding the data's composition
+    before performing more advanced analysis.
 
-    Returns:
-        Pandas dataframe: A Pandas dataframe containing an overview of the data in the dataframe.
+    The function is particularly useful for:
+      * Creating automated data dictionaries for documentation
+      * Auditing data completeness and identifying problematic columns
+      * Comparing data types against expected schemas
+      * Rapidly assessing the distribution and boundaries of numeric features
+      * Identifying high-cardinality categorical variables
+      * Visualizing missingness patterns across large datasets
+      * Initial Exploratory Data Analysis (EDA) on new data sources
+
+    When `plot_missingness` is enabled, the function generates a sorted bar chart
+    showing the percentage of missing values for each column, allowing for quick
+    visual identification of data gaps.
+
+    Parameters
+    ----------
+    dataframe
+        The pandas DataFrame to analyze. Can contain numeric, categorical, and
+        datetime data types.
+    plot_missingness
+        If True, generates a horizontal bar chart visualizing the percentage of
+        missing values for each column, sorted by descending missingness.
+        Defaults to False.
+
+    Returns
+    -------
+    pd.DataFrame
+        A summary DataFrame where each row enters a variable from the original dataset.
+        Columns include:
+          * Variable: Name of the column
+          * Data Type: Pandas dtype (e.g., int64, float64, object)
+          * Missing Count: Number of NaN or null values
+          * Missing Percentage: Ratio of missing values to total rows
+          * Non Missing Count: Count of valid observations
+          * Unique Value Count: Number of distinct values
+          * Top Value: Most frequent value (for categorical or mixed data)
+          * Frequency of Top Value: Count of the most frequent value
+          * Minimum: Minimum value in the series
+          * Maximum: Maximum value in the series
+          * Range: Difference between Maximum and Minimum (for numeric data)
+
+    Examples
+    --------
+    # Generate a basic data overview
+    import pandas as pd
+    import numpy as np
+    sales_data = pd.DataFrame({
+        'TransactionID': range(100),
+        'Product': ['A', 'B', 'C', np.nan] * 25,
+        'Amount': np.random.uniform(10, 500, 100),
+        'Date': pd.date_range('2023-01-01', periods=100)
+    })
+    overview = CreateDataOverview(sales_data)
+    # Returns summary statistics for all 4 columns
+
+    # View missingness patterns with a plot
+    customer_survey = pd.DataFrame({
+        'UserID': range(50),
+        'Satisfaction': [1, 5, 3] * 16 + [np.nan, np.nan],
+        'Feedback': [np.nan] * 40 + ['Good'] * 10
+    })
+    overview = CreateDataOverview(customer_survey, plot_missingness=True)
+    # Displays a plot showing UserID (0%), Satisfaction (4%), and Feedback (80%) missingness
+
     """
     
     # Get data types in each column

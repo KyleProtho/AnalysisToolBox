@@ -52,9 +52,6 @@ def FindMinimumSquareLoss(
 
     Examples
     --------
-    # Fit a linear trend to observed incident counts
-    x, a = sympy.symbols('x a')
-    model = a * x
     FindMinimumSquareLoss(
         observed_values=[1, 2, 3, 4],
         predicted_values=[2.1, 4.2, 5.9, 8.3],

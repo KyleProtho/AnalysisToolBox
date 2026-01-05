@@ -84,6 +84,29 @@ def PlotFunction(f_of_x,
     -------
     None — the function displays a plot.
 
+    Examples
+    --------
+    PlotFunction(
+        f_of_x=lambda x: x**2,
+        minimum_x=-10,
+        maximum_x=10,
+        n=100,
+        line_color="#3269a8",
+        line_alpha=0.8,
+        markers="o",
+        x_axis_variable_name="x",
+        y_axis_variable_name="f(x)",
+        title_for_plot="Function Plot",
+        subtitle_for_plot="Shows the function of x",
+        caption_for_plot=None,
+        data_source_for_plot=None,
+        x_indent=-0.127,
+        title_y_indent=1.125,
+        subtitle_y_indent=1.05,
+        caption_y_indent=-0.3,
+        figure_size=(8, 5)
+    )
+
     Teaching Note
     -------------
     Plotting a function reveals *qualitative features* — curvature, growth
