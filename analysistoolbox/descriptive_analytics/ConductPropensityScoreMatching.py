@@ -14,32 +14,135 @@ def ConductPropensityScoreMatching(dataframe,
                                    matched_id_column_name="Matched ID",
                                    random_seed=412):
     """
-    This function conducts propensity score matching on a dataframe. The function uses the PsmPy package to perform the matching. 
-    The function returns the original dataframe with the propensity scores, propensity logits, and matched IDs appended to the dataframe. 
-    The function also returns the matched dataframe.
+    Perform propensity score matching to create balanced treatment and control groups.
 
-    Args:
-        dataframe (pd.DataFrame): The dataframe to conduct the matching on.
-        subject_id_column_name (str): The name of the column that contains the subject IDs.
-        list_of_column_names_to_base_matching (list): A list of column names to base the matching on.
-        grouping_column_name (str): The name of the column that contains the grouping values.
-        control_group_name (str): The name of the control group.
-        max_matches_per_subject (int, optional): The maximum number of matches per subject. Defaults to 1.
-        balance_groups (bool, optional): Whether to balance the groups. Defaults to True.
-        propensity_score_column_name (str, optional): The name of the column that contains the propensity scores. Defaults to "Propensity Score".
-        propensity_logit_column_name (str, optional): The name of the column that contains the propensity logits. Defaults to "Propensity Logit".
-        matched_id_column_name (str, optional): The name of the column that contains the matched IDs. Defaults to "Matched ID".
-        random_seed (int, optional): The random seed to use for the matching. Defaults to 412.
+    This function implements propensity score matching (PSM), a statistical technique used to
+    estimate causal treatment effects in observational studies by reducing selection bias.
+    PSM creates comparable groups by matching treated subjects with control subjects that have
+    similar propensity scores—the probability of receiving treatment given observed covariates.
+    The function uses the PsmPy package with logistic regression and k-nearest neighbors matching.
 
-    Raises:
-        ValueError: The grouping column must have only two unique values.
-        ValueError: The control group name must be one of the unique values in the grouping column.
-        ValueError: The subject ID column must have unique values.
-        ValueError: The treatment group must have at least one row.
-        ValueError: The control group must have at least one row.
+    Propensity score matching is essential for:
+      * Estimating causal effects in observational studies without randomization
+      * Reducing selection bias and confounding in treatment effect analysis
+      * Creating balanced comparison groups for A/B testing post-hoc analysis
+      * Medical research when randomized controlled trials are unethical or impractical
+      * Policy evaluation and program impact assessment
+      * Marketing campaign effectiveness measurement
+      * Educational intervention analysis
+      * Economic and social science research requiring causal inference
 
-    Returns:
-        pd.DataFrame: The matched dataframe.
+    The function automatically converts the grouping variable to binary format, calculates
+    propensity scores using logistic regression, and performs k-nearest neighbors matching.
+    It returns the original DataFrame enriched with propensity scores, logits, and matched
+    subject IDs, enabling downstream causal effect estimation and balance diagnostics.
+
+    Parameters
+    ----------
+    dataframe
+        A pandas DataFrame containing subjects to match. Each row represents one subject
+        with covariates, treatment assignment, and a unique identifier.
+    subject_id_column_name
+        Name of the column containing unique subject identifiers. Each value must be unique
+        across all rows in the DataFrame.
+    list_of_column_names_to_base_matching
+        List of covariate column names to use for calculating propensity scores. These should
+        be pre-treatment variables that influence both treatment assignment and outcomes.
+    grouping_column_name
+        Name of the column indicating treatment group membership. Must contain exactly two
+        unique values (treatment and control).
+    control_group_name
+        The value in the grouping column that identifies the control group. All other values
+        are treated as the treatment group.
+    max_matches_per_subject
+        Maximum number of control subjects to match with each treatment subject. Higher values
+        increase statistical power but may reduce match quality. Defaults to 1.
+    balance_groups
+        Whether to balance the propensity score model by weighting observations. Set to False
+        if matching fails with the default setting. Defaults to True.
+    propensity_score_column_name
+        Name for the new column containing propensity scores (probability of treatment).
+        Defaults to 'Propensity Score'.
+    propensity_logit_column_name
+        Name for the new column containing propensity logits (log-odds of treatment).
+        Defaults to 'Propensity Logit'.
+    matched_id_column_name
+        Name for the new column containing matched subject IDs. For subjects with multiple
+        matches, multiple rows will be created. Defaults to 'Matched ID'.
+    random_seed
+        Random seed for reproducibility of the matching algorithm. Defaults to 412.
+
+    Returns
+    -------
+    pd.DataFrame
+        The original DataFrame with three additional columns:
+          * Propensity score column: Probability of treatment assignment (0-1)
+          * Propensity logit column: Log-odds of treatment assignment
+          * Matched ID column: Subject ID(s) of matched control/treatment subjects
+        Subjects without matches will have NaN in the matched ID column. Subjects with
+        multiple matches will appear in multiple rows.
+    
+    Examples
+    --------
+    # Medical trial: Match patients who received treatment with similar control patients
+    import pandas as pd
+    patient_df = pd.DataFrame({
+        'patient_id': range(1, 101),
+        'age': [25 + i for i in range(100)],
+        'severity_score': [50 + i % 30 for i in range(100)],
+        'comorbidities': [i % 3 for i in range(100)],
+        'received_treatment': ['Treatment' if i % 3 == 0 else 'Control' for i in range(100)]
+    })
+    matched_df = ConductPropensityScoreMatching(
+        patient_df,
+        subject_id_column_name='patient_id',
+        list_of_column_names_to_base_matching=['age', 'severity_score', 'comorbidities'],
+        grouping_column_name='received_treatment',
+        control_group_name='Control',
+        max_matches_per_subject=1
+    )
+    # Analyze treatment effect using matched pairs
+
+    # Marketing campaign: Match customers who saw ad with similar non-exposed customers
+    customer_df = pd.DataFrame({
+        'customer_id': [f'C{i:04d}' for i in range(200)],
+        'purchase_history': [i % 10 for i in range(200)],
+        'engagement_score': [30 + i % 50 for i in range(200)],
+        'demographic_segment': [i % 5 for i in range(200)],
+        'saw_campaign': [1 if i % 4 == 0 else 0 for i in range(200)]
+    })
+    campaign_matched = ConductPropensityScoreMatching(
+        customer_df,
+        subject_id_column_name='customer_id',
+        list_of_column_names_to_base_matching=['purchase_history', 'engagement_score', 'demographic_segment'],
+        grouping_column_name='saw_campaign',
+        control_group_name=0,
+        max_matches_per_subject=2,
+        balance_groups=True,
+        random_seed=42
+    )
+    # Estimate campaign lift using matched controls
+
+    # Educational intervention: Match students with multiple controls
+    student_df = pd.DataFrame({
+        'student_id': range(1, 151),
+        'prior_gpa': [2.0 + (i % 20) / 10 for i in range(150)],
+        'attendance_rate': [70 + i % 30 for i in range(150)],
+        'socioeconomic_status': [i % 4 for i in range(150)],
+        'program_participant': ['Yes' if i % 5 == 0 else 'No' for i in range(150)]
+    })
+    education_matched = ConductPropensityScoreMatching(
+        student_df,
+        subject_id_column_name='student_id',
+        list_of_column_names_to_base_matching=['prior_gpa', 'attendance_rate', 'socioeconomic_status'],
+        grouping_column_name='program_participant',
+        control_group_name='No',
+        max_matches_per_subject=3,
+        propensity_score_column_name='PS',
+        matched_id_column_name='Matched_Student'
+    )
+    # Evaluate program impact with 1:3 matching ratio
+
     """
     
     # Lazy load uncommon packages

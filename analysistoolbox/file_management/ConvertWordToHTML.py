@@ -5,13 +5,110 @@ import base64
 # Declare function
 def ConvertWordToHTML(docx_file_path, html_file_path=None):
     """
-    This function converts a Word document (.docx) to HTML format while preserving formatting,
-    including headings, tables, images, footnotes, and endnotes. All footnotes are converted to endnotes.
+    Convert Word document to HTML with embedded images and preserved formatting.
 
-    Args:
-        docx_file_path (str): The path to the input .docx file.
-        html_file_path (str, optional): The path where the output .html file will be saved.
-                                       If None, saves to the same folder as the input file.
+    This function converts Microsoft Word documents (.docx) to clean, semantic HTML using the
+    Mammoth library. It preserves document structure including headings, paragraphs, tables,
+    lists, and formatting while embedding images as base64-encoded data URIs for self-contained
+    HTML output. The function automatically converts footnotes to endnotes, adds responsive CSS
+    styling, and handles path resolution intelligently. The resulting HTML is web-ready and
+    requires no external image files.
+
+    Word-to-HTML conversion is essential for:
+      * Web publishing and content management system migration
+      * Creating accessible, responsive documentation from Word files
+      * Email newsletter generation with embedded content
+      * Archiving documents in open, platform-independent format
+      * Integrating Word content into web applications and portals
+      * Creating self-contained HTML reports and documentation
+      * Converting legacy Word documents to modern web formats
+      * Enabling full-text search and indexing of document content
+
+    The function uses Mammoth for high-quality semantic conversion, embedding images as base64
+    to eliminate external dependencies. It includes comprehensive error handling for file
+    permissions, path validation, and OneDrive sync conflicts. The output HTML includes
+    responsive CSS with proper table formatting, image scaling, and endnote styling. Automatic
+    path handling allows flexible output specification—provide a full path, directory, or let
+    the function use the source directory.
+
+    Parameters
+    ----------
+    docx_file_path
+        Absolute or relative path to the input Word document (.docx format). The file must
+        exist and be readable. Older .doc format is not supported.
+    html_file_path
+        Path where the output HTML file will be saved. Can be:
+          * Full file path ending in .html (e.g., 'output/report.html')
+          * Directory path (function adds filename from source)
+          * None (saves to same folder as input with .html extension)
+        The function automatically creates missing directories and adds .html extension if
+        needed. Defaults to None.
+
+    Returns
+    -------
+    None
+        This function does not return a value. It creates an HTML file at the specified
+        location and prints status messages including warnings from the conversion process.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the input .docx file does not exist at the specified path.
+    ValueError
+        If the input file is not a .docx file or if the output path is invalid.
+    PermissionError
+        If the function lacks write permissions to the output location, if the output file
+        is open in another application, or if OneDrive sync prevents file access.
+
+    Notes
+    -----
+    * **Image Embedding**: All images are embedded as base64 data URIs, increasing file size
+      but eliminating external dependencies
+    * **Footnote Conversion**: All footnotes are automatically converted to endnotes in the
+      HTML output
+    * **CSS Styling**: Includes responsive CSS for tables, images, and general formatting
+    * **Path Flexibility**: Intelligently handles various path formats and creates directories
+    * **Encoding**: Output uses UTF-8 encoding for international character support
+
+    Examples
+    --------
+    # Basic conversion with automatic output path
+    ConvertWordToHTML('report.docx')
+    # Creates 'report.html' in the same folder as the input file
+
+    # Specify custom output location
+    ConvertWordToHTML(
+        docx_file_path='C:/Documents/Annual_Report.docx',
+        html_file_path='C:/Website/reports/annual_report.html'
+    )
+    # Converts to specified path, creates directories if needed
+
+    # Output to directory (filename derived from input)
+    ConvertWordToHTML(
+        docx_file_path='proposals/client_proposal.docx',
+        html_file_path='web_content/'
+    )
+    # Creates 'web_content/client_proposal.html'
+
+    # Batch conversion workflow
+    import os
+    import glob
+    
+    # Convert all Word docs in a folder
+    source_dir = 'word_documents'
+    output_dir = 'html_output'
+    
+    for docx_file in glob.glob(f'{source_dir}/*.docx'):
+        ConvertWordToHTML(docx_file, output_dir)
+    # Converts all .docx files to HTML in output directory
+
+    # Web publishing with automatic path handling
+    ConvertWordToHTML(
+        docx_file_path='content/blog_post_2024.docx',
+        html_file_path='website/blog/'
+    )
+    # Creates 'website/blog/blog_post_2024.html' with embedded images
+
     """
     # Lazy load uncommon packages
     import mammoth

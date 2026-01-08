@@ -20,21 +20,127 @@ def CreateGaussianMixtureClusters(dataframe,
                                   random_seed=412,
                                   maximum_iterations=300):
     """
-    This function creates Gaussian Mixture clusters on a dataset based on the variables specified.
+    Perform probabilistic clustering using Gaussian Mixture Models (GMM).
 
-    Args:
-        dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
-        list_of_numeric_columns_for_clustering (list, optional): The list of variables to base the clusters on. Defaults to None, which will use all variables in the dataframe.
-        number_of_clusters (int, optional): The number of clusters to create. Defaults to None, which will use the elbow method to determine the optimal number of clusters.
-        column_name_for_clusters (str, optional): The name of the new column containing the clusters. Defaults to 'K-Means Cluster'.
-        scale_clustering_column_values (bool, optional): Whether to scale the predictor variables prior to analysis. Defaults to True.
-        show_cluster_summary_plots (bool, optional): Whether to show cluster summary plots. Defaults to True.
-        summary_plot_size (tuple, optional): The size of the summary plots. Defaults to (20, 20).
-        random_seed (int, optional): The random seed to use for replication. Defaults to 412.
-        maximum_iterations (int, optional): The maximum number of iterations to use for the K-Means algorithm. Defaults to 300.
-    
-    Returns:
-        Pandas dataframe: An updated Pandas dataframe with the clusters joined to the original data.
+    This function applies Gaussian Mixture Model clustering to identify latent groups in data
+    by modeling the distribution as a mixture of multiple Gaussian distributions. Unlike hard
+    clustering methods like K-Means, GMM provides soft cluster assignments with probabilities,
+    allowing each observation to belong to multiple clusters with varying degrees of membership.
+    The function automatically determines the optimal number of clusters using BIC/AIC criteria
+    when not specified, and provides detailed probability scores for each cluster assignment.
+
+    Gaussian Mixture Model clustering is essential for:
+      * Customer segmentation with overlapping behavioral patterns
+      * Anomaly detection and outlier identification
+      * Market segmentation with fuzzy boundaries between segments
+      * Image segmentation and computer vision applications
+      * Density estimation and generative modeling
+      * Bioinformatics and gene expression analysis
+      * Financial risk profiling with probabilistic group membership
+      * Natural language processing and topic modeling
+
+    The function generates BIC (Bayesian Information Criterion) and AIC (Akaike Information
+    Criterion) plots when the number of clusters is not specified, automatically selecting
+    the optimal number based on minimum BIC. It returns cluster assignments along with
+    probability scores for each cluster, enabling nuanced interpretation of cluster membership.
+
+    Parameters
+    ----------
+    dataframe
+        A pandas DataFrame containing the data to cluster. Rows with missing values in
+        clustering columns will be excluded from the analysis.
+    list_of_numeric_columns_for_clustering
+        List of numeric column names to use as features for clustering. If None, all numeric
+        columns in the DataFrame will be used. Defaults to None.
+    number_of_clusters
+        Number of Gaussian components (clusters) to fit. If None, the function automatically
+        determines the optimal number (1-12) using BIC minimization. Defaults to None.
+    column_name_for_clusters
+        Name for the new column containing cluster assignments (as strings). Defaults to
+        'Gaussian Mixture Cluster'.
+    scale_clustering_column_values
+        Whether to standardize features to zero mean and unit variance before clustering.
+        Recommended when features have different scales. Defaults to False.
+    print_peak_to_peak_range_of_each_column
+        Whether to print the peak-to-peak range of each clustering variable, useful for
+        assessing scale differences. Defaults to False.
+    show_cluster_summary_plots
+        Whether to generate pair plots showing the relationship between clustering variables,
+        color-coded by cluster assignment. Defaults to True.
+    sns_color_palette
+        Seaborn color palette name for cluster visualization. Options include 'Set1', 'Set2',
+        'husl', 'colorblind', etc. Defaults to 'Set1'.
+    summary_plot_size
+        Figure size for the summary pair plots as a tuple of (width, height) in inches.
+        Defaults to (20, 20).
+    random_seed
+        Random seed for reproducibility of the GMM algorithm. Defaults to 412.
+    maximum_iterations
+        Maximum number of expectation-maximization iterations for model convergence.
+        Defaults to 300.
+
+    Returns
+    -------
+    pd.DataFrame
+        The original DataFrame with additional columns:
+          * Cluster assignment column: String labels indicating the most likely cluster
+          * Probability columns: One column per cluster showing membership probability (0-1)
+            named '{column_name_for_clusters}_{i} Probability' where i is the cluster number
+        Rows with missing values in clustering columns are excluded and will have NaN in
+        the new columns.
+
+    Examples
+    --------
+    # Customer segmentation with automatic cluster selection
+    import pandas as pd
+    customer_df = pd.DataFrame({
+        'customer_id': range(1, 201),
+        'annual_spend': [1000 + i * 50 for i in range(200)],
+        'visit_frequency': [5 + i % 30 for i in range(200)],
+        'avg_basket_size': [50 + i % 100 for i in range(200)]
+    })
+    segmented_df = CreateGaussianMixtureClusters(
+        customer_df,
+        list_of_numeric_columns_for_clustering=['annual_spend', 'visit_frequency', 'avg_basket_size'],
+        scale_clustering_column_values=True,
+        show_cluster_summary_plots=True
+    )
+    # Automatically determines optimal clusters and shows probabilities
+
+    # Market segmentation with specified clusters and custom naming
+    market_df = pd.DataFrame({
+        'household_income': [30000 + i * 1000 for i in range(150)],
+        'age': [25 + i % 50 for i in range(150)],
+        'education_years': [12 + i % 8 for i in range(150)],
+        'family_size': [1 + i % 5 for i in range(150)]
+    })
+    market_segments = CreateGaussianMixtureClusters(
+        market_df,
+        list_of_numeric_columns_for_clustering=['household_income', 'age', 'education_years', 'family_size'],
+        number_of_clusters=4,
+        column_name_for_clusters='Market Segment',
+        scale_clustering_column_values=True,
+        sns_color_palette='husl',
+        random_seed=42
+    )
+    # Creates 4 market segments with probability scores
+
+    # Anomaly detection using cluster probabilities
+    transaction_df = pd.DataFrame({
+        'transaction_amount': [100 + i * 10 for i in range(100)],
+        'transaction_frequency': [5 + i % 20 for i in range(100)],
+        'account_age_days': [30 + i * 5 for i in range(100)]
+    })
+    clustered_df = CreateGaussianMixtureClusters(
+        transaction_df,
+        list_of_numeric_columns_for_clustering=['transaction_amount', 'transaction_frequency', 'account_age_days'],
+        number_of_clusters=3,
+        scale_clustering_column_values=True,
+        show_cluster_summary_plots=False,
+        print_peak_to_peak_range_of_each_column=True
+    )
+    # Use low probabilities across all clusters to identify anomalies
+
     """
     
     # Keep complete cases only

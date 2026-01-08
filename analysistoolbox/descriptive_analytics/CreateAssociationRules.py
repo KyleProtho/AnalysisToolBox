@@ -27,30 +27,157 @@ def CreateAssociationRules(dataframe,
                            title_y_indent=1.125,
                            subtitle_y_indent=1.05,
                            caption_y_indent=-0.3,):
-    """Creates association rules from a dataset.
+    """
+    Discover association rules in transactional data using the Apriori algorithm.
 
-    Args:
-        dataframe (Pandas dataframe): Pandas dataframe containing the data to be analyzed.
-        transaction_id_column (str): The column name containing the transaction ID.
-        items_column (str): The column name containing the items.
-        support_threshold (float, optional): The threshold for the support for an association rule to be defined. Defaults to .01.
-        confidence_threshold (float, optional): The threshold for the confidence for an association rule to be defined. Defaults to .05.
-        plot_lift (bool, optional): Whether to plot the association rules. Defaults to True.
-        dot_fill_color (str, optional): The fill color for the dots in the plot. Defaults to "#999999".
-        upper_left_quadrant_fill_color (str, optional): The fill color for the upper left quadrant in the plot. Defaults to "#32a852".
-        lower_right_quadrant_fill_color (str, optional): The fill color for the lower right quadrant in the plot. Defaults to "#d14a41".
-        draw_life_equals_1_line (bool, optional): Whether to draw a line where support and confidence are equal in the plot. Defaults to True.
-        title_for_plot (str, optional): The title for the plot. Defaults to "Association Rules".
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Confidence vs. Consequent Support".
-        caption_for_plot (str, optional): The caption for the plot. Defaults to "Lift is a measure of how much more likely it is for two items to occur together than expected by chance. A lift value of 1 means that the two items are independent of each other, while a lift value greater than 1 means that the two items are positively correlated, and a lift value less than 1 means that the two items are negatively correlated.".
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        x_indent (float, optional): The x-axis indent for the plot. Defaults to -0.128.
-        title_y_indent (float, optional): The title y-axis indent for the plot. Defaults to 1.125.
-        subtitle_y_indent (float, optional): The subtitle y-axis indent for the plot. Defaults to 1.05.
-        caption_y_indent (float, optional): The caption y-axis indent for the plot. Defaults to -0.3.
+    This function performs market basket analysis to identify patterns and relationships between
+    items that frequently co-occur in transactions. Using the Apriori algorithm, it discovers
+    association rules that reveal which items are commonly purchased together, enabling data-driven
+    insights for cross-selling, product placement, and recommendation systems. The function
+    calculates key metrics including support, confidence, and lift, and optionally visualizes
+    the rules to distinguish strong positive associations from negative ones.
 
-    Returns:
-        Pandas dataframe: An updated Pandas dataframe with the association rules.
+    Association rule mining is essential for:
+      * Retail product placement and store layout optimization
+      * E-commerce recommendation engines and "customers who bought X also bought Y"
+      * Cross-selling and upselling strategies
+      * Inventory management and demand forecasting
+      * Marketing campaign targeting and bundle pricing
+      * Customer behavior analysis and segmentation
+      * Fraud detection in financial transactions
+      * Medical diagnosis and treatment pattern discovery
+
+    The function generates a scatter plot showing confidence vs. consequent support, with
+    color-coded quadrants indicating high-lift (positive correlation) and low-lift (negative
+    correlation) rules. The lift metric reveals whether items co-occur more or less frequently
+    than expected by chance, with lift > 1 indicating positive association.
+
+    Parameters
+    ----------
+    dataframe
+        A pandas DataFrame in long format where each row represents a single item within
+        a transaction. Must contain columns for transaction IDs and item names.
+    transaction_id_column
+        Name of the column containing transaction identifiers. Multiple rows with the same
+        transaction ID represent items purchased together in one transaction.
+    items_column
+        Name of the column containing item names or product identifiers that will be analyzed
+        for co-occurrence patterns.
+    support_threshold
+        Minimum support value (0-1) for an itemset to be considered frequent. Support is the
+        proportion of transactions containing the itemset. Lower values find more rules but
+        increase computation time. Defaults to 0.01 (1%).
+    confidence_threshold
+        Minimum confidence value (0-1) for a rule to be included. Confidence is the probability
+        that the consequent occurs given the antecedent. Higher values yield stronger rules.
+        Defaults to 0.05 (5%).
+    plot_lift
+        Whether to generate a scatter plot visualizing the association rules with confidence
+        vs. consequent support, color-coded by lift. Defaults to True.
+    dot_fill_color
+        Hex color code for the scatter plot points representing association rules.
+        Defaults to '#999999' (gray).
+    upper_left_quadrant_fill_color
+        Hex color code for shading the high-lift region (where confidence > consequent support).
+        Defaults to '#32a852' (green).
+    lower_right_quadrant_fill_color
+        Hex color code for shading the low-lift region (where confidence < consequent support).
+        Defaults to '#d14a41' (red).
+    draw_life_equals_1_line
+        Whether to draw a diagonal reference line where lift equals 1 (independence).
+        Defaults to True.
+    title_for_plot
+        Main title text for the visualization. Defaults to 'Association Rules'.
+    subtitle_for_plot
+        Subtitle text providing additional context. Defaults to 'Confidence vs. Consequent Support'.
+    caption_for_plot
+        Explanatory caption describing lift interpretation. Defaults to a detailed explanation
+        of lift values.
+    data_source_for_plot
+        Optional attribution text for data source, appended to caption. Defaults to None.
+    x_indent
+        Horizontal position adjustment for plot title, subtitle, and caption. Defaults to -0.128.
+    title_y_indent
+        Vertical position for the plot title relative to axes. Defaults to 1.125.
+    subtitle_y_indent
+        Vertical position for the plot subtitle relative to axes. Defaults to 1.05.
+    caption_y_indent
+        Vertical position for the plot caption relative to axes. Defaults to -0.3.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing discovered association rules with columns (in title case):
+          * Antecedents: Items on the left-hand side of the rule (if-part)
+          * Consequents: Items on the right-hand side of the rule (then-part)
+          * Antecedent Support: Proportion of transactions containing antecedents
+          * Consequent Support: Proportion of transactions containing consequents
+          * Support: Proportion of transactions containing both antecedents and consequents
+          * Confidence: Probability of consequent given antecedent
+          * Lift: Ratio of observed to expected co-occurrence (>1 = positive association)
+          * Leverage: Difference between observed and expected co-occurrence frequency
+          * Conviction: Ratio measuring rule implication strength
+        Sorted by confidence (descending) and consequents (ascending).
+
+    Examples
+    --------
+    # E-commerce product recommendations
+    import pandas as pd
+    orders_df = pd.DataFrame({
+        'order_id': [1, 1, 1, 2, 2, 3, 3, 3, 4, 4],
+        'product': ['laptop', 'mouse', 'keyboard', 'laptop', 'mouse', 
+                    'monitor', 'keyboard', 'mouse', 'laptop', 'keyboard']
+    })
+    rules_df = CreateAssociationRules(
+        orders_df,
+        transaction_id_column='order_id',
+        items_column='product',
+        support_threshold=0.2,
+        confidence_threshold=0.5,
+        plot_lift=True
+    )
+    # Discover which products are frequently bought together
+
+    # Grocery store market basket analysis
+    grocery_df = pd.DataFrame({
+        'transaction_id': [101, 101, 101, 102, 102, 103, 103, 103, 104, 104, 105, 105, 105],
+        'item': ['bread', 'butter', 'milk', 'bread', 'butter', 'bread', 'milk', 'eggs',
+                 'butter', 'milk', 'bread', 'butter', 'eggs']
+    })
+    grocery_rules = CreateAssociationRules(
+        grocery_df,
+        transaction_id_column='transaction_id',
+        items_column='item',
+        support_threshold=0.3,
+        confidence_threshold=0.6,
+        plot_lift=True,
+        title_for_plot='Grocery Shopping Patterns',
+        subtitle_for_plot='Product Association Analysis',
+        data_source_for_plot='Store POS Data 2024'
+    )
+    # Optimize product placement based on purchase patterns
+
+    # Streaming service content recommendations with custom visualization
+    streaming_df = pd.DataFrame({
+        'user_session': ['s1', 's1', 's1', 's2', 's2', 's3', 's3', 's3', 's4', 's4'],
+        'content_watched': ['action_movie', 'thriller', 'drama', 'action_movie', 'thriller',
+                           'comedy', 'romance', 'drama', 'action_movie', 'drama']
+    })
+    content_rules = CreateAssociationRules(
+        streaming_df,
+        transaction_id_column='user_session',
+        items_column='content_watched',
+        support_threshold=0.15,
+        confidence_threshold=0.4,
+        plot_lift=True,
+        dot_fill_color='#4A90E2',
+        upper_left_quadrant_fill_color='#50C878',
+        lower_right_quadrant_fill_color='#FF6B6B',
+        title_for_plot='Content Viewing Patterns',
+        caption_for_plot='Analyzing genre co-viewing behavior to improve recommendations'
+    )
+    # Build recommendation engine based on viewing patterns
+
     """
     # Lazy load uncommon packages
     from mlxtend.frequent_patterns import apriori, association_rules
