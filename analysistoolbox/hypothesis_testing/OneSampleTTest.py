@@ -28,30 +28,116 @@ def OneSampleTTest(dataframe,
                    caption_y_indent=-0.15,
                    figure_size=(8, 6)):
     """
-    Conducts a one-sample t-test on a given dataframe and value column, comparing the sample mean to a hypothesized value.
-    
-    Args:
-        dataframe (pandas.DataFrame): The dataframe containing the data to be tested.
-        value_column (str): The name of the column in the dataframe containing the data to be tested.
-        hypothesized_value (float): The hypothesized value to be tested against the sample mean.
-        confidence_interval (float, optional): The confidence level for the test. Defaults to 0.95.
-        alternative_hypothesis (str, optional): The alternative hypothesis for the test. Can be "two-sided", "less", or "greater". Defaults to "two-sided".
-        null_handling (str, optional): How to handle null values in the data. Can be "omit", "raise", or "propagate". Defaults to "omit".
-        plot_sample_distribution (bool, optional): Whether to plot the sample distribution and the hypothesized value. Defaults to True.
-        fill_color (str, optional): The fill color for the sample distribution plot. Defaults to "#999999".
-        fill_transparency (float, optional): The fill transparency for the sample distribution plot. Defaults to 0.2.
-        title_for_plot (str, optional): The title for the sample distribution plot. Defaults to "One Sample T-Test".
-        subtitle_for_plot (str, optional): The subtitle for the sample distribution plot. Defaults to "Shows the distribution of the sample mean and the hypothesized value.".
-        caption_for_plot (str, optional): The caption for the sample distribution plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the sample distribution plot. Defaults to None.
-        show_y_axis (bool, optional): Whether to show the y-axis on the sample distribution plot. Defaults to False.
-        title_y_indent (float, optional): The y-indent for the title on the sample distribution plot. Defaults to 1.10.
-        subtitle_y_indent (float, optional): The y-indent for the subtitle on the sample distribution plot. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent for the caption on the sample distribution plot. Defaults to -0.15.
-        figure_size (tuple, optional): The size of the sample distribution plot. Defaults to (8, 6).
-    
-    Returns:
-        scipy.stats.Ttest_1sampResult: The results of the one-sample t-test.
+    Perform a one-sample t-test to compare a sample mean against a hypothesized value.
+
+    This function conducts a one-sample t-test to determine whether the mean of a sample
+    of data significantly differs from a specified hypothesized population mean. It is
+    a fundamental inferential statistic used when the population standard deviation is
+    unknown and the sample size is relatively small, or when assuming a normal
+    distribution of the sample mean.
+
+    The one-sample t-test is essential for:
+      * Comparing product specifications (e.g., weight, length) against factory standards
+      * Testing if average student test scores differ from a national benchmark
+      * Evaluating if service delivery times meet a target performance level
+      * Analyzing if investment returns significantly deviate from a zero-growth baseline
+      * Assessing if average daily caloric intake matches a dietary recommendation
+      * Checking for systematic bias in measurement instruments
+      * Validating whether a new process has shifted a mean value away from a baseline
+
+    The function calculates the t-statistic and p-value using `scipy.stats.ttest_1samp`.
+    It supports multiple alternative hypotheses (two-sided, less, or greater), provides
+    optional visualization of the sample distribution relative to the hypothesized
+    value via a kernel density estimate (KDE), and automatically prints a statistical
+    interpretation of the results based on the provided confidence level.
+
+    Parameters
+    ----------
+    dataframe
+        The pandas DataFrame containing the numerical data to be tested.
+    value_column
+        Name of the column in the DataFrame containing the sample observations.
+    hypothesized_value
+        The expected population mean (null hypothesis value) to test the sample
+        mean against.
+    confidence_interval
+        The confidence level used to determine statistical significance (e.g., 0.95
+        for a 5% significance level). Defaults to 0.95.
+    alternative_hypothesis
+        Defines the alternative hypothesis. Must be one of 'two-sided' (mean is not
+        equal to hypothesized), 'less' (mean is less than hypothesized), or
+        'greater' (mean is greater than hypothesized). Defaults to 'two-sided'.
+    null_handling
+        Method for handling missing values (NaN) in the data. Options include
+        'omit' (ignore NaNs), 'raise' (throw error), or 'propagate' (return NaN).
+        Defaults to 'omit'.
+    plot_sample_distribution
+        If True, displays a kernel density estimate of the sample distribution and
+        marks the hypothesized value for visual comparison. Defaults to True.
+    fill_color
+        The fill color for the KDE plot area. Defaults to "#999999".
+    fill_transparency
+        Transparency level (alpha) for the KDE plot fill, ranging from 0 to 1.
+        Defaults to 0.2.
+    title_for_plot
+        Main title text to display at the top of the plot. Defaults to
+        'One Sample T-Test'.
+    subtitle_for_plot
+        Subtitle text to display below the main title. Defaults to
+        'Shows the distribution of the sample mean and the hypothesized value.'.
+    caption_for_plot
+        Caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot
+        Optional text identifying the data source, displayed in the caption area.
+        Defaults to None.
+    show_y_axis
+        If True, displays the y-axis (density scale) on the distribution plot.
+        Defaults to False.
+    title_y_indent
+        Vertical position for the main title relative to the axes. Defaults to 1.10.
+    subtitle_y_indent
+        Vertical position for the subtitle relative to the axes. Defaults to 1.05.
+    caption_y_indent
+        Vertical position for the caption relative to the axes. Defaults to -0.15.
+    figure_size
+        Tuple specifying the (width, height) of the figure in inches. Defaults to (8, 6).
+
+    Returns
+    -------
+    scipy.stats._stats_py.TtestResult
+        The results object containing the t-statistic, p-value, and degrees of freedom.
+        Specific values can be accessed via `result.statistic` and `result.pvalue`.
+
+    Examples
+    --------
+    # Test if average package weight is significantly different from 500g
+    import pandas as pd
+    df = pd.DataFrame({'weight': [498, 502, 505, 495, 499, 501, 503, 497] * 5})
+    results = OneSampleTTest(
+        dataframe=df,
+        value_column='weight',
+        hypothesized_value=500.0
+    )
+
+    # Test if a group of students scored higher than a target of 75
+    scores_df = pd.DataFrame({'score': [78, 82, 74, 85, 71, 79, 88, 76] * 5})
+    results = OneSampleTTest(
+        dataframe=scores_df,
+        value_column='score',
+        hypothesized_value=75.0,
+        alternative_hypothesis='greater',
+        title_for_plot='Student Performance vs. Target',
+        fill_color='blue'
+    )
+
+    # Statistical test without visualization
+    results = OneSampleTTest(
+        dataframe=df,
+        value_column='weight',
+        hypothesized_value=500.0,
+        plot_sample_distribution=False
+    )
+
     """
     
     # Conduct one sample t-test

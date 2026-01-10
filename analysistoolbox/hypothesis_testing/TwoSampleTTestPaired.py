@@ -26,30 +26,118 @@ def TwoSampleTTestPaired(dataframe,
                          caption_y_indent=-0.15,
                          figure_size=(8, 6)):
     """
-    Conducts a paired two-sample t-test on two columns of a pandas DataFrame.
+    Perform a paired two-sample t-test to compare means between related observations.
 
-    Args:
-        dataframe (pandas.DataFrame): The DataFrame containing the data to be analyzed.
-        outcome1_column (str): The name of the first column containing the outcome data.
-        outcome2_column (str): The name of the second column containing the outcome data.
-        confidence_interval (float, optional): The desired level of confidence for the test. Defaults to 0.95.
-        alternative_hypothesis (str, optional): The alternative hypothesis to be tested. Can be "two-sided", "greater", or "less". Defaults to "two-sided".
-        null_handling (str, optional): How to handle null values in the data. Can be "omit", "raise", or "propagate". Defaults to "omit".
-        plot_sample_distributions (bool, optional): Whether to plot the distribution of the mean difference across all pairs. Defaults to True.
-        fill_color (str, optional): The color to fill the distribution plot with. Defaults to "#999999".
-        fill_transparency (float, optional): The transparency of the fill color. Defaults to 0.2.
-        title_for_plot (str, optional): The title of the distribution plot. Defaults to "Paired T-Test".
-        subtitle_for_plot (str, optional): The subtitle of the distribution plot. Defaults to "Shows the distribution of the mean difference across all pairs".
-        caption_for_plot (str, optional): The caption of the distribution plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source of the distribution plot. Defaults to None.
-        show_y_axis (bool, optional): Whether to show the y-axis on the distribution plot. Defaults to False.
-        title_y_indent (float, optional): The y-indent of the title on the distribution plot. Defaults to 1.1.
-        subtitle_y_indent (float, optional): The y-indent of the subtitle on the distribution plot. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent of the caption on the distribution plot. Defaults to -0.15.
-        figure_size (tuple, optional): The size of the distribution plot. Defaults to (8, 6).
+    This function conducts a paired (dependent) t-test to determine if there is a
+    statistically significant difference between the means of two related groups. It
+    is used when the same subjects are measured twice (e.g., before and after an
+    intervention) or when subjects are matched in pairs.
 
-    Returns:
-        scipy.stats.Ttest_relResult: The results of the paired two-sample t-test.
+    A paired t-test is essential for:
+      * Evaluating treatment efficacy in pre-test and post-test study designs
+      * Analyzing performance changes in employees before and after training
+      * Testing if a new software update improved system processing speeds
+      * Comparing identical twins or matched pairs on a specific metric
+      * Assessing seasonal variations where the same entities are tracked over time
+      * Measuring the impact of a marketing campaign on individual customer spend
+      * Validating the consistency of two different measurement tools on the same subjects
+
+    The function calculates the t-statistic and p-value using `scipy.stats.ttest_rel`.
+    It provides optional visualization of the simulated distribution of the mean
+    difference relative to the null hypothesis (zero difference), helping to
+    visualize the magnitude and significance of the observed change.
+
+    Parameters
+    ----------
+    dataframe
+        The pandas DataFrame containing the paired outcome data.
+    outcome1_column
+        Name of the column containing the first set of observations (e.g., 'Pre-test').
+    outcome2_column
+        Name of the column containing the second set of observations (e.g., 'Post-test').
+    confidence_interval
+        The confidence level used to determine statistical significance (e.g., 0.95
+        for a 5% significance level). Defaults to 0.95.
+    alternative_hypothesis
+        Defines the alternative hypothesis. Must be one of 'two-sided' (means are
+        not equal), 'greater' (mean of first is greater than second), or 'less'
+        (mean of first is less than second). Defaults to 'two-sided'.
+    null_handling
+        Method for handling missing values (NaN) in the data. Options include
+        'omit' (ignore pairs with NaNs), 'raise' (throw error), or 'propagate'
+        (return NaN). Defaults to 'omit'.
+    plot_sample_distributions
+        If True, displays a kernel density estimate of the simulated mean difference
+        distribution to visualize the comparison against zero. Defaults to True.
+    fill_color
+        The fill color for the distribution plot area. Defaults to "#999999".
+    fill_transparency
+        Transparency level (alpha) for the distribution plot fill, ranging from 0 to 1.
+        Defaults to 0.2.
+    title_for_plot
+        Main title text to display at the top of the plot. Defaults to 'Paired T-Test'.
+    subtitle_for_plot
+        Subtitle text to display below the main title. Defaults to
+        'Shows the distribution of the mean difference across all pairs'.
+    caption_for_plot
+        Caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot
+        Optional text identifying the data source, displayed in the caption area.
+        Defaults to None.
+    show_y_axis
+        If True, displays the y-axis (density scale) on the distribution plot.
+        Defaults to False.
+    title_y_indent
+        Vertical position for the main title relative to the axes. Defaults to 1.1.
+    subtitle_y_indent
+        Vertical position for the subtitle relative to the axes. Defaults to 1.05.
+    caption_y_indent
+        Vertical position for the caption relative to the axes. Defaults to -0.15.
+    figure_size
+        Tuple specifying the (width, height) of the figure in inches. Defaults to (8, 6).
+
+    Returns
+    -------
+    scipy.stats._stats_py.TtestResult
+        A named tuple containing the calculated t-statistic and the p-value.
+        Values can be accessed via `result.statistic` and `result.pvalue`.
+
+    Examples
+    --------
+    # Compare student test scores before and after a training seminar
+    import pandas as pd
+    test_df = pd.DataFrame({
+        'before': [75, 82, 68, 91, 77] * 10,
+        'after': [80, 85, 72, 90, 81] * 10
+    })
+    results = TwoSampleTTestPaired(
+        dataframe=test_df,
+        outcome1_column='before',
+        outcome2_column='after',
+        alternative_hypothesis='less'
+    )
+
+    # Analyze processing speed improvements in a system update
+    latency_df = pd.DataFrame({
+        'v1_ms': [120, 150, 110, 130, 140] * 10,
+        'v2_ms': [115, 140, 105, 125, 135] * 10
+    })
+    results = TwoSampleTTestPaired(
+        dataframe=latency_df,
+        outcome1_column='v1_ms',
+        outcome2_column='v2_ms',
+        title_for_plot='Latency Comparison: V1 vs. V2',
+        fill_color='green'
+    )
+
+    # Statistical test without visualization
+    results = TwoSampleTTestPaired(
+        dataframe=test_df,
+        outcome1_column='before',
+        outcome2_column='after',
+        plot_sample_distributions=False
+    )
+
     """
     
     # Show pivot table summary

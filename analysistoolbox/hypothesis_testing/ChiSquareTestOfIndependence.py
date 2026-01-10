@@ -30,30 +30,143 @@ def ChiSquareTestOfIndependence(dataframe,
                                 caption_font_size=8,
                                 decimal_places_for_data_label=1):
     """
-    Performs a chi-square test of independence and returns the observed and expected counts for each combination of the outcome and predictor variables. 
-    It also returns a clustered bar chart of the observed and expected counts.
+    Perform a chi-square test of independence between two categorical variables.
 
-    Args:
-        dataframe (pandas.DataFrame): The dataframe containing the data.
-        categorical_outcome_column (str): The name of the outcome column.
-        categorical_predictor_column (str): The name of the predictor column.
-        show_contingency_tables (bool, optional): If True, prints the contingency tables. Defaults to True.
-        show_plot (bool, optional): If True, shows a plot of the observed and expected counts. Defaults to True.
-        color_palette (str, optional): The color palette to use for the plot. Defaults to "Set1".
-        fill_transparency (float, optional): The transparency of the bars in the plot. Defaults to 0.8.
-        figure_size (tuple, optional): The size of the figure for the plot. Defaults to (6, 6).
-        title_for_plot (str, optional): The title for the plot. Defaults to "Chi-Square Test of Independence".
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Shows observed vs. expected counts".
-        caption_for_plot (str, optional): The caption for the plot. Defaults to "Expected counts are based on the null hypothesis of no association between the two variables.".
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        x_indent (float, optional): The x-indent for the plot title. Defaults to -0.95.
-        title_y_indent (float, optional): The y-indent for the plot title. Defaults to 1.15.
-        subtitle_y_indent (float, optional): The y-indent for the plot subtitle. Defaults to 1.1.
-        caption_y_indent (float, optional): The y-indent for the plot caption. Defaults to -0.15.
-        decimal_places_for_data_label (int, optional): The number of decimal places for the data labels on the plot. Defaults to 1.
+    This function conducts a chi-square test of independence to determine whether there is
+    a statistically significant association between two categorical variables. The test
+    compares observed frequencies in a contingency table with expected frequencies under
+    the null hypothesis of independence (no association).
 
-    Returns:
-        pandas.DataFrame: A dataframe containing the observed and expected counts for each combination of the outcome and predictor variables, as well as the difference between the observed and expected counts.
+    The chi-square test of independence is essential for:
+      * Determining if two categorical variables are related or independent
+      * Analyzing survey data and cross-tabulations
+      * Testing associations in medical and clinical research
+      * Market research and customer segmentation analysis
+      * Quality control and process improvement studies
+      * Social science research on demographic patterns
+      * A/B testing and experimental design validation
+
+    The function calculates the chi-square statistic, p-value, and degrees of freedom,
+    and provides both observed and expected frequency counts for each cell in the
+    contingency table. Results can be visualized with a clustered bar chart comparing
+    observed versus expected counts, making it easy to identify where associations
+    deviate from independence.
+
+    Parameters
+    ----------
+    dataframe
+        The pandas DataFrame containing the categorical variables to analyze.
+    categorical_outcome_column
+        Name of the column containing the categorical outcome variable (dependent variable).
+        This will be displayed on the x-axis of the visualization.
+    categorical_predictor_column
+        Name of the column containing the categorical predictor variable (independent variable).
+        This will be used to create separate facets in the visualization.
+    show_contingency_tables
+        If True, prints the observed and expected contingency tables to the console.
+        Defaults to True.
+    show_plot
+        If True, displays a clustered bar chart comparing observed and expected counts
+        for each combination of categories. Defaults to True.
+    color_palette
+        Seaborn color palette name to use for the plot bars. Defaults to 'Paired'.
+    fill_transparency
+        Transparency level for the bars in the plot, ranging from 0 (transparent) to 1
+        (opaque). Defaults to 0.8.
+    figure_size
+        Tuple specifying the (width, height) of each subplot in inches. Defaults to (6, 8).
+    title_for_plot
+        Main title text to display at the top of the plot. Defaults to
+        'Chi-Square Test of Independence'.
+    subtitle_for_plot
+        Subtitle text to display below the main title. Defaults to
+        'Shows observed vs. expected counts'.
+    caption_for_plot
+        Caption text to display at the bottom of the plot explaining the visualization.
+        Defaults to 'Expected counts are based on the null hypothesis of no association
+        between the two variables.'.
+    data_source_for_plot
+        Optional text identifying the data source, displayed in the caption area.
+        If None, no data source is shown. Defaults to None.
+    x_indent
+        Horizontal position for left-aligning title, subtitle, and caption text.
+        Defaults to -0.95.
+    title_y_indent
+        Vertical position for the main title relative to the plot. Defaults to 1.15.
+    title_font_size
+        Font size in points for the main title. Defaults to 14.
+    subtitle_y_indent
+        Vertical position for the subtitle relative to the plot. Defaults to 1.1.
+    subtitle_font_size
+        Font size in points for the subtitle. Defaults to 11.
+    caption_y_indent
+        Vertical position for the caption relative to the plot. Defaults to -0.15.
+    caption_font_size
+        Font size in points for the caption text. Defaults to 8.
+    decimal_places_for_data_label
+        Number of decimal places to display in the bar chart data labels. Defaults to 1.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing the observed counts, expected counts, and the difference
+        (observed minus expected) for each combination of the categorical outcome and
+        predictor variables. Columns include the outcome variable, predictor variable,
+        'Observed', 'Expected', and 'Difference (observed minus expected)'.
+
+    Examples
+    --------
+    # Test independence between gender and product preference
+    import pandas as pd
+    df = pd.DataFrame({
+        'gender': ['Male', 'Male', 'Female', 'Female', 'Male', 'Female'] * 20,
+        'product': ['A', 'B', 'A', 'B', 'A', 'B'] * 20
+    })
+    results = ChiSquareTestOfIndependence(
+        dataframe=df,
+        categorical_outcome_column='product',
+        categorical_predictor_column='gender'
+    )
+
+    # Test association between education level and voting preference
+    voting_data = pd.DataFrame({
+        'education': ['High School', 'College', 'Graduate'] * 50,
+        'vote': ['Yes', 'No', 'Yes'] * 50
+    })
+    results = ChiSquareTestOfIndependence(
+        dataframe=voting_data,
+        categorical_outcome_column='vote',
+        categorical_predictor_column='education',
+        show_contingency_tables=True,
+        show_plot=True
+    )
+
+    # Analyze customer satisfaction by region with custom styling
+    satisfaction_df = pd.DataFrame({
+        'region': ['North', 'South', 'East', 'West'] * 30,
+        'satisfaction': ['Satisfied', 'Neutral', 'Dissatisfied'] * 40
+    })
+    results = ChiSquareTestOfIndependence(
+        dataframe=satisfaction_df,
+        categorical_outcome_column='satisfaction',
+        categorical_predictor_column='region',
+        color_palette='Set2',
+        figure_size=(8, 6),
+        title_for_plot='Customer Satisfaction by Region',
+        subtitle_for_plot='Chi-Square Test Results',
+        caption_for_plot='Analysis shows regional differences in satisfaction levels.',
+        data_source_for_plot='Customer Survey 2024'
+    )
+
+    # Quick test without visualizations
+    results = ChiSquareTestOfIndependence(
+        dataframe=df,
+        categorical_outcome_column='outcome',
+        categorical_predictor_column='treatment',
+        show_contingency_tables=False,
+        show_plot=False
+    )
+
     """
     
     # Select necessary columns

@@ -28,34 +28,113 @@ def TTestOfMeanFromStats(sample_mean,
                          caption_y_indent=-0.15,
                          figure_size=(8, 6)):
     """
-    Conducts a hypothesis test of a mean using a t-test or z-test, depending on the sample size.
+    Perform a hypothesis test of a mean using summary statistics.
 
-    Args:
-        sample_mean (float): The sample mean.
-        sample_sd (float): The sample standard deviation.
-        sample_size (int): The sample size.
-        hypothesized_mean (float): The hypothesized mean.
-        alternative_hypothesis (str, optional): The alternative hypothesis. Can be "two-sided", "less", or "greater".
-            Defaults to "two-sided".
-        confidence_interval (float, optional): The confidence level for the hypothesis test. Defaults to 0.95.
-        plot_sample_distribution (bool, optional): Whether to plot the distribution of the sample mean and the
-            hypothesized mean. Defaults to True.
-        value_name (str, optional): The name of the value being tested. Defaults to "Value".
-        fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
-        fill_transparency (float, optional): The transparency of the fill color for the histogram. Defaults to 0.6.
-        title_for_plot (str, optional): The title for the plot. Defaults to "Hypothesis Test of a Mean".
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Shows the distribution of the sample
-            mean and the hypothesized mean.".
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
-        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.10.
-        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
+    This function conducts either a one-sample t-test or a z-test based on the provided
+    sample statistics (mean, standard deviation, and size) to determine if a population
+    mean significantly differs from a hypothesized value. It automatically selects the
+    appropriate test based on the sample size: a t-test for small samples (n < 30) or a
+    z-test for larger samples (n >= 30).
 
-    Returns:
-        float: The test statistic.
+    A hypothesis test of a mean from statistics is essential for:
+      * Validating experimental results from summarized research papers
+      * Testing quality control standards when only summary data is available
+      * High-level benchmarking against industry or historical averages
+      * Financial auditing and anomaly detection in aggregate data
+      * Performance evaluation based on reported mean metrics
+      * Scenario planning and sensitivity analysis for projected means
+
+    The function calculates the test statistic (t or z) and the corresponding p-value.
+    It supports multiple alternative hypotheses (two-sided, less, or greater) and
+    provides a visualization of the simulated sample mean distribution relative to the
+    hypothesized mean, making the statistical significance visually intuitive.
+
+    Parameters
+    ----------
+    sample_mean
+        The mean value calculated from the sample data.
+    sample_sd
+        The standard deviation of the sample data.
+    sample_size
+        The number of observations in the sample (n). If n < 30, a t-distribution is used;
+        otherwise, a normal distribution is assumed.
+    hypothesized_mean
+        The population mean value to test against (null hypothesis value).
+    alternative_hypothesis
+        Defines the alternative hypothesis for the test. Must be one of 'two-sided',
+        'less', or 'greater'. Defaults to 'two-sided'.
+    confidence_interval
+        The confidence level used to determine statistical significance (e.g., 0.95
+        for a 5% signficance level). Defaults to 0.95.
+    plot_sample_distribution
+        If True, displays a histogram showing the distribution of simulated sample
+        means relative to the hypothesized value. Defaults to True.
+    value_name
+        Descriptive name for the value being tested, used as the x-axis label in
+        the visualization. Defaults to 'Value'.
+    fill_color
+        Hex color code or name for the distribution plot bars. Defaults to '#999999'.
+    fill_transparency
+        Transparency level (alpha) for the plot bars, ranging from 0 to 1.
+        Defaults to 0.6.
+    title_for_plot
+        Main title text to display at the top of the plot. Defaults to
+        'Hypothesis Test of a Mean'.
+    subtitle_for_plot
+        Subtitle text to display below the main title. Defaults to
+        'Shows the distribution of the sample mean and the hypothesized mean.'.
+    caption_for_plot
+        Caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot
+        Optional text identifying the data source, displayed in the caption area.
+        Defaults to None.
+    show_y_axis
+        If True, displays the y-axis (frequency scale) on the distribution plot.
+        Defaults to False.
+    title_y_indent
+        Vertical position for the main title relative to the axes. Defaults to 1.10.
+    subtitle_y_indent
+        Vertical position for the subtitle relative to the axes. Defaults to 1.05.
+    caption_y_indent
+        Vertical position for the caption relative to the axes. Defaults to -0.15.
+    figure_size
+        Tuple specifying the (width, height) of the figure in inches. Defaults to (8, 6).
+
+    Returns
+    -------
+    float
+        The calculated test statistic (t-score or z-score).
+
+    Examples
+    --------
+    # Test if a reported sample mean of 52 differs from a hypothesized 50
+    test_stat = TTestOfMeanFromStats(
+        sample_mean=52.0,
+        sample_sd=5.0,
+        sample_size=35,
+        hypothesized_mean=50.0
+    )
+
+    # Small sample test (t-test) with a 'greater than' alternative hypothesis
+    test_stat = TTestOfMeanFromStats(
+        sample_mean=105.5,
+        sample_sd=15.2,
+        sample_size=15,
+        hypothesized_mean=100.0,
+        alternative_hypothesis='greater',
+        value_name='IQ Scores',
+        title_for_plot='Comparison of Local vs. National IQ'
+    )
+
+    # Test without visualization for quick calculation
+    test_stat = TTestOfMeanFromStats(
+        sample_mean=48.2,
+        sample_sd=4.1,
+        sample_size=100,
+        hypothesized_mean=50.0,
+        plot_sample_distribution=False
+    )
+
     """
     
     # If alternative hypothesis is "two-sided", then divide and add half of complement

@@ -26,30 +26,123 @@ def TwoSampleTTestOfIndependence(dataframe,
                                  caption_y_indent=-0.15,
                                  figure_size=(8, 6)):
     """
-    Conducts a two-sample t-test of independence on a dataframe with two groups.
+    Perform a two-sample independent t-test to compare means between two groups.
 
-    Args:
-    - dataframe: pandas DataFrame containing the data to be analyzed
-    - outcome_column: string representing the name of the column containing the outcome variable
-    - grouping_column: string representing the name of the column containing the grouping variable
-    - confidence_interval: float representing the desired confidence interval (default=.95)
-    - alternative_hypothesis: string representing the alternative hypothesis (default="two-sided")
-    - homogeneity_of_variance: boolean representing whether to assume equal variances (default=True)
-    - null_handling: string representing how to handle null values (default='omit')
-    - plot_sample_distributions: boolean representing whether to plot the distribution of the sample means for each group (default=True)
-    - color_palette: string representing the name of the color palette to use for the plot (default='Set2')
-    - title_for_plot: string representing the title of the plot (default="T-Test of Independence")
-    - subtitle_for_plot: string representing the subtitle of the plot (default="Shows the distribution of the sample means for each group.")
-    - caption_for_plot: string representing the caption of the plot (default=None)
-    - data_source_for_plot: string representing the data source of the plot (default=None)
-    - show_y_axis: boolean representing whether to show the y-axis on the plot (default=False)
-    - title_y_indent: float representing the y-indent of the title on the plot (default=1.1)
-    - subtitle_y_indent: float representing the y-indent of the subtitle on the plot (default=1.05)
-    - caption_y_indent: float representing the y-indent of the caption on the plot (default=-0.15)
-    - figure_size: tuple representing the size of the plot (default=(8, 6))
+    This function conducts a two-sample independent t-test to determine if there is a
+    statistically significant difference between the means of two unrelated groups. It
+    is a fundamental inferential statistic used to compare the central tendencies of
+    distinct populations or experimental groups.
 
-    Returns:
-    - ttest_results: a scipy.stats.ttest_ind_result object containing the results of the t-test
+    A two-sample t-test is essential for:
+      * Comparing experimental results between a treatment group and a control group
+      * Analyzing performance differences between two distinct demographic segments
+      * Testing if two manufacturing processes produce parts with different average sizes
+      * Evaluating the impact of two different marketing strategies on customer spend
+      * Assessing if gender, age, or location groups exhibit different average behaviors
+      * Validating whether a training program significantly improved scores vs. a baseline
+      * Comparing product satisfaction ratings between two different user categories
+
+    The function calculates the t-statistic and p-value using `scipy.stats.ttest_ind`.
+    It supports assumptions of both equal and unequal variances (Welch's t-test),
+    provides optional visualization of the simulated sample mean distributions for both
+    groups via kernel density estimates (KDE), and automatically prints a statistical
+    interpretation of the results based on the provided confidence level.
+
+    Parameters
+    ----------
+    dataframe
+        The pandas DataFrame containing the data to be analyzed.
+    outcome_column
+        Name of the column in the DataFrame containing the continuous dependent variable.
+    grouping_column
+        Name of the column in the DataFrame containing the categorical independent variable
+        (must have exactly two unique groups).
+    confidence_interval
+        The confidence level used to determine statistical significance (e.g., 0.95
+        for a 5% significance level). Defaults to 0.95.
+    alternative_hypothesis
+        Defines the alternative hypothesis. Must be one of 'two-sided' (means are not
+        equal), 'less' (mean of first group is less than second), or 'greater'
+        (mean of first group is greater than second). Defaults to 'two-sided'.
+    homogeneity_of_variance
+        If True, assumes equality of variance between groups (Student's t-test). If
+        False, performs Welch's t-test for unequal variances. Defaults to True.
+    null_handling
+        Method for handling missing values (NaN) in the data. Options include
+        'omit' (ignore NaNs), 'raise' (throw error), or 'propagate' (return NaN).
+        Defaults to 'omit'.
+    plot_sample_distributions
+        If True, displays a kernel density estimate of the simulated sample means for
+        both groups to visualize the comparison. Defaults to True.
+    color_palette
+        Seaborn color palette name used for the lines and fills in the plot.
+        Defaults to 'Set2'.
+    title_for_plot
+        Main title text to display at the top of the plot. Defaults to
+        'T-Test of Independence'.
+    subtitle_for_plot
+        Subtitle text to display below the main title. Defaults to
+        'Shows the distribution of the sample means for each group.'.
+    caption_for_plot
+        Caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot
+        Optional text identifying the data source, displayed in the caption area.
+        Defaults to None.
+    show_y_axis
+        If True, displays the y-axis (density scale) on the distribution plot.
+        Defaults to False.
+    title_y_indent
+        Vertical position for the main title relative to the axes. Defaults to 1.1.
+    subtitle_y_indent
+        Vertical position for the subtitle relative to the axes. Defaults to 1.05.
+    caption_y_indent
+        Vertical position for the caption relative to the axes. Defaults to -0.15.
+    figure_size
+        Tuple specifying the (width, height) of the figure in inches. Defaults to (8, 6).
+
+    Returns
+    -------
+    scipy.stats._stats_py.Ttest_indResult
+        A named tuple containing the calculated t-statistic and the p-value.
+        Values can be accessed via `result.statistic` and `result.pvalue`.
+
+    Examples
+    --------
+    # Compare average sales between two different regions
+    import pandas as pd
+    import numpy as np
+    df = pd.DataFrame({
+        'sales': np.random.normal(500, 50, 40),
+        'region': ['East'] * 20 + ['West'] * 20
+    })
+    results = TwoSampleTTestOfIndependence(
+        dataframe=df,
+        outcome_column='sales',
+        grouping_column='region'
+    )
+
+    # Welch's t-test for groups with unequal variances and a directional hypothesis
+    recovery_df = pd.DataFrame({
+        'recovery_days': [7, 8, 5, 9, 6] * 10 + [12, 14, 11, 15, 13] * 10,
+        'treatment': ['Medicine A'] * 50 + ['Medicine B'] * 50
+    })
+    results = TwoSampleTTestOfIndependence(
+        dataframe=recovery_df,
+        outcome_column='recovery_days',
+        grouping_column='treatment',
+        homogeneity_of_variance=False,
+        alternative_hypothesis='less',
+        title_for_plot='Efficacy of Medicine A vs. Medicine B'
+    )
+
+    # Statistical test without visualization
+    results = TwoSampleTTestOfIndependence(
+        dataframe=df,
+        outcome_column='sales',
+        grouping_column='region',
+        plot_sample_distributions=False
+    )
+
     """
     
     # Get groupings (there should only be two)

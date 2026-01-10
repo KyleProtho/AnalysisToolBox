@@ -14,18 +14,95 @@ def ConductLinearRegressionAnalysis(dataframe,
                                     show_diagnostic_plots_for_each_predictor=False,
                                     show_help=False):
     """
-    Conducts a linear regression analysis on a given dataframe, using a specified outcome variable and list of predictor variables.
+    Conduct linear regression analysis to model relationships between variables and assess significance.
 
-    Args:
-        dataframe (pandas.DataFrame): The dataframe containing the data to be analyzed.
-        outcome_variable (str): The name of the column in the dataframe containing the outcome variable.
-        list_of_predictors (list): A list of strings, each containing the name of a column in the dataframe containing a predictor variable.
-        scale_predictors (bool, optional): Whether or not to scale the predictor variables before running the analysis. Defaults to False.
-        show_diagnostic_plots_for_each_predictor (bool, optional): Whether or not to show diagnostic plots for each predictor variable. Defaults to False.
-        show_help (bool, optional): Whether or not to show help text explaining how to access the output of the function. Defaults to False.
+    This function performs Ordinary Least Squares (OLS) linear regression to examine how
+    one or more predictor variables influence a continuous outcome variable. It provides
+    statistical summaries, regression coefficients, and diagnostic visualizations to
+    help interpret the strength and nature of the relationships in the data.
 
-    Returns:
-        dict: A dictionary containing the fitted linear regression model, the model summary, a test dataset of predictors, and a test dataset of outcomes.
+    Linear regression analysis is essential for:
+      * Estimating the impact of independent variables on a continuous outcome
+      * Predictive modeling for numerical values and trend forecasting
+      * Testing scientific and economic hypotheses regarding variable associations
+      * Analyzing the drivers of business metrics like revenue or customer satisfaction
+      * Social science research on the effects of demographic or environmental factors
+      * Identifying key features and their relative importance in a dataset
+      * Validating the assumptions of linear relationships between variables
+
+    The function automatically handles preprocessing by removing missing (NaN) and
+    infinite values. It supports optional feature scaling using `StandardScaler`
+    and can generate detailed diagnostic plots for each predictor variable using
+    `statsmodels` diagnostics.
+
+    Parameters
+    ----------
+    dataframe
+        The pandas DataFrame containing the variables for the regression analysis.
+    outcome_variable
+        Name of the column in the DataFrame representing the dependent (outcome) variable.
+    list_of_predictors
+        A list of column names for the independent (predictor) variables to include in
+        the model.
+    add_constant
+        If True, adds an intercept (constant term) to the model. Defaults to False.
+    scale_predictors
+        If True, scales the predictor variables to have a mean of 0 and standard
+        deviation of 1 using `StandardScaler` before fitting the model. Defaults to False.
+    show_diagnostic_plots_for_each_predictor
+        If True, displays diagnostic regression plots (e.g., partial regression plots)
+        for each predictor in the model. Defaults to False.
+    show_help
+        If True, prints a quick guide to the console explaining how to access and
+        interpret the output dictionary. Defaults to False.
+
+    Returns
+    -------
+    dict
+        A dictionary containing the regression results with the following keys:
+          * 'Fitted Model': The results object from the statsmodels OLS fit.
+          * 'Model Summary': A comprehensive statistical summary of the regression model.
+
+    Examples
+    --------
+    # Analyze the impact of experience and education on salary
+    import pandas as pd
+    df = pd.DataFrame({
+        'salary': [50000, 60000, 55000, 80000, 75000] * 10,
+        'experience_years': [1, 5, 3, 10, 8] * 10,
+        'education_level': [12, 16, 14, 18, 16] * 10
+    })
+    results = ConductLinearRegressionAnalysis(
+        dataframe=df,
+        outcome_variable='salary',
+        list_of_predictors=['experience_years', 'education_level'],
+        add_constant=True
+    )
+    print(results['Model Summary'])
+
+    # Perform regression with feature scaling and diagnostic plots
+    advertising_df = pd.DataFrame({
+        'sales': [22, 10, 9, 18, 12] * 10,
+        'tv_spend': [230, 44, 17, 151, 180] * 10,
+        'radio_spend': [37, 39, 45, 41, 10] * 10
+    })
+    results = ConductLinearRegressionAnalysis(
+        dataframe=advertising_df,
+        outcome_variable='sales',
+        list_of_predictors=['tv_spend', 'radio_spend'],
+        add_constant=True,
+        scale_predictors=True,
+        show_diagnostic_plots_for_each_predictor=True
+    )
+
+    # Simple bivariate regression without intercept
+    results = ConductLinearRegressionAnalysis(
+        dataframe=df,
+        outcome_variable='salary',
+        list_of_predictors=['experience_years'],
+        add_constant=False
+    )
+
     """
     
     # Select columns specified

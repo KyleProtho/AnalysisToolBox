@@ -29,30 +29,112 @@ def TTestOfProportionFromStats(sample_proportion,
                                caption_y_indent=-0.15,
                                figure_size=(8, 6)):
     """
-    Conducts a hypothesis test of a proportion using a one-sample z-test or t-test.
+    Perform a hypothesis test of a proportion using summary statistics.
 
-    Args:
-        sample_proportion (float): The proportion of the sample that exhibits the characteristic of interest.
-        sample_size (int): The size of the sample.
-        hypothesized_proportion (float): The hypothesized proportion of the population that exhibits the characteristic of interest.
-        alternative_hypothesis (str, optional): The alternative hypothesis. Can be "two-sided", "less", or "greater". Defaults to "two-sided".
-        confidence_interval (float, optional): The confidence level for the hypothesis test. Defaults to .95.
-        plot_sample_distribution (bool, optional): Whether to plot the distribution of the sample mean and the hypothesized mean. Defaults to True.
-        value_name (str, optional): The name of the value being tested. Defaults to "Value".
-        fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
-        fill_transparency (float, optional): The transparency of the fill color for the histogram. Defaults to 0.6.
-        title_for_plot (str, optional): The title for the plot. Defaults to "Hypothesis Test of a Mean".
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Shows the distribution of the sample mean and the hypothesized mean.".
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
-        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.10.
-        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-        figure_size (tuple, optional): The size of the plot. Defaults to (8, 6).
+    This function conducts either a one-sample z-test or a t-test based on the provided
+    sample statistics (proportion and size) to determine if a population proportion
+    significantly differs from a hypothesized value. It automatically selects the
+    appropriate test based on the sample size: a t-test for small samples (n < 30) or a
+    z-test for larger samples (n >= 30), which is common in proportion testing when
+    the normal approximation to the binomial distribution is used.
 
-    Returns:
-        float: The test statistic.
+    A hypothesis test of a proportion from statistics is essential for:
+      * Validating survey results on population characteristics
+      * Testing conversion rates against industry or historical benchmarks
+      * Verifying if defect rates in manufacturing meet quality standards
+      * Analyzing political polling data and projected vote shares
+      * Assessing click-through rates (CTR) in digital marketing campaigns
+      * Evaluating adoption rates of new features or software updates
+      * Benchmarking successful outcomes in clinical or social research
+
+    The function calculates the test statistic and the corresponding p-value. It supports
+    multiple alternative hypotheses (two-sided, less, or greater) and provides a
+    visualization of the simulated sample proportion distribution relative to the
+    hypothesized value, helping to intuit the statistical evidence against the
+    null hypothesis.
+
+    Parameters
+    ----------
+    sample_proportion
+        The observed proportion exhibiting the characteristic of interest in the sample
+        (range 0 to 1).
+    sample_size
+        The total number of observations in the sample (n). If n < 30, a t-distribution
+        is used; otherwise, a normal distribution is assumed.
+    hypothesized_proportion
+        The population proportion value to test against (null hypothesis value, range 0 to 1).
+    alternative_hypothesis
+        Defines the alternative hypothesis. Must be one of 'two-sided' (not equal to),
+        'less' (is less than), or 'greater' (is greater than). Defaults to 'two-sided'.
+    confidence_interval
+        The confidence level used to determine statistical significance (e.g., 0.95
+        for a 5% significance level). Defaults to 0.95.
+    plot_sample_distribution
+        If True, displays a histogram showing the distribution of simulated sample
+        proportions relative to the hypothesized value. Defaults to True.
+    value_name
+        Descriptive name for the proportion being tested, used as the x-axis label in
+        the visualization. Defaults to 'Value'.
+    fill_color
+        Hex color code or name for the distribution plot bars. Defaults to '#999999'.
+    fill_transparency
+        Transparency level (alpha) for the plot bars, ranging from 0 to 1.
+        Defaults to 0.6.
+    title_for_plot
+        Main title text to display at the top of the plot. Defaults to
+        'Hypothesis Test of a Proportion'.
+    subtitle_for_plot
+        Subtitle text to display below the main title. Defaults to
+        'Shows the distribution of the sample proportion and the hypothesized proportion.'.
+    caption_for_plot
+        Caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot
+        Optional text identifying the data source, displayed in the caption area.
+        Defaults to None.
+    show_y_axis
+        If True, displays the y-axis (frequency scale) on the distribution plot.
+        Defaults to False.
+    title_y_indent
+        Vertical position for the main title relative to the axes. Defaults to 1.10.
+    subtitle_y_indent
+        Vertical position for the subtitle relative to the axes. Defaults to 1.05.
+    caption_y_indent
+        Vertical position for the caption relative to the axes. Defaults to -0.15.
+    figure_size
+        Tuple specifying the (width, height) of the figure in inches. Defaults to (8, 6).
+
+    Returns
+    -------
+    float
+        The calculated test statistic (z-score or t-score).
+
+    Examples
+    --------
+    # Test if a 60% observed conversion rate significantly exceeds a 50% benchmark
+    test_stat = TTestOfProportionFromStats(
+        sample_proportion=0.6,
+        sample_size=100,
+        hypothesized_proportion=0.5,
+        alternative_hypothesis='greater'
+    )
+
+    # Test if a 2% defect rate is significantly different from a 1% standard (small sample)
+    test_stat = TTestOfProportionFromStats(
+        sample_proportion=0.02,
+        sample_size=25,
+        hypothesized_proportion=0.01,
+        value_name='Defect Rate',
+        title_for_plot='Manufacturing Quality Audit'
+    )
+
+    # Statistical test without visualization
+    test_stat = TTestOfProportionFromStats(
+        sample_proportion=0.45,
+        sample_size=500,
+        hypothesized_proportion=0.5,
+        plot_sample_distribution=False
+    )
+
     """
     
     # If alternative hypothesis is "two-sided", then divide and add half of complement

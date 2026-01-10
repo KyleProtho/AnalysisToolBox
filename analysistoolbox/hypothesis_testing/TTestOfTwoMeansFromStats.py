@@ -29,33 +29,116 @@ def TTestOfTwoMeansFromStats(group1_mean,
                              caption_y_indent=-0.15,
                              figure_size=(8, 6)):
     """
-    Conducts a two-sample t-test of the null hypothesis that the means of two independent samples are equal.
+    Perform a two-sample independent t-test using summary statistics.
 
-    Args:
-        group1_mean (float): The mean of the first sample.
-        group1_sd (float): The standard deviation of the first sample.
-        group1_sample_size (int): The sample size of the first sample.
-        group2_mean (float): The mean of the second sample.
-        group2_sd (float): The standard deviation of the second sample.
-        group2_sample_size (int): The sample size of the second sample.
-        homogeneity_of_variance (bool, optional): Whether to assume equal variances for the two samples. Defaults to True.
-        confidence_interval (float, optional): The confidence level for the test. Defaults to 0.95.
-        alternative_hypothesis (str, optional): The alternative hypothesis for the test. Can be "two-sided", "less", or "greater". Defaults to "two-sided".
-        plot_sample_distributions (bool, optional): Whether to plot the distribution of the sample means for each group. Defaults to True.
-        value_name (str, optional): The name of the value being measured. Defaults to "Value".
-        color_palette (str or list, optional): The color palette to use for the plot. Can be a string with the name of a seaborn palette or a list of colors. Defaults to 'Set2'.
-        title_for_plot (str, optional): The title of the plot. Defaults to "T-Test of Two Means".
-        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Shows the distribution of the sample means for each group.".
-        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
-        show_y_axis (bool, optional): Whether to show the y-axis of the plot. Defaults to False.
-        title_y_indent (float, optional): The y-coordinate of the title of the plot. Defaults to 1.1.
-        subtitle_y_indent (float, optional): The y-coordinate of the subtitle of the plot. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-coordinate of the caption of the plot. Defaults to -0.15.
-        figure_size (tuple, optional): The size of the plot. Defaults to (8, 6).
+    This function conducts a two-sample independent t-test based on provided summary
+    statistics (means, standard deviations, and sample sizes) for two groups. It
+    determines whether there is a statistically significant difference between the
+    population means of the two independent groups.
 
-    Returns:
-        namedtuple: A named tuple containing the test statistic and the p-value of the test.
+    A two-sample t-test from statistics is essential for:
+      * Comparing A/B test results when only aggregate data is available
+      * Benchmarking performance across different regions or departments
+      * Validating experimental outcomes from published research papers
+      * Testing the efficacy of a treatment group relative to a control group
+      * Analyzing variations in service delivery times between two providers
+      * Evaluating differences in customer lifetime value across segments
+      * Assessing the impact of environmental factors on outcome distributions
+
+    The function uses `scipy.stats.ttest_ind_from_stats` to calculate the t-statistic
+    and p-value. It supports assumptions of both equal and unequal variances
+    (Welch's t-test) and provides a visualization of simulated sample mean
+    distributions for both groups, allowing for an intuitive comparison of their
+    central tendencies and overlaps.
+
+    Parameters
+    ----------
+    group1_mean
+        The mean value calculated from the first sample.
+    group1_sd
+        The standard deviation calculated from the first sample.
+    group1_sample_size
+        The number of observations in the first sample.
+    group2_mean
+        The mean value calculated from the second sample.
+    group2_sd
+        The standard deviation calculated from the second sample.
+    group2_sample_size
+        The number of observations in the second sample.
+    homogeneity_of_variance
+        If True, assumes equality of variance between the two groups (Student's
+        t-test). If False, performs Welch's t-test for unequal variances.
+        Defaults to True.
+    confidence_interval
+        The confidence level used to determine statistical significance (e.g., 0.95
+        for a 5% signficance level). Defaults to 0.95.
+    alternative_hypothesis
+        Defines the alternative hypothesis for the test. Must be one of 'two-sided',
+        'less', or 'greater'. Defaults to 'two-sided'.
+    plot_sample_distributions
+        If True, displays a kernel density estimate of simulated sample means for
+        both groups to visualize the comparison. Defaults to True.
+    value_name
+        Descriptive name for the value being measured, used as the x-axis label in
+        the visualization. Defaults to 'Value'.
+    color_palette
+        Seaborn color palette name or list of colors used for the group distributions.
+        Defaults to 'Set2'.
+    title_for_plot
+        Main title text to display at the top of the plot. Defaults to
+        'T-Test of Two Means'.
+    subtitle_for_plot
+        Subtitle text to display below the main title. Defaults to
+        'Shows the distribution of the sample means for each group.'.
+    caption_for_plot
+        Caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot
+        Optional text identifying the data source, displayed in the caption area.
+        Defaults to None.
+    show_y_axis
+        If True, displays the y-axis (density scale) on the distribution plot.
+        Defaults to False.
+    title_y_indent
+        Vertical position for the main title relative to the axes. Defaults to 1.1.
+    subtitle_y_indent
+        Vertical position for the subtitle relative to the axes. Defaults to 1.05.
+    caption_y_indent
+        Vertical position for the caption relative to the axes. Defaults to -0.15.
+    figure_size
+        Tuple specifying the (width, height) of the figure in inches. Defaults to (8, 6).
+
+    Returns
+    -------
+    scipy.stats._stats_py.Ttest_indResult
+        A named tuple containing the calculated t-statistic and the p-value.
+        Values can be accessed via `result.statistic` and `result.pvalue`.
+
+    Examples
+    --------
+    # Compare average spend between two marketing variants
+    result = TTestOfTwoMeansFromStats(
+        group1_mean=45.2, group1_sd=12.5, group1_sample_size=150,
+        group2_mean=48.7, group2_sd=13.2, group2_sample_size=150
+    )
+    print(f"P-value: {result.pvalue:.4f}")
+
+    # Welch's t-test for groups with unequal variances and sizes
+    result = TTestOfTwoMeansFromStats(
+        group1_mean=105.0, group1_sd=5.0, group1_sample_size=20,
+        group2_mean=112.0, group2_sd=15.0, group2_sample_size=100,
+        homogeneity_of_variance=False,
+        alternative_hypothesis='less'
+    )
+
+    # Test with custom visualization styling
+    result = TTestOfTwoMeansFromStats(
+        group1_mean=75.0, group1_sd=8.0, group1_sample_size=50,
+        group2_mean=80.0, group2_sd=7.5, group2_sample_size=55,
+        value_name='Test Scores',
+        title_for_plot='Comparison of Method A vs Method B',
+        color_palette=['#3498db', '#e74c3c']
+    )
+
     """
     
     # Conduct t-test

@@ -35,37 +35,144 @@ def ConductSurvivalAnalysis(dataframe,
                             x_axis_label_indent=0.925,
                             figure_size=(8, 6)):
     """
-    Conducts survival analysis on a given dataset and returns the results.
+    Conduct survival analysis to model time-to-event data and compare survival patterns.
 
-    Args:
-        dataframe (pandas.DataFrame): The dataset to analyze.
-        outcome_column (str): The name of the column containing the outcome variable.
-        time_duration_column (str): The name of the column containing the time duration variable.
-        group_column (str, optional): The name of the column containing the group variable. Defaults to None.
-        return_time_table (bool, optional): Whether to return the time table. Defaults to True.
-        plot_survival_curve (bool, optional): Whether to plot the survival curve. Defaults to True.
-        conduct_log_rank_test (bool, optional): Whether to conduct the log-rank test. Defaults to True.
-        significance_level (float, optional): The significance level for the log-rank test. Defaults to 0.05.
-        print_log_rank_test_results (bool, optional): Whether to print the results of the log-rank test. Defaults to True.
-        line_color (str, optional): The color of the survival curve. Defaults to "#3269a8".
-        line_alpha (float, optional): The alpha value of the survival curve. Defaults to 0.8.
-        sns_color_palette (str, optional): The color palette to use for the survival curve. Defaults to "Set2".
-        add_point_in_time_survival_curve (bool, optional): Whether to add a point-in-time survival curve. Defaults to False.
-        point_in_time_survival_color (str, optional): The color of the point-in-time survival curve. Defaults to "#3269a8".
-        title_for_plot (str, optional): The title of the survival curve plot. Defaults to "Cumulative Survival Curve".
-        subtitle_for_plot (str, optional): The subtitle of the survival curve plot. Defaults to "Shows the cumulative survival probability over time".
-        caption_for_plot (str, optional): The caption of the survival curve plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source of the survival curve plot. Defaults to None.
-        x_indent (float, optional): The x-axis indent of the survival curve plot. Defaults to -0.127.
-        title_y_indent (float, optional): The title y-axis indent of the survival curve plot. Defaults to 1.125.
-        subtitle_y_indent (float, optional): The subtitle y-axis indent of the survival curve plot. Defaults to 1.05.
-        caption_y_indent (float, optional): The caption y-axis indent of the survival curve plot. Defaults to -0.3.
-        y_axis_label_indent (float, optional): The y-axis label indent of the survival curve plot. Defaults to 0.78.
-        x_axis_label_indent (float, optional): The x-axis label indent of the survival curve plot. Defaults to 0.925.
-        figure_size (tuple, optional): The size of the survival curve plot. Defaults to (8, 6).
+    This function performs survival analysis using the Kaplan-Meier estimator to determine
+    the probability of an event not occurring over a specified time duration. It provides
+    detailed survival tables, optional log-rank tests for group comparisons, and high-quality
+    visualizations of cumulative survival curves with confidence intervals.
 
-    Returns:
-        pandas.DataFrame: The time table, if return_time_table is True.
+    Survival analysis is essential for:
+      * Analyzing customer churn and estimating subscription lifecycle
+      * Evaluating patient outcomes and survival rates in clinical trials
+      * Modeling time-to-failure in mechanical and engineering systems
+      * Understanding employee retention patterns and attrition timing
+      * Assessing credit risk and time-to-default for financial products
+      * Tracking conversion cycles and time-to-purchase in sales funnels
+      * Predicting project completion times and delivery durations
+
+    The function fits Kaplan-Meier models using the `lifelines` library. For grouped
+    data, it can perform both bivariate and multivariate log-rank tests to identify
+    statistically significant differences in survival distributions between cohorts.
+    The resulting visualization tracks cumulative survival probability, making it easy
+    to identify when the risk of an event is highest across different segments.
+
+    Parameters
+    ----------
+    dataframe
+        The pandas DataFrame containing the survival data to be analyzed.
+    outcome_column
+        Name of the column containing the binary event status (e.g., 1 for event
+        occurred, 0 for censored).
+    time_duration_column
+        Name of the column containing the time-to-event or duration until the end of
+        the observation period.
+    group_column
+        Optional name of the column used to segment the data into groups for
+        comparative analysis. Defaults to None.
+    return_time_table
+        If True, includes the detailed event and survival probability table in the
+        returned dictionary. Defaults to True.
+    plot_survival_curve
+        If True, generates and displays a Kaplan-Meier survival curve plot.
+        Defaults to True.
+    conduct_log_rank_test
+        If True, performs a log-rank test to compare survival curves across groups
+        when a `group_column` is provided. Defaults to True.
+    significance_level
+        The alpha level for statistical significance in the log-rank test.
+        Defaults to 0.05.
+    print_log_rank_test_results
+        If True, prints a summary of the log-rank test results to the console.
+        Defaults to True.
+    line_color
+        Color of the survival line for non-grouped analysis. Defaults to "#3269a8".
+    line_alpha
+        Transparency level for the survival lines and shaded confidence intervals,
+        ranging from 0 to 1. Defaults to 0.8.
+    sns_color_palette
+        Seaborn color palette used for the lines and intervals when comparing
+        groups. Defaults to "Set2".
+    add_point_in_time_survival_curve
+        If True, adds a secondary line to the plot showing point-in-time survival
+        probabilities (non-grouped analysis only). Defaults to False.
+    point_in_time_survival_color
+        Color used for the point-in-time survival line. Defaults to "#3269a8".
+    title_for_plot
+        Main title text to display at the top of the plot. Defaults to
+        "Cumulative Survival Curve".
+    subtitle_for_plot
+        Subtitle text to display below the main title. Defaults to
+        'Shows the cumulative survival probability over time'.
+    caption_for_plot
+        Caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot
+        Optional text identifying the data source, displayed in the caption area.
+        Defaults to None.
+    x_indent
+        Horizontal position for left-aligning the title, subtitle, and caption.
+        Defaults to -0.127.
+    title_y_indent
+        Vertical position for the main title relative to the axes. Defaults to 1.125.
+    subtitle_y_indent
+        Vertical position for the subtitle relative to the axes. Defaults to 1.05.
+    caption_y_indent
+        Vertical position for the caption relative to the axes. Defaults to -0.3.
+    y_axis_label_indent
+        Vertical position for the y-axis label. Defaults to 0.78.
+    x_axis_label_indent
+        Horizontal position for the x-axis label. Defaults to 0.925.
+    figure_size
+        Tuple specifying the (width, height) of the figure in inches. Defaults to (8, 6).
+
+    Returns
+    -------
+    dict
+        A dictionary containing the analysis results with the following keys:
+          * 'survival_table': A pd.DataFrame containing event counts and survival
+            probabilities over time.
+          * [Group Names]: Individual `KaplanMeierFitter` objects for each group if
+            `group_column` was provided.
+
+    Examples
+    --------
+    # Simple survival analysis for machine failure
+    import pandas as pd
+    df = pd.DataFrame({
+        'failed': [1, 0, 1, 1, 0] * 20,
+        'hours': [100, 500, 250, 400, 600] * 20
+    })
+    results = ConductSurvivalAnalysis(
+        dataframe=df,
+        outcome_column='failed',
+        time_duration_column='hours'
+    )
+    print(results['survival_table'].head())
+
+    # Compare customer churn between subscription tiers
+    subscription_df = pd.DataFrame({
+        'churned': [1, 1, 0, 1, 0, 0] * 30,
+        'months': [3, 6, 24, 1, 12, 18] * 30,
+        'tier': ['Basic', 'Premium', 'Basic', 'Standard', 'Premium', 'Standard'] * 30
+    })
+    results = ConductSurvivalAnalysis(
+        dataframe=subscription_df,
+        outcome_column='churned',
+        time_duration_column='months',
+        group_column='tier',
+        title_for_plot='Customer Retention by Subscription Tier',
+        sns_color_palette='viridis'
+    )
+
+    # Statistical test for treatment efficacy without plotting
+    results = ConductSurvivalAnalysis(
+        dataframe=df,
+        outcome_column='failed',
+        time_duration_column='hours',
+        plot_survival_curve=False,
+        conduct_log_rank_test=True
+    )
+
     """
     # Lazy load uncommon packages
     from lifelines import KaplanMeierFitter

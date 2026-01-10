@@ -27,29 +27,117 @@ def OneWayANOVA(dataframe,
                 caption_y_indent=-0.15,
                 figure_size=(8, 6)):
     """
-    Conducts a one-way ANOVA on a given dataframe, with options for post-hoc testing and visualization.
+    Perform a one-way analysis of variance (ANOVA) and post-hoc Tukey tests.
 
-    Args:
-        dataframe: A pandas dataframe containing the data to be analyzed.
-        outcome_column: A string representing the name of the column containing the outcome variable.
-        grouping_column: A string representing the name of the column containing the grouping variable.
-        signficance_level: A float representing the desired significance level (default: 0.05).
-        homogeneity_of_variance: A boolean indicating whether to assume homogeneity of variance (default: True).
-        use_welch_correction: A boolean indicating whether to use Welch's correction for unequal variances (default: False).
-        plot_sample_distributions: A boolean indicating whether to plot the distribution of sample means for each group (default: True).
-        color_palette: A string representing the name of the color palette to use for the plot (default: 'Set2').
-        title_for_plot: A string representing the title of the plot (default: 'One-Way ANOVA').
-        subtitle_for_plot: A string representing the subtitle of the plot (default: 'Shows the distribution of the sample means for each group.').
-        caption_for_plot: A string representing the caption of the plot (default: None).
-        data_source_for_plot: A string representing the data source of the plot (default: None).
-        show_y_axis: A boolean indicating whether to show the y-axis on the plot (default: False).
-        title_y_indent: A float representing the y-axis position of the title (default: 1.1).
-        subtitle_y_indent: A float representing the y-axis position of the subtitle (default: 1.05).
-        caption_y_indent: A float representing the y-axis position of the caption (default: -0.15).
-        figure_size: A tuple representing the size of the plot (default: (8, 6)).
+    This function conducts a one-way ANOVA to determine whether there are statistically
+    significant differences between the means of three or more independent (unrelated)
+    groups. It is an extension of the independent t-test and is used when the
+    independent variable has multiple levels or categories.
 
-    Returns:
-        A string representing the results of Tukey's test.
+    One-way ANOVA is essential for:
+      * Comparing sales performance across different retail regions
+      * Testing the efficacy of multiple drug treatments relative to a control
+      * Analyzing variations in machinery output under different operating temperatures
+      * Evaluating differences in customer satisfaction scores across product tiers
+      * Assessing the impact of various educational methods on student scores
+      * Comparing investment returns across different asset classes
+      * Validating whether different marketing campaigns result in distinct conversion rates
+
+    The function calculates the f-statistic and p-value using `statsmodels`. It also
+    automatically performs Tukey's Honestly Significant Difference (HSD) post-hoc
+    test to identify which specific groups differ from one another. Results can be
+    visualized via a density plot of simulated sample mean distributions for each group,
+    providing a clear visual comparison of group spreads and overlaps.
+
+    Parameters
+    ----------
+    dataframe
+        The pandas DataFrame containing the experimental data.
+    outcome_column
+        Name of the column containing the continuous outcome variable (dependent variable).
+    grouping_column
+        Name of the column containing the categorical grouping labels (independent variable).
+    signficance_level
+        The alpha level used to determine statistical significance. Defaults to 0.05.
+    homogeneity_of_variance
+        If True, assumes equality of variance between groups. If False, adjusts
+        calculations for unequal variances. Defaults to True.
+    use_welch_correction
+        If True, applies Welch's correction to the ANOVA calculation, which is
+        recommended when group variances or sample sizes are unequal. Defaults to False.
+    plot_sample_distributions
+        If True, displays a kernel density estimate of simulated sample means for each
+        group to visualize differences. Defaults to True.
+    color_palette
+        Seaborn color palette name used for the lines and fills in the plot.
+        Defaults to 'Set2'.
+    title_for_plot
+        Main title text to display at the top of the plot. Defaults to 'One-Way ANOVA'.
+    subtitle_for_plot
+        Subtitle text to display below the main title. Defaults to
+        'Shows the distribution of the sample means for each group.'.
+    caption_for_plot
+        Caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot
+        Optional text identifying the data source, displayed in the caption area.
+        Defaults to None.
+    show_y_axis
+        If True, displays the y-axis (density scale) on the distribution plot.
+        Defaults to False.
+    title_y_indent
+        Vertical position for the main title relative to the axes. Defaults to 1.1.
+    subtitle_y_indent
+        Vertical position for the subtitle relative to the axes. Defaults to 1.05.
+    caption_y_indent
+        Vertical position for the caption relative to the axes. Defaults to -0.15.
+    figure_size
+        Tuple specifying the (width, height) of the figure in inches. Defaults to (8, 6).
+
+    Returns
+    -------
+    statsmodels.iolib.summary.Summary
+        A summary object containing the results of Tukey's Honestly Significant
+        Difference (HSD) post-hoc test, including pairwise group differences,
+        confidence intervals, and rejection decisions.
+
+    Examples
+    --------
+    # Compare average sales across three different regions
+    import pandas as pd
+    import numpy as np
+    sales_df = pd.DataFrame({
+        'sales': np.random.normal(500, 50, 60),
+        'region': ['East', 'West', 'South'] * 20
+    })
+    tukey_results = OneWayANOVA(
+        dataframe=sales_df,
+        outcome_column='sales',
+        grouping_column='region'
+    )
+    print(tukey_results)
+
+    # Test drug efficacy across multiple dosages with Welch correction
+    dosage_df = pd.DataFrame({
+        'recovery_time': [12, 14, 15, 10, 8, 9, 20, 22, 21] * 5,
+        'dose': ['Low', 'Low', 'Low', 'Med', 'Med', 'Med', 'High', 'High', 'High'] * 5
+    })
+    tukey_results = OneWayANOVA(
+        dataframe=dosage_df,
+        outcome_column='recovery_time',
+        grouping_column='dose',
+        use_welch_correction=True,
+        title_for_plot='Recovery Time by Dosage Level',
+        color_palette='viridis'
+    )
+
+    # Simple ANOVA without visualization
+    tukey_results = OneWayANOVA(
+        dataframe=sales_df,
+        outcome_column='sales',
+        grouping_column='region',
+        plot_sample_distributions=False
+    )
+
     """
     
     # Show pivot table summary

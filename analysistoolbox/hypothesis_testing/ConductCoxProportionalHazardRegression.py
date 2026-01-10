@@ -28,32 +28,139 @@ def ConductCoxProportionalHazardRegression(dataframe,
                                            caption_y_indent=-0.3,
                                            figure_size=(8, 5)):
     """
-    Conducts Cox Proportional Hazard Regression on the given dataframe and returns the model.
-    
-    Args:
-        dataframe (pandas.DataFrame): The dataframe containing the data to be used in the regression.
-        outcome_column (str): The name of the column containing the outcome variable.
-        duration_column (str): The name of the column containing the duration variable.
-        list_of_predictor_columns (list): A list of column names containing the predictor variables.
-        plot_survival_curve (bool, optional): Whether or not to plot the survival curve. Defaults to True.
-        line_color (str, optional): The color of the lines in the plot. Defaults to "#3269a8".
-        line_alpha (float, optional): The alpha value of the lines in the plot. Defaults to 0.8.
-        color_palette (str, optional): The color palette to use in the plot. Defaults to "Set2".
-        markers (str, optional): The marker style to use in the plot. Defaults to "o".
-        number_of_x_axis_ticks (int, optional): The number of ticks to use on the x-axis. Defaults to 20.
-        x_axis_tick_rotation (int, optional): The rotation angle of the x-axis tick labels. Defaults to None.
-        title_for_plot (str, optional): The title of the plot. Defaults to "Survival Counts by Group".
-        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to 'Shows the counts of "surviving" records by group over time'.
-        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
-        x_indent (float, optional): The x-axis indent of the plot. Defaults to -0.127.
-        title_y_indent (float, optional): The title y-axis indent of the plot. Defaults to 1.125.
-        subtitle_y_indent (float, optional): The subtitle y-axis indent of the plot. Defaults to 1.05.
-        caption_y_indent (float, optional): The caption y-axis indent of the plot. Defaults to -0.3.
-        figure_size (tuple, optional): The size of the plot. Defaults to (8, 5).
-    
-    Returns:
-        lifelines.CoxPHFitter: The Cox Proportional Hazard Regression model.
+    Conduct Cox Proportional Hazard Regression to model survival times and analyze predictor impacts.
+
+    This function performs a Cox Proportional Hazard Regression, a semi-parametric
+    survival analysis method used to explore the relationship between the survival
+    time of objects and one or more predictor variables. It models the hazard rate,
+    allowing for the estimation of how various factors influence the risk of an
+    event occurring over time.
+
+    Cox Proportional Hazard Regression is essential for:
+      * Predicting customer churn and identifying high-risk segments
+      * Analyzing patient survival rates in clinical and medical research
+      * Modeling time-to-failure in industrial reliability engineering
+      * Understanding factors influencing employee tenure and retention
+      * Assessing credit risk and time until loan default or delinquency
+      * Evaluating time on market for real estate or e-commerce listings
+      * Optimizing marketing interventions based on expected duration till next action
+
+    The function fits the regression model using the `lifelines` library and provides
+    a statistical summary of coefficients, hazard ratios, and p-values. It also 
+    includes an optional visualization that tracks the count of "surviving" records
+    within different outcome groups over time, facilitating a quick visual 
+    assessment of survival patterns before and after modeling.
+
+    Parameters
+    ----------
+    dataframe
+        The pandas DataFrame containing the survival data, including outcome,
+        duration, and predictor status.
+    outcome_column
+        Name of the column containing the binary event status (e.g., 1 for event,
+        0 for censored) or categorical outcome.
+    duration_column
+        Name of the column containing the time-to-event or duration until the
+        observation ended.
+    list_of_predictor_columns
+        A list of column names for the independent variables (covariates) to
+        include in the regression model.
+    plot_survival_curve
+        If True, displays a visualization showing the count of surviving records
+        over time for each group. Defaults to True.
+    line_color
+        The primary color for lines in the survival plot when hue is not applied.
+        Defaults to "#3269a8".
+    line_alpha
+        The transparency level for the lines in the plot, ranging from 0 to 1.
+        Defaults to 0.8.
+    color_palette
+        The seaborn color palette to use for distinguishing survival groups in
+        the plot. Defaults to "Set2".
+    markers
+        The marker style to use for data points on the survival lines (e.g., 'o',
+        's', 'x'). Defaults to "o".
+    number_of_x_axis_ticks
+        The number of major ticks to display on the x-axis (duration). Defaults to 20.
+    x_axis_tick_rotation
+        The rotation angle (in degrees) for the x-axis tick labels. Defaults to None.
+    title_for_plot
+        The main title text to display at the top of the plot. Defaults to
+        "Survival Counts by Group".
+    subtitle_for_plot
+        The subtitle text to display below the main title. Defaults to
+        'Shows the counts of "surviving" records by group over time'.
+    caption_for_plot
+        Caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot
+        Optional text identifying the data source, displayed in the caption area.
+        Defaults to None.
+    x_indent
+        Horizontal position for left-aligning the title, subtitle, and caption.
+        Defaults to -0.127.
+    title_y_indent
+        Vertical position for the main title relative to the axes. Defaults to 1.125.
+    subtitle_y_indent
+        Vertical position for the subtitle relative to the axes. Defaults to 1.05.
+    caption_y_indent
+        Vertical position for the caption relative to the axes. Defaults to -0.3.
+    figure_size
+        Tuple specifying the (width, height) of the figure in inches. Defaults to (8, 5).
+
+    Returns
+    -------
+    lifelines.CoxPHFitter
+        The fitted Cox Proportional Hazard Regression model object, providing access
+        to summary statistics, hazard ratios, and prediction methods.
+
+    Examples
+    --------
+    # Analyze customer churn based on age and subscription type
+    import pandas as pd
+    df = pd.DataFrame({
+        'churn': [1, 0, 1, 1, 0, 1] * 10,
+        'tenure': [5, 12, 3, 8, 20, 2] * 10,
+        'age': [25, 45, 32, 54, 21, 38] * 10,
+        'is_premium': [1, 1, 0, 0, 1, 0] * 10
+    })
+    model = ConductCoxProportionalHazardRegression(
+        dataframe=df,
+        outcome_column='churn',
+        duration_column='tenure',
+        list_of_predictor_columns=['age', 'is_premium']
+    )
+
+    # Medical research: time to recovery with treatment groups
+    medical_df = pd.DataFrame({
+        'recovered': [1, 1, 0, 1] * 25,
+        'days': [10, 15, 30, 20] * 25,
+        'treatment_dose': [100, 200, 100, 200] * 25,
+        'age': [40, 50, 60, 70] * 25
+    })
+    model = ConductCoxProportionalHazardRegression(
+        dataframe=medical_df,
+        outcome_column='recovered',
+        duration_column='days',
+        list_of_predictor_columns=['treatment_dose', 'age'],
+        title_for_plot='Recovery Patterns by Treatment Status',
+        color_palette='viridis'
+    )
+
+    # Industrial reliability test without plotting
+    failure_df = pd.DataFrame({
+        'failed': [1, 1, 1] * 20,
+        'hours': [1000, 1500, 1200] * 20,
+        'temperature': [70, 85, 90] * 20,
+        'vibration': [0.5, 0.8, 1.2] * 20
+    })
+    model = ConductCoxProportionalHazardRegression(
+        dataframe=failure_df,
+        outcome_column='failed',
+        duration_column='hours',
+        list_of_predictor_columns=['temperature', 'vibration'],
+        plot_survival_curve=False
+    )
+
     """
     # Lazy load uncommon packages
     from lifelines import CoxPHFitter

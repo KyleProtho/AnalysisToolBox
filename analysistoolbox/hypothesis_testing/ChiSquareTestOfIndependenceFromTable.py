@@ -29,28 +29,131 @@ def ChiSquareTestOfIndependenceFromTable(contingency_table,
                                          caption_font_size=8,
                                          decimal_places_for_data_label=1):
     """
-    Performs a chi-square test of independence on a contingency table and returns the observed and expected counts.
+    Perform a chi-square test of independence from a pre-calculated contingency table.
 
-    Args:
-        contingency_table (pandas.DataFrame): A contingency table with the row-wise variable as the index and the column-wise variable as the columns.
-        column_wise_variable_name (str): The name of the column-wise variable.
-        show_contingency_tables (bool, optional): Whether to show the observed and expected contingency tables. Defaults to True.
-        show_plot (bool, optional): Whether to show a clustered bar chart of the observed and expected values. Defaults to True.
-        color_palette (str, optional): The color palette to use for the plot. Defaults to "Set1".
-        fill_transparency (float, optional): The transparency of the bars in the plot. Defaults to 0.8.
-        figure_size (tuple, optional): The size of the plot. Defaults to (6, 6).
-        title_for_plot (str, optional): The title of the plot. Defaults to "Chi-Square Test of Independence".
-        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Shows observed vs. expected counts".
-        caption_for_plot (str, optional): The caption of the plot. Defaults to "Expected counts are based on the null hypothesis of no association between the two variables.".
-        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
-        x_indent (float, optional): The x-axis indent of the plot. Defaults to -0.95.
-        title_y_indent (float, optional): The y-axis indent of the title of the plot. Defaults to 1.15.
-        subtitle_y_indent (float, optional): The y-axis indent of the subtitle of the plot. Defaults to 1.1.
-        caption_y_indent (float, optional): The y-axis indent of the caption of the plot. Defaults to -0.15.
-        decimal_places_for_data_label (int, optional): The number of decimal places to show in the data labels of the plot. Defaults to 1.
+    This function conducts a chi-square test of independence using a summarized contingency
+    table rather than raw data. It determines whether there is a statistically significant
+    association between two categorical variables by comparing the observed frequencies
+    provided in the table with the frequencies that would be expected under the null
+    hypothesis of independence.
 
-    Returns:
-        pandas.DataFrame: A DataFrame containing the observed and expected counts, as well as the difference between the observed and expected counts.
+    The chi-square test of independence from a table is essential for:
+      * Analyzing research results presented in summary format
+      * Validating published findings from cross-tabulations
+      * Comparing experimental results against theoretical distributions
+      * Assessing associations in historical data where raw records are unavailable
+      * Evaluating market share distributions across different segments
+      * Performing meta-analysis on aggregated categorical data
+      * Conducting quick diagnostic tests on frequency counts
+
+    The function calculates the chi-square statistic, p-value, and degrees of freedom
+    directly from the input table. It also provides a visualization via a clustered
+    bar chart that compares observed versus expected counts. This is particularly
+    useful for identifying specific cells in the table where the association deviates 
+    most significantly from what would be expected by chance.
+
+    Parameters
+    ----------
+    contingency_table
+        A pandas DataFrame representing the contingency table. The rows should represent
+        one categorical variable (accessible via the index) and the columns should
+        represent another. The values must be non-negative frequency counts.
+    column_wise_variable_name
+        A descriptive name for the categorical variable represented by the columns
+        of the contingency table. This name will be used in the visualization and results.
+    show_contingency_tables
+        If True, prints the observed and expected contingency tables to the console.
+        Defaults to True.
+    show_plot
+        If True, displays a clustered bar chart comparing observed and expected counts.
+        Defaults to True.
+    color_palette
+        Seaborn color palette name to use for the plot bars. Defaults to 'Paired'.
+    fill_transparency
+        Transparency level for the bars in the plot, ranging from 0 (transparent) to 1
+        (opaque). Defaults to 0.8.
+    figure_size
+        Tuple specifying the (width, height) of each subplot in inches. Defaults to (6, 8).
+    title_for_plot
+        Main title text to display at the top of the plot. Defaults to
+        'Chi-Square Test of Independence'.
+    subtitle_for_plot
+        Subtitle text to display below the main title. Defaults to
+        'Shows observed vs. expected counts'.
+    caption_for_plot
+        Caption text to display at the bottom of the plot explaining the visualization.
+        Defaults to 'Expected counts are based on the null hypothesis of no association
+        between the two variables.'.
+    data_source_for_plot
+        Optional text identifying the data source, displayed in the caption area.
+        If None, no data source is shown. Defaults to None.
+    x_indent
+        Horizontal position for left-aligning title, subtitle, and caption text.
+        Defaults to -0.95.
+    title_y_indent
+        Vertical position for the main title relative to the plot. Defaults to 1.15.
+    title_font_size
+        Font size in points for the main title. Defaults to 14.
+    subtitle_y_indent
+        Vertical position for the subtitle relative to the plot. Defaults to 1.1.
+    subtitle_font_size
+        Font size in points for the subtitle. Defaults to 11.
+    caption_y_indent
+        Vertical position for the caption relative to the plot. Defaults to -0.15.
+    caption_font_size
+        Font size in points for the caption text. Defaults to 8.
+    decimal_places_for_data_label
+        Number of decimal places to display in the bar chart data labels. Defaults to 1.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing the observed counts, expected counts, and the difference
+        (observed minus expected) for each combination of categories. The resulting
+        DataFrame includes columns for both categorical variables, 'Observed',
+        'Expected', and 'Difference (observed minus expected)'.
+
+    Examples
+    --------
+    # Create a contingency table for hair color and eye color
+    import pandas as pd
+    data = {
+        'Blue Eyes': [10, 15, 5],
+        'Brown Eyes': [12, 10, 25]
+    }
+    table = pd.DataFrame(data, index=['Blonde Hair', 'Brown Hair', 'Black Hair'])
+    table.index.name = 'Hair Color'
+
+    # Perform the test
+    results = ChiSquareTestOfIndependenceFromTable(
+        contingency_table=table,
+        column_wise_variable_name='Eye Color'
+    )
+
+    # Analyze survey results for transport preference by city
+    survey_data = {
+        'Public Transit': [150, 200],
+        'Private Vehicle': [100, 50]
+    }
+    cities = pd.DataFrame(survey_data, index=['New York', 'Los Angeles'])
+    cities.index.name = 'City'
+
+    results = ChiSquareTestOfIndependenceFromTable(
+        contingency_table=cities,
+        column_wise_variable_name='Transport Mode',
+        color_palette='viridis',
+        title_for_plot='Transport Preference by City',
+        data_source_for_plot='2023 Urban Mobility Study'
+    )
+
+    # Test without visualization for quick calculation
+    results = ChiSquareTestOfIndependenceFromTable(
+        contingency_table=table,
+        column_wise_variable_name='Eye Color',
+        show_contingency_tables=False,
+        show_plot=False
+    )
+
     """
     
     # Get row-wise variable names

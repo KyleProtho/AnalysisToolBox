@@ -15,18 +15,93 @@ def ConductLogisticRegressionAnalysis(dataframe,
                                       show_diagnostic_plots_for_each_predictor=True,
                                       show_help=False):
     """
-    Conducts a logistic regression analysis on the specified dataframe, using the specified outcome variable and list of predictors.
+    Conduct logistic regression analysis to model categorical outcomes and assess predictor impact.
 
-    Args:
-        dataframe (pandas.DataFrame): The dataframe containing the data to be analyzed.
-        outcome_variable (str): The name of the column in the dataframe containing the outcome variable.
-        list_of_predictors (list of str): A list of the names of the columns in the dataframe containing the predictor variables.
-        scale_predictors (bool, optional): Whether or not to scale the predictor variables. Default is False.
-        show_diagnostic_plots_for_each_predictor (bool, optional): Whether or not to show diagnostic plots for each predictor variable. Default is True.
-        show_help (bool, optional): Whether or not to show help text. Default is False.
+    This function performs logistic regression to examine the relationship between one or
+    more predictor variables and a categorical outcome variable. It automatically
+    detects whether to perform binomial logistic regression (for two categories) or
+    multinomial logistic regression (for three or more categories) using `statsmodels`.
 
-    Returns:
-        dict: A dictionary containing the fitted model and model summary.
+    Logistic regression analysis is essential for:
+      * Predicting binary outcomes such as customer churn, conversion, or default
+      * Modeling multi-class choices like product preference or tier selection
+      * Identifying key drivers that increase or decrease the probability of an event
+      * Clinical research for disease diagnosis and risk factor assessment
+      * Analyzing social science survey data with nominal or ordinal categories
+      * Evaluating the odds ratios of specific predictors in classification tasks
+      * Validating classification models through diagnostic visualizations
+
+    The function provides statistical summaries including coefficients, p-values, and
+    pseudo R-squared values. It handles data cleaning (removing NaN and infinite
+    values), supports optional feature scaling, and can generate logistic regression
+    plots to visualize the probability curves for each predictor.
+
+    Parameters
+    ----------
+    dataframe
+        The pandas DataFrame containing the data for the regression analysis.
+    outcome_variable
+        Name of the column in the DataFrame representing the categorical outcome variable.
+    list_of_predictors
+        A list of column names for the independent (predictor) variables to include in
+        the model.
+    add_constant
+        If True, adds an intercept (constant term) to the model. Defaults to True.
+    scale_predictors
+        If True, scales the predictor variables to have a mean of 0 and standard
+        deviation of 1 using `StandardScaler` before fitting the model. Defaults to False.
+    show_diagnostic_plots_for_each_predictor
+        If True, displays logistic regression plots with probability curves for each
+        predictor. Defaults to True.
+    show_help
+        If True, prints a quick guide to the console explaining how to access and
+        interpret the output dictionary. Defaults to False.
+
+    Returns
+    -------
+    dict
+        A dictionary containing the regression results with the following keys:
+          * 'Fitted Model': The results object from the statsmodels Logit or MNLogit fit.
+          * 'Model Summary': A comprehensive statistical summary of the regression model.
+
+    Examples
+    --------
+    # Binomial logistic regression: Predicting customer churn
+    import pandas as pd
+    df = pd.DataFrame({
+        'churn': [0, 1, 0, 1, 0, 1] * 20,
+        'monthly_spend': [50, 100, 45, 120, 60, 150] * 20,
+        'tenure_months': [24, 2, 36, 1, 12, 4] * 20
+    })
+    results = ConductLogisticRegressionAnalysis(
+        dataframe=df,
+        outcome_variable='churn',
+        list_of_predictors=['monthly_spend', 'tenure_months']
+    )
+    print(results['Model Summary'])
+
+    # Multinomial logistic regression: Product choice analysis
+    choice_df = pd.DataFrame({
+        'product': ['A', 'B', 'C', 'A', 'B', 'C'] * 20,
+        'price_sensitive': [1, 0, 0, 1, 0, 1] * 20,
+        'age': [25, 45, 30, 55, 40, 35] * 20
+    })
+    results = ConductLogisticRegressionAnalysis(
+        dataframe=choice_df,
+        outcome_variable='product',
+        list_of_predictors=['price_sensitive', 'age'],
+        add_constant=True,
+        scale_predictors=True
+    )
+
+    # Bivariate analysis with visualization
+    results = ConductLogisticRegressionAnalysis(
+        dataframe=df,
+        outcome_variable='churn',
+        list_of_predictors=['monthly_spend'],
+        show_diagnostic_plots_for_each_predictor=True
+    )
+
     """
     
     # Select columns specified
