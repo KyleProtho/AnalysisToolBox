@@ -23,6 +23,99 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
                                       print_peak_to_peak_range_of_each_predictor=False,
                                       plot_loss=True,
                                       plot_model_test_performance=True):
+    """
+    Construct, train, and evaluate a deep neural network for binary/multi-class classification or regression.
+
+    This function leverages TensorFlow and Keras to build a fully connected 
+    Sequential neural network tailored for tabular data. It automates the 
+    creation of dynamic hidden layer architectures, handles feature 
+    normalization via Keras layers, and supports diverse objective functions 
+    including Binary Crossentropy, Sparse Categorical Crossentropy, and 
+    Mean Squared Error.
+
+    Neural networks are essential for:
+      * Detecting complex, non-linear patterns in high-dimensional financial or security data
+      * Predicting credit risk or fraud where interactions between features are non-linear
+      * Classifying multi-category intelligence reports or customer segments
+      * Forecasting continuous variables like market volatility or housing prices
+      * Building multi-class classifiers for sentiment analysis or product categorization
+      * Modeling operational throughput in complex manufacturing or supply chain environments
+      * Identifying subtle behavioral trends in large-scale consumer or medical datasets
+
+    The function provides a simplified interface for standard deep learning 
+    tasks, including automated loss curve plotting and performance 
+    diagnostics (confusion matrices or regression plots). It also implements 
+    L2 regularization to prevent overfitting in deep architectures.
+
+    Parameters
+    ----------
+    dataframe
+        The input pandas.DataFrame containing the feature set and target variable.
+    outcome_variable
+        The name of the target column to be predicted.
+    list_of_predictor_variables
+        A list of column names to be used as input features (X).
+    number_of_hidden_layers
+        The number of dense layers to insert between the input and output. 
+        Higher values increase the capacity to model complex relationships.
+    is_outcome_categorical
+        If True, treats the task as classification. If False, treats it as 
+        regression. Defaults to True.
+    test_size
+        The proportion of data reserved for model evaluation. Defaults to 0.2.
+    scale_predictor_variables
+        If True, utilizes a Keras `Normalization` layer to standardize feature 
+        inputs. Recommended for neural network stability. Defaults to True.
+    initial_learning_rate
+        The step size for the Adam optimizer. Small values are more stable 
+        but slower to converge. Defaults to 0.01.
+    number_of_steps_gradient_descent
+        The number of training epochs. Defaults to 100.
+    lambda_for_regularization
+        The L2 penalty weight applied to all dense layers to mitigate 
+        overfitting. Defaults to 0.001.
+    random_seed
+        The integer seed used for TensorFlow's random state and data 
+        partitioning. Defaults to 412.
+    print_peak_to_peak_range_of_each_predictor
+        If True, prints the scale of the predictor variables to help assess 
+        data range. Defaults to False.
+    plot_loss
+        Whether to render the training loss curve as a function of epochs. 
+        Defaults to True.
+    plot_model_test_performance
+        Whether to generate a diagnostic plot (Confusion Matrix, Probability 
+        Scatter, or Regplot) for the test dataset. Defaults to True.
+
+    Returns
+    -------
+    tf.keras.Model or dict
+        If `scale_predictor_variables` is False, returns the fitted Keras 
+        Sequential model. If True, returns a dictionary containing the 'model' 
+        and the 'scaler' (normalization layer).
+
+    Examples
+    --------
+    # Create a 3-layer deep classifier to predict customer attrition
+    model = CreateNeuralNetwork_SingleOutcome(
+        df, 
+        outcome_variable='attrition', 
+        list_of_predictor_variables=['salary', 'tenure', 'hours'],
+        number_of_hidden_layers=3
+    )
+
+    # Build a regression network for home price estimation with 5 hidden layers
+    results = CreateNeuralNetwork_SingleOutcome(
+        real_estate_df,
+        outcome_variable='price',
+        list_of_predictor_variables=['sqft', 'lot_size', 'age'],
+        number_of_hidden_layers=5,
+        is_outcome_categorical=False,
+        number_of_steps_gradient_descent=500
+    )
+
+    """
+    
     # Lazy load uncommon packages
     import tensorflow as tf
     

@@ -47,6 +47,115 @@ def CreateLinearRegressionModel(dataframe,
                                 title_y_indent_for_feature_importance_plot=1.15,
                                 subtitle_y_indent_for_feature_importance_plot=1.1,
                                 caption_y_indent_for_feature_importance_plot=-0.15):
+    """
+    Train, evaluate, and visualize a multiple linear regression model.
+
+    This function utilizes scikit-learn's `LinearRegression` to model the linear 
+    relationship between a dependent outcome variable and one or more independent 
+    predictor variables. It handles automated data cleaning, optional feature 
+    scaling, and provides comprehensive diagnostic visualizations to assess model 
+    accuracy and feature influence.
+
+    Linear regression is essential for:
+      * Estimating the impact of marketing spend on sales revenue
+      * Analyzing the relationship between macroeconomic indicators and asset prices
+      * Predicting infrastructure or energy demand based on seasonal variables
+      * Assessing the influence of demographic factors on social or health outcomes
+      * Identifying key operational drivers of efficiency in manufacturing processes
+      * Modeling the sensitivity of output variables to changes in input parameters
+      * Establishing baseline predictive models for continuous data analysis
+
+    The function offers integrated performance evaluation (MSE, R-squared) and 
+    generates regression plots to visualize the fit between predicted and 
+    actual values. It also produces a "Feature Importance" chart based on beta 
+    coefficients, helping analysts identify the strongest drivers within their 
+    data.
+
+    Parameters
+    ----------
+    dataframe
+        The input pandas.DataFrame containing both predictor and outcome variables.
+    outcome_variable
+        The name of the target column (dependent variable) to be predicted.
+    list_of_predictor_variables
+        A list of column names (independent variables) used to train the model.
+    scale_variables
+        If True, scales the predictor variables using `StandardScaler` prior 
+        to modeling. Recommended for variables with vastly different units. 
+        Defaults to False.
+    test_size
+        The proportion of the dataset used for testing. Set to 0 to train on 
+        the full dataset. Defaults to 0.2.
+    fit_intercept
+        Whether to calculate the intercept for this model. If False, the 
+        intercept will be set to 0.0. Defaults to True.
+    random_seed
+        Controls the randomness of the train-test split for reproducibility. 
+        Defaults to 412.
+    print_peak_to_peak_range_of_each_predictor
+        If True, prints the statistical range of each predictor column to 
+        the console. Defaults to False.
+    print_model_training_performance
+        If True, prints model accuracy metrics (MSE and R-squared Variance 
+        Score). Defaults to False.
+    data_source_for_plot
+        Source citation string displayed in the caption of all generated plots. 
+        Defaults to None.
+    plot_model_test_performance
+        Whether to generate a regression plot showing Predicted vs. Actual 
+        values on the test set. Defaults to True.
+    dot_fill_color, line_color
+        Aesthetic settings for the regression performance plot.
+    figure_size_for_model_test_performance_plot
+        Dimensions (width, height) for the performance visualization. 
+        Defaults to (8, 6).
+    title_for_model_test_performance_plot, subtitle_for_model_test_performance_plot, caption_for_model_test_performance_plot
+        Text elements for the performance visualization.
+    title_y_indent_for_model_test_performance_plot, subtitle_y_indent_for_model_test_performance_plot, caption_y_indent_for_model_test_performance_plot, x_indent_for_model_test_performance_plot
+        Coordinate offsets for text placement in the performance plot.
+    plot_feature_importance
+        Whether to generate a horizontal bar chart showing the magnitude of 
+        calculated beta coefficients. Defaults to True.
+    top_n_to_highlight
+        The number of top influential features to color differently in the 
+        importance plot. Defaults to 3.
+    highlight_color, fill_transparency
+        Aesthetic settings for the feature importance bars.
+    figure_size_for_feature_importance_plot
+        Dimensions (width, height) for the importance visualization. 
+        Defaults to (8, 6).
+    title_for_feature_importance_plot, subtitle_for_feature_importance_plot, caption_for_feature_importance_plot
+        Text elements for the feature importance visualization.
+    title_y_indent_for_feature_importance_plot, subtitle_y_indent_for_feature_importance_plot, caption_y_indent_for_feature_importance_plot
+        Coordinate offsets for text placement in the importance plot.
+
+    Returns
+    -------
+    sklearn.linear_model.LinearRegression or sklearn.pipeline.Pipeline
+        The fitted linear model object. If `scale_variables` is True, a Pipeline 
+        containing the scaler and regressor is returned.
+
+    Examples
+    --------
+    # Create a basic regression model to forecast revenue
+    model = CreateLinearRegressionModel(
+        df, 
+        outcome_variable='Revenue', 
+        list_of_predictor_variables=['AdSpend', 'Followers', 'Season']
+    )
+
+    # Build a scaled model with high-performance reporting and custom colors
+    model = CreateLinearRegressionModel(
+        df,
+        outcome_variable='HousePrice',
+        list_of_predictor_variables=['SqFt', 'Bedrooms', 'Age'],
+        scale_variables=True,
+        print_model_training_performance=True,
+        highlight_color='teal',
+        line_color='darkorange'
+    )
+
+    """
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
     

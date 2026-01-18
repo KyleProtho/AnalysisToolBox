@@ -41,37 +41,110 @@ def CreateARIMAModel(dataframe,
                      show_model_results=False,
                      plot_residuals=True):
     """
-    Creates an ARIMA model for time series analysis.
+    Construct, fit, and evaluate an ARIMA (Autoregressive Integrated Moving Average) model.
 
-    Args:
-        dataframe (pandas.DataFrame): The input dataframe containing the time series data.
-        outcome_column_name (str): The name of the column in the dataframe representing the outcome variable.
-        time_column_name (str, optional): The name of the column in the dataframe representing the time variable. Defaults to None.
-        lookback_periods (int, optional): The number of periods to consider for lagged values. Defaults to 1.
-        differencing_periods (int, optional): The number of periods to difference the time series. Defaults to 0.
-        lag_periods (int, optional): The number of periods for the autoregressive component of the model. Defaults to 1.
-        moving_average_periods (int, optional): The number of periods for the moving average component of the model. Defaults to 1.
-        plot_time_series (bool, optional): Whether to plot the time series. Defaults to False.
-        time_series_figure_size (tuple, optional): The size of the figure for the time series plot. Defaults to (8, 5).
-        line_color (str, optional): The color of the line in the time series plot. Defaults to "#3269a8".
-        line_alpha (float, optional): The transparency of the line in the time series plot. Defaults to 0.8.
-        number_of_x_axis_ticks (int, optional): The number of ticks on the x-axis in the time series plot. Defaults to None.
-        x_axis_tick_rotation (float, optional): The rotation angle of the x-axis tick labels in the time series plot. Defaults to None.
-        title_for_plot (str, optional): The title of the time series plot. Defaults to "Time Series".
-        subtitle_for_plot (str, optional): The subtitle of the time series plot. Defaults to "Shows the time series for the outcome variable.".
-        caption_for_plot (str, optional): The caption of the time series plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source information for the time series plot. Defaults to None.
-        x_indent (float, optional): The x-coordinate of the text indent in the time series plot. Defaults to -0.127.
-        title_y_indent (float, optional): The y-coordinate of the title text indent in the time series plot. Defaults to 1.125.
-        subtitle_y_indent (float, optional): The y-coordinate of the subtitle text indent in the time series plot. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-coordinate of the caption text indent in the time series plot. Defaults to -0.3.
-        test_for_stationarity (bool, optional): Whether to test for stationarity of the time series. Defaults to True.
-        show_acf_pacf_plots (bool, optional): Whether to plot the ACF and PACF plots. Defaults to False.
-        show_model_results (bool, optional): Whether to show the model results. Defaults to False.
-        plot_residuals (bool, optional): Whether to plot the residuals. Defaults to True.
+    This function streamlines the time series analysis workflow by integrating 
+    stationarity testing (Augmented Dickey-Fuller), visualization (line plots, 
+    ACF/PACF), and model fitting using the statsmodels SARIMAX implementation. It 
+    is designed to help analysts identify temporal patterns and build predictive 
+    models for sequential data.
 
-    Returns:
-        statsmodels.tsa.arima.model.ARIMAResults: The fitted ARIMA model.
+    Building ARIMA models is essential for:
+      * Forecasting financial indicators like stock prices or currency exchange rates
+      * Predicting supply chain requirements and inventory demand cycles
+      * Analyzing intelligence trends such as frequency of security incidents over time
+      * Monitoring economic throughput and identifying seasonal fluctuations
+      * Projecting infrastructure load and server capacity requirements
+      * Detecting anomalies and structural shifts in high-frequency sensor data
+      * Evaluating the impact of historical interventions on future outcomes
+
+    The function provides extensive plotting capabilities for both the raw input 
+    series and model residuals (kernel density estimates). It also includes 
+    integrated stationarity warnings to guide the selection of differencing 
+    parameters (d).
+
+    Parameters
+    ----------
+    dataframe
+        The input pandas.DataFrame containing the time series data to be modeled.
+    outcome_column_name
+        The name of the target variable column in the dataframe.
+    time_column_name
+        The name of the column representing the time axis (e.g., date, month). 
+        Required if `plot_time_series` is True. Defaults to None.
+    lookback_periods
+        The number of lags to include in ACF and PACF plots. Defaults to 1.
+    differencing_periods
+        The 'd' parameter in ARIMA(p, d, q). The number of times the raw 
+        observations are differenced. Defaults to 0.
+    lag_periods
+        The 'p' parameter in ARIMA(p, d, q). The number of lag observations 
+        included in the model. Defaults to 1.
+    moving_average_periods
+        The 'q' parameter in ARIMA(p, d, q). The size of the moving average 
+        window. Defaults to 1.
+    plot_time_series
+        Whether to generate a line plot of the outcome variable over time. 
+        Defaults to False.
+    time_series_figure_size
+        Dimensions (width, height) of the time series plot. Defaults to (8, 5).
+    line_color
+        Hex color code for the time series line. Defaults to "#3269a8".
+    line_alpha
+        Transparency level for the plot line (0.0 to 1.0). Defaults to 0.8.
+    number_of_x_axis_ticks
+        Desired number of ticks on the x-axis. Defaults to None.
+    x_axis_tick_rotation
+        Degree of rotation for x-axis labels. Defaults to None.
+    title_for_plot
+        Main title for the generated visualization. Defaults to "Time Series".
+    subtitle_for_plot
+        Brief description shown below the main title. Defaults to 
+        "Shows the time series for the outcome variable.".
+    caption_for_plot
+        Explanatory text displayed in the bottom margin. Defaults to None.
+    data_source_for_plot
+        Source citation displayed in the caption area. Defaults to None.
+    x_indent, title_y_indent, subtitle_y_indent, caption_y_indent
+        Coordinate offsets for precise text placement in the plot.
+    test_for_stationarity
+        If True, performs an Augmented Dickey-Fuller test and prints a 
+        warning if the data appears non-stationary. Defaults to True.
+    show_acf_pacf_plots
+        Whether to display Autocorrelation and Partial Autocorrelation plots. 
+        Defaults to False.
+    show_model_results
+        If True, prints a comprehensive summary of the fitted SARIMAX model. 
+        Defaults to False.
+    plot_residuals
+        Whether to show a kernel density estimate (KDE) plot of the model 
+        residuals. Defaults to True.
+
+    Returns
+    -------
+    statsmodels.tsa.statespace.sarimax.SARIMAXResultsWrapper
+        The fitted ARIMA model object, containing coefficients, statistics, 
+        and prediction methods.
+
+    Examples
+    --------
+    # Create a simple ARIMA(1, 0, 1) model for sales data
+    model = CreateARIMAModel(
+        df, 
+        outcome_column_name='Sales', 
+        time_column_name='Date',
+        plot_time_series=True
+    )
+
+    # Perform detailed analysis with differencing and ACF/PACF plots
+    model = CreateARIMAModel(
+        financial_df,
+        outcome_column_name='Price',
+        differencing_periods=1,
+        show_acf_pacf_plots=True,
+        show_model_results=True
+    )
+
     """
     
     # If time series plot is requested, ensure time column is provided

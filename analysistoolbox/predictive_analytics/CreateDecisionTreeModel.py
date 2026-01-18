@@ -56,6 +56,131 @@ def CreateDecisionTreeModel(dataframe,
                             plot_decision_tree=False,
                             decision_tree_plot_size=(20, 20),
                             print_decision_rules=False):
+    """
+    Train, evaluate, and visualize a decision tree model for classification or regression.
+
+    This function facilitates the end-to-end process of building a Decision Tree 
+    using scikit-learn. It supports both classification (`DecisionTreeClassifier`) 
+    and regression (`DecisionTreeRegressor`), providing automated data splitting, 
+    performance evaluation (confusion matrices or residual plots), and feature 
+    importance analysis. It also offers unique capabilities for visualizing the 
+    hierarchical tree structure and exporting a readable text representation of 
+    the decision rules.
+
+    Building decision tree models is essential for:
+      * Segmenting customers into high and low risk categories for credit scoring
+      * Identifying key predictive factors for equipment failure in manufacturing
+      * Categorizing intelligence reports based on attributes like origin or severity
+      * Forecasting numeric values like product prices or temperature readings
+      * Creating transparent, human-readable decision rules for regulatory compliance
+      * Mapping complex hierarchical decision paths in operational workflows
+      * Selecting the most influential features for targeted marketing campaigns
+
+    The function provides extensive control over tree depth and splitting 
+    logic, allowing analysts to balance model complexity with interpretability. 
+    It automatically handles basic data cleaning for infinities and offers 
+    integrated plotting for immediate diagnostic insight.
+
+    Parameters
+    ----------
+    dataframe
+        The input pandas.DataFrame containing the training and testing data.
+    outcome_variable
+        The name of the target column to be predicted.
+    list_of_predictor_variables
+        A list of column names used as features for the model.
+    is_outcome_categorical
+        If True, trains a DecisionTreeClassifier. If False, trains a 
+        DecisionTreeRegressor. Defaults to True.
+    print_model_training_performance
+        If True, prints evaluation metrics (e.g., Classification Report or MSE) 
+        to the console. Defaults to False.
+    test_size
+        The proportion of the dataset to include in the test split. Defaults to 0.2.
+    categorical_splitting_criterion
+        The function to measure the quality of a split for classification. 
+        Supported values are "gini" and "entropy". Defaults to "entropy".
+    numerical_splitting_criterion
+        The function to measure the quality of a split for regression. 
+        Supported values are "mse", "friedman_mse", and "mae". Defaults to "mse".
+    maximum_depth
+        The maximum depth of the tree. If None, nodes are expanded until all 
+        leaves are pure. Defaults to None.
+    minimum_impurity_decrease
+        A node will be split if this split induces a decrease of the impurity 
+        greater than or equal to this value. Defaults to 0.0.
+    random_seed
+        Controls the randomness of the split and the estimator. Defaults to 412.
+    filter_nulls
+        Whether to drop rows containing any NaN values across the selected 
+        columns. Defaults to False.
+    data_source_for_plot
+        Source citation string displayed in the caption of all generated plots. 
+        Defaults to None.
+    plot_model_test_performance
+        Whether to generate a visualization of model performance on the test 
+        set (Scatterplot for regression, Heatmap for classification). 
+        Defaults to True.
+    dot_fill_color, fitted_line_type, line_color, heatmap_color_palette
+        Aesthetic settings for the model performance visualization.
+    figure_size_for_model_test_performance_plot
+        Dimensions (width, height) for the performance plot. Defaults to (8, 6).
+    title_for_model_test_performance_plot, subtitle_for_model_test_performance_plot, caption_for_model_test_performance_plot
+        Text elements for the performance visualization.
+    title_y_indent_for_model_test_performance_plot, subtitle_y_indent_for_model_test_performance_plot, caption_y_indent_for_model_test_performance_plot, x_indent_for_model_test_performance_plot
+        Coordinate offsets for text placement in the performance plot.
+    plot_feature_importance
+        Whether to generate a horizontal bar chart showing the predictive 
+        weight of each variable. Defaults to True.
+    top_n_to_highlight
+        The number of top features to color differently in the importance plot. 
+        Defaults to 3.
+    highlight_color, fill_transparency
+        Aesthetic settings for the feature importance bars.
+    figure_size_for_feature_importance_plot
+        Dimensions (width, height) for the importance plot. Defaults to (8, 6).
+    title_for_feature_importance_plot, subtitle_for_feature_importance_plot, caption_for_feature_importance_plot
+        Text elements for the importance visualization.
+    title_y_indent_for_feature_importance_plot, subtitle_y_indent_for_feature_importance_plot, caption_y_indent_for_feature_importance_plot
+        Coordinate offsets for text placement in the importance plot.
+    plot_decision_tree
+        If True, renders a visual diagram of the trained decision tree. 
+        Defaults to False.
+    decision_tree_plot_size
+        Dimensions (width, height) for the tree structure diagram. 
+        Defaults to (20, 20).
+    print_decision_rules
+        If True, prints a text-based version of the decision logic to the 
+        console. Defaults to False.
+
+    Returns
+    -------
+    sklearn.tree.BaseDecisionTree
+        The fitted decision tree model (either DecisionTreeClassifier or 
+        DecisionTreeRegressor).
+
+    Examples
+    --------
+    # Create a classification model to predict risk levels
+    model = CreateDecisionTreeModel(
+        df, 
+        outcome_variable='RiskLevel', 
+        list_of_predictor_variables=['CreditScore', 'Income'],
+        is_outcome_categorical=True,
+        plot_decision_tree=True
+    )
+
+    # Build a regression model for stock price forecasting
+    model = CreateDecisionTreeModel(
+        df,
+        outcome_variable='StockPrice',
+        list_of_predictor_variables=['Volume', 'Volatility'],
+        is_outcome_categorical=False,
+        maximum_depth=5,
+        print_decision_rules=True
+    )
+
+    """
     # Keep only the predictors and outcome variable
     dataframe = dataframe[list_of_predictor_variables + [outcome_variable]].copy()
     

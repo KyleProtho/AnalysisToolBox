@@ -45,6 +45,113 @@ def CreateBoostedTreeModel(dataframe,
                            title_y_indent_for_feature_importance_plot=1.15,
                            subtitle_y_indent_for_feature_importance_plot=1.1,
                            caption_y_indent_for_feature_importance_plot=-0.15,):
+    """
+    Train, evaluate, and visualize a gradient boosted tree model using XGBoost.
+
+    This function automates the end-to-end machine learning workflow for boosted 
+    trees. It handles data preprocessing (cleaning nulls/infinities), automated 
+    train-test splitting, and supports both classification and regression tasks. 
+    The function also generates diagnostic visualizations, including regression 
+    residual plots, classification confusion matrices, and horizontal feature 
+    importance charts.
+
+    Building boosted tree models is essential for:
+      * Detecting fraudulent transactions or malicious activity (Classification)
+      * Predicting customer churn or subscriber conversion (Classification)
+      * Forecasting continuous targets like sales revenue or delivery times (Regression)
+      * Identifying the most influential drivers of a specific business outcome
+      * Modeling complex, non-linear interactions in high-dimensional tabular data
+      * Optimizing tactical resource allocation based on predictive risk scoring
+      * Rapidly prototyping machine learning baseline models for structured data
+
+    The function provides fine-grained control over model depth and evaluation 
+    metrics. It utilizes `XGBClassifier` for categorical outcomes and 
+    `XGBRegressor` for numerical outcomes, ensuring the appropriate statistical 
+    framework is applied based on the data type.
+
+    Parameters
+    ----------
+    dataframe
+        The input pandas.DataFrame containing the training and testing data.
+    outcome_variable
+        The name of the target column to be predicted.
+    list_of_predictor_variables
+        A list of column names used as features for the model.
+    maximum_depth
+        Maximum tree depth for base learners. Increasing this value makes the 
+        model more complex and likely to overfit. Defaults to None.
+    is_outcome_categorical
+        If True, trains an XGBClassifier. If False, trains an XGBRegressor. 
+        Defaults to True.
+    test_size
+        The proportion of the dataset to include in the test split. Defaults to 0.2.
+    random_seed
+        Controls the randomness of the train-test split and the boosting process. 
+        Defaults to 412.
+    filter_nulls
+        Whether to drop rows containing any NaN values across the selected 
+        columns. Defaults to False.
+    print_model_training_performance
+        If True, prints standard evaluation metrics (MSE/R2 for regression, 
+        Classification Report for classification) to the console. 
+        Defaults to False.
+    data_source_for_plot
+        Source citation string displayed in the caption of all generated plots. 
+        Defaults to None.
+    plot_model_test_performance
+        Whether to generate a visualization of model performance on the test 
+        set (Scatterplot/Regplot for regression, Heatmap for classification). 
+        Defaults to True.
+    dot_fill_color, line_color, heatmap_color_palette
+        Aesthetic settings for the model performance visualization.
+    figure_size_for_model_test_performance_plot
+        Dimensions (width, height) for the performance plot. Defaults to (8, 6).
+    title_for_model_test_performance_plot, subtitle_for_model_test_performance_plot, caption_for_model_test_performance_plot
+        Text elements for the performance visualization.
+    title_y_indent_for_model_test_performance_plot, subtitle_y_indent_for_model_test_performance_plot, caption_y_indent_for_model_test_performance_plot, x_indent_for_model_test_performance_plot
+        Coordinate offsets for text placement in the performance plot.
+    plot_feature_importance
+        Whether to generate a horizontal bar chart showing the predictive 
+        weight of each variable. Defaults to True.
+    top_n_to_highlight
+        The number of top features to color differently in the importance plot. 
+        Defaults to 3.
+    highlight_color, fill_transparency
+        Aesthetic settings for the feature importance bars.
+    figure_size_for_feature_importance_plot
+        Dimensions (width, height) for the importance plot. Defaults to (8, 6).
+    title_for_feature_importance_plot, subtitle_for_feature_importance_plot, caption_for_feature_importance_plot
+        Text elements for the importance visualization.
+    title_y_indent_for_feature_importance_plot, subtitle_y_indent_for_feature_importance_plot, caption_y_indent_for_feature_importance_plot
+        Coordinate offsets for text placement in the importance plot.
+
+    Returns
+    -------
+    xgboost.XGBModel
+        The fitted XGBoost model object (either XGBClassifier or XGBRegressor).
+
+    Examples
+    --------
+    # Create a classification model to predict customer churn
+    model = CreateBoostedTreeModel(
+        df, 
+        outcome_variable='is_churn', 
+        list_of_predictor_variables=['age', 'spend', 'tenure'],
+        is_outcome_categorical=True
+    )
+
+    # Build a regression model with high depth and customized importance plotting
+    model = CreateBoostedTreeModel(
+        housing_df,
+        outcome_variable='Price',
+        list_of_predictor_variables=['SqFt', 'Rooms', 'ZipCode'],
+        maximum_depth=10,
+        is_outcome_categorical=False,
+        top_n_to_highlight=5,
+        highlight_color='darkgreen'
+    )
+
+    """    
     # Lazy load uncommon packages
     from xgboost import XGBClassifier, XGBRegressor
     

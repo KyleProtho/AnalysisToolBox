@@ -14,26 +14,72 @@ def CalculateEigenvalues(matrix,
                          show_labels=True, 
                          plot_with_grid=True):
     """
-    Calculates the eigenvalues and eigenvectors of a 2x2 matrix and optionally plots the matrix and eigenvectors.
-    
-    Args:
-        matrix (numpy.ndarray or list): The 2x2 matrix to calculate the eigenvalues and eigenvectors of.
-        show_plot (bool, optional): Whether to show a plot of the matrix and eigenvectors. Defaults to True.
-        matrix_color (str, optional): The color to use for the matrix plot. Defaults to '#033dfc'.
-        eigenvector_color (str, optional): The color to use for the eigenvector plot. Defaults to '#e82a53'.
-        x_min (int, optional): The minimum x value for the plot. Defaults to -1.
-        x_max (int, optional): The maximum x value for the plot. Defaults to 5.
-        y_min (int, optional): The minimum y value for the plot. Defaults to -1.
-        y_max (int, optional): The maximum y value for the plot. Defaults to 5.
-        show_labels (bool, optional): Whether to show labels on the plot. Defaults to True.
-        plot_with_grid (bool, optional): Whether to show a grid on the plot. Defaults to True.
-    
-    Returns:
-        None
-    
-    Raises:
-        ValueError: If the matrix is not 2x2.
-    
+    Calculate and visualize the eigenvalues and eigenvectors of a 2x2 matrix.
+
+    This function computes the eigenvalues and eigenvectors for a given 2x2 matrix using
+    NumPy's linear algebra module. It also provides a visual representation by plotting
+    the transformation of a unit square and the resulting eigenvectors, helping to 
+    understand how the matrix scales and rotates vectors in 2D space.
+
+    Calculating eigenvalues and eigenvectors is essential for:
+      * Understanding linear transformations and their invariant directions
+      * Visualizing the geometric impact of scalar multiplication on eigenvectors
+      * Identifying system stability and resonance in physical applications
+      * Analyzing principal directions in data dimensionality reduction (e.g., PCA)
+      * Educational exploration of fundamental linear algebra concepts
+      * Solving systems of linear differential equations
+
+    The function supports both NumPy arrays and lists as input. If plotting is enabled,
+    it renders a unit square and its image under the matrix transformation. It also 
+    performs checks and prints warnings for identity matrices, complex eigenvalues,
+    and singular systems of eigenvector equations.
+
+    Parameters
+    ----------
+    matrix
+        The 2x2 matrix to calculate the eigenvalues and eigenvectors of. Can be 
+        provided as a numpy.ndarray or a nested list.
+    show_plot
+        Whether to show a plot of the matrix transformation and eigenvectors. 
+        Defaults to True.
+    matrix_color
+        The color to use for the transformed matrix plot. Defaults to '#033dfc'.
+    eigenvector_color
+        The color to use for the eigenvector arrows in the plot. Defaults to '#e82a53'.
+    x_min
+        The minimum x-axis value for the plot. Defaults to -1.
+    x_max
+        The maximum x-axis value for the plot. Defaults to 5.
+    y_min
+        The minimum y-axis value for the plot. Defaults to -1.
+    y_max
+        The maximum y-axis value for the plot. Defaults to 5.
+    show_labels
+        Whether to show descriptive labels on the plot elements. Defaults to True.
+    plot_with_grid
+        Whether to show a coordinate grid on the plot. Defaults to True.
+
+    Returns
+    -------
+    None
+        The function prints the results to the console and displays a plot if requested.
+
+    Examples
+    --------
+    # Calculate eigenvalues for a simple scaling matrix
+    CalculateEigenvalues([[2, 0], [0, 3]])
+
+    # Analyze a transformation matrix with custom plot settings
+    import numpy as np
+    matrix = np.array([[1, 2], [2, 1]])
+    CalculateEigenvalues(
+        matrix, 
+        matrix_color='forestgreen', 
+        eigenvector_color='darkorange',
+        x_max=10, 
+        y_max=10
+    )
+
     """
     
     # If matrix is list, convert to numpy array

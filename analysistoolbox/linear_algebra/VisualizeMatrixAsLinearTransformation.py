@@ -14,20 +14,63 @@ def VisualizeMatrixAsLinearTransformation(two_by_two_matrix1,
                                           y_min=-5,
                                           y_max=5):
     """
-    Plots up to two 2x2 matrices and the unit square and the transformed unit square. 
-    If a second matrix is provided, it will plot the transformed unit square twice, once for each matrix.
-    
-    Args:
-        two_by_two_matrix1 (list or np.array): A 2x2 matrix. If a list is provided, it will be converted to a numpy array.
-        two_by_two_matrix2 (list or np.array, optional): A 2x2 matrix. If a list is provided, it will be converted to a numpy array. Defaults to None.
-        plot_with_grid (bool, optional): Whether or not to plot a grid on plot. Defaults to False.
-        show_labels (bool, optional): Whether or not to show labels on plot. Defaults to True.
-        matrix1_color (str, optional): Color of the first matrix. Defaults to '#033dfc'.
-        matrix2_color (str, optional): Color of the second matrix. Defaults to '#03b1fc'.
-        x_min (int, optional): The minimum x value to plot. Defaults to -5.
-        x_max (int, optional): The maximum x value to plot. Defaults to 5.
-        y_min (int, optional): The minimum y value to plot. Defaults to -5.
-        y_max (int, optional): The maximum y value to plot. Defaults to 5.
+    Visualize one or two 2x2 linear transformations using a unit square.
+
+    This function provides a geometric representation of how 2x2 matrices transform 
+    the 2D plane. By plotting a "Unit Square" and its image after being multiplied 
+    by the matrix, users can clearly see the effects of scaling, rotation, shearing, 
+    and reflection in real-time.
+
+    Visualizing linear transformations is essential for:
+      * Understanding how matrices warp, rotate, or scale coordinate spaces
+      * Identifying determinants geometrically through area changes of the square
+      * Analyzing the impact of composite transformations on data orientation
+      * Teaching fundamental concepts of basis changes and linear mappings
+      * Evaluating structural stability by examining transformation distortions
+      * Providing intuitive insights into PCA and other dimensionality reduction methods
+
+    The function supports plotting a single transformation or a sequence of two 
+    transformations. It handles list and NumPy array inputs and allows for 
+    extensive customization of colors and plot boundaries.
+
+    Parameters
+    ----------
+    two_by_two_matrix1
+        The first 2x2 matrix to visualize. Expected as a nested list or a 2D 
+        numpy.ndarray.
+    two_by_two_matrix2
+        An optional second 2x2 matrix. If provided, the function visualizes the 
+        composition of matrix2 applied to the result of matrix1. Defaults to None.
+    plot_with_grid
+        Whether to show a coordinate grid on the plot. Defaults to False.
+    show_labels
+        Whether to show descriptive labels for the unit squares. Defaults to True.
+    matrix1_color
+        The color for the first transformed unit square. Defaults to '#033dfc'.
+    matrix2_color
+        The color for the second transformed unit square (composed). Defaults 
+        to '#03b1fc'.
+    x_min, x_max, y_min, y_max
+        The boundaries for the plot axes. Default to -5 and 5 respectively.
+
+    Returns
+    -------
+    None
+        The function renders an interactive Matplotlib plot.
+
+    Examples
+    --------
+    # Visualize a simple 45-degree rotation
+    import numpy as np
+    theta = np.radians(45)
+    rotation = [[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]]
+    VisualizeMatrixAsLinearTransformation(rotation)
+
+    # Visualize a shear transformation followed by a scaling
+    shear = [[1, 2], [0, 1]]
+    scale = [[2, 0], [0, 2]]
+    VisualizeMatrixAsLinearTransformation(shear, scale, plot_with_grid=True)
+
     """
     
     # If matrix is list, convert to numpy array

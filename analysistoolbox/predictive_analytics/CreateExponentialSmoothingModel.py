@@ -65,58 +65,125 @@ def CreateExponentialSmoothingModel(dataframe,
                                     x_indent_for_forecast_plot=-0.115,
                                     x_indent_for_decomposition_plot=-0.115):
     """
-    Create and fit exponential smoothing models for time series forecasting.
-    
-    This function implements Simple, Double (Holt's), and Triple (Holt-Winters) 
-    exponential smoothing methods with automatic model selection and parameter optimization.
-    
-    Parameters:
-    -----------
-    dataframe : pandas.DataFrame
-        The input dataframe containing time series data
-    time_column : str
-        Name of the column containing time/date information
-    outcome_column : str
-        Name of the column containing the values to forecast
-    smoothing_type : str, default "auto"
-        Type of exponential smoothing: "simple", "double", "triple", or "auto"
-    alpha : float, optional
-        Smoothing parameter for level (0 < alpha <= 1)
-    beta : float, optional
-        Smoothing parameter for trend (0 < beta <= 1)
-    gamma : float, optional
-        Smoothing parameter for seasonality (0 < gamma <= 1)
-    seasonal_periods : int, optional
-        Number of periods in a season (required for triple exponential smoothing)
-    trend_type : str, default "additive"
-        Type of trend component: "additive" or "multiplicative"
-    seasonal_type : str, default "additive"
-        Type of seasonal component: "additive" or "multiplicative"
-    damped_trend : bool, default False
-        Whether to use damped trend
-    auto_optimize : bool, default True
-        Whether to automatically optimize parameters
-    optimization_method : str, default "L-BFGS-B"
-        Optimization method for parameter tuning
-    print_model_performance : bool, default True
-        Whether to print model performance metrics
-    print_parameter_summary : bool, default True
-        Whether to print parameter summary
-    print_forecast_summary : bool, default True
-        Whether to print forecast summary
-    forecast_periods : int, default 12
-        Number of periods to forecast ahead
-    plot_model_performance : bool, default True
-        Whether to plot model performance
-    plot_forecast : bool, default True
-        Whether to plot forecast
-    plot_decomposition : bool, default True
-        Whether to plot time series decomposition
-    
-    Returns:
-    --------
+    Construct, fit, and evaluate exponential smoothing models for time series forecasting.
+
+    This function provides a comprehensive interface for time series forecasting using 
+    Exponential Smoothing techniques. It supports Simple (level), Double (level and trend), 
+    and Triple (level, trend, and seasonality) exponential smoothing (Holt-Winters), 
+    offering both manual parameter control and automated model selection and 
+    optimization.
+
+    Exponential smoothing is essential for:
+      * Generating short-term demand forecasts for inventory management and logistics
+      * Predicting future financial performance and revenue trends for budget planning
+      * Analyzing seasonal patterns in economic indicators or market activity
+      * Monitoring operational metrics and projecting future capacity requirements
+      * Forecasting call volumes or service requests for workforce optimization
+      * Smoothing noisy historical data to identify underlying structural trends
+      * Evaluating the impact of seasonality on business performance metrics
+
+    The function includes integrated tools for time series decomposition, performance 
+    evaluation (RMSE, MAE, MAPE), and professional visualization of fitted values 
+    and future forecasts. It automatically handles datetime indexing and offers 
+    sophisticated plotting capabilities for model diagnostics.
+
+    Parameters
+    ----------
+    dataframe
+        The input pandas.DataFrame containing the time series data.
+    time_column
+        The name of the column containing date or time information.
+    outcome_column
+        The name of the target variable column intended for forecasting.
+    smoothing_type
+        The complexity of the model: "simple" (level only), "double" (level + trend), 
+        "triple" (level + trend + seasonality), or "auto" for heuristic-based 
+        selection. Defaults to "auto".
+    alpha
+        The smoothing parameter for the level component (0 < alpha <= 1). 
+        Adjusts the weight of recent observations. Defaults to None.
+    beta
+        The smoothing parameter for the trend component (0 < beta <= 1). 
+        Determines how quickly the model adapts to trend changes. Defaults to None.
+    gamma
+        The smoothing parameter for the seasonal component (0 < gamma <= 1). 
+        Controls the sensitivity to seasonal fluctuations. Defaults to None.
+    seasonal_periods
+        The number of observations that make up a full season (e.g., 12 for 
+        monthly seasonality). Required for triple exponential smoothing.
+    trend_type
+        The nature of the trend component: "additive" or "multiplicative". 
+        Defaults to "additive".
+    seasonal_type
+        The nature of the seasonal component: "additive" or "multiplicative". 
+        Defaults to "additive".
+    damped_trend
+        Whether to dampen the trend approach to a horizontal line over time. 
+        Defaults to False.
+    auto_optimize
+        If True, utilizes numerical solvers to find optimal smoothing 
+        coefficients based on historical data. Defaults to True.
+    optimization_method
+        The solver used for parameter tuning (e.g., "L-BFGS-B"). 
+        Defaults to "L-BFGS-B".
+    print_model_performance, print_parameter_summary, print_forecast_summary
+        Boolean flags to output statistical summaries to the console.
+    forecast_periods
+        The number of future time steps to project beyond the historical data. 
+        Defaults to 12.
+    data_source_for_plot
+        Source citation string displayed in the caption of all generated plots. 
+        Defaults to None.
+    plot_model_performance, plot_forecast, plot_decomposition
+        Boolean flags to control the generation of specific visualizations.
+    dot_fill_color, line_color, forecast_color
+        Aesthetic settings for the time series visualizations.
+    figure_size_for_performance_plot, figure_size_for_forecast_plot, figure_size_for_decomposition_plot
+        Dimensions (width, height) for the various output plots.
+    title_for_performance_plot, subtitle_for_performance_plot, title_for_forecast_plot, subtitle_for_forecast_plot, title_for_decomposition_plot, subtitle_for_decomposition_plot
+        Custom text elements for the plot titles and subtitles.
+    caption_for_performance_plot, caption_for_forecast_plot, caption_for_decomposition_plot
+        Explanatory text displayed in the plot margins.
+    title_y_indent_for_performance_plot, subtitle_y_indent_for_performance_plot, title_y_indent_for_forecast_plot, subtitle_y_indent_for_forecast_plot, title_y_indent_for_decomposition_plot, subtitle_y_indent_for_decomposition_plot
+        Vertical coordinate offsets for title and subtitle text.
+    caption_y_indent_for_performance_plot, caption_y_indent_for_forecast_plot, caption_y_indent_for_decomposition_plot
+        Vertical coordinate offsets for caption text.
+    x_indent_for_performance_plot, x_indent_for_forecast_plot, x_indent_for_decomposition_plot
+        Horizontal coordinate offsets for text placement in the plots.
+
+    Returns
+    -------
     dict
-        Dictionary containing the fitted model, forecasts, and performance metrics
+        A dictionary containing the following keys:
+          * 'model': The fitted statsmodels Holt-Winters model object.
+          * 'model_type': The smoothing method used (simple, double, or triple).
+          * 'fitted_values': A Series of historical values predicted by the model.
+          * 'forecast': A Series of future predictions.
+          * 'performance_metrics': A dictionary with MSE, RMSE, MAE, and MAPE.
+          * 'parameters': The optimized smoothing coefficients.
+          * 'data': The cleaned time series data used for modeling.
+
+    Examples
+    --------
+    # Generate a simple 12-period forecast with automated model selection
+    results = CreateExponentialSmoothingModel(
+        df, 
+        time_column='Month', 
+        outcome_column='Sales'
+    )
+
+    # Construct a custom Triple Exponential Smoothing model for quarterly data
+    results = CreateExponentialSmoothingModel(
+        financial_df,
+        time_column='Quarter',
+        outcome_column='Revenue',
+        smoothing_type='triple',
+        seasonal_periods=4,
+        seasonal_type='multiplicative',
+        forecast_periods=8,
+        line_color='darkblue'
+    )
+
     """
     
     # Create a copy of the dataframe to avoid modifying the original

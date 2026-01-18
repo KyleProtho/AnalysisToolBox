@@ -9,13 +9,61 @@ def SolveSystemOfEquations(coefficients,
                            show_plot=True,
                            plot_boundary=10):
     """
-    Plots a system of equations.
-    
-    Args:
-        coefficients (list of lists): A matrix of coefficients for the system of equations
-        constants (list): A 1D array of constants for the system of equations
-    """ 
-    
+    Solve and visualize a system of linear algebraic equations.
+
+    This function determines the solution to a system of equations represented by a 
+    coefficient matrix and a constants vector. It evaluates the system's 
+    determinant to assess singularity and, for 2D systems, provides a visual plot 
+    of the lines to highlight their intersection point (the solution).
+
+    Solving and plotting systems of equations is essential for:
+      * Finding intersection points of multiple linear constraints in business models
+      * Analyzing market equilibrium in supply and demand economics
+      * Determining unique solutions for multi-variable experimental datasets
+      * Identifying redundant or inconsistent constraints in optimization problems
+      * Modeling resource allocation and balanced production planning
+      * Visualizing decision boundaries for simple linear classification tasks
+      * Assessing system stability through determinant analysis
+
+    The function handles both list and NumPy array inputs. If the system is 2D, 
+    it renders a plot showing the individual linear equations and their spatial 
+    relationship. For higher-dimensional systems, it provides the numerical 
+    solution without a plot.
+
+    Parameters
+    ----------
+    coefficients
+        A matrix containing the coefficients of the variables in the system. 
+        Expected as a nested list or a square 2D numpy.ndarray.
+    constants
+        A 1D array or list representing the constants on the right-hand side of 
+        the equations. If None, it defaults to a zero vector (homogeneous system).
+    show_plot
+        Whether to generate a 2D visualization of the equations. Only applicable 
+        for systems with exactly two variables. Defaults to True.
+    plot_boundary
+        The range (from -value to +value) used for the x-axis in the plot. 
+        Defaults to 10.
+
+    Returns
+    -------
+    None
+        The function prints the determinant and solution to the console and 
+        displays a plot if requested and applicable.
+
+    Examples
+    --------
+    # Solve a 2x2 system: 2x + 1y = 10 and 1x - 1y = 2
+    coeffs = [[2, 1], [1, -1]]
+    consts = [10, 2]
+    SolveSystemOfEquations(coeffs, consts)
+
+    # Solve a 3x3 system without plotting
+    coeffs_3x3 = [[1, 1, 1], [0, 2, 5], [2, 5, -1]]
+    consts_3x3 = [6, -4, 27]
+    SolveSystemOfEquations(coeffs_3x3, consts_3x3, show_plot=False)
+
+    """    
     # Convert coefficients to a numpy array
     coefficients = np.array(coefficients)
     
