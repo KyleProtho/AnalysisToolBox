@@ -32,38 +32,92 @@ def SimulateCountOfSuccesses(probability_of_success,
                              subtitle_y_indent=1.05,
                              caption_y_indent=-0.15):
     """
-    Simulates the number of successes in a binomial distribution.
-    The binomial distribution can be used to describe the number of successes 'p' in 'n' total events
-    Conditions:
-    - Discrete data
-    - Two possible outcomes for each trial
-    - Each trial is independent
-    - The probability of success/failure is the same in each trial
-    
-    Args:
-        probability_of_success (float): The probability of success for each trial.
-        sample_size_per_trial (int): The number of trials in each simulation.
-        number_of_trials (int, optional): The number of simulations to run. Defaults to 10000.
-        return_format (str, optional): The format in which to return the simulation results. Must be either 'dataframe' or 'array'. Defaults to 'dataframe'.
-        simulated_variable_name (str, optional): The name of the simulated variable. Defaults to 'Count'.
-        random_seed (int, optional): The random seed to use for replicability. Defaults to 412.
-        plot_simulation_results (bool, optional): Whether to plot the simulation results. Defaults to True.
-        fill_color (str, optional): The color to fill the histogram bars with. Defaults to "#999999".
-        fill_transparency (float, optional): The transparency of the histogram bars. Must be between 0 and 1. Defaults to 0.6.
-        figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
-        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
-        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
-        title_for_plot (str, optional): The title of the plot. Defaults to "Simulation Results".
-        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Showing the simulated number of successes".
-        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
-        show_y_axis (bool, optional): Whether to show the y-axis on the plot. Defaults to False.
-        title_y_indent (float, optional): The y-indent of the plot title. Defaults to 1.1.
-        subtitle_y_indent (float, optional): The y-indent of the plot subtitle. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent of the plot caption. Defaults to -0.15.
+    Simulate the number of successes in a series of independent Bernoulli trials (Binomial Distribution).
 
-    Returns:
-        pandas.DataFrame or numpy.ndarray: The simulated results in the specified format.
+    This function conducts Monte Carlo simulations to model the total number of "successes"
+    that occur in a fixed number of trials, where each trial has a constant probability of 
+    success. This is a classic Binomial distribution model, which is fundamental for 
+    risk assessment and probabilistic forecasting of count data.
+
+    Binomial count simulations are essential for:
+      * Epidemiology: Modeling the potential number of infections in a cohort given a transmission probability.
+      * Healthcare: Simulating the number of patients expected to respond positively to a clinical treatment.
+      * Intelligence Analysis: Estimating the number of successful signal interceptions in a batch of collection trials.
+      * Quality Engineering: Predicting the number of defective units likely to be found in a manufacturing lot.
+      * Marketing: Simulating the number of customers who convert (purchase) from a target email campaign.
+      * Cybersecurity: Modeling the expected number of successful intrusion attempts over a specific observation window.
+      * Finance: Estimating the number of profitable trades in a large-scale algorithmic trading strategy.
+      * Ecology: Simulating the survival count of offspring in a population given a baseline survival rate.
+
+    The function uses the `numpy.random.binomial` generator for efficient computation
+    and provides extensive visualization options for interpreting the resulting distribution.
+
+    Parameters
+    ----------
+    probability_of_success : float
+        The constant probability of success for each individual trial (must be between 0 and 1).
+    sample_size_per_trial : int
+        The total number of trials conducted in each simulation (e.g., total patients or attempts).
+    number_of_trials : int, optional
+        The number of stochastic simulations (Monte Carlo trials) to run. Defaults to 10000.
+    return_format : str, optional
+        The format of the returned data: 'dataframe' (pd.DataFrame) or 'array' (np.ndarray).
+        Defaults to 'dataframe'.
+    simulated_variable_name : str, optional
+        The label for the simulated count variable. Defaults to 'Count'.
+    random_seed : int, optional
+        The seed for the random number generator to ensure replicability. Defaults to 412.
+    plot_simulation_results : bool, optional
+        Whether to display a histogram of the simulation outcomes. Defaults to True.
+    fill_color : str, optional
+        The hex color code for the histogram bars. Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (0-1) for the histogram plot. Defaults to 0.6.
+    figure_size : tuple, optional
+        The size of the plot figure in inches (width, height). Defaults to (8, 6).
+    show_mean : bool, optional
+        Whether to display the mean success count as a vertical dashed line. Defaults to True.
+    show_median : bool, optional
+        Whether to display the median success count as a vertical dotted line. Defaults to True.
+    title_for_plot : str, optional
+        The main title for the distribution plot. Defaults to "Simulation Results".
+    subtitle_for_plot : str, optional
+        The descriptive subtitle for the plot. Defaults to "Showing the simulated number of successes".
+    caption_for_plot : str, optional
+        Optional caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Optional data source identification text. Defaults to None.
+    show_y_axis : bool, optional
+        Whether to display the frequency/density scale on the y-axis. Defaults to False.
+    title_y_indent : float, optional
+        Vertical position for the title text. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical position for the subtitle text. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical position for the caption text. Defaults to -0.15.
+
+    Returns
+    -------
+    pd.DataFrame or np.ndarray
+        The simulated counts of successes across all trials.
+
+    Examples
+    --------
+    # Healthcare: Predicting patient response in a 50-person trial (20% success rate)
+    response_sim = SimulateCountOfSuccesses(
+        probability_of_success=0.20,
+        sample_size_per_trial=50,
+        simulated_variable_name='Patients Responded',
+        title_for_plot='Simulated Treatment Successes'
+    )
+
+    # Intelligence: Estimating successful signals in 200 daily attempts (5% reliability)
+    signal_sim = SimulateCountOfSuccesses(
+        probability_of_success=0.05,
+        sample_size_per_trial=200,
+        number_of_trials=5000,
+        fill_color="#27ae60"
+    )
     """
     
     # Ensure arguments are valid

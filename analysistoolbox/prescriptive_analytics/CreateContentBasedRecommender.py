@@ -7,7 +7,6 @@ import seaborn as sns
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
 
-# Declare function
 def CreateContentBasedRecommender(dataframe,
                                   outcome_variable,
                                   user_list_of_predictor_variables,
@@ -24,6 +23,115 @@ def CreateContentBasedRecommender(dataframe,
                                   number_of_steps_gradient_descent=50,
                                   lambda_for_regularization=0.001,
                                   random_seed=412):
+    """
+    Create a content-based recommendation model using a two-tower neural network architecture.
+
+    This function implements a "two-tower" or dual-encoder neural network to predict the
+    strength of interaction between users and items based on their respective features.
+    The architecture consists of two separate deep neural networks—one for user features
+    and one for item features—that map both into a shared embedding space. The model
+    learns to minimize the mean squared error between the dot product of these embeddings
+    and the actual observed outcome (e.g., a rating or interaction score). This approach
+    allows for flexible content-based filtering that generalizes across new users and
+    items as long as their features are available.
+
+    Content-based recommenders are essential for:
+      * Matching patients to suitable clinical trials based on EHR and trial criteria
+      * Recommending public health interventions to specific demographic segments
+      * Suggesting relevant intelligence reports to analysts based on interest profiles
+      * Personalized educational content delivery based on student learning styles
+      * E-commerce product recommendations using item metadata and user browse history
+      * Job-to-candidate matching using skill sets and job descriptions
+      * Routing emergency resources based on geographic and situational metadata
+      * Alerting intelligence officers to relevant temporal patterns in signal data
+
+    The function handles feature scaling, train-test splitting, and provides visualizations
+    for loss curves and model performance. It utilizes TensorFlow/Keras for the neural
+    network implementation and L2 regularization to prevent overfitting.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The dataset containing user features, item features, and the outcome variable.
+    outcome_variable : str
+        The name of the column representing the target interaction (e.g., 'rating', 'clicks').
+    user_list_of_predictor_variables : list
+        A list of column names representing user-specific attributes (e.g., 'age', 'location').
+    item_list_of_predictor_variables : list
+        A list of column names representing item-specific attributes (e.g., 'category', 'price').
+    user_number_of_hidden_layers : int, optional
+        Number of dense layers in the user feature tower. Defaults to 2.
+    item_number_of_hidden_layers : int, optional
+        Number of dense layers in the item feature tower. Defaults to 2.
+    number_of_recommendations : int, optional
+        The dimensionality of the shared embedding space (output of each tower). Defaults to 10.
+    test_size : float, optional
+        The proportion of data to reserve for the test set (0 to 1). Defaults to 0.2.
+    scale_variables : bool, optional
+        Whether to standardize input features and scale the outcome variable (MinMax to [-1, 1]).
+        Highly recommended for neural network convergence. Defaults to True.
+    plot_loss : bool, optional
+        Whether to display a plot of the training loss over epochs. Defaults to True.
+    plot_model_test_performance : bool, optional
+        Whether to display a scatter/regression plot comparing predicted vs. actual outcomes.
+        Defaults to True.
+    print_peak_to_peak_range_of_each_predictor : bool, optional
+        Whether to print the range (max - min) of each input variable. Defaults to False.
+    initial_learning_rate : float, optional
+        The learning rate for the Adam optimizer. Defaults to 0.01.
+    number_of_steps_gradient_descent : int, optional
+        The number of training epochs. Defaults to 50.
+    lambda_for_regularization : float, optional
+        L2 regularization penalty applied to dense layers. Defaults to 0.001.
+    random_seed : int, optional
+        Seed for reproducibility of weights and data splitting. Defaults to 412.
+
+    Returns
+    -------
+    dict
+        If `scale_variables` is True, returns a dictionary containing:
+        - 'User Scaler': (StandardScaler) Fitted scaler for user features.
+        - 'Item Scaler': (StandardScaler) Fitted scaler for item features.
+        - 'Outcome Scaler': (MinMaxScaler) Fitted scaler for the outcome.
+        - 'Model': (tf.keras.Model) The trained two-tower recommender model.
+    tf.keras.Model
+        If `scale_variables` is False, returns only the trained Keras model.
+
+    Examples
+    --------
+    # Healthcare: Recommending clinical trials to patients
+    import pandas as pd
+    trial_data = pd.DataFrame({
+        'patient_age': [25, 45, 65, 30, 55],
+        'patient_severity': [2, 5, 8, 3, 6],
+        'trial_phase': [1, 2, 3, 1, 2],
+        'trial_risk_level': [0.1, 0.4, 0.7, 0.2, 0.5],
+        'fit_score': [0.8, 0.6, 0.9, 0.7, 0.5]
+    })
+    results = CreateContentBasedRecommender(
+        dataframe=trial_data,
+        outcome_variable='fit_score',
+        user_list_of_predictor_variables=['patient_age', 'patient_severity'],
+        item_list_of_predictor_variables=['trial_phase', 'trial_risk_level'],
+        number_of_steps_gradient_descent=100
+    )
+
+    # Intelligence: Suggesting surveillance targets to field officers
+    surveillance_df = pd.DataFrame({
+        'officer_experience': [5, 10, 2, 8, 15],
+        'officer_specialty': [1, 3, 2, 1, 3],
+        'target_volatility': [0.9, 0.2, 0.5, 0.8, 0.3],
+        'target_distance': [10, 50, 5, 100, 20],
+        'mission_success_prob': [0.9, 0.7, 0.4, 0.8, 0.9]
+    })
+    recommender_model = CreateContentBasedRecommender(
+        dataframe=surveillance_df,
+        outcome_variable='mission_success_prob',
+        user_list_of_predictor_variables=['officer_experience', 'officer_specialty'],
+        item_list_of_predictor_variables=['target_volatility', 'target_distance'],
+        scale_variables=False  # Return the model directly
+    )
+    """
     # Lazy load uncommon packages
     import tensorflow as tf
     

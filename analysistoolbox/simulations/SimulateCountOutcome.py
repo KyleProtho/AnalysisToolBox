@@ -31,37 +31,89 @@ def SimulateCountOutcome(expected_count,
                          subtitle_y_indent=1.05,
                          caption_y_indent=-0.15):
     """
-    Simulates a count outcome using a Poisson distribution.
-    Poisson distributions are discrete distributions that indicate the probability of a number of events occurring in a fixed period of time if these events occur
-    Conditions:
-    - Discrete non-negative data - count of events, the rate parameter can be a non-integer positive value
-    - Each event is independent of other events
-    - Each event happens at a fixed rate
-    - A fixed amount of time in which the events occur
+    Simulate discrete event counts over a fixed interval (Poisson Distribution).
 
-    Args:
-        expected_count (float): The expected count of events.
-        number_of_trials (int): The number of trials to simulate. Default is 10000.
-        return_format (str): The format in which to return the simulation results. Must be either 'dataframe' or 'array'. Default is 'dataframe'.
-        simulated_variable_name (str): The name of the simulated variable. Default is 'Count'.
-        random_seed (int): The random seed to use for replicability. Default is 412.
-        plot_simulation_results (bool): Whether to plot the simulation results. Default is True.
-        fill_color (str): The color to use for the fill of the histogram. Default is "#999999".
-        fill_transparency (float): The transparency of the fill of the histogram. Default is 0.6.
-        figure_size (tuple): The size of the figure. Default is (8, 6).
-        show_mean (bool): Whether to show the mean on the plot. Default is True.
-        show_median (bool): Whether to show the median on the plot. Default is True.
-        title_for_plot (str): The title of the plot. Default is "Simulation Results".
-        subtitle_for_plot (str): The subtitle of the plot. Default is "Showing the distribution of the simulated count outcome".
-        caption_for_plot (str): The caption of the plot. Default is None.
-        data_source_for_plot (str): The data source for the plot. Default is None.
-        show_y_axis (bool): Whether to show the y-axis on the plot. Default is False.
-        title_y_indent (float): The y-indent of the title on the plot. Default is 1.1.
-        subtitle_y_indent (float): The y-indent of the subtitle on the plot. Default is 1.05.
-        caption_y_indent (float): The y-indent of the caption on the plot. Default is -0.15.
+    This function conducts Monte Carlo simulations to model the number of independent 
+    events occurring within a fixed period of time or space, given a known average rate 
+    (expected count). This is a classic Poisson distribution model, widely used for 
+    modeling "arrival" processes and rare events where the probability of an event 
+    is proportional to the interval length.
 
-    Returns:
-        pandas.DataFrame or numpy.ndarray: The simulation results in the specified format.
+    Poisson count simulations are essential for:
+      * Epidemiology: Modeling the daily number of new disease cases in a specific region.
+      * Healthcare: Simulating patient arrivals at an emergency department per hour.
+      * Intelligence Analysis: Modeling the frequency of specific signal detections per day.
+      * Cybersecurity: Estimating the number of malicious port scans or log-in attempts per minute.
+      * Supply Chain: Projecting the daily volume of customer orders at a warehouse.
+      * Infrastructure: Simulating vehicle throughput at a highway intersection per hour.
+      * Finance: Estimating the frequency of high-value transactions or system alerts.
+      * Quality Control: Modeling the number of surface defects per square meter of manufactured material.
+
+    The function uses the `numpy.random.poisson` generator for robust stochastic 
+    sampling and includes automated plotting for distribution analysis.
+
+    Parameters
+    ----------
+    expected_count : float
+        The average number of events expected to occur in the interval (Lambda).
+    number_of_trials : int, optional
+        The number of stochastic simulations (Monte Carlo trials) to run. Defaults to 10000.
+    return_format : str, optional
+        The format of the returned data: 'dataframe' (pd.DataFrame) or 'array' (np.ndarray).
+        Defaults to 'dataframe'.
+    simulated_variable_name : str, optional
+        The label for the simulated count variable in the output and plot. Defaults to 'Count'.
+    random_seed : int, optional
+        The seed for the random number generator to ensure replicability. Defaults to 412.
+    plot_simulation_results : bool, optional
+        Whether to display a histogram of the simulation outcomes. Defaults to True.
+    fill_color : str, optional
+        The hex color code for the histogram bars. Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (0-1) for the histogram plot. Defaults to 0.6.
+    figure_size : tuple, optional
+        The size of the plot figure in inches (width, height). Defaults to (8, 6).
+    show_mean : bool, optional
+        Whether to display the mean event count as a vertical dashed line. Defaults to True.
+    show_median : bool, optional
+        Whether to display the median event count as a vertical dotted line. Defaults to True.
+    title_for_plot : str, optional
+        The main title for the distribution plot. Defaults to "Simulation Results".
+    subtitle_for_plot : str, optional
+        The descriptive subtitle for the plot. Defaults to "Showing the distribution of the simulated count outcome".
+    caption_for_plot : str, optional
+        Optional caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Optional data source identification text. Defaults to None.
+    show_y_axis : bool, optional
+        Whether to display the frequency/density scale on the y-axis. Defaults to False.
+    title_y_indent : float, optional
+        Vertical position for the title text. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical position for the subtitle text. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical position for the caption text. Defaults to -0.15.
+
+    Returns
+    -------
+    pd.DataFrame or np.ndarray
+        The simulated counts of events across all trials.
+
+    Examples
+    --------
+    # Healthcare: Simulating hourly ER arrivals (average of 8 per hour)
+    er_arrivals = SimulateCountOutcome(
+        expected_count=8.0,
+        simulated_variable_name='Patient Arrivals',
+        title_for_plot='Simulated ER Throughput'
+    )
+
+    # Supply Chain: Predicting daily order counts (average of 150 orders)
+    order_sim = SimulateCountOutcome(
+        expected_count=150,
+        number_of_trials=5000,
+        fill_color="#2980b9"
+    )
     """
     
     # Ensure arguments are valid

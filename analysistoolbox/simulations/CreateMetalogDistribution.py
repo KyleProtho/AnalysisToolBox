@@ -35,39 +35,121 @@ def CreateMetalogDistribution(dataframe,
                               subtitle_y_indent=1.05,
                               caption_y_indent=-0.15):
     """
-    Creates a metalog distribution from a given variable in a pandas dataframe.
+    Generate a flexible Metalog distribution from empirical data for stochastic simulation.
 
-    Args:
-        dataframe (pandas.DataFrame): The pandas dataframe containing the variable.
-        variable (str): The name of the variable in the dataframe.
-        lower_bound (float, optional): The lower bound of the metalog distribution. Defaults to None.
-        upper_bound (float, optional): The upper bound of the metalog distribution. Defaults to None.
-        learning_rate (float, optional): The learning rate of the metalog distribution. Defaults to 0.01.
-        term_maximum (int, optional): The maximum number of terms used in the metalog distribution. Defaults to 9.
-        term_minimum (int, optional): The minimum number of terms used in the metalog distribution. Defaults to 2.
-        term_for_random_sample (int, optional): The number of terms used in the metalog distribution for random sampling.
-            Defaults to None.
-        number_of_samples (int, optional): The number of samples to randomly select from the metalog distribution.
-            Defaults to 10000.
-        show_summary (bool, optional): Whether to show the summary of the metalog distribution. Defaults to True.
-        return_format (str, optional): The format of the output. Either 'dataframe' or 'array'. Defaults to 'dataframe'.
-        plot_metalog_distribution (bool, optional): Whether to plot the metalog distribution. Defaults to True.
-        fill_color (str, optional): The color of the histogram fill. Defaults to "#999999".
-        fill_transparency (float, optional): The transparency of the histogram fill. Defaults to 0.6.
-        figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
-        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
-        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
-        title_for_plot (str, optional): The title of the plot. Defaults to "Metalog Distribution".
-        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Showing the metalog distribution of the variable".
-        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
-        show_y_axis (bool, optional): Whether to show the y-axis on the plot. Defaults to False.
-        title_y_indent (float, optional): The y-indent of the title on the plot. Defaults to 1.1.
-        subtitle_y_indent (float, optional): The y-indent of the subtitle on the plot. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent of the caption on the plot. Defaults to -0.15.
+    This function fits a Metalog distribution to a variable in a pandas DataFrame.
+    Metalog distributions are highly versatile, "any-shape" probability distributions that
+    can represent virtually any continuous data distribution (bounded, semi-bounded, or
+    unbounded). This makes them ideal for Monte Carlo simulations where traditional distributions
+    (like Normal or Lognormal) may fail to capture the skewness, kurtosis, or multiple modes
+    of the underlying data. The function returns a specified number of random samples
+    drawn from the fitted metalog, facilitating its use in probabilistic workflows.
 
-    Returns:
-        pandas.DataFrame or numpy.ndarray: The metalog distribution in the specified format.
+    Metalog distributions are essential for:
+      * Epidemiology: Modeling disease incubation periods with heavy tails or irregular shapes.
+      * Healthcare: Simulating patient hospital length of stay or recovery times.
+      * Intelligence Analysis: Modeling uncertainty in target location, response times, or signal strength.
+      * Finance: Estimating Value at Risk for non-normal asset returns or market volatility.
+      * Engineering: Reliability analysis for components with complex or non-standard failure distributions.
+      * Environmental Science: Assessing risks of extreme weather events like flood levels or peak winds.
+      * Project Management: Estimating task durations in complex R&D or software development.
+      * Supply Chain: Quantifyinglead time variability and demand spikes in global logistics.
+
+    The function uses the `pymetalog` library to calculate coefficients based on the terms
+    specified (2 to 9) and generates random samples using a High-Density Region (HDR)
+    generator for statistical robustness.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the variable of interest.
+    variable : str
+        The name of the column in the DataFrame to be used for fitting the distribution.
+    lower_bound : float, optional
+        The lower logical bound of the distribution (e.g., 0 for length of stay). If Provided
+        along with `upper_bound`, a bounded metalog is created. Defaults to None.
+    upper_bound : float, optional
+        The upper logical bound of the distribution. If provided along with `lower_bound`,
+        a bounded metalog is created. Defaults to None.
+    learning_rate : float, optional
+        The step length for the metalog fit algorithm. Decreasing this may improve fit
+        accuracy for complex data. Defaults to 0.01.
+    term_maximum : int, optional
+        The maximum number of terms allowed in the metalog expansion (up to 9). Higher
+        terms provide more shape flexibility but may lead to overfitting. Defaults to 9.
+    term_minimum : int, optional
+        The minimum number of terms allowed. Defaults to 2.
+    term_for_random_sample : int, optional
+        The specific number of terms to use when generating random samples. If None,
+        the `term_limit` from the fitted metalog is used. Defaults to None.
+    number_of_samples : int, optional
+        The number of stochastic samples to generate from the fitted distribution.
+        Defaults to 10000.
+    show_summary : bool, optional
+        Whether to print a text summary of the fitted metalog coefficients and validation.
+        Defaults to True.
+    return_format : str, optional
+        The format of the returned samples: 'dataframe' (as a pd.DataFrame) or 'array'
+        (as a np.ndarray). Defaults to 'dataframe'.
+    plot_metalog_distribution : bool, optional
+        Whether to display a histogram of the generated samples with optional mean/median
+        indicators. Defaults to True.
+    fill_color : str, optional
+        The hex color code for the histogram bars. Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (0-1) for the histogram plot. Defaults to 0.6.
+    figure_size : tuple, optional
+        The size of the plot figure in inches (width, height). Defaults to (8, 6).
+    show_mean : bool, optional
+        Whether to display the mean value as a vertical dashed line on the plot. Defaults to True.
+    show_median : bool, optional
+        Whether to display the median value as a vertical dotted line on the plot. Defaults to True.
+    title_for_plot : str, optional
+        The main title for the distribution plot. Defaults to "Metalog Distribution".
+    subtitle_for_plot : str, optional
+        The descriptive subtitle for the plot. Defaults to "Showing the metalog distribution of the variable".
+    caption_for_plot : str, optional
+        Optional caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Optional data source identification text. Defaults to None.
+    show_y_axis : bool, optional
+        Whether to display the y-axis (frequency/density scale) on the plot. Defaults to False.
+    title_y_indent : float, optional
+        Vertical position for the title text. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical position for the subtitle text. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical position for the caption text. Defaults to -0.15.
+
+    Returns
+    -------
+    pd.DataFrame or np.ndarray
+        The generated samples from the Metalog distribution, in the format specified
+        by `return_format`.
+
+    Examples
+    --------
+    # Healthcare: Modeling patient length of stay with a lower bound of 1 day
+    import pandas as pd
+    hospital_data = pd.DataFrame({'days': [2, 3, 3, 4, 5, 8, 12, 14, 25, 45]})
+    stay_samples = CreateMetalogDistribution(
+        dataframe=hospital_data,
+        variable='days',
+        lower_bound=1,
+        title_for_plot="Simulated Patient Length of Stay",
+        caption_for_plot="Fit based on historical oncology ward data"
+    )
+
+    # Intelligence: Modeling signal latency observations (semi-bounded at 0)
+    latency_df = pd.DataFrame({'ms': [10, 15, 12, 100, 25, 30, 45, 12, 18, 22]})
+    latency_sim = CreateMetalogDistribution(
+        dataframe=latency_df,
+        variable='ms',
+        lower_bound=0,
+        number_of_samples=5000,
+        fill_color="#b0170c",
+        show_summary=False
+    )
     """
     # Lazy load uncommon packages
     from .pymetalog import pymetalog

@@ -31,39 +31,91 @@ def SimulateCountUntilFirstSuccess(probability_of_success,
                                    subtitle_y_indent=1.05,
                                    caption_y_indent=-0.15):
     """
-    Simulate the count until the first success using a negative binomial distribution.
-    A negative binomial distribution can be used to describe the number of successes r - 1
-    and x failures in x + r -1 trials, until you have a success on the x + rth trial. 
-    Rephrased, this models the number of failures (x) you would have to see before you see a 
-    certain number of successes (r).
-    Conditions:
-    - Count of discrete events
-    - The events CAN be non-independent, implying that events can influence or cause other events
-    - Variance can exceed the mean
+    Simulate the number of independent trials required to achieve the first success.
 
-    Args:
-        probability_of_success (float): The probability of success for each trial.
-        number_of_trials (int, optional): The number of trials to simulate. Defaults to 10000.
-        simulated_variable_name (str, optional): The name of the simulated variable. Defaults to 'Count Until First Success'.
-        random_seed (int, optional): The random seed for replicability. Defaults to 412.
-        return_format (str, optional): The format of the output. Either 'dataframe' or 'array'. Defaults to 'dataframe'.
-        plot_simulation_results (bool, optional): Whether to plot the simulation results. Defaults to True.
-        fill_color (str, optional): The color to fill the histogram bars with. Defaults to "#999999".
-        fill_transparency (float, optional): The transparency of the histogram bars. Defaults to 0.6.
-        figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
-        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
-        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
-        title_for_plot (str, optional): The title of the plot. Defaults to "Simulation Results".
-        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Showing the distribution of the count until first success".
-        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
-        show_y_axis (bool, optional): Whether to show the y-axis on the plot. Defaults to False.
-        title_y_indent (float, optional): The y-indent of the plot title. Defaults to 1.1.
-        subtitle_y_indent (float, optional): The y-indent of the plot subtitle. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent of the plot caption. Defaults to -0.15.
+    This function conducts Monte Carlo simulations to model the waiting time (expressed 
+    as the count of trials) until a specific success event occurs, given a constant 
+    probability of success per trial. Technically, this models a Geometric distribution 
+    (a special case of the Negative Binomial distribution where r=1), which is vital 
+    for resource planning and "wait-time" risk analysis.
 
-    Returns:
-        pandas.DataFrame or numpy.ndarray: The simulated count until the first success.
+    Geometric wait-time simulations are essential for:
+      * Intelligence Analysis: Modeling the number of days or collection attempts until a high-value signal is detected.
+      * Healthcare: Simulating the number of treatment rounds or diagnostic tests until a patient achieves remission or a definitive result.
+      * Sales & Marketing: Estimating the number of cold calls or touchpoints required to secure a first-time customer.
+      * Quality Engineering: Predicting the number of production units inspected until the first defective item is identified.
+      * Cybersecurity: Modeling the number of brute-force login attempts required to breach a test account during a security audit.
+      * Human Resources: Estimating the number of candidates screened or interviewed until a qualified hire is made.
+      * Engineering: Simulating the number of cycles or operations until the first instance of component failure or fatigue.
+      * Scientific Research: Predicting the number of experimental trials required until a specific reaction or observation occurs.
+
+    The function iteratively simulates Bernoulli trials until the first "success" is 
+    recorded for each Monte Carlo trial, aggregating the results into a distribution 
+    for analysis.
+
+    Parameters
+    ----------
+    probability_of_success : float
+        The constant probability of success for each individual trial (must be between 0 and 1).
+    number_of_trials : int, optional
+        The number of stochastic simulations (Monte Carlo trials) to run. Defaults to 10000.
+    simulated_variable_name : str, optional
+        The label for the simulated count variable in the output and plot. 
+        Defaults to 'Count Until First Success'.
+    random_seed : int, optional
+        The seed for the random number generator to ensure replicability. Defaults to 412.
+    return_format : str, optional
+        The format of the returned data: 'dataframe' (pd.DataFrame) or 'array' (np.ndarray).
+        Defaults to 'dataframe'.
+    plot_simulation_results : bool, optional
+        Whether to display a histogram of the simulation outcomes. Defaults to True.
+    fill_color : str, optional
+        The hex color code for the histogram bars. Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (0-1) for the histogram plot. Defaults to 0.6.
+    figure_size : tuple, optional
+        The size of the plot figure in inches (width, height). Defaults to (8, 6).
+    show_mean : bool, optional
+        Whether to display the mean wait time as a vertical dashed line. Defaults to True.
+    show_median : bool, optional
+        Whether to display the median wait time as a vertical dotted line. Defaults to True.
+    title_for_plot : str, optional
+        The main title for the distribution plot. Defaults to "Simulation Results".
+    subtitle_for_plot : str, optional
+        The descriptive subtitle for the plot. Defaults to "Showing the distribution of the count until first success".
+    caption_for_plot : str, optional
+        Optional caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Optional data source identification text. Defaults to None.
+    show_y_axis : bool, optional
+        Whether to display the frequency/density scale on the y-axis. Defaults to False.
+    title_y_indent : float, optional
+        Vertical position for the title text. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical position for the subtitle text. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical position for the caption text. Defaults to -0.15.
+
+    Returns
+    -------
+    pd.DataFrame or np.ndarray
+        The simulated counts of trials until the first success across all Monte Carlo runs.
+
+    Examples
+    --------
+    # Sales: Estimating calls needed for first conversion (10% success rate)
+    calls_sim = SimulateCountUntilFirstSuccess(
+        probability_of_success=0.10,
+        simulated_variable_name='Calls to Close',
+        title_for_plot='Sales conversion Wait Time'
+    )
+
+    # Intelligence: Days until signal detection (5% daily probability)
+    detection_sim = SimulateCountUntilFirstSuccess(
+        probability_of_success=0.05,
+        number_of_trials=5000,
+        fill_color="#e67e22"
+    )
     """
     
     # Ensure probability_of_success is between 0 and 1

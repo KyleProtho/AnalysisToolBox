@@ -13,3 +13,4 @@ analysistoolbox.egg-info
 __pycache__
 .vscode
 In Development
+.agent

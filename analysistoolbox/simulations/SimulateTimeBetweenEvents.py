@@ -28,35 +28,90 @@ def SimulateTimeBetweenEvents(expected_time_between_events,
                               subtitle_y_indent=1.05,
                               caption_y_indent=-0.15):
     """
-    Simulates the time between events using an exponential distribution.
-    Conditions:
-    - Continuous non-negative data
-    - Time between events are considered to happen at a constant rate
-    - Events are considered to be independent
+    Simulate the duration of time between consecutive, independent events (Exponential Distribution).
 
-    Args:
-        expected_time_between_events (float): The expected time between events.
-        number_of_trials (int, optional): The number of trials to simulate. Defaults to 10000.
-        return_format (str, optional): The format of the output. Either 'dataframe' or 'array'. Defaults to 'dataframe'.
-        simulated_variable_name (str, optional): The name of the simulated variable. Defaults to 'Time Between Events'.
-        random_seed (int, optional): The random seed for replicability. Defaults to 412.
-        plot_simulation_results (bool, optional): Whether to plot the simulation results. Defaults to True.
-        fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
-        fill_transparency (float, optional): The fill transparency for the histogram. Defaults to 0.6.
-        figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
-        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
-        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
-        title_for_plot (str, optional): The title of the plot. Defaults to "Simulation Results".
-        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Showing the distribution of the time between events".
-        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
-        show_y_axis (bool, optional): Whether to show the y-axis on the plot. Defaults to False.
-        title_y_indent (float, optional): The y-indent of the title on the plot. Defaults to 1.1.
-        subtitle_y_indent (float, optional): The y-indent of the subtitle on the plot. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent of the caption on the plot. Defaults to -0.15.
+    This function conducts Monte Carlo simulations to model the intervals between 
+    events that occur continuously and independently at a constant average rate. 
+    The Exponential distribution is the continuous counterpart to the Poisson 
+    process and is the standard model for "inter-arrival" times and equipment 
+    reliability (time-to-failure).
 
-    Returns:
-        pandas.DataFrame or numpy.ndarray: The simulated time between events.
+    Time-between-events simulations are essential for:
+      * Healthcare: Modeling the time intervals between patient arrivals at an emergency department or clinic.
+      * Intelligence Analysis: Simulating the time between intercepted signals or detected adversary movements.
+      * Cybersecurity: Estimating the duration between network intrusion attempts or system security alerts.
+      * Quality Engineering: Modeling the time between machine breakdowns or the discovery of defects on a line.
+      * Customer Service: Simulating the time between incoming support calls, emails, or live chat requests.
+      * DevOps & Site Reliability: Estimating the time between software deployment failures or service incidents.
+      * Logistics: Modeling the time between freighter, truck, or aircraft arrivals at a distribution hub.
+      * Environmental Science: Simulating the time between natural hazard events like earthquakes or floods.
+
+    The function uses the `numpy.random.exponential` generator where the `scale` 
+    parameter is the `expected_time_between_events` (1/lambda).
+
+    Parameters
+    ----------
+    expected_time_between_events : float
+        The average or expected time interval between events (must be greater than 0).
+    number_of_trials : int, optional
+        The number of stochastic simulations (Monte Carlo trials) to run. Defaults to 10000.
+    return_format : str, optional
+        The format of the returned data: 'dataframe' (pd.DataFrame) or 'array' (np.ndarray).
+        Defaults to 'dataframe'.
+    simulated_variable_name : str, optional
+        The label for the simulated time variable in the output and plot. 
+        Defaults to 'Time Between Events'.
+    random_seed : int, optional
+        The seed for the random number generator to ensure replicability. Defaults to 412.
+    plot_simulation_results : bool, optional
+        Whether to display a histogram of the simulation outcomes. Defaults to True.
+    fill_color : str, optional
+        The hex color code for the histogram bars. Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (0-1) for the histogram plot. Defaults to 0.6.
+    figure_size : tuple, optional
+        The size of the plot figure in inches (width, height). Defaults to (8, 6).
+    show_mean : bool, optional
+        Whether to display the mean interval as a vertical dashed line. Defaults to True.
+    show_median : bool, optional
+        Whether to display the median interval as a vertical dotted line. Defaults to True.
+    title_for_plot : str, optional
+        The main title for the distribution plot. Defaults to "Simulation Results".
+    subtitle_for_plot : str, optional
+        The descriptive subtitle for the plot. Defaults to "Showing the distribution of the time between events".
+    caption_for_plot : str, optional
+        Optional caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Optional data source identification text. Defaults to None.
+    show_y_axis : bool, optional
+        Whether to display the frequency/density scale on the y-axis. Defaults to False.
+    title_y_indent : float, optional
+        Vertical position for the title text. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical position for the subtitle text. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical position for the caption text. Defaults to -0.15.
+
+    Returns
+    -------
+    pd.DataFrame or np.ndarray
+        The simulated time intervals across all Monte Carlo runs.
+
+    Examples
+    --------
+    # Healthcare: Simulating time between ER arrivals (Avg 7.5 minutes)
+    arrival_sim = SimulateTimeBetweenEvents(
+        expected_time_between_events=7.5,
+        simulated_variable_name='Minutes Between Arrivals',
+        title_for_plot='ER Inter-arrival Timing'
+    )
+
+    # Reliability: Modeling time between server crashes (Avg 500 hours)
+    failure_sim = SimulateTimeBetweenEvents(
+        expected_time_between_events=500,
+        number_of_trials=5000,
+        fill_color="#e74c3c"
+    )
     """
     
     # Ensure arguments are valid

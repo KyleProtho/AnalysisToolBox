@@ -33,39 +33,96 @@ def SimulateNormallyDistributedOutcome(expected_outcome=0,
                                        subtitle_y_indent=1.05,
                                        caption_y_indent=-0.15):
     """
-    Simulates normally distributed outcomes based on the specified parameters.
-    The normal distribution is a continuous probability distribution that is symmetrical around its mean, most of the observations cluster around the central peak, and the probabilities for values further away from the mean taper off equally in both directions. 
-    Extreme values in both tails of the distribution are similarly unlikely.
-    Conditions:
-    - Continuous data
-    - Unbounded distribution
-    - Outliers are minimal
+    Simulate continuous variables following a Normal (Gaussian) distribution.
 
-    Args:
-        expected_outcome (float): The expected value of the outcome. Defaults to 0.
-        standard_deviation_of_outcome (float): The standard deviation of the outcome. If not specified, it is estimated using min_max_of_outcome. Defaults to None.
-        min_max_of_outcome (list): A list of length 2 specifying the minimum and maximum values of the outcome. If specified, standard_deviation_of_outcome is ignored. Defaults to None.
-        number_of_trials (int): The number of trials to simulate. Defaults to 10000.
-        return_format (str): The format in which to return the simulation results. Must be either 'dataframe' or 'array'. Defaults to 'dataframe'.
-        simulated_variable_name (str): The name of the simulated variable. Defaults to 'Simulated Outcome'.
-        random_seed (int): The random seed to use for replicability. Defaults to 412.
-        plot_simulation_results (bool): Whether to plot the simulation results. Defaults to True.
-        fill_color (str): The color to use for the histogram fill. Defaults to "#999999".
-        fill_transparency (float): The transparency of the histogram fill. Defaults to 0.6.
-        figure_size (tuple): The size of the plot figure. Defaults to (8, 6).
-        show_mean (bool): Whether to show the mean on the plot. Defaults to True.
-        show_median (bool): Whether to show the median on the plot. Defaults to True.
-        title_for_plot (str): The title of the plot. Defaults to "Simulation Results".
-        subtitle_for_plot (str): The subtitle of the plot. Defaults to "Showing the distribution of the outcome".
-        caption_for_plot (str): The caption of the plot. Defaults to None.
-        data_source_for_plot (str): The data source of the plot. Defaults to None.
-        show_y_axis (bool): Whether to show the y-axis on the plot. Defaults to False.
-        title_y_indent (float): The y-indent of the plot title. Defaults to 1.1.
-        subtitle_y_indent (float): The y-indent of the plot subtitle. Defaults to 1.05.
-        caption_y_indent (float): The y-indent of the plot caption. Defaults to -0.15.
+    This function conducts Monte Carlo simulations to model outcomes that are 
+    symmetrically distributed around a mean value, where most observations cluster 
+    near the center and the probability of extreme values tapers off in both directions. 
+    The Normal distribution is fundamental to the Central Limit Theorem and is used 
+    extensively for modeling physical, social, and financial phenomena.
 
-    Returns:
-        pandas.DataFrame or numpy.ndarray: The simulated outcomes in the specified format.
+    Normal distribution simulations are essential for:
+      * Finance: Modeling the historical distribution of portfolio or index returns over time.
+      * Healthcare: Simulating physiological measurements like blood pressure, height, or weight in a population.
+      * Quality Engineering: Modeling industrial variability and tolerances in manufacturing component dimensions.
+      * Intelligence Analysis: Modeling the circular error probability (CEP) or geolocation error for sensors.
+      * Logistics & Supply Chain: Estimating the distribution of transit times for highly standardized delivery routes.
+      * Environmental Science: Simulating annual fluctuations in average temperatures or rainfall patterns.
+      * Human Resources: Modeling standardized test results or performance appraisal scores across a large workforce.
+      * Engineering: Simulating the distribution of mechanical stress loads on a structural component during operation.
+
+    The function allows the standard deviation to be explicitly provided or estimated 
+    automatically from a provided range (min/max) using the range rule of thumb.
+
+    Parameters
+    ----------
+    expected_outcome : float, optional
+        The mean or average value of the distribution (Loc). Defaults to 0.
+    standard_deviation_of_outcome : float, optional
+        The standard deviation representing the spread of the data (Scale). 
+        If None, it must be estimated from `min_max_of_outcome`. Defaults to None.
+    min_max_of_outcome : list, optional
+        A list of length 2 [min, max] used to estimate the standard deviation (range/3.29).
+        Ignored if `standard_deviation_of_outcome` is provided. Defaults to None.
+    number_of_trials : int, optional
+        The number of stochastic simulations (Monte Carlo trials) to run. Defaults to 10000.
+    return_format : str, optional
+        The format of the returned data: 'dataframe' (pd.DataFrame) or 'array' (np.ndarray).
+        Defaults to 'dataframe'.
+    simulated_variable_name : str, optional
+        The label for the simulated variable in the output and plot. Defaults to 'Simulated Outcome'.
+    random_seed : int, optional
+        The seed for the random number generator to ensure replicability. Defaults to 412.
+    plot_simulation_results : bool, optional
+        Whether to display a histogram of the simulation outcomes. Defaults to True.
+    fill_color : str, optional
+        The hex color code for the histogram bars. Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (0-1) for the histogram plot. Defaults to 0.6.
+    figure_size : tuple, optional
+        The size of the plot figure in inches (width, height). Defaults to (8, 6).
+    show_mean : bool, optional
+        Whether to display the mean value as a vertical dashed line. Defaults to True.
+    show_median : bool, optional
+        Whether to display the median value as a vertical dotted line. Defaults to True.
+    title_for_plot : str, optional
+        The main title for the distribution plot. Defaults to "Simulation Results".
+    subtitle_for_plot : str, optional
+        The descriptive subtitle for the plot. Defaults to "Showing the distribution of the outcome".
+    caption_for_plot : str, optional
+        Optional caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Optional data source identification text. Defaults to None.
+    show_y_axis : bool, optional
+        Whether to display the frequency/density scale on the y-axis. Defaults to False.
+    title_y_indent : float, optional
+        Vertical position for the title text. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical position for the subtitle text. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical position for the caption text. Defaults to -0.15.
+
+    Returns
+    -------
+    pd.DataFrame or np.ndarray
+        The simulated outcomes across all Monte Carlo runs.
+
+    Examples
+    --------
+    # Healthcare: Simulating adult heights (Mean 170cm, SD 8cm)
+    height_sim = SimulateNormallyDistributedOutcome(
+        expected_outcome=170,
+        standard_deviation_of_outcome=8,
+        simulated_variable_name='Height (cm)',
+        title_for_plot='Population Height Simulation'
+    )
+
+    # Manufacturing: Estimating component width using known range [9.8, 10.2]
+    part_sim = SimulateNormallyDistributedOutcome(
+        expected_outcome=10.0,
+        min_max_of_outcome=[9.8, 10.2],
+        fill_color="#2980b9"
+    )
     """
     
     # Ensure arguments are valid

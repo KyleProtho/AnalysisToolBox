@@ -29,37 +29,95 @@ def SimulateTimeUntilNEvents(number_of_events=1,
                              subtitle_y_indent=1.05,
                              caption_y_indent=-0.15):
     """
-    Simulates the amount of time needed before a specified number of events happen using a Gamma distribution.
-    Gamma distributions are continuous distributions that model the amount of time needed before a specified number of events happen.
-    Conditions:
-    - Continuous non-negative data
-    - A generalization of the exponential distribution, but more parameters to fit (With great flexibility, comes great complexity!)
-    - An exponential distribution models the time to the first event, the Gamma distribution models the time to the ‘n’th event.
+    Simulate the total time required for a specific number of events to occur (Gamma Distribution).
 
-    Args:
-        number_of_events (int): The number of events to simulate.
-        expected_time_between_events (float): The expected time between events.
-        number_of_trials (int): The number of trials to run.
-        random_seed (int): The random seed to use for replicability.
-        return_format (str): The format to return the results in. Either 'dataframe' or 'array'.
-        simulated_variable_name (str): The name of the simulated variable.
-        plot_simulation_results (bool): Whether to plot the simulation results.
-        fill_color (str): The color to fill the histogram with.
-        fill_transparency (float): The transparency of the fill color.
-        figure_size (tuple): The size of the figure.
-        show_mean (bool): Whether to show the mean on the plot.
-        show_median (bool): Whether to show the median on the plot.
-        title_for_plot (str): The title of the plot.
-        subtitle_for_plot (str): The subtitle of the plot.
-        caption_for_plot (str): The caption of the plot.
-        data_source_for_plot (str): The data source of the plot.
-        show_y_axis (bool): Whether to show the y-axis on the plot.
-        title_y_indent (float): The y-indent of the title.
-        subtitle_y_indent (float): The y-indent of the subtitle.
-        caption_y_indent (float): The y-indent of the caption.
+    This function conducts Monte Carlo simulations to model the cumulative waiting 
+    time until a predefined number of independent events take place. While the 
+    Exponential distribution models the time until the *first* success, the Gamma 
+    distribution generalizes this to model the time until the *Nth* success. 
+    It is a critical tool for capacity planning and project duration estimation.
 
-    Returns:
-        pandas.DataFrame or numpy.ndarray: The simulated results.
+    Time-until-N-events simulations are essential for:
+      * Healthcare: Modeling the expected time until a specialized clinic completes 'N' complex surgeries or procedures.
+      * Customer Support: Simulating the total time required for a technical team to resolve 'N' high-priority tickets.
+      * Intelligence Analysis: Estimating the time window needed to collect 'N' distinct intelligence artifacts for an assessment.
+      * Quality Engineering: Modeling the time until a manufacturing process produces 'N' defective units for reliability testing.
+      * Logistics & Warehouse: Simulating the total time until a distribution hub processes and clears 'N' scheduled shipments.
+      * Project Management: Estimating the total duration of a project phase that requires the completion of 'N' sequential milestones.
+      * Finance: Modeling the time required for an algorithmic system to execute 'N' blocks of automated trades under market conditions.
+      * Meteorology: Predicting the likely time period until a geographic region experiences 'N' instances of an extreme weather event.
+
+    The function uses the `numpy.random.gamma` generator where `shape` is the 
+    `number_of_events` (alpha) and `scale` is the `expected_time_between_events` (theta).
+
+    Parameters
+    ----------
+    number_of_events : int, optional
+        The total count of events that must occur for the simulation to conclude (Shape). 
+        Defaults to 1.
+    expected_time_between_events : float, optional
+        The average or expected time interval between individual events (Scale). 
+        Defaults to 1.
+    number_of_trials : int, optional
+        The number of stochastic simulations (Monte Carlo trials) to run. Defaults to 10000.
+    random_seed : int, optional
+        The seed for the random number generator to ensure replicability. Defaults to 412.
+    return_format : str, optional
+        The format of the returned data: 'dataframe' (pd.DataFrame) or 'array' (np.ndarray).
+        Defaults to 'dataframe'.
+    simulated_variable_name : str, optional
+        The label for the simulated time variable in the output and plot. 
+        Defaults to 'Time Until N Events'.
+    plot_simulation_results : bool, optional
+        Whether to display a histogram of the simulation outcomes. Defaults to True.
+    fill_color : str, optional
+        The hex color code for the histogram bars. Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (0-1) for the histogram plot. Defaults to 0.6.
+    figure_size : tuple, optional
+        The size of the plot figure in inches (width, height). Defaults to (8, 6).
+    show_mean : bool, optional
+        Whether to display the mean completion time as a vertical dashed line. Defaults to True.
+    show_median : bool, optional
+        Whether to display the median completion time as a vertical dotted line. Defaults to True.
+    title_for_plot : str, optional
+        The main title for the distribution plot. Defaults to "Simulation Results".
+    subtitle_for_plot : str, optional
+        The descriptive subtitle for the plot. Defaults to "Showing the distribution of time until n events occur".
+    caption_for_plot : str, optional
+        Optional caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Optional data source identification text. Defaults to None.
+    show_y_axis : bool, optional
+        Whether to display the frequency/density scale on the y-axis. Defaults to False.
+    title_y_indent : float, optional
+        Vertical position for the title text. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical position for the subtitle text. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical position for the caption text. Defaults to -0.15.
+
+    Returns
+    -------
+    pd.DataFrame or np.ndarray
+        The simulated total times across all Monte Carlo runs.
+
+    Examples
+    --------
+    # Healthcare: Time until 5 surgeries are completed (Avg 4 hours each)
+    surgery_sim = SimulateTimeUntilNEvents(
+        number_of_events=5,
+        expected_time_between_events=4.0,
+        simulated_variable_name='Hours to Complete Batch',
+        title_for_plot='Surgical Suite Throughput Simulation'
+    )
+
+    # Project Management: Time until 10 software modules are developed (Avg 3 days each)
+    dev_sim = SimulateTimeUntilNEvents(
+        number_of_events=10,
+        expected_time_between_events=3,
+        fill_color="#27ae60"
+    )
     """
     
     # Ensure arguments are valid

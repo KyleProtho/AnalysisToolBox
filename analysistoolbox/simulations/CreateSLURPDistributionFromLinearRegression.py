@@ -8,34 +8,144 @@ import textwrap
 
 # Declare function
 def CreateSLURPDistributionFromLinearRegression(linear_regression_model, 
-                            # Simulation parameters
-                            list_of_prediction_values,
-                            number_of_trials=10000,
-                            prediction_interval=0.95,
-                            lower_bound=None,
-                            upper_bound=None,
-                            learning_rate=.01,
-                            term_maximum=3,
-                            term_minimum=2,
-                            term_for_random_sample=None,
-                            show_summary=False,
-                            return_format='dataframe',
-                            # Plot parameters
-                            show_distribution_plot=True,
-                            figure_size=(8, 6),
-                            fill_color="#999999",
-                            fill_transparency=0.6,
-                            show_mean=True,
-                            show_median=True,
-                            show_y_axis=False,
-                            # Plot text parameters
-                            title_for_plot=None,
-                            subtitle_for_plot=None,
-                            caption_for_plot=None,
-                            data_source_for_plot=None,
-                            title_y_indent=1.1,
-                            subtitle_y_indent=1.05,
-                            caption_y_indent=-0.15):
+                             # Simulation parameters
+                             list_of_prediction_values,
+                             number_of_trials=10000,
+                             prediction_interval=0.95,
+                             lower_bound=None,
+                             upper_bound=None,
+                             learning_rate=.01,
+                             term_maximum=3,
+                             term_minimum=2,
+                             term_for_random_sample=None,
+                             show_summary=False,
+                             return_format='dataframe',
+                             # Plot parameters
+                             show_distribution_plot=True,
+                             figure_size=(8, 6),
+                             fill_color="#999999",
+                             fill_transparency=0.6,
+                             show_mean=True,
+                             show_median=True,
+                             show_y_axis=False,
+                             # Plot text parameters
+                             title_for_plot=None,
+                             subtitle_for_plot=None,
+                             caption_for_plot=None,
+                             data_source_for_plot=None,
+                             title_y_indent=1.1,
+                             subtitle_y_indent=1.05,
+                             caption_y_indent=-0.15):
+    """
+    Generate a SLURP distribution for future outcomes using a fitted Linear Regression model.
+
+    This function creates a SLURP (Simulation of Linear Uncertainty and Range Projections)
+    distribution by extracting prediction intervals from a linear regression model and 
+    fitting a flexible Metalog distribution to them. It accounts for both the model's 
+    structural uncertainty and the individual observation variance, providing a 
+    stochastic representation of the predicted outcome for a specific set of predictor values.
+
+    SLURP distributions from linear regression are essential for:
+      * Finance: Projecting asset returns or portfolio performance based on macroeconomic indicators.
+      * Healthcare: Simulating patient health outcomes or recovery scores based on treatment dosage and age.
+      * Intelligence Analysis: Modeling potential threat activity levels based on historical intelligence markers.
+      * Supply Chain: Estimating delivery lead times or shipping costs based on distance and carrier data.
+      * Epidemiology: Projecting disease transmission rates or case counts based on public health interventions.
+      * Engineering: Predicting mechanical component lifespan based on operational stress and temperature.
+      * Real Estate: Estimating property valuation ranges based on square footage, location, and market trends.
+      * Marketing: Simulating customer lifetime value (CLV) based on initial acquisition costs and demographics.
+
+    The function uses `statsmodels` to calculate the observation prediction interval for the
+    input `list_of_prediction_values`, then fits a Metalog distribution using `pymetalog`.
+
+    Parameters
+    ----------
+    linear_regression_model : statsmodels.regression.linear_model.RegressionResultsWrapper
+        A fitted linear regression model from the statsmodels library.
+    list_of_prediction_values : list
+        A list of values for each predictor in the model (e.g., [10, 0.5, 20]). If the 
+        model includes a constant, it will be automatically handled.
+    number_of_trials : int, optional
+        The number of stochastic trials to generate from the uncertainty distribution. 
+        Defaults to 10000.
+    prediction_interval : float, optional
+        The confidence level for the prediction interval (between 0 and 1). Defaults to 0.95.
+    lower_bound : float, optional
+        A logical lower limit for the simulated values (e.g., 0 for prices or weights). 
+        Defaults to None.
+    upper_bound : float, optional
+        A logical upper limit for the simulated values. Defaults to None.
+    learning_rate : float, optional
+        The step length for the Metalog fitting algorithm. Defaults to 0.01.
+    term_maximum : int, optional
+        The maximum number of terms in the Metalog expansion (up to 9). Higher terms 
+        increase flexibility but may overfit limited data. Defaults to 3.
+    term_minimum : int, optional
+        The minimum number of terms allowed. Defaults to 2.
+    term_for_random_sample : int, optional
+        The specific number of terms used for generating samples. If None, the `term_limit` 
+        from the fit is used. Defaults to None.
+    show_summary : bool, optional
+        Whether to print the summary of the Metalog distribution coefficients. Defaults to False.
+    return_format : str, optional
+        The format of the output: 'dataframe' (pd.DataFrame) or 'array' (np.ndarray). 
+        Defaults to 'dataframe'.
+    show_distribution_plot : bool, optional
+        Whether to display a histogram of the generated samples. Defaults to True.
+    figure_size : tuple, optional
+        The size of the plot figure in inches (width, height). Defaults to (8, 6).
+    fill_color : str, optional
+        The hex color code for the histogram bars. Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (0-1) for the histogram plot. Defaults to 0.6.
+    show_mean : bool, optional
+        Whether to display the mean as a vertical dashed line on the plot. Defaults to True.
+    show_median : bool, optional
+        Whether to display the median as a vertical dotted line on the plot. Defaults to True.
+    show_y_axis : bool, optional
+        Whether to display the frequency/density scale on the y-axis. Defaults to False.
+    title_for_plot : str, optional
+        The main title for the distribution plot. Defaults to None.
+    subtitle_for_plot : str, optional
+        The descriptive subtitle for the plot. Defaults to None.
+    caption_for_plot : str, optional
+        Optional caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Optional data source identification text. Defaults to None.
+    title_y_indent : float, optional
+        Vertical position for the title text. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical position for the subtitle text. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical position for the caption text. Defaults to -0.15.
+
+    Returns
+    -------
+    pd.DataFrame or np.ndarray
+        The generated samples representing the uncertainty of the regression prediction.
+
+    Examples
+    --------
+    # Real Estate: Simulating property value for a 2,500 sq ft home
+    import statsmodels.api as sm
+    X = sm.add_constant(homes_df[['sqft', 'bedrooms']])
+    model = sm.OLS(homes_df['price'], X).fit()
+    price_sim = CreateSLURPDistributionFromLinearRegression(
+        linear_regression_model=model,
+        list_of_prediction_values=[2500, 4],
+        lower_bound=0,
+        title_for_plot="Simulated Home Valuation Range"
+    )
+
+    # Healthcare: Predicting patient recovery score based on drug dosage
+    dosage_model = sm.OLS(recovery_scores, sm.add_constant(dosages)).fit()
+    recovery_sim = CreateSLURPDistributionFromLinearRegression(
+        linear_regression_model=dosage_model,
+        list_of_prediction_values=[50],  # 50mg dosage
+        prediction_interval=0.90,
+        fill_color="#2ecc71"
+    )
+    """
     # Lazy load uncommon packages
     import statsmodels.api as sm
     from .pymetalog import pymetalog

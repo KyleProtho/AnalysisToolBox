@@ -11,12 +11,76 @@ def ProbabilityOfHypothesisGivenData(prior_probability_of_hypothesis_being_true,
                                      payoff_if_bet_on_hypothesis_being_false_and_hypothesis_is_true=None,
                                      payoff_if_bet_on_hypothesis_being_false_and_hypothesis_is_false=None):
     """
-    This function calculates the probability of a hypothesis given the data using Bayes' Theorem.
-    
-    Args:
-        prior_probability_of_hypothesis_being_true (float): The prior probability (your initial belief) of the hypothesis being true.
-        prior_probability_of_data_given_hypothesis_being_true (float): The prior probability (your initial belief) of the data given the hypothesis is true.
-        prior_probability_of_data_given_hypothesis_being_false (float): The prior probability (your initial belief) of the data given the hypothesis is false.
+    Calculate posterior probabilities and the expected value of information using Bayes' Theorem.
+
+    This function applies Bayes' Theorem to update the probability of a hypothesis being true
+    based on new evidence (data). It calculates the posterior probability of the hypothesis
+    given that the data was observed, as well as the posterior probability if the data
+    was NOT observed. If payoff values are provided, it also conducts a decision analysis
+    to determine the Expected Value of Information (EVOI), helping determine if acquiring
+    the data is worth the associated costs.
+
+    Bayesian updating and EVOI are essential for:
+      * Clinical Diagnostics: Updating the probability of a disease given a test result (sensitivity/specificity).
+      * Intelligence Analysis: Assessing the likelihood of a threat based on new signal intelligence.
+      * Quality Engineering: Determining if additional destructive testing is cost-effective.
+      * Epidemiology: Estimating true infection prevalence from imperfect screening data.
+      * Cybersecurity: Refining the probability of a system compromise based on IDS alerts.
+      * Financial Risk: Evaluating the value of a market research report before purchase.
+      * Legal Analysis: Updating the probability of guilt/innocence given a new piece of forensic evidence.
+      * Environmental Science: Assessing the value of additional soil sampling for contamination mapping.
+
+    Parameters
+    ----------
+    prior_probability_of_hypothesis_being_true : float
+        The initial belief (0 to 1) that the hypothesis is true before seeing the data.
+    prior_probability_of_data_given_hypothesis_being_true : float
+        The "likelihood" or probability of observing the data if the hypothesis were true (e.g., test sensitivity).
+    prior_probability_of_data_given_hypothesis_being_false : float
+        The probability of observing the data if the hypothesis were false (e.g., false positive rate).
+    return_results : bool, optional
+        Whether to return the calculated values as a dictionary. If False, the function
+        only prints the results. Defaults to False.
+    payoff_if_bet_on_hypothesis_being_true_and_hypothesis_is_true : float, optional
+        The value or utility gained if you correctly bet the hypothesis is true.
+    payoff_if_bet_on_hypothesis_being_true_and_hypothesis_is_false : float, optional
+        The value or utility (often 0 or a penalty) if you bet true but the hypothesis is false.
+    payoff_if_bet_on_hypothesis_being_false_and_hypothesis_is_true : float, optional
+        The value or utility if you bet false but the hypothesis is actually true.
+    payoff_if_bet_on_hypothesis_being_false_and_hypothesis_is_false : float, optional
+        The value or utility gained if you correctly bet the hypothesis is false.
+
+    Returns
+    -------
+    dict or None
+        If `return_results` is True, returns a dictionary containing posterior probabilities
+        and, if payoffs were provided, expected values and the Expected Value of Information.
+        Otherwise, returns None and prints results to the console.
+
+    Examples
+    --------
+    # Healthcare: Revising the probability of a rare disease after a positive test result
+    # Disease prevalence (prior): 1%, Test Sensitivity: 95%, False Positive Rate: 5%
+    results = ProbabilityOfHypothesisGivenData(
+        prior_probability_of_hypothesis_being_true=0.01,
+        prior_probability_of_data_given_hypothesis_being_true=0.95,
+        prior_probability_of_data_given_hypothesis_being_false=0.05,
+        return_results=True
+    )
+
+    # Intelligence: Evaluating if a $5,000 sensor report is worth the cost
+    # Prior belief of threat: 20%, Sensor reliability (P(Data|True)): 80%, FPR: 10%
+    # Payoffs: $100k for stopping a threat, $0 for false alarms/misses
+    evoi_analysis = ProbabilityOfHypothesisGivenData(
+        prior_probability_of_hypothesis_being_true=0.20,
+        prior_probability_of_data_given_hypothesis_being_true=0.80,
+        prior_probability_of_data_given_hypothesis_being_false=0.10,
+        payoff_if_bet_on_hypothesis_being_true_and_hypothesis_is_true=100000,
+        payoff_if_bet_on_hypothesis_being_true_and_hypothesis_is_false=0,
+        payoff_if_bet_on_hypothesis_being_false_and_hypothesis_is_true=0,
+        payoff_if_bet_on_hypothesis_being_false_and_hypothesis_is_false=100000,
+        return_results=True
+    )
     """
 
     # Ensure the prior probabilities are between 0 and 1

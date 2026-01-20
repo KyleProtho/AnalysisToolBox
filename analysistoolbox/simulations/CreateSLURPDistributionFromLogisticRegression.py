@@ -37,76 +37,114 @@ def CreateSLURPDistributionFromLogisticRegression(logistic_regression_model,
                             subtitle_y_indent=1.05,
                             caption_y_indent=-0.15):
     """
-    Create a SLURP (Simulation of Linear Uncertainty and Range Projections) distribution 
-    for logistic regression models using confidence intervals for predicted probabilities.
-    
-    This function generates a distribution of predicted probabilities based on the confidence 
-    intervals from a logistic regression model, similar to how CreateSLURPDistributionFromLinearRegression
-    works with linear regression models.
-    
-    Note: Unlike linear regression, logistic regression doesn't provide prediction intervals
-    for future outcomes. Instead, this function uses confidence intervals for predicted
-    probabilities to create a distribution of probability estimates.
-    
-    Parameters:
-    -----------
+    Generate a SLURP distribution for predicted probabilities using a fitted Logistic Regression model.
+
+    This function creates a SLURP (Simulation of Linear Uncertainty and Range Projections)
+    distribution by extracting confidence intervals for predicted probabilities from a
+    logistic regression model and fitting a flexible Metalog distribution to them. Unlike
+    linear regression SLURPs which model outcome values, this function models the 
+    uncertainty in the *probability* of a binary outcome (e.g., success/failure). This 
+    is essential for propagating classification uncertainty into larger Monte Carlo 
+    simulations and risk models.
+
+    SLURP distributions from logistic regression are essential for:
+      * Healthcare: Simulating the probability of disease presence based on clinical diagnostic markers.
+      * Finance: Estimating the likelihood of loan default based on credit history and income levels.
+      * Intelligence Analysis: Modeling the probability of a specific threat or event based on signal data.
+      * Marketing: Simulating customer churn probability for a cohort based on engagement metrics.
+      * Epidemiology: Estimating the individual probability of infection based on exposure risk factors.
+      * Cybersecurity: Modeling the likelihood of a system breach based on detected vulnerabilities.
+      * Legal Analysis: Estimating the probability of a favorable verdict based on case characteristics.
+      * Environmental Science: Assessing the likelihood of extreme weather events or wildfires.
+
+    The function uses `statsmodels` to calculate the confidence interval for the predicted 
+    probability at the input `list_of_prediction_values`, then fits a Metalog distribution 
+    to the interval bounds.
+
+    Parameters
+    ----------
     logistic_regression_model : statsmodels.discrete.discrete_model.BinaryResultsWrapper
-        A fitted logistic regression model from statsmodels
+        A fitted logit or probit model from the statsmodels library.
     list_of_prediction_values : list
-        List of predictor values for which to generate predictions
-    number_of_trials : int, default=10000
-        Number of simulations to generate
-    prediction_interval : float, default=0.95
-        Confidence interval level for predicted probabilities (e.g., 0.95 for 95% interval)
+        A list of values for each predictor in the model. If the model includes a constant, 
+        it will be automatically handled.
+    number_of_trials : int, optional
+        The number of stochastic trials to generate from the probability uncertainty. 
+        Defaults to 10000.
+    prediction_interval : float, optional
+        The confidence level for the predicted probability interval (between 0 and 1). 
+        Defaults to 0.95.
     lower_bound : float, optional
-        Lower bound for the distribution (defaults to 0 for probabilities)
+        A logical lower limit for the probability (clamped to 0). Defaults to 0.
     upper_bound : float, optional
-        Upper bound for the distribution (defaults to 1 for probabilities)
-    learning_rate : float, default=0.01
-        Learning rate for metalog distribution fitting
-    term_maximum : int, default=3
-        Maximum number of terms for metalog distribution
-    term_minimum : int, default=2
-        Minimum number of terms for metalog distribution
+        A logical upper limit for the probability (clamped to 1). Defaults to 1.
+    learning_rate : float, optional
+        The step length for the Metalog fitting algorithm. Defaults to 0.01.
+    term_maximum : int, optional
+        The maximum number of terms in the Metalog expansion (up to 9). Higher terms 
+        increase flexibility. Defaults to 3.
+    term_minimum : int, optional
+        The minimum number of terms allowed. Defaults to 2.
     term_for_random_sample : int, optional
-        Number of terms to use for random sampling (defaults to term_limit)
-    show_summary : bool, default=False
-        Whether to show metalog distribution summary
-    return_format : str, default='dataframe'
-        Return format: 'dataframe' or 'array'
-    show_distribution_plot : bool, default=True
-        Whether to show the distribution plot
-    figure_size : tuple, default=(8, 6)
-        Figure size for the plot
-    fill_color : str, default="#999999"
-        Color for the histogram fill
-    fill_transparency : float, default=0.6
-        Transparency level for the histogram fill
-    show_mean : bool, default=True
-        Whether to show the mean on the plot
-    show_median : bool, default=True
-        Whether to show the median on the plot
-    show_y_axis : bool, default=False
-        Whether to show the y-axis
+        The specific number of terms used for generating samples. If None, the `term_limit` 
+        from the fit is used. Defaults to None.
+    show_summary : bool, optional
+        Whether to print the summary of the Metalog distribution coefficients. Defaults to False.
+    return_format : str, optional
+        The format of the output: 'dataframe' (pd.DataFrame) or 'array' (np.ndarray). 
+        Defaults to 'dataframe'.
+    show_distribution_plot : bool, optional
+        Whether to display a histogram of the generated probability samples. Defaults to True.
+    figure_size : tuple, optional
+        The size of the plot figure in inches (width, height). Defaults to (8, 6).
+    fill_color : str, optional
+        The hex color code for the histogram bars. Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (0-1) for the histogram plot. Defaults to 0.6.
+    show_mean : bool, optional
+        Whether to display the mean probability as a vertical dashed line. Defaults to True.
+    show_median : bool, optional
+        Whether to display the median probability as a vertical dotted line. Defaults to True.
+    show_y_axis : bool, optional
+        Whether to display the frequency/density scale on the y-axis. Defaults to False.
     title_for_plot : str, optional
-        Title for the plot
+        The main title for the distribution plot. Defaults to None.
     subtitle_for_plot : str, optional
-        Subtitle for the plot
+        The descriptive subtitle for the plot. Defaults to None.
     caption_for_plot : str, optional
-        Caption for the plot
+        Optional caption text displayed at the bottom of the plot. Defaults to None.
     data_source_for_plot : str, optional
-        Data source for the plot
-    title_y_indent : float, default=1.1
-        Y position for the title
-    subtitle_y_indent : float, default=1.05
-        Y position for the subtitle
-    caption_y_indent : float, default=-0.15
-        Y position for the caption
-    
-    Returns:
+        Optional data source identification text. Defaults to None.
+    title_y_indent : float, optional
+        Vertical position for the title text. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical position for the subtitle text. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical position for the caption text. Defaults to -0.15.
+
+    Returns
+    -------
+    pd.DataFrame or np.ndarray
+        The generated probability samples representing the uncertainty of the model's prediction.
+
+    Examples
     --------
-    pandas.DataFrame or numpy.ndarray
-        Distribution of simulated probability values
+    # Finance: Simulating the probability of loan default for an applicant
+    import statsmodels.api as sm
+    logit_model = sm.Logit(y, X).fit()
+    default_prob_sim = CreateSLURPDistributionFromLogisticRegression(
+        logistic_regression_model=logit_model,
+        list_of_prediction_values=[720, 50000],  # Credit score and Income
+        title_for_plot="Uncertainty in Default Probability"
+    )
+
+    # Intelligence: Assessing signal confidence regarding a potential event
+    threat_prob_sim = CreateSLURPDistributionFromLogisticRegression(
+        logistic_regression_model=threat_model,
+        list_of_prediction_values=[0.85, 12, 1],  # Reliability, Latency, Target_Type
+        prediction_interval=0.90,
+        fill_color="#c0392b"
+    )
     """
     # Lazy load uncommon packages
     import statsmodels.api as sm

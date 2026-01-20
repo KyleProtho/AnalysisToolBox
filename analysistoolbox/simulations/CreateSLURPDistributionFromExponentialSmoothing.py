@@ -40,72 +40,119 @@ def CreateSLURPDistributionFromExponentialSmoothing(exponential_smoothing_model,
                                                   subtitle_y_indent=1.05,
                                                   caption_y_indent=-0.15):
     """
-    Create a SLURP (Simulation of Linear Uncertainty and Range Projections) distribution 
-    for exponential smoothing models using prediction intervals.
-    
-    This function generates a distribution of future values based on the prediction 
-    intervals from an exponential smoothing model, similar to how CreateSLURPDistribution
-    works with linear regression models.
-    
-    Parameters:
-    -----------
+    Generate a SLURP distribution for future forecasts using a fitted Exponential Smoothing model.
+
+    This function creates a SLURP (Simulation of Linear Uncertainty and Range Projections) 
+    distribution by combining exponential smoothing forecasts with Metalog distribution 
+    fitting. It calculates prediction intervals based on the model's residual standard error 
+    for a specified number of future steps, and then fits a flexible Metalog distribution
+    to those intervals. This allows for stochastic sampling from the predicted uncertainty 
+    range, which is essential for propagating time-series uncertainty into Monte Carlo 
+    simulations and probabilistic risk assessments.
+
+    SLURP distributions from exponential smoothing are essential for:
+      * Supply Chain: Modeling future inventory requirements given seasonal demand patterns.
+      * Healthcare: Projecting future patient admission volumes with uncertainty for capacity planning.
+      * Finance: Simulating future revenue or cash flows based on historical trends and volatility.
+      * Epidemiology: Forecasting future disease incidence rates and the associated range of uncertainty.
+      * Intelligence Analysis: Projecting future regional stability indices or economic indicators.
+      * Energy: Simulating future power demand forecasts for grid reliability assessments.
+      * Public Health: Estimating future vaccine uptake rates to optimize distribution logistics.
+      * Retail: Forecasting future store traffic for staffing and resource allocation.
+
+    The function manually calculates prediction intervals using the residual standard 
+    deviation scaled by the square root of the number of forecast steps, then uses the 
+    `pymetalog` library to generate a continuous distribution from the mean and interval bounds.
+
+    Parameters
+    ----------
     exponential_smoothing_model : statsmodels.tsa.exponential_smoothing.ets.ETSResults
-        A fitted exponential smoothing model from statsmodels
-    forecast_steps : int, default=1
-        Number of steps ahead to forecast (1 for one-step-ahead prediction)
-    number_of_trials : int, default=10000
-        Number of simulations to generate
-    prediction_interval : float, default=0.95
-        Prediction interval level (e.g., 0.95 for 95% interval)
+        A fitted exponential smoothing (ETS or Holt-Winters) model from statsmodels.
+    forecast_steps : int, optional
+        The number of steps into the future to forecast (e.g., 1 for next day, 7 for next week).
+        Defaults to 1.
+    number_of_trials : int, optional
+        The number of stochastic samples to generate from the uncertainty distribution.
+        Defaults to 10000.
+    prediction_interval : float, optional
+        The confidence level for the prediction interval (between 0 and 1). Defaults to 0.95.
     lower_bound : float, optional
-        Lower bound for the distribution (if any)
+        A logical lower limit for the simulated values (e.g., 0 for counts/prices).
+        Defaults to None.
     upper_bound : float, optional
-        Upper bound for the distribution (if any)
-    learning_rate : float, default=0.01
-        Learning rate for metalog distribution fitting
-    term_maximum : int, default=3
-        Maximum number of terms for metalog distribution
-    term_minimum : int, default=2
-        Minimum number of terms for metalog distribution
+        A logical upper limit for the simulated values. Defaults to None.
+    learning_rate : float, optional
+        The step length for the Metalog fitting algorithm. Defaults to 0.01.
+    term_maximum : int, optional
+        The maximum number of terms in the Metalog expansion (up to 9). Higher terms
+        increase shape flexibility. Defaults to 3.
+    term_minimum : int, optional
+        The minimum number of terms allowed. Defaults to 2.
     term_for_random_sample : int, optional
-        Number of terms to use for random sampling (defaults to term_limit)
-    show_summary : bool, default=False
-        Whether to show metalog distribution summary
-    return_format : str, default='dataframe'
-        Return format: 'dataframe' or 'array'
-    show_distribution_plot : bool, default=True
-        Whether to show the distribution plot
-    figure_size : tuple, default=(8, 6)
-        Figure size for the plot
-    fill_color : str, default="#999999"
-        Color for the histogram fill
-    fill_transparency : float, default=0.6
-        Transparency level for the histogram fill
-    show_mean : bool, default=True
-        Whether to show the mean on the plot
-    show_median : bool, default=True
-        Whether to show the median on the plot
-    show_y_axis : bool, default=False
-        Whether to show the y-axis
+        The specific number of terms used for generating samples. If None, the `term_limit`
+        from the fit is used. Defaults to None.
+    show_summary : bool, optional
+        Whether to print the summary of the Metalog distribution coefficients. Defaults to False.
+    return_format : str, optional
+        The format of the output: 'dataframe' (pd.DataFrame) or 'array' (np.ndarray).
+        Defaults to 'dataframe'.
+    show_distribution_plot : bool, optional
+        Whether to display a histogram of the generated samples. Defaults to True.
+    figure_size : tuple, optional
+        The size of the plot figure in inches (width, height). Defaults to (8, 6).
+    fill_color : str, optional
+        The hex color code for the histogram bars. Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (0-1) for the histogram plot. Defaults to 0.6.
+    show_mean : bool, optional
+        Whether to display the mean as a vertical dashed line on the plot. Defaults to True.
+    show_median : bool, optional
+        Whether to display the median as a vertical dotted line on the plot. Defaults to True.
+    show_y_axis : bool, optional
+        Whether to display the frequency/density scale on the y-axis. Defaults to False.
     title_for_plot : str, optional
-        Title for the plot
+        The main title for the distribution plot. Defaults to None.
     subtitle_for_plot : str, optional
-        Subtitle for the plot
+        The descriptive subtitle for the plot. Defaults to None.
     caption_for_plot : str, optional
-        Caption for the plot
+        Optional caption text displayed at the bottom of the plot. Defaults to None.
     data_source_for_plot : str, optional
-        Data source for the plot
-    title_y_indent : float, default=1.1
-        Y position for the title
-    subtitle_y_indent : float, default=1.05
-        Y position for the subtitle
-    caption_y_indent : float, default=-0.15
-        Y position for the caption
-    
-    Returns:
+        Optional data source identification text. Defaults to None.
+    title_y_indent : float, optional
+        Vertical position for the title text. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical position for the subtitle text. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical position for the caption text. Defaults to -0.15.
+
+    Returns
+    -------
+    pd.DataFrame or np.ndarray
+        The generated samples representing the uncertainty of the future forecast.
+
+    Examples
     --------
-    pandas.DataFrame or numpy.ndarray
-        Distribution of simulated values
+    # Supply Chain: Simulating future demand (7 days ahead) for inventory planning
+    import statsmodels.api as sm
+    from statsmodels.tsa.holtwinters import ExponentialSmoothing
+    model = ExponentialSmoothing(historical_demand, trend='add', seasonal='add').fit()
+    demand_sim = CreateSLURPDistributionFromExponentialSmoothing(
+        exponential_smoothing_model=model,
+        forecast_steps=7,
+        lower_bound=0,
+        variable_name='Future Demand (7-day)',
+        title_for_plot="Weekly Demand Uncertainty Projection"
+    )
+
+    # Healthcare: Projecting patient admissions for the next billing cycle
+    admissions_model = sm.tsa.ETSModel(historical_admissions, error='add').fit()
+    admissions_sim = CreateSLURPDistributionFromExponentialSmoothing(
+        exponential_smoothing_model=admissions_model,
+        forecast_steps=30,
+        lower_bound=0,
+        number_of_trials=5000,
+        fill_color="#b0170c"
+    )
     """
     # Lazy load uncommon packages
     import statsmodels.api as sm

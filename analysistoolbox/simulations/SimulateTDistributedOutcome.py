@@ -31,40 +31,100 @@ def SimulateTDistributedOutcome(degrees_of_freedom,
                                 subtitle_y_indent=1.05,
                                 caption_y_indent=-0.15):
     """
-    Simulates a T-distributed outcome with the specified degrees of freedom and other parameters.
-    The T distribution (also called Student's T Distribution) is a family of distributions that look almost identical to the normal distribution curve, only a bit shorter and fatter. 
-    A Student's t-distribution is used where one would be inclined to use a Normal distribution, but a Normal distribution is susceptible to outliers whereas a t-distribution is more robust.
-    Conditions:
-    - Continuous data
-    - Unbounded distribution
-    - Considered an overdispersed Normal distribution, mixture of individual normal distributions with different variances
+    Simulate continuous variables following a Student's T distribution.
 
-    Args:
-        degrees_of_freedom (int): The degrees of freedom for the T distribution.
-        expected_outcome (float, optional): The expected value of the outcome. Defaults to 0.
-        standard_deviation_of_outcome (float, optional): The standard deviation of the outcome. If not specified, it is estimated using min_max_of_outcome. Defaults to None.
-        min_max_of_outcome (list of 2 floats, optional): The minimum and maximum values of the outcome. If standard_deviation_of_outcome is not specified, it is estimated using this range. Defaults to None.
-        number_of_trials (int, optional): The number of trials to simulate. Defaults to 10000.
-        return_format (str, optional): The format in which to return the simulation results. Must be either 'dataframe' or 'array'. Defaults to 'dataframe'.
-        simulated_variable_name (str, optional): The name of the simulated variable. Defaults to 'Simulated Outcome'.
-        random_seed (int, optional): The random seed to use for replicability. Defaults to 412.
-        plot_simulation_results (bool, optional): Whether to plot the simulation results. Defaults to True.
-        fill_color (str, optional): The color to fill the histogram bars with. Defaults to "#999999".
-        fill_transparency (float, optional): The transparency of the histogram bars. Defaults to 0.6.
-        figure_size (tuple of 2 ints, optional): The size of the plot figure. Defaults to (8, 6).
-        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
-        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
-        title_for_plot (str, optional): The title of the plot. Defaults to "Simulation Results".
-        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Showing the distribution of the outcome".
-        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
-        show_y_axis (bool, optional): Whether to show the y-axis on the plot. Defaults to False.
-        title_y_indent (float, optional): The y-indent of the title on the plot. Defaults to 1.1.
-        subtitle_y_indent (float, optional): The y-indent of the subtitle on the plot. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent of the caption on the plot. Defaults to -0.15.
+    This function conducts Monte Carlo simulations to model outcomes that resemble a 
+    Normal distribution but possess "fatter tails," making them more robust to outliers.
+    The T distribution is parameterized by degrees of freedom; as degrees of freedom 
+    increase, the distribution approaches a Normal distribution. It is particularly 
+    useful when modeling small datasets or processes prone to extreme fluctuations.
 
-    Returns:
-        pandas.DataFrame or numpy.ndarray: The simulated T-distributed outcome in the specified format.
+    Student's T distribution simulations are essential for:
+      * Finance: Modeling stock or asset returns that exhibit high kurtosis and "fat tails."
+      * Healthcare: Simulating patient outcomes in clinical trials with small sample sizes.
+      * Engineering: Modeling material failure stress where sparse data leads to higher uncertainty.
+      * Intelligence Analysis: Estimating the range of adversary capabilities with limited signal intelligence.
+      * Quality Control: Simulating product weight or dimension variability during initial production ramps.
+      * Environmental Science: Modeling extreme wind loads or rainfall events with high outlier potential.
+      * Social Science: Simulating standardized scores or survey metrics from niche demographics.
+      * Project Management: Estimating activity durations when historical records are sparse and risks are high.
+
+    The function standardizes the `np.random.standard_t` output and scales it to the 
+    specified `expected_outcome` and `standard_deviation_of_outcome`.
+
+    Parameters
+    ----------
+    degrees_of_freedom : float
+        The degrees of freedom (nu) parameter, which controls the "fatness" of the tails.
+    expected_outcome : float, optional
+        The location (mean) of the distribution. Defaults to 0.
+    standard_deviation_of_outcome : float, optional
+        The scale (spread) of the distribution. If None, it must be estimated from 
+        `min_max_of_outcome`. Defaults to None.
+    min_max_of_outcome : list, optional
+        A list of length 2 [min, max] used to estimate the scale parameter based 
+        on the T distribution range rule. Defaults to None.
+    number_of_trials : int, optional
+        The number of stochastic simulations (Monte Carlo trials) to run. Defaults to 10000.
+    return_format : str, optional
+        The format of the returned data: 'dataframe' (pd.DataFrame) or 'array' (np.ndarray).
+        Defaults to 'dataframe'.
+    simulated_variable_name : str, optional
+        The label for the simulated variable in the output and plot. Defaults to 'Simulated Outcome'.
+    random_seed : int, optional
+        The seed for the random number generator to ensure replicability. Defaults to 412.
+    plot_simulation_results : bool, optional
+        Whether to display a histogram of the simulation outcomes. Defaults to True.
+    fill_color : str, optional
+        The hex color code for the histogram bars. Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (0-1) for the histogram plot. Defaults to 0.6.
+    figure_size : tuple, optional
+        The size of the plot figure in inches (width, height). Defaults to (8, 6).
+    show_mean : bool, optional
+        Whether to display the mean value as a vertical dashed line. Defaults to True.
+    show_median : bool, optional
+        Whether to display the median value as a vertical dotted line. Defaults to True.
+    title_for_plot : str, optional
+        The main title for the distribution plot. Defaults to "Simulation Results".
+    subtitle_for_plot : str, optional
+        The descriptive subtitle for the plot. Defaults to "Showing the distribution of the outcome".
+    caption_for_plot : str, optional
+        Optional caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Optional data source identification text. Defaults to None.
+    show_y_axis : bool, optional
+        Whether to display the frequency/density scale on the y-axis. Defaults to False.
+    title_y_indent : float, optional
+        Vertical position for the title text. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical position for the subtitle text. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical position for the caption text. Defaults to -0.15.
+
+    Returns
+    -------
+    pd.DataFrame or np.ndarray
+        The simulated outcomes across all Monte Carlo runs.
+
+    Examples
+    --------
+    # Finance: Simulating daily returns with fat tails (df=5, mean=0.001, SD=0.02)
+    return_sim = SimulateTDistributedOutcome(
+        degrees_of_freedom=5,
+        expected_outcome=0.001,
+        standard_deviation_of_outcome=0.02,
+        simulated_variable_name='Daily Return',
+        title_for_plot='Asset Return Simulation with Outliers'
+    )
+
+    # Engineering: Estimating critical stress where expected range is [45, 55]
+    stress_sim = SimulateTDistributedOutcome(
+        degrees_of_freedom=10,
+        expected_outcome=50.0,
+        min_max_of_outcome=[45, 55],
+        fill_color="#c0392b"
+    )
     """
     
     # Ensure arguments are valid

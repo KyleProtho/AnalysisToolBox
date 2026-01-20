@@ -37,38 +37,115 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
                                              subtitle_y_indent=1.05,
                                              caption_y_indent=-0.15):
     """
-    Creates a metalog distribution from a list of values and a list of percentiles.
+    Generate a flexible Metalog distribution from specified percentiles for stochastic simulation.
 
-    Args:
-        list_of_values (list): A list of values.
-        list_of_percentiles (list): A list of percentiles.
-        lower_bound (float, optional): The lower bound of the metalog distribution. Defaults to None.
-        upper_bound (float, optional): The upper bound of the metalog distribution. Defaults to None.
-        learning_rate (float, optional): The learning rate of the metalog distribution. Defaults to .01.
-        term_maximum (int, optional): The maximum number of terms used in the metalog distribution. Defaults to None.
-        term_minimum (int, optional): The minimum number of terms used in the metalog distribution. Defaults to 2.
-        term_for_random_sample (int, optional): The number of terms used in the metalog distribution for a random sample. Defaults to None.
-        number_of_samples (int, optional): The number of samples to take from the metalog distribution. Defaults to 10000.
-        variable_name (str, optional): The name of the variable. Defaults to "Simulated Value".
-        show_summary (bool, optional): Whether to show the summary of the metalog distribution. Defaults to True.
-        return_format (str, optional): The format of the return value. Must be one of "dataframe" or "array". Defaults to "dataframe".
-        show_distribution_plot (bool, optional): Whether to show the metalog distribution plot. Defaults to True.
-        figure_size (tuple, optional): The size of the metalog distribution plot. Defaults to (8, 6).
-        fill_color (str, optional): The fill color of the metalog distribution plot. Defaults to "#999999".
-        fill_transparency (float, optional): The fill transparency of the metalog distribution plot. Defaults to 0.6.
-        show_mean (bool, optional): Whether to show the mean on the metalog distribution plot. Defaults to True.
-        show_median (bool, optional): Whether to show the median on the metalog distribution plot. Defaults to True.
-        show_y_axis (bool, optional): Whether to show the y-axis on the metalog distribution plot. Defaults to False.
-        title_for_plot (str, optional): The title of the metalog distribution plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle of the metalog distribution plot. Defaults to None.
-        caption_for_plot (str, optional): The caption of the metalog distribution plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source of the metalog distribution plot. Defaults to None.
-        title_y_indent (float, optional): The y-indent of the title on the metalog distribution plot. Defaults to 1.1.
-        subtitle_y_indent (float, optional): The y-indent of the subtitle on the metalog distribution plot. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent of the caption on the metalog distribution plot. Defaults to -0.15.
+    This function fits a Metalog distribution to a set of user-provided quantiles (values and
+    their corresponding cumulative probabilities). This is uniquely powerful for expert 
+    elicitation and summary-data modeling, as it allows you to reconstruct a full, 
+    stochastic distribution from as few as three data points (e.g., P10, P50, and P90).
+    The Metalog family is "any-shape" and can accurately represent skewed, multi-modal, 
+    or bounded distributions, returning a specified number of random samples for use 
+    in Monte Carlo workflows.
 
-    Returns:
-        pandas.DataFrame or numpy.ndarray: The metalog distribution in the specified format.
+    Fitting from percentiles is essential for:
+      * Project Management: Estimating task durations using P10 (low), P50 (likely), and P90 (high) elicitation.
+      * Intelligence Analysis: Quantifying expert uncertainty regarding threat arrival windows or asset reliability.
+      * Epidemiology: Reconstructing disease transmission parameters from reported quantiles in literature.
+      * Risk Management: Modeling potential annual losses based on expert-defined "worst-case" and "median" scenarios.
+      * Finance: Simulating asset price movements based on historical P25, P50, and P75 levels.
+      * Environmental Science: Assessing cumulative flood risk from historical return-period quantiles.
+      * Healthcare: Modeling patient throughput or surgery durations based on reported wait-time percentiles.
+      * Quality Engineering: Simulating part tolerances based on design specification limits (e.g., LSL/USL).
+
+    The function uses the `pymetalog` library to calculate coefficients that best fit the
+    provided percentiles and generates random samples using a controlled expansion.
+
+    Parameters
+    ----------
+    list_of_values : list
+        The numerical values corresponding to the cumulative probabilities/percentiles.
+    list_of_percentiles : list
+        The cumulative probabilities (between 0 and 1) for each value in `list_of_values`.
+    lower_bound : float, optional
+        The logical lower bound for the distribution (e.g., 0 for duration). If provided 
+        along with `upper_bound`, a bounded metalog is created. Defaults to None.
+    upper_bound : float, optional
+        The logical upper bound for the distribution. If provided along with `lower_bound`,
+        a bounded metalog is created. Defaults to None.
+    learning_rate : float, optional
+        The step length for the metalog fit algorithm. Defaults to 0.01.
+    term_maximum : int, optional
+        The maximum number of terms in the metalog expansion. If None, it defaults to
+        the number of provided percentiles. Defaults to None.
+    term_minimum : int, optional
+        The minimum number of terms allowed. Defaults to 2.
+    term_for_random_sample : int, optional
+        The specific number of terms used for generating samples. If None, the `term_limit`
+        from the fitted distribution is used. Defaults to None.
+    number_of_samples : int, optional
+        The number of stochastic samples to generate. Defaults to 10000.
+    variable_name : str, optional
+        Label for the variable in the output DataFrame and plot. Defaults to "Simulated Value".
+    show_summary : bool, optional
+        Whether to print the pymetalog summary of coefficients and validation results.
+        Defaults to True.
+    return_format : str, optional
+        The format of the output: 'dataframe' (pd.DataFrame) or 'array' (np.ndarray).
+        Defaults to 'dataframe'.
+    show_distribution_plot : bool, optional
+        Whether to display a histogram of the generated samples. Defaults to True.
+    figure_size : tuple, optional
+        The size of the plot figure in inches (width, height). Defaults to (8, 6).
+    fill_color : str, optional
+        The hex color code for the histogram bars. Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (0-1) for the histogram plot. Defaults to 0.6.
+    show_mean : bool, optional
+        Whether to display the mean as a vertical dashed line on the plot. Defaults to True.
+    show_median : bool, optional
+        Whether to display the median as a vertical dotted line on the plot. Defaults to True.
+    show_y_axis : bool, optional
+        Whether to display the frequency/density scale on the y-axis. Defaults to False.
+    title_for_plot : str, optional
+        The main title for the distribution plot. Defaults to None.
+    subtitle_for_plot : str, optional
+        The descriptive subtitle for the plot. Defaults to None.
+    caption_for_plot : str, optional
+        Optional caption text displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Optional data source identification text. Defaults to None.
+    title_y_indent : float, optional
+        Vertical position for the title text. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical position for the subtitle text. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical position for the caption text. Defaults to -0.15.
+
+    Returns
+    -------
+    pd.DataFrame or np.ndarray
+        The generated samples from the fitted Metalog distribution.
+
+    Examples
+    --------
+    # Project Management: Simulating task duration from P10, P50, and P90 estimates
+    durations = CreateMetalogDistributionFromPercentiles(
+        list_of_values=[5, 12, 30],
+        list_of_percentiles=[0.1, 0.5, 0.9],
+        lower_bound=0,
+        variable_name='Days to Complete',
+        title_for_plot="Estimated Project Duration"
+    )
+
+    # Intelligence: Modeling expert belief regarding a threat window
+    threat_window = CreateMetalogDistributionFromPercentiles(
+        list_of_values=[2, 4, 10, 24],
+        list_of_percentiles=[0.05, 0.25, 0.75, 0.95],
+        lower_bound=0,
+        upper_bound=48,
+        variable_name='Hours to Event',
+        fill_color="#b0170c"
+    )
     """
     # Lazy load uncommon packages
     from .pymetalog import pymetalog

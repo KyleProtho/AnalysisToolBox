@@ -28,34 +28,114 @@ def ConductLinearOptimization(dataframe,
                               caption_for_optimization_plot=None):
     """
     Conduct linear optimization to find optimal input values that maximize or minimize an output variable.
-    
-    This function uses linear programming to find the optimal combination of input variables
-    that will maximize or minimize the output variable, subject to optional constraints on input values.
-    
-    Parameters:
-    -----------
-    dataframe : pandas.DataFrame
-        DataFrame containing input and output variables
+
+    This function first fits a linear regression model to the provided dataset to estimate the
+    linear relationship (coefficients) between the input variables and the target output variable.
+    These coefficients serve as the objective function for a linear programming solver (SciPy's
+    `linprog`). The solver then identifies the optimal combination of input values that
+    maximizes or minimizes the output, subject to user-defined constraints or the observed
+    data range. This approach is particularly useful for prescriptive analytics, where the
+    goal is not just to predict but to determine the best course of action.
+
+    Linear optimization is essential for:
+      * Resource allocation in healthcare (e.g., staffing vs. patient throughput)
+      * Optimizing vaccine distribution logistics to maximize population coverage
+      * Minimizing operating costs in epidemiological field operations
+      * Maximizing intelligence collection coverage with limited sensor assets
+      * Marketing budget optimization across multiple advertising channels
+      * Manufacturing production planning under raw material constraints
+      * Portfolio optimization in financial risk management
+      * Nutritional optimization (e.g., meeting dietary needs at minimum cost)
+
+    The function uses the 'highs' method for linear programming, which is robust for most
+    linear problems. If specific constraints are not provided, it defaults to the minimum
+    and maximum values found in the dataset for each input variable.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        DataFrame containing the input and output variables.
     output_variable : str
-        Name of the output variable to optimize
+        Name of the target column to be optimized (the dependent variable).
     list_of_input_variables : list
-        List of input variable names to optimize
+        List of column names to be used as inputs for optimization (the independent variables).
     optimization_type : str, optional
-        Type of optimization: "maximize" or "minimize" (default: "maximize")
+        Whether to "maximize" or "minimize" the output variable. Defaults to "maximize".
     input_constraints : dict, optional
-        Dictionary with input variable names as keys and (min, max) tuples as values
-        Example: {"variable1": (0, 10), "variable2": (None, 5)} where None means no constraint
+        Dictionary mapping input variable names to (min, max) tuples. Use None for no bound:
+        e.g., {"var1": (0, 100), "var2": (None, 50)}. If None, defaults to the observed
+        data range in `dataframe`. Defaults to None.
     print_optimization_summary : bool, optional
-        Whether to print optimization results summary (default: True)
+        Whether to print a detailed text summary of the model coefficients and optimal results.
+        Defaults to True.
     print_constraint_summary : bool, optional
-        Whether to print constraint information (default: True)
+        Whether to print the min/max bounds applied to each input variable. Defaults to True.
+    data_source_for_plot : str, optional
+        Text describing the data source, displayed in the plot caption. Defaults to None.
     plot_optimization_results : bool, optional
-        Whether to plot optimization results (default: True)
-    
-    Returns:
-    --------
+        Whether to generate a bar chart showing optimal input values and the resulting output.
+        Defaults to True.
+    dot_fill_color : str, optional
+        Hex color code for the input variables bar chart. Defaults to "#999999".
+    line_color : str, optional
+        Hex color code for the output variable bar chart. Defaults to "#b0170c".
+    figure_size_for_optimization_plot : tuple, optional
+        Width and height of the generated plot in inches. Defaults to (10, 6).
+    title_for_optimization_plot : str, optional
+        Main title text for the optimization plot. Defaults to "Linear Optimization Results".
+    subtitle_for_optimization_plot : str, optional
+        Subtitle text for the optimization plot. Defaults to "Optimal input values and resulting output value.".
+    caption_for_optimization_plot : str, optional
+        Additional caption text to display at the bottom of the plot. Defaults to None.
+
+    Returns
+    -------
     dict
-        Dictionary containing optimization results including optimal values, objective value, and status
+        A dictionary containing:
+        - 'success': (bool) Whether the optimization solver found a valid solution.
+        - 'optimization_type': (str) The requested optimization direction.
+        - 'output_variable': (str) Name of the target variable.
+        - 'input_variables': (list) List of inputs used.
+        - 'coefficients': (np.array) Regression coefficients used in the objective function.
+        - 'intercept': (float) Regression intercept.
+        - 'optimal_inputs': (np.array) The calculated optimal values for each input.
+        - 'optimal_output': (float) The resulting maximized/minimized output value.
+        - 'constraints': (dict) The constraints applied during optimization.
+        - 'model': (sklearn.linear_model.LinearRegression) The fitted regression model.
+
+    Examples
+    --------
+    # Healthcare: Optimizing hospital resource allocation to maximize patient satisfaction
+    import pandas as pd
+    hospital_data = pd.DataFrame({
+        'nurses_on_shift': [10, 15, 20, 25, 30],
+        'beds_available': [50, 60, 70, 80, 90],
+        'avg_wait_time_minutes': [45, 30, 20, 15, 10],
+        'patient_satisfaction_score': [65, 75, 85, 90, 95]
+    })
+    results = ConductLinearOptimization(
+        dataframe=hospital_data,
+        output_variable='patient_satisfaction_score',
+        list_of_input_variables=['nurses_on_shift', 'beds_available'],
+        optimization_type='maximize',
+        input_constraints={'nurses_on_shift': (10, 40), 'beds_available': (50, 100)}
+    )
+
+    # Intelligence: Optimizing surveillance drone flight hours to maximize area coverage
+    surveillance_df = pd.DataFrame({
+        'drone_hrs': [100, 200, 300, 400, 500],
+        'analyst_hrs': [40, 80, 120, 160, 200],
+        'sq_km_covered': [1000, 2100, 3050, 4100, 5000]
+    })
+    results = ConductLinearOptimization(
+        dataframe=surveillance_df,
+        output_variable='sq_km_covered',
+        list_of_input_variables=['drone_hrs', 'analyst_hrs'],
+        optimization_type='maximize',
+        input_constraints={'drone_hrs': (0, 600), 'analyst_hrs': (0, 250)},
+        title_for_optimization_plot="Coverage Optimization",
+        data_source_for_plot="2025 ISR Operations Data"
+    )
     """
     
     # Keep only the inputs and output variable

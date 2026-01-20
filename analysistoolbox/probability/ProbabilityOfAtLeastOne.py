@@ -29,31 +29,99 @@ def ProbabilityOfAtLeastOne(probability_of_event,
                             # Plot formatting arguments
                             figure_size=(7, 6)):
     """
-    Calculates the probability of at least one event occurring, given the probability of an event and the number of events.
+    Calculate the cumulative probability of at least one event occurring over multiple trials.
 
-    Args:
-        probability_of_event (float): The probability of an event occurring.
-        number_of_events (int): The number of events.
-        format_as_percent (bool, optional): Whether to format the probability as a percentage. Defaults to False.
-        show_plot (bool, optional): Whether to show the plot of the probability of at least one event. Defaults to True.
-        line_color (str, optional): The color of the line in the plot. Defaults to "#3269a8".
-        line_alpha (float, optional): The transparency of the line in the plot. Defaults to 0.8.
-        risk_tolerance (float, optional): The risk tolerance for the probability of at least one event. Defaults to None.
-        risk_tolerance_color (str, optional): The color of the risk tolerance dot and lines in the plot. Defaults to "#cc453b".
-        number_of_x_axis_ticks (int, optional): The number of ticks on the x-axis in the plot. Defaults to None.
-        x_axis_tick_rotation (float, optional): The rotation angle of the x-axis tick labels in the plot. Defaults to None.
-        title_for_plot (str, optional): The title of the plot. Defaults to "Probability of at Least One Event".
-        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to "Shows the probability of at least one event occurring, given the probability of an event and the number of events.".
-        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        x_indent (float, optional): The x-coordinate indent for the plot elements. Defaults to -0.127.
-        title_y_indent (float, optional): The y-coordinate indent for the title in the plot. Defaults to 1.125.
-        subtitle_y_indent (float, optional): The y-coordinate indent for the subtitle in the plot. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-coordinate indent for the caption in the plot. Defaults to -0.3.
-        figure_size (tuple, optional): The size of the plot figure. Defaults to (7, 6).
+    This function computes the probability $P(\text{at least one occurrence}) = 1 - (1 - p)^n$,
+    where $p$ is the probability of a single event and $n$ is the number of trials or events.
+    This is a fundamental calculation in risk assessment, reliability engineering, and
+    epidemiology for understanding cumulative exposure or susceptibility over time.
 
-    Returns:
-        float: The probability of at least one event occurring.
+    Calculating the probability of at least one event is essential for:
+      * Epidemiology: Estimating the risk of a disease outbreak over multiple years.
+      * Healthcare: Assessing the cumulative risk of drug side effects over a long-term prescription.
+      * Intelligence Analysis: Determining the probability of an operation being detected across multiple phases.
+      * Cybersecurity: Evaluating the likelihood of a successful system breach over numerous hacking attempts.
+      * Engineering: Calculating the failure probability of a redundant system during its lifespan.
+      * Finance: Estimating the probability of a market "black swan" event occurring within a specific decade.
+      * Environmental Science: Assessing the risk of a 100-year flood occurring at least once in 30 years.
+      * Quality Control: Predicting the likelihood of finding at least one defect in a batch of products.
+
+    The function provides an optional visualization of how this probability grows as the
+    number of events increases, with support for marking a specific "risk tolerance"
+    threshold on the resulting curve.
+
+    Parameters
+    ----------
+    probability_of_event : float
+        The probability of the event occurring in a single trial (value between 0 and 1).
+    number_of_events : int
+        The total number of trials or events to consider.
+    format_as_percent : bool, optional
+        Whether to return the result as a formatted percentage string (e.g., "75.00%")
+        instead of a raw float. Defaults to False.
+    show_plot : bool, optional
+        Whether to generate a line plot showing the cumulative probability growth.
+        Defaults to True.
+    line_color : str, optional
+        The hex color code for the probability curve in the plot. Defaults to "#3269a8".
+    line_alpha : float, optional
+        The transparency level of the plotted line (0 to 1). Defaults to 0.8.
+    risk_tolerance : float, optional
+        A specific probability threshold (0 to 1) to Highlight on the plot. If provided,
+        the function will mark the point where the cumulative risk exceeds this value.
+        Defaults to None.
+    risk_tolerance_color : str, optional
+        The hex color code for the risk tolerance markers and dashed lines.
+        Defaults to "#cc453b".
+    number_of_x_axis_ticks : int, optional
+        The maximum number of tick marks to display on the x-axis. Defaults to None.
+    x_axis_tick_rotation : float, optional
+        The rotation angle in degrees for the x-axis tick labels. Defaults to None.
+    title_for_plot : str, optional
+        The main title text displayed above the plot. Defaults to "Probability of at Least One Event".
+    subtitle_for_plot : str, optional
+        The descriptive text displayed below the main title. Defaults to a standard description.
+    caption_for_plot : str, optional
+        Additional summary or explanatory text displayed at the bottom of the plot.
+        Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the source of the data, appended to the caption. Defaults to None.
+    x_indent : float, optional
+        Horizontal offset for the plot title and labels. Defaults to -0.127.
+    title_y_indent : float, optional
+        Vertical offset for the plot title. Defaults to 1.125.
+    subtitle_y_indent : float, optional
+        Vertical offset for the plot subtitle. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical offset for the plot caption. Defaults to -0.3.
+    figure_size : tuple, optional
+        The width and height of the plot in inches. Defaults to (7, 6).
+
+    Returns
+    -------
+    float or str
+        The calculated probability that the event occurs at least once. If `format_as_percent`
+        is True, this is returned as a string; otherwise, it is a float.
+
+    Examples
+    --------
+    # Epidemiology: Probability of at least one infection in a group of 50 people
+    # given a 2% transmission rate per contact
+    p_inf = ProbabilityOfAtLeastOne(
+        probability_of_event=0.02,
+        number_of_events=50,
+        risk_tolerance=0.5
+    )
+
+    # Intelligence: Likelihood of being detected across 10 discrete operation phases
+    # with a 5% detection risk per phase
+    p_det = ProbabilityOfAtLeastOne(
+        probability_of_event=0.05,
+        number_of_events=10,
+        format_as_percent=True,
+        title_for_plot="Operation Compromise Risk",
+        line_color="#b0170c"
+    )
     """
     
     # Calculate the probability of at least one event

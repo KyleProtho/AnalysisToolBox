@@ -28,27 +28,99 @@ def CreateCorrelatedSIPs(mean_of_variable_1,
                          subtitle_y_indent=1.05,
                          caption_y_indent=-0.3):
     """
-    This function creates a scatterplot of two variables with a specified correlation.
+    Generate a pair of correlated random variables (Stochastic Information Packets) for Monte Carlo simulations.
 
-    Args:
-        mean_of_variable_1 (float): The mean of the first variable.
-        std_of_variable_1 (float): The standard deviation of the first variable.
-        mean_of_variable_2 (float): The mean of the second variable.
-        std_of_variable_2 (float): The standard deviation of the second variable.
-        correlation (float): The correlation between the two variables.
-        number_of_samples (int, optional): The number of samples to generate. Defaults to 10000.
-        variable_1_name (str, optional): The name of the first variable. Defaults to 'Variable 1'.
-        variable_2_name (str, optional): The name of the second variable. Defaults to 'Variable 2'.
-        show_scatterplot (bool, optional): Whether to show the scatterplot. Defaults to True.
-        dot_fill_color (str, optional): The color of the dots in the scatterplot. Defaults to '#999999'.
-        title_for_plot (str, optional): The title of the plot. Defaults to 'Simulation Results'.
-        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to 'Showing the correlation between two variables'.
-        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
-        x_indent (float, optional): The x-indent of the plot. Defaults to -0.128.
-        title_y_indent (float, optional): The y-indent of the title. Defaults to 1.125.
-        subtitle_y_indent (float, optional): The y-indent of the subtitle. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent of the caption. Defaults to -0.3.
+    This function simulates two normally distributed variables with specified means and standard
+    deviations, while enforcing a precise Pearson correlation between them. This is critical
+    for probabilistic modeling (SIPmath standard) where dependencies between variables must be
+    preserved to avoid underestimating or overestimating aggregate risk.
+
+    Correlated simulations are essential for:
+      * Epidemiology: Modeling the relationship between contact rates and transmission probability.
+      * Healthcare: Simulating patient recovery time and hospital resource consumption.
+      * Intelligence Analysis: Modeling the relationship between signal reliability and threat confidence.
+      * Risk Management: Analyzing portfolio volatility where asset prices are interdependent.
+      * Supply Chain: Modeling the correlation between lead times and demand spikes.
+      * Environmental Science: Simulating temperature and rainfall patterns for crop yield risk.
+      * Finance: Estimating Value at Risk (VaR) for correlated currency pairs.
+      * Project Management: Modeling task dependencies and cumulative schedule risk.
+
+    The function uses a linear combination of two independent normal distributions to achieve
+    the target correlation, ensuring the generated data faithfully represents the requested
+    statistical relationship.
+
+    Parameters
+    ----------
+    mean_of_variable_1 : float
+        The arithmetic mean for the first simulated variable.
+    std_of_variable_1 : float
+        The standard deviation for the first simulated variable.
+    mean_of_variable_2 : float
+        The arithmetic mean for the second simulated variable.
+    std_of_variable_2 : float
+        The standard deviation for the second simulated variable.
+    correlation : float
+        The target Pearson correlation coefficient between the two variables (-1 to 1).
+    number_of_samples : int, optional
+        The number of stochastic trials to generate. Defaults to 10000.
+    variable_1_name : str, optional
+        Label for the first variable in the output DataFrame and plot. Defaults to 'Variable 1'.
+    variable_2_name : str, optional
+        Label for the second variable in the output DataFrame and plot. Defaults to 'Variable 2'.
+    print_simulation_result_summary : bool, optional
+        Whether to print the observed correlation and summary statistics of the generated data.
+        Defaults to False.
+    show_scatterplot : bool, optional
+        Whether to display a scatterplot of the simulated samples. Defaults to True.
+    dot_fill_color : str, optional
+        The hex color code for the points in the scatterplot. Defaults to "#999999".
+    title_for_plot : str, optional
+        The main title text for the scatterplot. Defaults to "Simulation Results".
+    subtitle_for_plot : str, optional
+        The descriptive subtitle for the scatterplot. Defaults to "Showing the correlation between two variables".
+    caption_for_plot : str, optional
+        Additional text block displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the source of the simulation parameters. Defaults to None.
+    x_indent : float, optional
+        Horizontal offset for the plot title and subtitle. Defaults to -0.128.
+    title_y_indent : float, optional
+        Vertical offset for the title text. Defaults to 1.125.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle text. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical offset for the caption text. Defaults to -0.3.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing the two columns of simulated correlated data.
+
+    Examples
+    --------
+    # Healthcare: Modeling the correlation between patient age and recovery days
+    import pandas as pd
+    recovery_data = CreateCorrelatedSIPs(
+        mean_of_variable_1=65.0,
+        std_of_variable_1=12.0,
+        mean_of_variable_2=14.0,
+        std_of_variable_2=4.0,
+        correlation=0.65,
+        variable_1_name='Patient Age',
+        variable_2_name='Recovery Days'
+    )
+
+    # Intelligence: Simulating signal strength vs. geolocation accuracy
+    sig_geo_data = CreateCorrelatedSIPs(
+        mean_of_variable_1=-85.0,  # Signal dBm
+        std_of_variable_1=10.0,
+        mean_of_variable_2=15.0,   # Accuracy in meters
+        std_of_variable_2=5.0,
+        correlation=-0.80,         # Stronger signal (less negative) correlates with lower error
+        variable_1_name='Signal Strength',
+        variable_2_name='Geo Error',
+        title_for_plot='Sensor Reliability Simulation'
+    )
     """
     
     # Create a z-scored variable for the first variable
