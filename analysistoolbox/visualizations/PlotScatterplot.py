@@ -39,36 +39,139 @@ def PlotScatterplot(dataframe,
                     # Plot saving arguments
                     filepath_to_save_plot=None):
     """
-    Generates a scatterplot using the provided dataframe and column names for x and y axes.
+    Generate a formatted scatterplot with optional regression lines and quadrants.
 
-    Args:
-        dataframe (DataFrame): The dataframe containing the data.
-        y_axis_column_name (str): The column name for the y-axis data.
-        x_axis_column_name (str): The column name for the x-axis data.
-        grouping_column_name (str, optional): The column name for grouping data. Defaults to None.
-        group_color_palette (str, optional): The color palette for the groups. Defaults to "Set1".
-        dot_fill_color (str, optional): The fill color for the dots. Defaults to "#999999".
-        size_by_column_name(str, optional): The column name for sizing the dots. Defaults to None.
-        size_normalization (tuple, optional): The range of sizes for the dots. Defaults to None.
-        fitted_line_type (str, optional): The type of fitted line. Defaults to None.
-        line_color (str, optional): The color of the line. Defaults to None.
-        title_for_plot (str, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        x_indent (float, optional): The x indent for the plot. Defaults to -0.128.
-        title_y_indent (float, optional): The y indent for the title. Defaults to 1.125.
-        subtitle_y_indent (float, optional): The y indent for the subtitle. Defaults to 1.05.
-        caption_y_indent (float, optional): The y indent for the caption. Defaults to -0.3.
-        upper_left_quadrant_label (str, optional): The label for the upper left quadrant. Defaults to None.
-        upper_left_quadrant_fill_color (str, optional): The fill color for the upper left quadrant. Defaults to None.
-        upper_right_quadrant_label (str, optional): The label for the upper right quadrant. Defaults to None.
-        upper_right_quadrant_fill_color (str, optional): The fill color for the upper right quadrant. Defaults to None.
-        lower_left_quadrant_label (str, optional): The label for the lower left quadrant. Defaults to None.
-        lower_left_quadrant_fill_color (str, optional): The fill color for the lower left quadrant. Defaults to None.
-        lower_right_quadrant_label (str, optional): The label for the lower right quadrant. Defaults to None.
-        lower_right_quadrant_fill_color (str, optional): The fill color for the lower right quadrant. Defaults to None.
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+    This function creates a high-quality scatterplot using seaborn, allowing for 
+    the visualization of the relationship between two continuous numeric variables. 
+    It supports grouping by categorical variables (using color), sizing points 
+    by a third numeric variable, and fitting various regression lines (straight 
+    linear or LOWESS). Additionally, the plot can be divided into four labeled 
+    quadrants with custom background colors, which is useful for categorization 
+    and performance mapping.
+
+    Scatterplots are essential for:
+      * Epidemiology: Examining the relationship between population density and transmission rates.
+      * Healthcare: Correlating patient age with physiological metrics like blood pressure or heart rate.
+      * Intelligence Analysis: Analyzing the relationship between insurgent activity and local economic stability.
+      * Data Science: Identifying patterns, clusters, and multi-collinearity during feature engineering.
+      * Public Health: Correlating socioeconomic status indices with local life expectancy.
+      * Finance: Visualizing the risk (standard deviation) vs. return of various asset classes.
+      * Marketing: Examining the correlation between advertising spend and customer conversion volume.
+      * Quality Control: Monitoring the relationship between manufacturing temperature and defect counts.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the numeric and categorical data to plot.
+    y_axis_column_name : str
+        The name of the column to be plotted on the vertical y-axis.
+    x_axis_column_name : str
+        The name of the column to be plotted on the horizontal x-axis.
+    grouping_column_name : str, optional
+        The name of a categorical column used for color-encoding (hue). Defaults to None.
+    group_color_palette : str, optional
+        The name of the seaborn color palette to use for groupings. Defaults to "Set1".
+    dot_fill_color : str, optional
+        The hex color code for points when no grouping is applied. Defaults to "#999999".
+    size_by_column_name : str, optional
+        The name of a numeric column used to scale the size of the scatter points. 
+        Defaults to None.
+    size_normalization : tuple, optional
+        A (min, max) tuple defining the range of point sizes. Defaults to None.
+    fitted_line_type : {None, 'straight', 'lowess'}, optional
+        The type of regression line to overlay on the plot. 'straight' fits a 
+        linear regression, while 'lowess' fits a smooth non-linear curve. 
+        Defaults to None.
+    line_color : str, optional
+        The hex color code for the fitted regression line. If None, it matches 
+        the `dot_fill_color`. Defaults to None.
+    title_for_plot : str, optional
+        The primary title text at the top of the chart. Defaults to None.
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text below the main title. Defaults to None.
+    caption_for_plot : str, optional
+        Explanatory text or notes at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the source of the data, appended to the caption. Defaults to None.
+    x_indent : float, optional
+        Horizontal offset for the titles and captions relative to the axes. 
+        Defaults to -0.128.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the grid. Defaults to 1.125.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the grid. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the grid. Defaults to -0.3.
+    upper_left_quadrant_label : str, optional
+        Text label to display in the upper-left quadrant area. Defaults to None.
+    upper_left_quadrant_fill_color : str, optional
+        Hex color code for the upper-left quadrant background. Defaults to None.
+    upper_right_quadrant_label : str, optional
+        Text label to display in the upper-right quadrant area. Defaults to None.
+    upper_right_quadrant_fill_color : str, optional
+        Hex color code for the upper-right quadrant background. Defaults to None.
+    lower_left_quadrant_label : str, optional
+        Text label to display in the lower-left quadrant area. Defaults to None.
+    lower_left_quadrant_fill_color : str, optional
+        Hex color code for the lower-left quadrant background. Defaults to None.
+    lower_right_quadrant_label : str, optional
+        Text label to display in the lower-right quadrant area. Defaults to None.
+    lower_right_quadrant_fill_color : str, optional
+        Hex color code for the lower-right quadrant background. Defaults to None.
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the scatterplot using matplotlib and optionally 
+        saves it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Correlation between age and symptom severity
+    import pandas as pd
+    import numpy as np
+    epi_df = pd.DataFrame({
+        'Age': np.random.randint(5, 85, 100),
+        'Severity Score': np.random.uniform(0, 100, 100),
+        'Condition': np.random.choice(['A', 'B'], 100)
+    })
+    PlotScatterplot(
+        epi_df, 'Severity Score', 'Age', grouping_column_name='Condition',
+        fitted_line_type='lowess',
+        title_for_plot="Age-Severity Analysis by Condition",
+        subtitle_for_plot="Non-linear relationship between patient age and reported symptom scores"
+    )
+
+    # Intelligence Analysis: Insurgent activity vs. economic stability
+    intel_df = pd.DataFrame({
+        'Stability Index': np.random.uniform(0, 1, 50),
+        'Incident Count': np.random.randint(0, 50, 50)
+    })
+    PlotScatterplot(
+        intel_df, 'Incident Count', 'Stability Index',
+        upper_left_quadrant_label="High Risk / Fragile Economy",
+        upper_left_quadrant_fill_color="#e74c3c",
+        lower_right_quadrant_label="Stable / Minimal Activity",
+        lower_right_quadrant_fill_color="#2ecc71",
+        title_for_plot="Regional Security Assessment",
+        subtitle_for_plot="Correlation between sector economic indicators and tactical incidents"
+    )
+
+    # Healthcare: Health metrics correlation
+    hosp_df = pd.DataFrame({
+        'Daily Steps': np.random.randint(1000, 15000, 80),
+        'BMI': np.random.uniform(18, 35, 80)
+    })
+    PlotScatterplot(
+        hosp_df, 'BMI', 'Daily Steps',
+        fitted_line_type='straight',
+        line_color="#2c3e50",
+        title_for_plot="Patient Wellness Monitoring",
+        caption_for_plot="Data collected through hospital-provided wearable sensors."
+    )
     """
     
     # Ensure that fitted_line_type is None, 'straight', or 'lowess'

@@ -31,26 +31,111 @@ def PlotCorrelationMatrix(dataframe,
                           # Plot saving arguments
                           filepath_to_save_plot=None):
     """
-    Plots a correlation matrix or pairplot for a given dataframe.
+    Generate a formatted correlation matrix or multi-variable pairplot.
 
-    Args:
-        dataframe (pandas.DataFrame): The dataframe to plot.
-        list_of_value_column_names (list): The names of the columns to include in the plot.
-        list_of_outcome_column_names (list, optional): The names of the outcome columns to include in the plot. Defaults to None.
-        show_as_pairplot (bool, optional): Whether to show the plot as a pairplot. Defaults to True.
-        pairplot_size (tuple, optional): The size of the pairplot. Defaults to (20, 20).
-        scatter_fill_color (str, optional): The fill color for scatter plots. Defaults to "#3269a8".
-        fit_lowess_line (bool, optional): Whether to fit a lowess line to the data. Defaults to True.
-        line_color (str, optional): The color of the line. Defaults to "#cc4b5a".
-        title_for_plot (str, optional): The title for the plot. Defaults to "Pairplot of Numeric Variables".
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Shows the linear relationship between numeric variables".
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        x_indent (float, optional): The x-indent for the plot. Defaults to -0.7.
-        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.12.
-        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.03.
-        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.35.
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+    This function produces either a numerical correlation matrix (printed to console) 
+    or a high-quality visual pairplot using seaborn. When generating a pairplot, 
+    it visualizes pairwise relationships between multiple numeric variables with 
+    regression lines (optionally LOWESS), diagonal distributions, and thorough 
+    formatting for professional reporting. It supports subsetting variables into 
+    predictive "value" columns and "outcome" columns to focus the analysis.
+
+    Correlation matrices and pairplots are essential for:
+      * Epidemiology: Examining the relationships between multiple environmental factors and disease incidence.
+      * Healthcare: Analyzing correlations between different patient vital signs and recovery outcomes.
+      * Data Science: Identifying multi-collinearity during feature selection and exploratory data analysis.
+      * Public Health: Correlating various socioeconomic indicators with regional life expectancy.
+      * Finance: Analyzing the price movements of multiple assets to assess portfolio diversification.
+      * Quality Control: Examining the relationship between different manufacturing sensor readings and defect counts.
+      * Social Science: Exploring the connections between multiple demographic variables and survey scores.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the numeric data to analyze.
+    list_of_value_column_names : list of str
+        The names of the columns to be used on the x-axis of the pairplot (or the 
+        entire variable set if `list_of_outcome_column_names` is None).
+    list_of_outcome_column_names : list of str, optional
+        The names of the outcome columns to be used on the y-axis of the pairplot. 
+        If None, a symmetric grid is created using all value columns. Defaults to None.
+    show_as_pairplot : bool, optional
+        Whether to generate the visual pairplot. If False, the function prints 
+        the numeric correlation matrix to the console instead. Defaults to True.
+    pairplot_size : tuple, optional
+        The dimensions of the entire figure grid in inches. Defaults to (20, 20).
+    scatter_fill_color : str, optional
+        The hex color code for the scatter plot points and diagonal distributions. 
+        Defaults to "#3269a8".
+    fit_lowess_line : bool, optional
+        Whether to fit a Locally Weighted Scatterplot Smoothing (LOWESS) line to 
+        the scatter plots to show non-linear trends. Defaults to True.
+    line_color : str, optional
+        The hex color code for the regression or LOWESS line. Defaults to "#cc4b5a".
+    title_for_plot : str, optional
+        The primary title text displayed at the top of the figure. 
+        Defaults to "Pairplot of Numeric Variables".
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text displayed below the title. 
+        Defaults to "Shows the linear relationship between numeric variables".
+    caption_for_plot : str, optional
+        Explanatory text or notes displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the source of the data, appended to the caption. Defaults to None.
+    x_indent : float, optional
+        Horizontal offset for titles and captions relative to the axes. Defaults to -0.7.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the grid. Defaults to 1.12.
+    title_font_size : int, optional
+        Font size for the primary title. Defaults to 14.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the grid. Defaults to 1.03.
+    subtitle_font_size : int, optional
+        Font size for the subtitle. Defaults to 11.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the grid. Defaults to -0.35.
+    caption_font_size : int, optional
+        Font size for the caption text. Defaults to 8.
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the plot using matplotlib (or prints a correlation 
+        matrix) and optionally saves the visual output to disk.
+
+    Examples
+    --------
+    # Epidemiology: Relationships between air quality indices
+    import pandas as pd
+    air_df = pd.DataFrame({
+        'PM2.5': [12, 15, 45, 60, 10, 85],
+        'PM10': [20, 25, 65, 80, 18, 110],
+        'NO2': [5, 6, 22, 35, 4, 45],
+        'Ozone': [30, 32, 28, 25, 31, 20]
+    })
+    PlotCorrelationMatrix(
+        air_df, 
+        list_of_value_column_names=['PM2.5', 'PM10', 'NO2', 'Ozone'],
+        title_for_plot="Air Quality Indicator Correlations",
+        pairplot_size=(8, 8)
+    )
+
+    # Healthcare: Vital sign correlations in emergency triage
+    vitals_df = pd.DataFrame({
+        'HR': [72, 85, 110, 60, 95],
+        'BP_Sys': [120, 135, 160, 105, 140],
+        'SpO2': [98, 97, 92, 99, 95],
+        'Temp': [36.5, 37.2, 38.5, 36.8, 37.0]
+    })
+    PlotCorrelationMatrix(
+        vitals_df, 
+        list_of_value_column_names=['HR', 'BP_Sys', 'SpO2', 'Temp'],
+        show_as_pairplot=False
+    )
+    # Prints the correlation matrix to the console instead of plotting
     """
     
     # Select relevant variables, keep complete cases only

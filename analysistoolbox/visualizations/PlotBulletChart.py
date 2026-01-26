@@ -47,40 +47,144 @@ def PlotBulletChart(dataframe,
                     # Plot saving arguments
                     filepath_to_save_plot=None):
     """
-    Plots a bullet chart using the specified dataframe, value column, and group column.
+    Generate a formatted horizontal bullet chart to visualize performance against targets and ranges.
 
-    Args:
-        dataframe: pandas dataframe. The dataframe containing the data to be plotted.
-        value_column_name: str. The name of the column in the dataframe containing the values to be plotted.
-        grouping_column_name: str. The name of the column in the dataframe containing the groups to be plotted.
-        target_value_column_name: str, optional. The name of the column in the dataframe containing the target values to be plotted. Default is None.
-        list_of_limit_columns: list of str, optional. A list of the names of the columns in the dataframe containing the limit values to be plotted. Default is None.
-        value_maximum: float, optional. The maximum value to be plotted on the chart. If None, the maximum value among the limit columns is used. Default is None.
-        value_minimum: float, optional. The minimum value to be plotted on the chart. Default is 0.
-        display_order_list: list of str, optional. A list of the groups in the dataframe in the order they should be plotted. Default is None.
-        null_background_color: str, optional. The color of the background area of the chart where there is no data. Default is '#dbdbdb'.
-        background_color_palette: str, optional. The color palette to be used for the limit columns. If None, a greyscale palette is used. Default is None.
-        background_alpha: float, optional. The alpha value of the limit column colors. Default is 0.8.
-        value_dot_size: int, optional. The size of the dot representing the value on the chart. Default is 200.
-        value_dot_color: str, optional. The color of the dot representing the value on the chart. Default is "#383838".
-        value_dot_outline_color: str, optional. The color of the outline of the dot representing the value on the chart. Default is "#ffffff".
-        value_dot_outline_width: int, optional. The width of the outline of the dot representing the value on the chart. Default is 2.
-        target_line_color: str, optional. The color of the line representing the target value on the chart. Default is '#bf3228'.
-        target_line_width: int, optional. The width of the line representing the target value on the chart. Default is 4.
-        figure_size: tuple of int, optional. The size of the figure containing the chart. Default is (8, 6).
-        show_value_labels: bool, optional. Whether or not to show data labels for the value on the chart. Default is True.
-        value_label_color: str, optional. The color of the data labels for the value on the chart. Default is "#262626".
-        value_label_format: str, optional. The format string for the data labels for the value on the chart. Default is "{:.0f}".
-        value_label_font_size: int, optional. The font size of the data labels for the value on the chart. Default is 12.
-        value_label_spacing: float, optional. The spacing between the value and its data label. Default is 0.65.
-        title_for_plot: str, optional. The title of the chart. Default is None.
-        subtitle_for_plot: str, optional. The subtitle of the chart. Default is None.
-        caption_for_plot: str, optional. The caption of the chart. Default is None.
-        data_source_for_plot: str, optional. The data source of the chart. Default is None.
-        title_y_indent: float, optional. The y-indent of the title of the chart. Default is 1.15.
-        subtitle_y_indent: float, optional. The y-indent of the subtitle of the chart. Default is 1.1.
-        caption_y_indent: float, optional. The y-indent of the caption of the chart. Default is -0.15.
-        filepath_to_save_plot: str, optional. The filepath to save the plot. Default is None.
+    This function creates a high-quality horizontal bullet chart, which is a variation 
+    of a bar chart designed to replace dashboard gauges and meters. It displays a 
+    single primary measure (represented by a dot), compares it to a target value 
+    (represented by a vertical line), and orients it within qualitative ranges of 
+    performance (e.g., poor, satisfactory, good) shown as background shades. The 
+    function provides extensive customization for colors, labels, and plot annotations.
+
+    Bullet charts are essential for:
+      * Healthcare: Monitoring surgeon success rates against departmental benchmarks and thresholds.
+      * Epidemiology: Tracking actual vaccination rates vs. herd immunity targets across regions.
+      * Project Management: Monitoring task completion percentages vs. project milestones.
+      * Public Health: Comparing current emergency room wait times against historical performance bands.
+      * Data Science: Evaluating model accuracy metrics against baseline and state-of-the-art targets.
+      * Operations: Monitoring production efficiency across several manufacturing lines.
+      * Finance: Visualizing actual expenditure vs. budget targets across multiple departments.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the performance data to be plotted.
+    value_column_name : str
+        The name of the column containing the primary measure (performance value).
+    grouping_column_name : str
+        The name of the column representing the categories or groups for each bullet.
+    target_value_column_name : str, optional
+        The name of the column containing the target values for each group. Defaults to None.
+    list_of_limit_columns : list of str, optional
+        A list of column names containing the qualitative range boundaries (e.g., ['poor', 'fair', 'good']). 
+        Defaults to None.
+    value_maximum : float, optional
+        The absolute maximum value for the chart's x-axis. If None, it is inferred from 
+        the data. Defaults to None.
+    value_minimum : float, optional
+        The absolute minimum value for the chart's x-axis. Defaults to 0.
+    display_order_list : list of str, optional
+        A specific list of category names to define the vertical order of the bullets. 
+        If None, categories are sorted by their `value` column. Defaults to None.
+    null_background_color : str, optional
+        The hex color code for the background area where no qualitative ranges are defined. 
+        Defaults to '#dbdbdb'.
+    background_color_palette : str, optional
+        The name of the seaborn color palette used for qualitative ranges. If None, 
+        a professional greyscale palette is used. Defaults to None.
+    background_alpha : float, optional
+        The transparency level (alpha) of the qualitative range background colors. 
+        Defaults to 0.8.
+    value_dot_size : int, optional
+        The area of the marker representing the primary measure. Defaults to 200.
+    value_dot_color : str, optional
+        The hex color code for the value marker. Defaults to "#383838".
+    value_dot_color_by_level : bool, optional
+        Whether to color the value marker based on which qualitative range it falls into. 
+        Defaults to False.
+    value_dot_outline_color : str, optional
+        The hex color code for the border of the value marker. Defaults to "#ffffff".
+    value_dot_outline_width : int, optional
+        The width of the border around the value marker. Defaults to 2.
+    target_line_color : str, optional
+        The hex color code for the target value marker line. Defaults to '#bf3228'.
+    target_line_width : int, optional
+        The width of the vertical target line. Defaults to 4.
+    figure_size : tuple of int, optional
+        Dimensions of the output figure as a (width, height) tuple in inches. Defaults to (8, 6).
+    show_value_labels : bool, optional
+        Whether to display numeric text labels next to each value marker. Defaults to True.
+    value_label_color : str, optional
+        The hex color code for the numeric text labels. Defaults to "#262626".
+    value_label_format : str, optional
+        The Python string format for the numeric labels (e.g., "{:.1f}%"). Defaults to "{:.0f}".
+    value_label_font_size : int, optional
+        The font size for the numeric text labels. Defaults to 12.
+    value_label_spacing : float, optional
+        Vertical offset for positioning the numeric label relative to the marker. 
+        Defaults to 0.65.
+    value_label_padding : float, optional
+        Padding inside the background box of the numeric label. Defaults to 0.3.
+    value_label_background_color : str, optional
+        The hex color code for the background box behind the numeric label. Defaults to "#ffffff".
+    value_label_background_alpha : float, optional
+        The transparency of the numeric label's background box. Defaults to 0.85.
+    title_for_plot : str, optional
+        The primary title text displayed at the top of the chart. Defaults to None.
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text displayed below the main title. Defaults to None.
+    caption_for_plot : str, optional
+        Explanatory text or notes displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the source of the data, appended to the caption. Defaults to None.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the axes. Defaults to 1.15.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the axes. Defaults to 1.1.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the axes. Defaults to -0.15.
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the plot using matplotlib and optionally saves it to disk.
+
+    Examples
+    --------
+    # Healthcare: Surgeon success rates vs. target and benchmarks
+    import pandas as pd
+    surgeon_df = pd.DataFrame({
+        'Surgeon': ['Dr. Smith', 'Dr. Jones', 'Dr. Brown'],
+        'Success Rate': [92, 88, 95],
+        'Target': [90, 90, 90],
+        'Poor': [70, 70, 70],
+        'Good': [85, 85, 85],
+        'Excellent': [95, 95, 95]
+    })
+    PlotBulletChart(
+        surgeon_df, 'Success Rate', 'Surgeon', 'Target',
+        list_of_limit_columns=['Poor', 'Good', 'Excellent'],
+        title_for_plot="Cardiac Surgery Success Rates",
+        subtitle_for_plot="Individual surgeon performance against hospital standards"
+    )
+
+    # Epidemiology: Vaccination Progress by Region
+    vax_df = pd.DataFrame({
+        'Region': ['Capitol City', 'Everglades', 'Highlands'],
+        'Vax Rate': [65, 42, 78],
+        'Goal': [80, 80, 80],
+        'Threshold': [60, 60, 60]
+    })
+    PlotBulletChart(
+        vax_df, 'Vax Rate', 'Region', 'Goal',
+        list_of_limit_columns=['Threshold'],
+        background_color_palette="RdYlGn",
+        title_for_plot="COVID-19 Vaccination Progress",
+        value_label_format="{:.1f}%"
+    )
     """
     
     # Ensure that the number of unique values in the group column is equal to the number of rows in the dataframe

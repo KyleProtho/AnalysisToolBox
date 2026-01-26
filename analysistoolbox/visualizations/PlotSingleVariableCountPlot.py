@@ -32,32 +32,123 @@ def PlotSingleVariableCountPlot(dataframe,
                                 # Plot saving arguments
                                 filepath_to_save_plot=None):
     """
-    Creates a bar chart for a single categorical variable.
+    Generate a formatted horizontal bar chart showing frequency counts for a single categorical variable.
 
-    Args:
-        dataframe (pandas.DataFrame): The dataframe containing the categorical variable.
-        categorical_column_name (str): The categorical variable to plot.
-        color_palette (str, optional): The Seaborn color palette to use for the bar chart. Defaults to "Set1".
-        fill_color (str, optional): The color to use for the bar chart. Defaults to None.
-        top_n_to_highlight (int, optional): The number of top categories to highlight. Defaults to None.
-        highlight_color (str, optional): The color to use for the highlighted categories. Defaults to "#b0170c".
-        fill_transparency (float, optional): The transparency to use for the bar chart. Defaults to 0.8.
-        add_rare_category_line (bool, optional): Whether to add a line to indicate the threshold for rare categories. Defaults to False.
-        rare_category_line_color (str, optional): The color to use for the rare category line. Defaults to '#b5b3b3'.
-        rare_category_threshold (float, optional): The threshold for rare categories. Defaults to 0.05.
-        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
-        data_label_fontsize (int, optional): The font size to use for the data labels. Defaults to 10.
-        title_for_plot (str, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        title_y_indent (float, optional): The vertical indent for the title. Defaults to 1.15.
-        subtitle_y_indent (float, optional): The vertical indent for the subtitle. Defaults to 1.1.
-        caption_y_indent (float, optional): The vertical indent for the caption. Defaults to -0.15.
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
-    
-    Returns:
-        None
+    This function creates a high-quality horizontal count plot using seaborn. It 
+    calculates the frequency of each category within a single column and 
+    presents them as bars, sorted from highest to lowest. Features include 
+    optional highlighting of the top `N` categories, a threshold line for 
+    detecting "rare" categories, automatic percentage calculation for data 
+    labels, and professional text annotations.
+
+    Single-variable count plots are essential for:
+      * Epidemiology: Visualizing the distribution of confirmed disease sub-types within a cohort.
+      * Healthcare: Analyzing the frequency of specific primary diagnoses in an outpatient clinic.
+      * Intelligence Analysis: Monitoring the count of reported security incidents by geographic sector.
+      * Data Science: Inspecting class balance or verifying the frequency of categorical feature levels.
+      * Public Health: Tracking the most common symptoms reported during a regional health survey.
+      * Operations: Visualizing the distribution of equipment failure modes across a facility.
+      * Marketing: Identifying the most frequent sources of incoming customer leads.
+      * Finance: Analyzing the volume of different transaction types processed in a cycle.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the categorical data to analyze.
+    categorical_column_name : str
+        The name of the column containing the categorical levels to be counted.
+    fill_color : str, optional
+        The hex color code for the bars when no highlighting or palette is applied. 
+        Defaults to "#8eb3de".
+    color_palette : str, optional
+        The name of a seaborn color palette to apply to the categories. If 
+        provided, this overrides `fill_color`. Defaults to None.
+    top_n_to_highlight : int, optional
+        The number of top categories (highest counts) to color with 
+        `highlight_color`. All other bars will be greyed out. Defaults to None.
+    highlight_color : str, optional
+        The hex color code used for bars that meet the `top_n_to_highlight` 
+        criteria. Defaults to "#b0170c".
+    fill_transparency : float, optional
+        The transparency level (alpha) of the bar fills (0 to 1). Defaults to 0.8.
+    add_rare_category_line : bool, optional
+        Whether to overlay a vertical dashed line indicating the threshold 
+        for "rare" categories. Defaults to False.
+    rare_category_line_color : str, optional
+        The hex color code for the rare category threshold line. 
+        Defaults to '#b5b3b3'.
+    rare_category_threshold : float, optional
+        The percentage threshold (e.g., 0.05 for 5%) used to define "rare" 
+        categories. Defaults to 0.05.
+    figure_size : tuple, optional
+        Dimensions of the output figure as a (width, height) tuple in inches. 
+        Defaults to (8, 6).
+    data_label_fontsize : int, optional
+        The font size for the numeric text labels next to the bars. Defaults to 10.
+    data_label_padding : float, optional
+        The horizontal offset for the numeric labels. If None, it is 
+        calculated automatically. Defaults to None.
+    title_for_plot : str, optional
+        The primary title text displayed at the top of the chart. Defaults to None.
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text displayed below the main title. Defaults to None.
+    caption_for_plot : str, optional
+        Explanatory text or notes at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the data source, appended to the caption. Defaults to None.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the axes. Defaults to 1.15.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the axes. Defaults to 1.1.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the axes. Defaults to -0.15.
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the count plot using matplotlib and optionally 
+        saves it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Distribution of viral sub-types
+    import pandas as pd
+    epi_df = pd.DataFrame({
+        'Subtype': ['Type A', 'Type A', 'Type B', 'Type A', 'Type C', 'Type B', 'Type A', 'Type D']
+    })
+    PlotSingleVariableCountPlot(
+        epi_df, 'Subtype', 
+        top_n_to_highlight=1,
+        title_for_plot="Viral Variant Prevalence",
+        subtitle_for_plot="Frequency of detected subtypes in Q1 laboratory samples"
+    )
+
+    # Intelligence Analysis: Security incidents by sector
+    incident_df = pd.DataFrame({
+        'Sector': ['North', 'East', 'North', 'West', 'North', 'East', 'South', 'West', 'North']
+    })
+    PlotSingleVariableCountPlot(
+        incident_df, 'Sector',
+        fill_color="#2c3e50",
+        add_rare_category_line=True,
+        rare_category_threshold=0.15,
+        title_for_plot="Regional Incident Volume",
+        caption_for_plot="Dashed line indicates categories below 15% frequency."
+    )
+
+    # Healthcare: Primary patient complaints
+    hosp_df = pd.DataFrame({
+        'Chief Complaint': ['Fever', 'Cough', 'Fever', 'Injury', 'Fever', 'Cough', 'Pain']
+    })
+    PlotSingleVariableCountPlot(
+        hosp_df, 'Chief Complaint',
+        color_palette="muted",
+        title_for_plot="Clinic Presentation Summary",
+        subtitle_for_plot="Distribution of primary patient concerns at intake"
+    )
     """
     
     # Check that the column exists in the dataframe.

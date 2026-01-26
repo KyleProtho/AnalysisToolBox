@@ -27,12 +27,12 @@ def MLprobs(x_old, step_len):
 
   x.sort_values(by='x')
 
-  x['probs'] = 0
+  x['probs'] = 0.0
   for i in range(0,l):
-          if i == 0:
-              x.loc[i,'probs'] = .5/l
-          else:
-              x.loc[i, 'probs'] = x.loc[i-1, 'probs'] + 1/l
+    if i == 0:
+        x.loc[i,'probs'] = .5/l
+    else:
+        x.loc[i, 'probs'] = x.loc[i-1, 'probs'] + 1/l
 
   #TODO method for turning off and on this n>100 estimation
   if len(x.index) > 100:

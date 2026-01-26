@@ -28,28 +28,121 @@ def PlotBoxWhiskerByGroup(dataframe,
                           # Plot saving arguments
                           filepath_to_save_plot=None):
     """
-    Create a box and whisker plot for a given outcome variable, grouped by one or two categorical variables.
+    Create a formatted box-and-whisker plot for grouped data comparisons.
 
-    Args:
-        dataframe (pandas.DataFrame): The input dataframe.
-        value_column_name (str): The name of the outcome variable.
-        grouping_column_name_1 (str): The name of the first group variable.
-        grouping_column_name_2 (str, optional): The name of the second group variable. Defaults to None.
-        fill_color (str, optional): The color to fill the box plot with. Defaults to None.
-        color_palette (str, optional): The color palette to use for the box plot. Defaults to 'Set2'.
-        display_order_list (list, optional): The order to display the 1st categories in the plot. Defaults to None.
-        show_legend (bool, optional): Whether to show the legend. Defaults to True.
-        title_for_plot (str, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
-        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
-        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-        x_indent (float, optional): The x-indent for the plot. Defaults to -0.128.
-        figure_size (tuple, optional): The size of the plot. Defaults to (8, 6).
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+    This function generates a professional-grade box and whisker plot using seaborn 
+    to visualize the distribution of a continuous variable across one or two 
+    categorical grouping levels. It provides high-level control over aesthetics, 
+    including custom color palettes, legend visibility, and automatic text 
+    wrapping for categorical labels. The plot is designed to highlight central 
+    tendency, dispersion, and potential outliers in an easy-to-read format.
+
+    Box-and-whisker plots are essential for:
+      * Epidemiology: Comparing the distribution of body mass index (BMI) across multiple demographic groups.
+      * Healthcare: Analyzing the spread of patient recovery times between different treatment protocols.
+      * Intelligence Analysis: Evaluating the distribution of response times for various threat detection systems.
+      * Data Science: Detecting outliers and comparing feature distributions across target classes.
+      * Public Health: Monitoring variability in air quality index levels across urban and rural zones.
+      * Finance: Comparing the distribution of daily stock returns across different industry sectors.
+      * Quality Control: Assessing the variance in product dimensions across different manufacturing shifts.
+      * Social Science: Analyzing the distribution of standardized test scores across different school districts.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The input dataset containing the numeric values and categorical 
+        grouping variables.
+    value_column_name : str
+        The name of the continuous numeric variable to plot on the y-axis.
+    grouping_column_name_1 : str
+        The name of the primary categorical variable to plot on the x-axis.
+    grouping_column_name_2 : str, optional
+        The name of a secondary categorical variable used for nested grouping 
+        and color encoding (hue). Defaults to None.
+    fill_color : str, optional
+        A hex color code used for the box interiors if `color_palette` is 
+        not specified. Defaults to "#8eb3de".
+    color_palette : str, optional
+        The name of the seaborn color palette to use for grouping levels 
+        (e.g., "Set2", "viridis"). Defaults to None.
+    display_order_list : list, optional
+        A specific list of categories to define the horizontal order of the 
+        first grouping variable. If None, categories are sorted by the median 
+        of the value column. Defaults to None.
+    show_legend : bool, optional
+        Whether to display the plot legend, particularly useful when 
+        `grouping_column_name_2` is specified. Defaults to True.
+    title_for_plot : str, optional
+        The primary title text displayed at the top of the chart. Defaults to None.
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text displayed below the main title. Defaults to None.
+    caption_for_plot : str, optional
+        Explanatory text or notes displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the origin of the data, appended to the caption. Defaults to None.
+    show_y_axis : bool, optional
+        Pass-through argument for consistency; the y-axis is managed by 
+        seaborn's boxplot defaults. Defaults to False.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the axes. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the axes. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the axes. Defaults to -0.15.
+    x_indent : float, optional
+        Horizontal offset for the titles and captions relative to the axes. 
+        Defaults to -0.10.
+    figure_size : tuple, optional
+        Dimensions of the figure as a (width, height) tuple in inches. Defaults to (8, 6).
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be 
+        exported. If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the plot using matplotlib and optionally saves 
+        it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Recovery days by treatment type and age group
+    import pandas as pd
+    epi_df = pd.DataFrame({
+        'Recovery Days': [10, 12, 11, 14, 15, 13, 22, 25, 24, 30],
+        'Treatment': ['A', 'A', 'A', 'A', 'A', 'B', 'B', 'B', 'B', 'B'],
+        'Age Group': ['Adult', 'Child', 'Adult', 'Child', 'Adult', 'Child', 'Adult', 'Child', 'Adult', 'Child']
+    })
+    PlotBoxWhiskerByGroup(
+        epi_df, 'Recovery Days', 'Treatment', 'Age Group',
+        title_for_plot="Clinical Trial Recovery Analysis",
+        subtitle_for_plot="Days to complete recovery stratified by treatment and patient age"
+    )
+
+    # Intelligence Analysis: Intercept latency by sensor type
+    intel_df = pd.DataFrame({
+        'Latency (ms)': [45, 52, 48, 120, 115, 118, 85, 92, 88],
+        'Sensor': ['Alpha', 'Alpha', 'Alpha', 'Beta', 'Beta', 'Beta', 'Gamma', 'Gamma', 'Gamma']
+    })
+    PlotBoxWhiskerByGroup(
+        intel_df, 'Latency (ms)', 'Sensor',
+        fill_color="#2c3e50",
+        title_for_plot="Sensor Array Performance",
+        caption_for_plot="Latency measured during mission cycle 2024-05."
+    )
+
+    # Healthcare: Patient wait times by clinic location
+    wait_df = pd.DataFrame({
+        'Wait Time': [5, 10, 8, 45, 60, 55, 30, 25, 35],
+        'Location': ['Downtown', 'Downtown', 'Downtown', 'Suburb', 'Suburb', 'Suburb', 'East', 'East', 'East']
+    })
+    PlotBoxWhiskerByGroup(
+        wait_df, 'Wait Time', 'Location',
+        color_palette="muted",
+        title_for_plot="Patient Access Monitoring",
+        subtitle_for_plot="Distribution of wait times across satellite clinics",
+        show_legend=False
+    )
     """
     
     # If display_order_list is provided, check that it contains all of the categories in the dataframe

@@ -18,24 +18,89 @@ def PlotCard(value,
              figure_size=(3, 2),
              # Plot saving arguments
              filepath_to_save_plot=None):
-    """Creates a simple card-like visualization with a value and an optional value label.
+    """
+    Create a clean, card-style visualization for a single KPI or metric.
 
-    Args:
-        value: The main value to be displayed in the card.
-        value_label: The label for the value (optional).
-        value_font_color: The font color for the value (default: '#262626').
-        value_font_size: The font size for the value (default: 30).
-        value_font_family: The font family for the value (default: 'Arial').
-        value_font_weight: The font weight for the value (default: 'bold').
-        value_label_font_color: The font color for the value label (default: '#595959').
-        value_label_font_size: The font size for the value label (default: 14).
-        value_label_font_family: The font family for the value label (default: 'Arial').
-        value_label_font_weight: The font weight for the value label (default: 'normal').
-        figure_size: The size of the plot figure (default: (3, 2)).
-        filepath_to_save_plot: The filepath to save the plot as an image file (optional).
+    This function generates a professional-looking "KPI card" using matplotlib. 
+    It focuses on a single large numeric or text value, accompanied by an optional 
+    descriptive label. The visualization is designed for dashboard-style summaries, 
+    executive reports, or as a standalone graphic. It provides detailed control 
+    over typography, colors, and figure dimensions.
 
-    Returns:
-        None
+    KPI cards are essential for:
+      * Healthcare: Displaying current hospital occupancy rates or daily admissions.
+      * Epidemiology: Highlighting the total number of active cases or vaccination milestones.
+      * Intelligence Analysis: Showcasing the number of high-priority signal intercepts in a cycle.
+      * Data Science: Displaying top-level model metrics like R-squared or AUC.
+      * Finance: Highlighting total revenue or profit margin for a specific period.
+      * Operations: Displaying current system uptime or number of processed units.
+      * Marketing: Showcasing total conversion count or average customer acquisition cost.
+      * Public Health: Highlighting the current air quality index (AQI) for a specific city.
+
+    Parameters
+    ----------
+    value : str or int or float
+        The primary data point to be displayed prominently in the center of the card.
+    value_label : str, optional
+        A descriptive label displayed below the primary value (e.g., "Total Active Cases"). 
+        Defaults to None.
+    value_font_color : str, optional
+        The hex color code or name for the primary value text. Defaults to '#262626'.
+    value_font_size : int, optional
+        The font size for the primary value text in points. Defaults to 30.
+    value_font_family : str, optional
+        The font family name for the primary value (e.g., 'Arial', 'Roboto'). 
+        Defaults to 'Arial'.
+    value_font_weight : str, optional
+        The font weight for the primary value (e.g., 'normal', 'bold', 'light'). 
+        Defaults to 'bold'.
+    value_label_font_color : str, optional
+        The hex color code or name for the secondary label text. Defaults to '#595959'.
+    value_label_font_size : int, optional
+        The font size for the secondary label text in points. Defaults to 14.
+    value_label_font_family : str, optional
+        The font family name for the secondary label. Defaults to 'Arial'.
+    value_label_font_weight : str, optional
+        The font weight for the secondary label (e.g., 'normal', 'bold'). 
+        Defaults to 'normal'.
+    figure_size : tuple, optional
+        The dimensions of the output figure as a (width, height) tuple in inches. 
+        Defaults to (3, 2).
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the card should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the card using matplotlib and optionally saves 
+        it to disk with a transparent background.
+
+    Examples
+    --------
+    # Healthcare: Displaying daily patient admissions
+    PlotCard(
+        value=142,
+        value_label="Daily Admissions",
+        value_font_color="#b0170c",
+        figure_size=(4, 2)
+    )
+
+    # Epidemiology: highlighting a vaccination milestone
+    PlotCard(
+        value="85.4%",
+        value_label="Community Vaccination Rate",
+        value_font_color="#2ecc71",
+        value_font_weight="bold"
+    )
+
+    # Intelligence Analysis: Signal Intercept Count
+    PlotCard(
+        value=12,
+        value_label="Priority-1 Signal Intercepts",
+        value_font_color="#2c3e50",
+        value_label_font_size=10
+    )
     """
     # Initialize figure
     f, ax = plt.subplots(figsize=figure_size)

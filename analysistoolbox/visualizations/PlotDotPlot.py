@@ -49,54 +49,144 @@ def PlotDotPlot(dataframe,
                 # Plot saving arguments
                 filepath_to_save_plot=None):
     """
-    Plot a dot plot with optional connecting lines.
+    Generate a formatted horizontal dot plot (dumbbell chart) to compare two groups.
 
-    Args:
-        dataframe (pd.DataFrame): The input dataframe.
-        categorical_column_name (str): The name of the categorical column in the dataframe.
-        value_column_name (str): The name of the value column in the dataframe.
-        group_column_name (str): The name of the group column in the dataframe.
-        group_1_color (str, optional): The color for group 1 dots. Defaults to "#4257f5".
-        group_2_color (str, optional): The color for group 2 dots. Defaults to "#ccd2ff".
-        dot_size (float, optional): The size of the dots in the plot. Defaults to 2.
-        dot_alpha (float, optional): The transparency of the dots in the plot. Defaults to 1.
-        connect_dots (bool, optional): Whether to connect the dots with lines. Defaults to True.
-        connect_line_color (str, optional): The color of the connecting lines. Defaults to "#666666".
-        connect_line_alpha (float, optional): The transparency of the connecting lines. Defaults to 0.4.
-        connect_line_width (float, optional): The width of the connecting lines. Defaults to 1.0.
-        connect_line_style (str, optional): The style of the connecting lines. Defaults to 'dashed'.
-        dict_of_connect_line_labels (dict, optional): A dictionary of labels for the connecting lines. 
-            The keys should be the categories in the dataframe and the values should be the labels. 
-            Defaults to None.
-        connect_line_label_fontsize (int, optional): The fontsize of the connecting line labels. Defaults to 11.
-        connect_line_label_fontsize_fontweight (str, optional): The fontweight of the connecting line labels. 
-            Defaults to 'bold'.
-        connect_line_label_color (str, optional): The color of the connecting line labels. Defaults to "#262626".
-        zero_line_group (str, optional): The group to use as the zero line reference. 
-            The values in the value column will be relative to this group. Defaults to None.
-        display_order_list (list, optional): The order in which the categories should be displayed. 
-            If not provided, the categories will be sorted by the difference between the two groups. 
-            Defaults to None.
-        figure_size (tuple, optional): The size of the plot figure. Defaults to (10, 6).
-        show_legend (bool, optional): Whether to show the legend. Defaults to True.
-        show_data_labels (bool, optional): Whether to show data labels on the dots. Defaults to True.
-        show_connect_line_labels_in_margin (bool, optional): Whether to show the data labels in the margin to the right of the plot.
-        decimal_places_for_data_label (int, optional): The number of decimal places to round the data labels. 
-            Defaults to 1.
-        data_label_fontsize (int, optional): The fontsize of the data labels. Defaults to 11.
-        data_label_fontweight (str, optional): The fontweight of the data labels. Defaults to 'bold'.
-        data_label_color (str, optional): The color of the data labels. Defaults to "#262626".
-        title_for_plot (str, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        title_y_indent (float, optional): The y-axis indentation for the title. Defaults to 1.15.
-        subtitle_y_indent (float, optional): The y-axis indentation for the subtitle. Defaults to 1.1.
-        caption_y_indent (float, optional): The y-axis indentation for the caption. Defaults to -0.15.
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+    This function creates a high-quality horizontal dot plot, often called a 
+    dumbbell chart, designed to visualize the difference between two groups 
+    (e.g., pre/post, treatment/control) across multiple categories. It supports 
+    connecting the dots with lines to emphasize the magnitude and direction 
+    of change. Additional features include a "zero-line" reference group, 
+    automatic sorting by delta, data labeling, and professional text annotations.
 
-    Returns:
-        None
+    Dot plots (Dumbbell charts) are essential for:
+      * Epidemiology: Comparing disease prevalence rates before and after a public health intervention.
+      * Healthcare: Visualizing patient symptom scores before and after a specific clinical treatment.
+      * Data Science: Comparing model accuracy metrics across two different algorithm configurations.
+      * Public Health: Monitoring the shift in regional particulate matter levels over a 10-year period.
+      * Marketing: Analyzing the lift in customer engagement for treatment vs. control groups in an A/B test.
+      * Economics: Visualizing the change in unemployment rates across multiple districts during a recession.
+      * Quality Control: Comparing defect rates between two different manufacturing facilities or shifts.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the categorical, numeric, and group columns.
+    categorical_column_name : str
+        The name of the column representing the categories (y-axis).
+    value_column_name : str
+        The name of the column representing the numeric values (x-axis).
+    group_column_name : str
+        The name of the categorical column with exactly two unique values (e.g., 'Year', 'Group').
+    group_1_color : str, optional
+        The hex color code for the first group's dots. Defaults to "#4257f5".
+    group_2_color : str, optional
+        The hex color code for the second group's dots. Defaults to "#ccd2ff".
+    dot_size : int, optional
+        The size of the marker dots. Defaults to 20.
+    dot_alpha : float, optional
+        The transparency level (alpha) of the marker dots (0 to 1). Defaults to 1.
+    zero_line_group : str, optional
+        The name of a group to treat as the baseline (zero-point). If provided, 
+        values are expressed as deltas from this group. Defaults to None.
+    connect_dots : bool, optional
+        Whether to draw a connecting line between the two dots in each category. 
+        Defaults to True.
+    connect_line_color : str, optional
+        The hex color code for the connecting lines. Defaults to "#666666".
+    connect_line_alpha : float, optional
+        The transparency of the connecting lines. Defaults to 0.4.
+    connect_line_width : float, optional
+        The thickness of the connecting lines. Defaults to 1.0.
+    connect_line_style : str, optional
+        Matplotlib line style for the connecting lines (e.g., 'solid', 'dashed'). 
+        Defaults to 'dashed'.
+    dict_of_connect_line_labels : dict, optional
+        A dictionary mapping category names to custom text labels for their 
+        connecting lines. Defaults to None.
+    connect_line_label_fontsize : int, optional
+        The font size for the connecting line labels. Defaults to 11.
+    connect_line_label_fontsize_fontweight : str, optional
+        The font weight for the connecting line labels (e.g., 'bold', 'normal'). 
+        Defaults to 'bold'.
+    connect_line_label_color : str, optional
+        The hex color code for the connecting line labels. Defaults to "#262626".
+    show_connect_line_labels_in_margin : bool, optional
+        Whether to display connecting line labels in the right margin instead 
+        of centered on the line. Defaults to False.
+    connect_line_label_margin : float, optional
+        The horizontal offset for labels when `show_connect_line_labels_in_margin` 
+        is True. Defaults to 0.5.
+    display_order_list : list, optional
+        A specific list of categories for the y-axis. If None, categories 
+        are sorted by the absolute difference between groups. Defaults to None.
+    figure_size : tuple, optional
+        Dimensions of the output figure as a (width, height) tuple in inches. 
+        Defaults to (10, 6).
+    show_x_axis : bool, optional
+        Whether to display the x-axis tick marks and labels. Defaults to False.
+    show_data_labels : bool, optional
+        Whether to display numeric text labels for the value dots. Defaults to True.
+    decimal_places_for_data_label : int, optional
+        Number of decimal places for numeric data labels. Defaults to 1.
+    data_label_fontsize : int, optional
+        The font size for the numeric text labels. Defaults to 11.
+    data_label_fontweight : str, optional
+        The font weight for the numeric text labels. Defaults to 'bold'.
+    data_label_color : str, optional
+        The hex color code for the numeric text labels. Defaults to "#262626".
+    title_for_plot : str, optional
+        The primary title text at the top of the chart. Defaults to None.
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text below the main title. Defaults to None.
+    caption_for_plot : str, optional
+        Explanatory text or notes at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the data source, appended to the caption. Defaults to None.
+    title_y_indent : float, optional
+        Vertical offset for the title position. Defaults to 1.15.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position. Defaults to 1.1.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position. Defaults to -0.15.
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the dot plot using matplotlib and optionally 
+        saves it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Infection rates before and after vaccination program
+    import pandas as pd
+    epi_df = pd.DataFrame({
+        'Province': ['North', 'South', 'East', 'West'] * 2,
+        'Year': ['2023', '2023', '2023', '2023', '2024', '2024', '2024', '2024'],
+        'Incidence': [120, 150, 95, 210, 45, 80, 55, 130]
+    })
+    PlotDotPlot(
+        epi_df, 'Province', 'Incidence', 'Year',
+        title_for_plot="Influenza Incidence Reduction",
+        subtitle_for_plot="Pre (2023) vs. Post (2024) vaccination campaign data",
+        group_1_color="#e74c3c", group_2_color="#27ae60"
+    )
+
+    # Healthcare: Patient mobility scores
+    hosp_df = pd.DataFrame({
+        'Patient ID': ['P001', 'P002', 'P003'] * 2,
+        'Phase': ['Intake', 'Intake', 'Intake', 'Discharge', 'Discharge', 'Discharge'],
+        'Score': [45, 30, 55, 85, 70, 95]
+    })
+    PlotDotPlot(
+        hosp_df, 'Patient ID', 'Score', 'Phase',
+        display_order_list=['P001', 'P002', 'P003'],
+        figure_size=(8, 4),
+        title_for_plot="Functional Recovery Progress",
+        caption_for_plot="Measured using the Standardized Mobility Index (SMI)."
+    )
     """
     # Ensure that the group column only has two unique values
     if len(dataframe[group_column_name].unique()) != 2:

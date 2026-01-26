@@ -28,30 +28,119 @@ def Plot100PercentStackedBarChart(dataframe,
                                   # Plot saving arguments
                                   filepath_to_save_plot=None):
     """
-    Plots a 100% stacked bar chart based on the provided DataFrame.
-    
-    Args:
-        dataframe (pandas.DataFrame): The DataFrame containing the data to be plotted.
-        group_column_name (str, optional): The name of the column in the DataFrame representing the groups. Defaults to 'Group'.
-        value_column_name (str, optional): The name of the column in the DataFrame representing the current values. Defaults to 'Current Value'.
-        target_value_column_name (str, optional): The name of the column in the DataFrame representing the target values. If provided, the percentage will be calculated based on the current value and target value. Defaults to None.
-        background_color (str, optional): The background color of the plot. Defaults to '#e8e8ed'.
-        color_palette (str, optional): The color palette to be used for the bars. Defaults to "Set1".
-        fill_color (str, optional): The fill color for the bars. If not provided, the color palette will be used. Defaults to None.
-        fill_transparency (float, optional): The transparency of the bars. Defaults to 0.8.
-        figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
-        data_label_fontsize (int, optional): The font size of the data labels. Defaults to 10.
-        title_for_plot (str, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        title_y_indent (float, optional): The y-axis indent for the title. Defaults to 1.15.
-        subtitle_y_indent (float, optional): The y-axis indent for the subtitle. Defaults to 1.1.
-        caption_y_indent (float, optional): The y-axis indent for the caption. Defaults to -0.15.
-        filepath_to_save_plot (str, optional): The filepath to save the plot. If provided, the plot will be saved as a PNG or JPG file. Defaults to None.
+    Generate a 100% horizontal stacked bar chart visualizing completion or composition.
 
-    Returns:
-        None
+    This function creates a horizontal bar chart where each bar represents a group, 
+    and the filled portion represents either a percentage of a total sum across 
+    all groups or the progress toward a specific target value for that group. 
+    The remaining portion of the bar is rendered in a background color to 
+    illustrate the deficit or remaining capacity. The function handles text wrapping 
+    for long group names and provides extensive formatting options for titles, 
+    subtitles, and captions.
+
+    100% stacked bar charts are essential for:
+      * Epidemiology: Comparing vaccination coverage rates across multiple geographic regions.
+      * Intelligence Analysis: Visualizing the completion status of intelligence collection requirements.
+      * Healthcare: Monitoring medication adherence levels or patient satisfaction benchmarks.
+      * Project Management: Tracking progress toward milestones across different project tracks.
+      * Public Health: Monitoring hospital bed occupancy or ICU capacity by facility.
+      * Sales: Visualizing revenue achieved vs. target quotas for regional sales teams.
+      * Data Science: Monitoring data labeling progress or model training iterations.
+      * Quality Control: Comparing the proportion of units passing inspection across production lines.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the data to be visualized. Must contain 
+        one row per group.
+    group_column_name : str
+        The name of the column containing the category or group labels for the bars.
+    value_column_name : str
+        The name of the column containing the current or numerator values.
+    target_value_column_name : str, optional
+        The name of the column containing the target or denominator values. If 
+        None, the percentage is calculated as the value's share of the total 
+        sum across all groups. Defaults to None.
+    background_color : str, optional
+        The hex color code used for the empty/remaining portion of the bars. 
+        Defaults to '#e8e8ed'.
+    color_palette : str, optional
+        The seaborn color palette used for the filled portion of the bars if 
+        `fill_color` is not specified. Defaults to "Set1".
+    fill_color : str, optional
+        A specific hex color code to use for all bars. If provided, overrides 
+        `color_palette`. Defaults to None.
+    fill_transparency : float, optional
+        The transparency level (alpha) of the bar fill, ranging from 0 to 1. 
+        Defaults to 0.8.
+    figure_size : tuple, optional
+        A tuple of (width, height) in inches for the plot. Defaults to (8, 6).
+    data_label_fontsize : int, optional
+        The font size for axis and group labels. Defaults to 10.
+    title_for_plot : str, optional
+        The primary title text displayed at the top of the figure. Defaults to None.
+    subtitle_for_plot : str, optional
+        The descriptive subtitle text displayed below the title. Defaults to None.
+    caption_for_plot : str, optional
+        Descriptive text or notes displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Data attribution text appended to the caption. Defaults to None.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the axes. Defaults to 1.15.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the axes. Defaults to 1.1.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the axes. Defaults to -0.15.
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the plot using matplotlib and optionally saves 
+        it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Vaccination coverage across different provinces
+    import pandas as pd
+    prov_data = pd.DataFrame({
+        'Province': ['North', 'South', 'East', 'West'],
+        'Vaccinated': [8500, 7200, 9100, 6800],
+        'Population': [10000, 10000, 10000, 10000]
+    })
+    Plot100PercentStackedBarChart(
+        prov_data, 'Province', 'Vaccinated', 'Population',
+        title_for_plot="COVID-19 Vaccination Coverage",
+        subtitle_for_plot="Percentage of population fully vaccinated by province",
+        color_palette="viridis"
+    )
+
+    # Intelligence Analysis: Progress of collection requirements by source type
+    intel_df = pd.DataFrame({
+        'Source': ['SIGINT', 'HUMINT', 'OSINT', 'GEOINT'],
+        'Items Collected': [150, 45, 300, 80],
+        'Target Items': [200, 100, 500, 100]
+    })
+    Plot100PercentStackedBarChart(
+        intel_df, 'Source', 'Items Collected', 'Target Items',
+        title_for_plot="Intelligence Collection Progress",
+        fill_color="#2c3e50",
+        caption_for_plot="Mission cycle 2024-Q1 data summary."
+    )
+
+    # Healthcare: Patient satisfaction scores by ward
+    satisfaction_df = pd.DataFrame({
+        'Ward': ['Emergency', 'ICU', 'Maternity', 'Pediatrics'],
+        'Satisfied': [45, 12, 38, 55]
+    })
+    Plot100PercentStackedBarChart(
+        satisfaction_df, 'Ward', 'Satisfied',
+        title_for_plot="Patient Satisfaction Composition",
+        subtitle_for_plot="Proportion of total satisfied patients by ward",
+        color_palette="RdBu"
+    )
     """
     
     # Ensure that the number of unique values in the 'Group' column is equal to the number of rows in the DataFrame

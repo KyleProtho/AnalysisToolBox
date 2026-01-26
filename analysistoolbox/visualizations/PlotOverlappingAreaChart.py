@@ -33,31 +33,126 @@ def PlotOverlappingAreaChart(dataframe,
                              # Plot saving arguments
                              filepath_to_save_plot=None):
     """
-    Plots an overlapping area chart for a time series from a given dataframe.
+    Generate a formatted overlapping area chart for multi-variable time series comparison.
 
-    Args:
-        dataframe (pandas.DataFrame): The dataframe containing the data to be plotted.
-        value_column_name (str): The name of the column in the dataframe that contains the values to be plotted.
-        variable_column_name (str): The name of the column in the dataframe to group data by.
-        time_column_name (str): The name of the column in the dataframe that contains the time data.
-        figure_size (tuple, optional): The size of the figure for the plot. Defaults to (8, 5).
-        line_alpha (float, optional): The transparency of the line in the plot. Defaults to 0.9.
-        color_palette (str, optional): The color palette to use for the plot. Defaults to "Paired".
-        fill_alpha (float, optional): The transparency of the area under the line plot. Defaults to 0.8.
-        label_variable_on_area (bool, optional): Whether to label the variables on the area plot. Defaults to True.
-        label_font_size (int, optional): The font size of the variable labels. Defaults to 12.
-        label_font_color (str, optional): The font color of the variable labels. Defaults to "#FFFFFF".
-        number_of_x_axis_ticks (int, optional): The number of ticks on the x-axis. Defaults to None.
-        x_axis_tick_rotation (int, optional): The rotation of the x-axis ticks. Defaults to None.
-        title_for_plot (str, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        x_indent (float, optional): The x-indent for the plot text. Defaults to -0.127.
-        title_y_indent (float, optional): The y-indent for the plot title. Defaults to 1.125.
-        subtitle_y_indent (float, optional): The y-indent for the plot subtitle. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent for the plot caption. Defaults to -0.3.
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+    This function creates a high-quality overlapping area chart using seaborn's 
+    lineplot and matplotlib's fill_between. It is designed to visualize how 
+    multiple categorical variables change over time, emphasizing the magnitude 
+    of each variable through filled color areas. The function automatically 
+    orders variables by their mean value to improve readability and provides 
+    options for labeling variables directly onto the colored areas.
+
+    Overlapping area charts are essential for:
+      * Epidemiology: Comparing time-series trends of infection rates across multiple regions.
+      * Healthcare: Visualizing patient census levels by hospital department over a fiscal year.
+      * Intelligence Analysis: Monitoring threat activity levels across monitored geopolitical sectors.
+      * Data Science: Tracking cumulative performance metrics across different model training versions.
+      * Public Health: Monitoring atmospheric pollutant concentrations across several urban stations.
+      * Finance: Visualizing the growth of multiple asset classes within an investment portfolio.
+      * Operations: Tracking resource utilization (CPU/Memory) across different server clusters.
+      * Economics: Visualizing historical unemployment rates across various demographic segments.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the time series data in long format.
+    value_column_name : str
+        The name of the column containing the numeric values (y-axis).
+    variable_column_name : str
+        The name of the categorical column used to group the data into different areas.
+    time_column_name : str
+        The name of the column containing the temporal data (x-axis).
+    figure_size : tuple, optional
+        Dimensions of the output figure as a (width, height) tuple in inches. 
+        Defaults to (8, 5).
+    line_alpha : float, optional
+        The transparency level (alpha) for the boundary lines. Defaults to 0.9.
+    color_palette : str, optional
+        The name of the seaborn color palette to use for the areas. Defaults to "Paired".
+    fill_alpha : float, optional
+        The transparency level (alpha) for the filled areas beneath the lines. 
+        Defaults to 0.8.
+    label_variable_on_area : bool, optional
+        Whether to place text labels for each variable directly inside their 
+        respective areas. Defaults to True.
+    label_font_size : int, optional
+        The font size for the internal area labels. Defaults to 12.
+    label_font_color : str, optional
+        The hex color code for the internal area labels. Defaults to "#FFFFFF".
+    number_of_x_axis_ticks : int, optional
+        The maximum number of ticks to display on the horizontal time axis. 
+        Defaults to None.
+    x_axis_tick_rotation : int, optional
+        The rotation angle (in degrees) for the x-axis tick labels. Defaults to None.
+    title_for_plot : str, optional
+        The primary title text displayed at the top of the chart. Defaults to None.
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text displayed below the main title. Defaults to None.
+    caption_for_plot : str, optional
+        Explanatory text or notes displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the data origin, appended to the caption. Defaults to None.
+    x_indent : float, optional
+        Horizontal offset for the titles and captions relative to the axes. 
+        Defaults to -0.127.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the grid. Defaults to 1.125.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the grid. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the grid. Defaults to -0.3.
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the overlapping area chart using matplotlib and 
+        optionally saves it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Regional infection trends over 6 months
+    import pandas as pd
+    import numpy as np
+    dates = pd.date_range(start="2024-01-01", periods=6, freq='M')
+    epi_df = pd.DataFrame({
+        'Date': np.tile(dates, 3),
+        'Region': np.repeat(['East', 'West', 'Central'], 6),
+        'Cases': [10, 15, 45, 60, 30, 20, 5, 8, 22, 35, 18, 12, 15, 25, 35, 45, 50, 40]
+    })
+    PlotOverlappingAreaChart(
+        epi_df, 'Cases', 'Region', 'Date',
+        title_for_plot="Viral Transmission Velocity",
+        subtitle_for_plot="New confirmed cases per 100,000 residents"
+    )
+
+    # Intelligence Analysis: Threat intensity monitoring
+    threat_df = pd.DataFrame({
+        'Day': np.tile(np.arange(1, 11), 2),
+        'Sector': np.repeat(['Sector A', 'Sector B'], 10),
+        'Intensity': [2, 3, 5, 8, 7, 6, 4, 3, 2, 1, 1, 2, 2, 3, 5, 9, 8, 7, 6, 5]
+    })
+    PlotOverlappingAreaChart(
+        threat_df, 'Intensity', 'Sector', 'Day',
+        title_for_plot="Geopolitical Threat Level Analysis",
+        color_palette="rocket",
+        fill_alpha=0.6
+    )
+
+    # Healthcare: ICU occupancy by ward
+    hosp_df = pd.DataFrame({
+        'Week': np.tile(np.arange(1, 5), 2),
+        'Ward': np.repeat(['Surgical ICU', 'Medical ICU'], 4),
+        'Patients': [12, 14, 18, 15, 8, 10, 12, 14]
+    })
+    PlotOverlappingAreaChart(
+        hosp_df, 'Patients', 'Ward', 'Week',
+        title_for_plot="Hospital Resource Tracking",
+        subtitle_for_plot="Weekly average ICU beds occupied",
+        caption_for_plot="Data reflects surgical and medical intensive care units."
+    )
     """
     
     # Create figure and axes

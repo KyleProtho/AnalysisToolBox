@@ -30,28 +30,116 @@ def PlotClusteredBarChart(dataframe,
                           # Plot saving arguments
                           filepath_to_save_plot=None):
     """
-    Creates a clustered bar chart using seaborn.
+    Generate a formatted clustered bar chart for multi-category data comparison.
 
-    Args:
-        dataframe (pd.DataFrame): The data to plot.
-        grouping_column_name_1 (str): The name of the first grouping column.
-        grouping_column_name_2 (str): The name of the second grouping column.
-        value_column_name (str): The name of the value column.
-        color_palette (str, optional): The color palette to use for the plot. Defaults to "Set1".
-        fill_transparency (float, optional): The transparency of the bars. Defaults to 0.8.
-        display_order_list (list, optional): The order to display the 1st categories in the plot. Defaults to None.
-        figure_size (tuple, optional): The size of the figure. Defaults to (6, 6).
-        show_legend (bool, optional): Whether to show the legend. Defaults to True.
-        decimal_places_for_data_label (int, optional): The number of decimal places for the data labels. Defaults to 0.
-        title_for_plot (str, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        x_indent (float, optional): The x-indent for the title and subtitle. Defaults to -0.04.
-        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.15.
-        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.1.
-        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+    This function creates a high-quality clustered (grouped) bar chart using seaborn's 
+    catplot. It represents two categorical variables by grouping bars of one 
+    variable within levels of another. This visualization is particularly 
+    effective for comparing a secondary categorical variable (the hue) within the 
+    context of a primary categorical variable (the x-axis). The chart includes 
+    automatic data labeling, text wrapping for long categorical labels, and 
+    professional formatting for titles and captions.
+
+    Clustered bar charts are essential for:
+      * Epidemiology: Comparing disease prevalence across various age groups (primary) by gender (secondary).
+      * Healthcare: Analyzing patient recovery outcomes across different treatment protocols (primary) by facility (secondary).
+      * Intelligence Analysis: Visualizing intercepted signal counts across geographic regions (primary) by source type (secondary).
+      * Data Science: Comparing model performance metrics across various datasets (primary) by algorithm type (secondary).
+      * Public Health: Monitoring vaccine uptake across different administrative districts (primary) by age bracket (secondary).
+      * Finance: Visualizing quarterly revenue across different product lines (primary) by market segment (secondary).
+      * Operations: Comparing production defect rates across manufacturing lines (primary) by work shift (secondary).
+      * Social Science: Analyzing survey response trends across demographic groups (primary) by political affiliation (secondary).
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the categorical and numeric data to plot.
+    grouping_column_name_1 : str
+        The name of the primary categorical variable to be plotted on the x-axis.
+    grouping_column_name_2 : str
+        The name of the secondary categorical variable used for color encoding (hue).
+    value_column_name : str
+        The name of the column containing the numeric values to be represented by bar height.
+    color_palette : str, optional
+        The name of the seaborn color palette to use for the grouping levels. Defaults to "Set1".
+    fill_transparency : float, optional
+        The transparency level (alpha) of the bar fill, ranging from 0 to 1. Defaults to 0.8.
+    display_order_list : list, optional
+        A specific list of primary category names to define the horizontal order of groups. 
+        If None, categories are sorted by value in descending order. Defaults to None.
+    figure_size : tuple, optional
+        A tuple of (width, height) in inches representing the desired plot dimensions. 
+        Defaults to (6, 6).
+    show_legend : bool, optional
+        Whether to display the legend for the secondary categorical variable. Defaults to True.
+    decimal_places_for_data_label : int, optional
+        The number of decimal places to include in the labels at the top of each bar. 
+        Defaults to 0.
+    title_for_plot : str, optional
+        The primary title text displayed at the top of the chart. Defaults to None.
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text displayed below the main title. Defaults to None.
+    caption_for_plot : str, optional
+        Explanatory text or notes displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the source of the data, appended to the caption. Defaults to None.
+    x_indent : float, optional
+        Horizontal offset for the titles and captions relative to the axes. Defaults to -0.04.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the axes. Defaults to 1.15.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the axes. Defaults to 1.1.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the axes. Defaults to -0.15.
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the plot using matplotlib and optionally saves it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Infection rates by age group and gender
+    import pandas as pd
+    infection_df = pd.DataFrame({
+        'Age Group': ['0-18', '19-40', '41-65', '65+'] * 2,
+        'Gender': ['Male'] * 4 + ['Female'] * 4,
+        'Incidence Rate': [45, 120, 85, 210, 40, 115, 80, 205]
+    })
+    PlotClusteredBarChart(
+        infection_df, 'Age Group', 'Gender', 'Incidence Rate',
+        title_for_plot="Influenza Incidence Analysis",
+        subtitle_for_plot="Confirmed cases per 100,000 population stratified by age and gender"
+    )
+
+    # Healthcare: Patient wait times by department and priority
+    wait_times_df = pd.DataFrame({
+        'Department': ['Emergency', 'Cardiology', 'Oncology'] * 2,
+        'Priority': ['High'] * 3 + ['Medium'] * 3,
+        'Wait Time (min)': [25, 45, 30, 65, 80, 75]
+    })
+    PlotClusteredBarChart(
+        wait_times_df, 'Department', 'Priority', 'Wait Time (min)',
+        color_palette="muted",
+        title_for_plot="Quarterly Wait Time Monitoring",
+        subtitle_for_plot="Comparison of patient wait times by facility and urgency level"
+    )
+
+    # Intelligence Analysis: Intercept events by region and source
+    intel_df = pd.DataFrame({
+        'Region': ['East', 'West', 'North', 'South'] * 2,
+        'Source': ['SIGINT'] * 4 + ['ELINT'] * 4,
+        'Event Count': [120, 85, 210, 45, 80, 55, 150, 30]
+    })
+    PlotClusteredBarChart(
+        intel_df, 'Region', 'Source', 'Event Count',
+        color_palette="husl",
+        title_for_plot="Signal Intercept Activity Summary",
+        caption_for_plot="Regional monitoring analysis for mission cycle 2024-Q1."
+    )
     """
     
     # If display_order_list is provided, check that it contains all of the categories in the dataframe

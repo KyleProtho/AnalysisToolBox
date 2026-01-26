@@ -1730,11 +1730,11 @@ model = CreateNeuralNetwork_SingleOutcome(
 
 ### Prescriptive Analytics
 
-The prescriptive analytics module provides tools for making data-driven recommendations and decisions:
+The prescriptive analytics module empowers users to determine the best course of action through optimization and personalized recommendation systems, bridging the gap between insight and action.
 
 #### ConductLinearOptimization
 
-Conducts linear optimization to find the optimal input values for a given output variable, with optional constraints.
+Identifies the optimal values for input variables to maximize or minimize a specific output, subject to logical constraints and data-driven linear relationships. This approach is essential for resource allocation, logistics optimization, and cost minimization.
 
 ```python
 import pandas as pd
@@ -1765,7 +1765,7 @@ results = ConductLinearOptimization(
 
 #### CreateContentBasedRecommender
 
-Builds a content-based recommendation system using neural networks to learn user and item embeddings.
+Generates a customized recommendation engine using a "two-tower" neural network architecture to match users with highly relevant items or resources based on shared characteristics. This is particularly useful for personalized content delivery, such as matching patients to clinical trials or identifying relevant intelligence reports.
 
 ```python
 from analysistoolbox.prescriptive_analytics import CreateContentBasedRecommender

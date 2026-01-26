@@ -36,39 +36,121 @@ def PlotHeatmap(dataframe,
                 # Plot saving arguments
                 filepath_to_save_plot=None):
     """
-    Plots a heatmap based on the provided dataframe.
+    Generate a formatted heatmap to visualize three-dimensional categorical data.
 
-    Args:
-        dataframe (pd.DataFrame): The input dataframe.
-        x_axis_column_name (str): The column name to be used as the x-axis.
-        y_axis_column_name (str): The column name to be used as the y-axis.
-        value_column_name (str): The column name to be used as the values for the heatmap.
-        color_palette (str or list, optional): The color palette to be used for the heatmap. Defaults to "RdYlGn".
-        color_map_transparency (float, optional): The transparency of the color map. Defaults to 0.8.
-        color_map_buckets (int, optional): The number of color map buckets. Defaults to 7.
-        color_map_minimum_value (float, optional): The minimum value for the color map. If not provided, the minimum value in the dataframe will be used.
-        color_map_maximum_value (float, optional): The maximum value for the color map. If not provided, the maximum value in the dataframe will be used.
-        color_map_center_value (float, optional): The center value for the color map. If not provided, the median value in the dataframe will be used.
-        show_legend (bool, optional): Whether to show the legend. Defaults to False.
-        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
-        border_line_width (int, optional): The width of the border lines. Defaults to 6.
-        border_line_color (str, optional): The color of the border lines. Defaults to "#ffffff".
-        square_cells (bool, optional): Whether to use square cells in the heatmap. Defaults to False.
-        show_data_labels (bool, optional): Whether to show data labels in the heatmap. Defaults to True.
-        data_label_fontweight (str, optional): The font weight of the data labels. Defaults to "normal".
-        data_label_color (str, optional): The color of the data labels. Defaults to "#262626".
-        data_label_fontsize (int, optional): The font size of the data labels. Defaults to 12.
-        title_for_plot (str, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.15.
-        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.1.
-        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.17.
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+    This function creates a high-quality heatmap based on a long-form DataFrame. 
+    It pivot the data using specified x and y categorical columns and represents 
+    the numeric values through color encoding. It supports extensive 
+    customization of color schemes, data labeling, cell formatting (square vs. 
+    rectangular), and professional text annotations. The function is designed 
+    to handle categorical labels with automatic text wrapping.
 
-    Returns:
-        None
+    Heatmaps are essential for:
+      * Epidemiology: Visualizing disease incidence rates across geographic regions and time periods.
+      * Healthcare: Monitoring patient volume across different hospital wards and work shifts.
+      * Data Science: Evaluating model performance metrics across different hyperparameter combinations.
+      * Public Health: Monitoring average pollutant levels across urban districts and seasons.
+      * Finance: Visualizing the performance of different asset classes across market environments.
+      * Marketing: Analyzing customer engagement levels across various campaigns and segments.
+      * Operations: Monitoring production efficiency across several manufacturing lines and phases.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the categorical and numeric data in long format.
+    x_axis_column_name : str
+        The name of the column to be used for the horizontal axis categories.
+    y_axis_column_name : str
+        The name of the column to be used for the vertical axis categories.
+    value_column_name : str
+        The name of the column containing the numeric values to be color-encoded.
+    color_palette : str or list, optional
+        The seaborn/matplotlib color map or list of colors. Defaults to "RdYlGn".
+    color_map_transparency : float, optional
+        The transparency level (alpha) of the heatmap cells. Defaults to 0.8.
+    color_map_buckets : int, optional
+        The number of discrete color levels for the heatmap scale. Defaults to 7.
+    color_map_minimum_value : float, optional
+        The absolute minimum value for the color scale. If None, it is 
+        inferred from the data. Defaults to None.
+    color_map_maximum_value : float, optional
+        The absolute maximum value for the color scale. If None, it is 
+        inferred from the data. Defaults to None.
+    color_map_center_value : float, optional
+        The value representing the center of the color scale (useful for 
+        diverging colormaps). If None, the median is used. Defaults to None.
+    show_legend : bool, optional
+        Whether to display the color bar legend mapping values to colors. 
+        Defaults to False.
+    figure_size : tuple, optional
+        The dimensions of the output figure as a (width, height) tuple in inches. 
+        Defaults to (8, 6).
+    border_line_width : int, optional
+        The width of the lines separating individual heatmap cells. Defaults to 6.
+    border_line_color : str, optional
+        The hex color code for the cell border lines. Defaults to "#ffffff".
+    square_cells : bool, optional
+        Whether to force each heatmap cell to be perfectly square. Defaults to False.
+    show_data_labels : bool, optional
+        Whether to display numeric text labels inside each heatmap cell. Defaults to True.
+    data_label_fontweight : str, optional
+        The font weight for the internal cell labels (e.g., "bold", "normal"). 
+        Defaults to "normal".
+    data_label_color : str, optional
+        The hex color code for the internal cell labels. Defaults to "#262626".
+    data_label_fontsize : int, optional
+        The font size for the internal cell labels. Defaults to 12.
+    title_for_plot : str, optional
+        The primary title text at the top of the figure. Defaults to None.
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text below the main title. Defaults to None.
+    caption_for_plot : str, optional
+        Explanatory text or notes at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the data source, appended to the caption. Defaults to None.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the grid. Defaults to 1.15.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the grid. Defaults to 1.1.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the grid. Defaults to -0.17.
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the heatmap using matplotlib and optionally saves 
+        it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Infection rates by region and month
+    import pandas as pd
+    epi_df = pd.DataFrame({
+        'Region': ['North', 'North', 'South', 'South'],
+        'Month': ['Jan', 'Feb', 'Jan', 'Feb'],
+        'Rate': [12.5, 14.2, 8.5, 9.1]
+    })
+    PlotHeatmap(
+        epi_df, 'Month', 'Region', 'Rate',
+        title_for_plot="Regional Infection Velocity",
+        color_palette="YlOrRd"
+    )
+
+    # Healthcare: Ward occupancy levels by shift
+    hosp_df = pd.DataFrame({
+        'Ward': ['ICU', 'ICU', 'Emergency', 'Emergency'],
+        'Shift': ['Day', 'Night', 'Day', 'Night'],
+        'Occupancy': [95, 80, 75, 90]
+    })
+    PlotHeatmap(
+        hosp_df, 'Shift', 'Ward', 'Occupancy',
+        title_for_plot="Hospital Facility Utilization",
+        data_label_fontweight="bold",
+        color_palette="Blues"
+    )
     """
     
     # Convert dataframe to wide-form dataframe, using x_axis_column_name as the index and y_axis_column_name as the columns

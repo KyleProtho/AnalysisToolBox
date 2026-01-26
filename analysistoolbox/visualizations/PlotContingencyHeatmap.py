@@ -25,24 +25,98 @@ def PlotContingencyHeatmap(dataframe,
                            # Plot saving arguments
                            filepath_to_save_plot=None):
     """
-    Generates a heatmap plot for two categorical variables from a given dataframe.
+    Generate a formatted contingency heatmap to visualize relationships between categorical variables.
 
-    Args:
-        dataframe (pandas.DataFrame): The dataframe containing the data.
-        categorical_column_name_1 (str): The name of the first categorical column in the dataframe.
-        categorical_column_name_2 (str): The name of the second categorical column in the dataframe.
-        color_palette (str, optional): The color palette to use for the heatmap. Defaults to "Blues".
-        show_legend (bool, optional): Whether to show the legend on the plot. Defaults to False.
-        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
-        data_label_format (str, optional): The format for the data labels. Defaults to ".1%".
-        title_for_plot (str, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.15.
-        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.1.
-        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+    This function creates a high-quality heatmap based on a contingency table 
+    (cross-tabulation) of two categorical variables. It supports normalization 
+    by rows, columns, or the entire dataset to show relative frequencies. The 
+    visualization is designed for professional reports, featuring automatic text 
+    wrapping for long category names, customizable color scales, and 
+    annotated data labels in various formats (e.g., percentages or counts).
+
+    Contingency heatmaps are essential for:
+      * Epidemiology: Analyzing the relationship between exposure levels and health outcomes.
+      * Healthcare: Visualizing patient triage categories across different hospital departments.
+      * Data Science: Evaluating the confusion matrix of a classification model.
+      * Public Health: Correlating socioeconomic status with specific health behaviors.
+      * Marketing: Analyzing customer segment preferences across different product lines.
+      * Social Science: Examining the relationship between education level and employment type.
+      * Operations: Monitoring the frequency of specific defect types across manufacturing shifts.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the categorical variables to analyze.
+    categorical_column_name_1 : str
+        The name of the column representing the categorical variable for the y-axis (rows).
+    categorical_column_name_2 : str
+        The name of the column representing the categorical variable for the x-axis (columns).
+    normalize_by : {"columns", "rows", "all"}, optional
+        Defines how to calculate percentages in the contingency table. 
+        "columns" calculates percentages within each column, "rows" within each row, 
+        and "all" for the entire dataset. Defaults to "columns".
+    color_palette : str, optional
+        The seaborn/matplotlib color map to use for the heatmap (e.g., "Blues", 
+        "viridis", "YlGnBu"). Defaults to "Blues".
+    show_legend : bool, optional
+        Whether to display the color bar legend on the right side of the plot. 
+        Defaults to False.
+    figure_size : tuple, optional
+        The dimensions of the output figure as a (width, height) tuple in inches. 
+        Defaults to (8, 6).
+    data_label_format : str, optional
+        The format string for the annotations inside the heatmap cells (e.g., ".1%" 
+        for percentages or "d" for integers). Defaults to ".1%".
+    title_for_plot : str, optional
+        The primary title text displayed at the top of the chart. Defaults to None.
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text displayed below the main title. Defaults to None.
+    caption_for_plot : str, optional
+        Explanatory text or notes displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the source of the data, appended to the caption. Defaults to None.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the axes. Defaults to 1.15.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the axes. Defaults to 1.1.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the axes. Defaults to -0.15.
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the plot using matplotlib and optionally saves it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Correlation between vaccine type and symptom severity
+    import pandas as pd
+    vax_df = pd.DataFrame({
+        'Vaccine': ['Type A', 'Type B', 'Type A', 'Type B'] * 25,
+        'Severity': ['Mild', 'Mild', 'Severe', 'Moderate'] * 25
+    })
+    PlotContingencyHeatmap(
+        vax_df, 'Vaccine', 'Severity',
+        normalize_by="rows",
+        title_for_plot="Symptom Severity by Vaccine Type",
+        subtitle_for_plot="Row-normalized distribution of self-reported side effects"
+    )
+
+    # Healthcare: Patient department vs. admission source
+    hosp_df = pd.DataFrame({
+        'Dept': ['Emergency', 'Surgery', 'Internal Med'] * 40,
+        'Source': ['Referral', 'EMS', 'Walk-in', 'Clinic'] * 30
+    })
+    PlotContingencyHeatmap(
+        hosp_df, 'Dept', 'Source',
+        normalize_by="all",
+        color_palette="rocket",
+        title_for_plot="Patient Intake Composition",
+        caption_for_plot="Based on Q4 hospital administrative data."
+    )
     """
     # Ensure that the normalize_by argument is valid
     if normalize_by not in ["columns", "rows", "all"]:

@@ -33,32 +33,110 @@ def PlotBarChart(dataframe,
                  # Plot saving arguments
                  filepath_to_save_plot=None):
     """
-    Generates a bar chart using the seaborn library.
+    Generate a formatted horizontal bar chart for categorical data comparison.
 
-    Args:
-        dataframe (pandas dataframe): The dataframe containing the data to be plotted.
-        categorical_column_name (str): The name of the column in the dataframe containing the categorical variable.
-        value_column_name (str): The name of the column in the dataframe containing the value variable.
-        color_palette (str or list, optional): The seaborn color palette to use for the plot. Defaults to "Set1".
-        fill_color (str, optional): The color to use for the bars in the plot. If None, the color palette will be used. Defaults to None.
-        top_n_to_highlight (int, optional): The number of top categories to highlight in the plot. Defaults to None.
-        highlight_color (str, optional): The color to use for the highlighted categories. Defaults to "#b0170c".
-        fill_transparency (float, optional): The transparency of the bars in the plot. Defaults to 0.8.
-        display_order_list (list, optional): The order to display the categories in the plot. Defaults to None.
-        figure_size (tuple, optional): The size of the plot figure. Defaults to (8, 6).
-        title_for_plot (str, optional): The title of the plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle of the plot. Defaults to None.
-        caption_for_plot (str, optional): The caption of the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source of the plot. Defaults to None.
-        title_y_indent (float, optional): The y-axis indent for the plot title. Defaults to 1.15.
-        subtitle_y_indent (float, optional): The y-axis indent for the plot subtitle. Defaults to 1.1.
-        caption_y_indent (float, optional): The y-axis indent for the plot caption. Defaults to -0.15.
-        decimal_places_for_data_label (int, optional): The number of decimal places to round the data labels to. Defaults to 2.
-        data_label_fontsize (int, optional): The fontsize of the data labels. Defaults to 11.
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+    This function creates a high-quality horizontal bar chart using the seaborn 
+    library. It supports advanced features such as highlighting the top N 
+    categories, custom color palettes, automatic text wrapping for long 
+    categorical labels, and data sourcing annotations. The chart is designed 
+    with a clean, professional aesthetic, featuring top-aligned x-axis labels 
+    and customizable titles and subtitles.
 
-    Returns:
-        None
+    Horizontal bar charts are essential for:
+      * Epidemiology: Comparing disease incidence rates across different age groups or districts.
+      * Healthcare: Comparing the number of patient admissions across different medical departments.
+      * Data Science: Comparing feature importance scores or model performance metrics.
+      * Public Health: Visualizing the distribution of health resource allocations.
+      * Marketing: Comparing customer preference scores for different product categories.
+      * Finance: Visualizing budget allocations across various operational departments.
+      * Social Science: Presenting survey response counts for multiple-choice questions.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the categorical and numeric data to plot.
+    categorical_column_name : str
+        The name of the column in the DataFrame representing the categories (y-axis).
+    value_column_name : str
+        The name of the column in the DataFrame representing the numeric values (x-axis).
+    fill_color : str, optional
+        A hex color code to use for all bars (e.g., "#8eb3de"). Used if `color_palette` 
+        and `top_n_to_highlight` are not specified. Defaults to "#8eb3de".
+    color_palette : str or list, optional
+        The seaborn color palette name (e.g., "Set2") or a list of colors to use for 
+        the bars. Defaults to None.
+    top_n_to_highlight : int, optional
+        The number of highest-value categories to highlight with `highlight_color`. 
+        Other bars will be rendered in a neutral gray. Defaults to None.
+    highlight_color : str, optional
+        The hex color code used for highlighted bars (e.g., "#b0170c"). 
+        Defaults to "#b0170c".
+    fill_transparency : float, optional
+        The transparency level (alpha) for the bar fill, ranging from 0 to 1. 
+        Defaults to 0.8.
+    display_order_list : list, optional
+        A specific list of category names to define the vertical order of bars. 
+        If None, bars are sorted by value in descending order. Defaults to None.
+    figure_size : tuple, optional
+        A tuple of (width, height) in inches for the figure. Defaults to (8, 6).
+    title_for_plot : str, optional
+        The primary title text displayed at the top of the chart. Defaults to None.
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text displayed below the title. Defaults to None.
+    caption_for_plot : str, optional
+        Descriptive text or notes displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the source of the data, appended to the caption. Defaults to None.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the axes. Defaults to 1.15.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the axes. Defaults to 1.1.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the axes. Defaults to -0.15.
+    decimal_places_for_data_label : int, optional
+        The number of decimal places to include in the numeric labels at the end 
+        of each bar. Defaults to 1.
+    data_label_fontsize : int, optional
+        The font size for the numeric labels next to the bars. Defaults to 11.
+    data_label_padding : float, optional
+        The horizontal space between the end of the bar and the data label. 
+        If None, it is calculated as 10% of the maximum value. Defaults to None.
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be saved. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the plot using matplotlib and optionally saves 
+        it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Incidence of Influenza types
+    import pandas as pd
+    flu_data = pd.DataFrame({
+        'Virus Strain': ['A(H1N1)', 'A(H3N2)', 'B/Victoria', 'B/Yamagata'],
+        'Confirmed Cases': [1250, 840, 310, 120]
+    })
+    PlotBarChart(
+        flu_data, 'Virus Strain', 'Confirmed Cases',
+        top_n_to_highlight=1,
+        title_for_plot="Influenza Strain Distribution",
+        subtitle_for_plot="Total confirmed cases for the current flu season"
+    )
+
+    # Healthcare: Patient volume by department
+    dept_df = pd.DataFrame({
+        'Department': ['Emergency', 'Cardiology', 'Oncology', 'Pediatrics'],
+        'Admissions': [450, 120, 85, 210]
+    })
+    PlotBarChart(
+        dept_df, 'Department', 'Admissions',
+        fill_color="#2ecc71",
+        title_for_plot="Quarterly Patient Admissions",
+        data_source_for_plot="Hospital EHR System"
+    )
     """
     
     # Check that the column exists in the dataframe.

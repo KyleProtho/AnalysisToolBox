@@ -31,30 +31,109 @@ def PlotRiskTolerance(simulated_values,
                       # Plot saving arguments
                       filepath_to_save_plot=None):
     """
-    Plots a histogram of simulated values and highlights the values that are worse than the risk tolerance.
+    Generate a formatted histogram to visualize risk tolerance and simulated outcomes.
 
-    Args:
-        simulated_values (numpy array or pandas Series): The simulated values to plot.
-        risk_tolerance (int or float): The risk tolerance value.
-        lower_is_worse (bool, optional): If True, values lower than the risk tolerance are considered worse. Defaults to True.
-        variable_name (str, optional): The name of the variable being simulated. Defaults to "Outcome".
-        observed_value (int or float, optional): The observed value to be plotted. Defaults to None.
-        risk_tolerance_label (str, optional): The label for the risk tolerance. Defaults to "Tolerance".
-        fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
-        fill_transparency (float, optional): The transparency of the fill color. Defaults to 0.6.
-        title_for_plot (str, optional): The title for the plot. Defaults to "Risk Tolerance".
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to "Shows the simulated outcomes that are worse than the risk tolerance.".
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        show_y_axis (bool, optional): If False, the y-axis is not shown. Defaults to False.
-        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
-        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
-    
-    Returns:
-        None
+    This function creates a high-quality visualization of simulated data (e.g., from 
+    a Monte Carlo simulation) against a specified risk tolerance threshold. It 
+    highlights outcomes that exceed the tolerance levels, calculates the 
+    probability of such occurrences, and optionally plots an observed real-world 
+    value for comparison. The chart is designed for decision support in 
+    uncertain environments.
+
+    Risk tolerance plots are essential for:
+      * Epidemiology: Estimating the probability of hospitalizations exceeding ICU capacity.
+      * Healthcare: Assessing the risk of clinical wait times exceeding an operational threshold.
+      * Intelligence Analysis: Visualizing the probability of enemy troop concentrations within target sectors.
+      * Data Science: Evaluating the risk of model latency exceeding a service-level agreement (SLA).
+      * Public Health: Estimating the probability of daily pollutant levels exceeding safety limits.
+      * Finance: Assessing the Value at Risk (VaR) for an investment portfolio.
+      * Project Management: Estimating the probability of a project exceeding its budget or timeline.
+      * Quality Control: Assessing the risk of manufacturing defect rates exceeding quality standards.
+
+    Parameters
+    ----------
+    simulated_values : array_like (numpy.ndarray or pd.Series)
+        The collection of simulated data points to be visualized.
+    risk_tolerance : int or float
+        The threshold value representing the maximum acceptable risk level.
+    lower_is_worse : bool, optional
+        Whether values smaller than `risk_tolerance` are considered negative 
+        outcomes. Defaults to True.
+    variable_name : str, optional
+        The label for the simulated metric (e.g., "Profit", "Cases"). 
+        Defaults to "Outcome".
+    observed_value : int or float, optional
+        A specific actual or historical value to plot as a reference line. 
+        Defaults to None.
+    risk_tolerance_label : str, optional
+        The text label used to identify the risk tolerance line. 
+        Defaults to "Tolerance".
+    fill_color : str, optional
+        The hex color code for the non-critical portion of the histogram. 
+        Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (alpha) of the histogram bars. Defaults to 0.6.
+    title_for_plot : str, optional
+        The primary title text at the top of the chart. Defaults to "Risk Tolerance".
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text below the main title. 
+        Defaults to "Shows the simulated outcomes that are worse than the risk tolerance.".
+    caption_for_plot : str, optional
+        Explanatory text or notes at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the data source, appended to the caption. Defaults to None.
+    show_y_axis : bool, optional
+        Whether to display the vertical frequency axis. Defaults to False.
+    title_y_indent : float, optional
+        Vertical offset for the title position. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position. Defaults to -0.15.
+    figure_size : tuple, optional
+        Dimensions of the output figure as a (width, height) tuple in inches. 
+        Defaults to (8, 6).
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the risk tolerance plot using matplotlib and 
+        optionally saves it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Risk of exceeding hospital bed capacity
+    import numpy as np
+    sim_cases = np.random.normal(450, 50, 1000)
+    PlotRiskTolerance(
+        sim_cases, risk_tolerance=550, lower_is_worse=False,
+        variable_name="ICU Beds Required",
+        title_for_plot="Hospital Capacity Risk Analysis",
+        subtitle_for_plot="Simulated ICU demand vs. total available beds"
+    )
+
+    # Intelligence Analysis: Enemy troop concentration risk
+    troop_sim = np.random.triangular(100, 250, 600, 1000)
+    PlotRiskTolerance(
+        troop_sim, risk_tolerance=400, lower_is_worse=False,
+        variable_name="Troop Count",
+        observed_value=320,
+        title_for_plot="Tactical Threat Assessment",
+        subtitle_for_plot="Probability of enemy strength exceeding sector defense capacity"
+    )
+
+    # Healthcare: Risk of patient wait times exceeding threshold
+    wait_sim = np.random.exponential(15, 1000)
+    PlotRiskTolerance(
+        wait_sim, risk_tolerance=30, lower_is_worse=False,
+        variable_name="Wait Time (min)",
+        observed_value=12,
+        title_for_plot="ER Operational Risk Monitoring",
+        caption_for_plot="Risk defined as wait times exceeding 30-minute threshold."
+    )
     """
     
     # Ensure that risk tolerance is numeric

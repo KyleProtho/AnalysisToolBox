@@ -28,28 +28,100 @@ def PlotSingleVariableHistogram(dataframe,
                                 # Plot saving arguments
                                 filepath_to_save_plot=None):
     """
-    Plots a single variable histogram from a given dataframe.
+    Generate a formatted histogram to visualize the distribution of a single numeric variable.
 
-    Args:
-        dataframe (pandas.DataFrame): The dataframe containing the data to be plotted.
-        value_column_name (str): The name of the column in the dataframe to be plotted.
-        fill_color (str, optional): The fill color for the histogram. Defaults to "#999999".
-        fill_transparency (float, optional): The transparency of the fill color. Defaults to 0.6.
-        show_mean (bool, optional): Whether to show the mean on the plot. Defaults to True.
-        show_median (bool, optional): Whether to show the median on the plot. Defaults to True.
-        title_for_plot (str, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
-        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
-        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+    This function creates a high-quality histogram using seaborn to represent the 
+    underlying frequency distribution of a continuous numeric variable. It 
+    supports optional central tendency indicators (mean and median) through 
+    vertical reference lines and annotations. The plot features professional 
+    formatting, including customizable titles, subtitles, and captions with 
+    automatic word wrapping.
 
-    Returns:
-        None
+    Single-variable histograms are essential for:
+      * Epidemiology: Visualizing the distribution of patient ages in a disease outbreak.
+      * Healthcare: Analyzing the distribution of systolic blood pressure readings across a population.
+      * Intelligence Analysis: Monitoring the distribution of travel distances for suspected illicit transport.
+      * Data Science: Inspecting numeric features for skewness, outliers, and normalization requirements.
+      * Public Health: tracking the distribution of daily water consumption per capita.
+      * Finance: Examining the distribution of trade transaction sizes in a specific portfolio.
+      * Project Management: Analyzing the distribution of task completion times across a project lifecycle.
+      * Social Science: Visualizing the distribution of household income levels in a surveyed region.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the numeric variable to analyze.
+    value_column_name : str
+        The name of the continuous numeric column to be plotted on the x-axis.
+    fill_color : str, optional
+        The hex color code for the histogram bars. Defaults to "#999999".
+    fill_transparency : float, optional
+        The transparency level (alpha) of the histogram bars (0 to 1). Defaults to 0.6.
+    show_mean : bool, optional
+        Whether to overlay a dashed vertical line and text label indicating the 
+        arithmetic mean of the data. Defaults to True.
+    show_median : bool, optional
+        Whether to overlay a dotted vertical line and text label indicating the 
+        median of the data. Defaults to True.
+    title_for_plot : str, optional
+        The primary title text displayed at the top of the chart. Defaults to None.
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text displayed below the main title. Defaults to None.
+    caption_for_plot : str, optional
+        Explanatory text or notes displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the source of the data, appended to the caption. Defaults to None.
+    show_y_axis : bool, optional
+        Whether to display the vertical frequency (count) axis. Defaults to False.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the axes. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the axes. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the axes. Defaults to -0.15.
+    figure_size : tuple, optional
+        Dimensions of the output figure as a (width, height) tuple in inches. Defaults to (8, 6).
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the histogram using matplotlib and optionally 
+        saves it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Age distribution of study participants
+    import pandas as pd
+    import numpy as np
+    epi_df = pd.DataFrame({'Age': np.random.normal(45, 12, 500)})
+    PlotSingleVariableHistogram(
+        epi_df, 'Age', 
+        fill_color="#27ae60",
+        title_for_plot="Participant Age Distribution",
+        subtitle_for_plot="Samples collected from regional demographic survey (N=500)"
+    )
+
+    # Intelligence Analysis: Suspected transport travel distances
+    intel_df = pd.DataFrame({'Distance': np.random.lognormal(2.5, 0.5, 1000)})
+    PlotSingleVariableHistogram(
+        intel_df, 'Distance',
+        fill_color="#2c3e50",
+        show_median=True,
+        title_for_plot="Logistics Anomaly Detection",
+        subtitle_for_plot="Analysis of travel distances for identified transport vehicles"
+    )
+
+    # Healthcare: Patient vitals monitoring
+    hosp_df = pd.DataFrame({'BP': np.random.normal(120, 15, 200)})
+    PlotSingleVariableHistogram(
+        hosp_df, 'BP',
+        show_y_axis=True,
+        title_for_plot="Population Blood Pressure Profile",
+        caption_for_plot="Dashed line represents the mean; dotted line represents the median."
+    )
     """
     
     # Check that the column exists in the dataframe.

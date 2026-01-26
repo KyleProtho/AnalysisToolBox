@@ -33,30 +33,131 @@ def PlotTimeSeries(dataframe,
                    # Plot saving arguments
                    filepath_to_save_plot=None):
     """
-    Plots a time series from a given dataframe.
+    Generate a formatted time series line plot with optional grouping and markers.
 
-    Args:
-        dataframe (pandas.DataFrame): The dataframe containing the data to be plotted.
-        value_column_name (str): The name of the column in the dataframe that contains the values to be plotted.
-        time_column_name (str): The name of the column in the dataframe that contains the time data.
-        grouping_column_name (str, optional): The name of the column in the dataframe to group data by. Defaults to None.
-        line_color (str, optional): The color of the line in the plot. Defaults to "#3269a8".
-        line_alpha (float, optional): The transparency of the line in the plot. Defaults to 0.8.
-        color_palette (str, optional): The color palette to use for the plot. Defaults to "Set2".
-        marker_size_column_name (str, optional): The name of the column in the dataframe that contains the marker size data. Defaults to None.
-        marker_size_normalization (tuple, optional): The normalization factor for the marker size data. Defaults to None.
-        number_of_x_axis_ticks (int, optional): The number of ticks on the x-axis. Defaults to None.
-        x_axis_tick_rotation (int, optional): The rotation of the x-axis ticks. Defaults to None.
-        title_for_plot (str, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        x_indent (float, optional): The x-indent for the plot text. Defaults to -0.127.
-        title_y_indent (float, optional): The y-indent for the plot title. Defaults to 1.125.
-        subtitle_y_indent (float, optional): The y-indent for the plot subtitle. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent for the plot caption. Defaults to -0.3.
-        figure_size (tuple, optional): The size of the figure for the plot. Defaults to (8, 5).
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+    This function creates a high-quality line plot using seaborn, specifically 
+    tailored for visualizing temporal data distributions. It supports grouping 
+    by categorical variables (using color), overlaying scatter markers with 
+    variable sizing, and professional formatting for titles, subtitles, and 
+    captions. The function automatically handles x-axis tick density and 
+    rotation to ensure long time-series data remains readable.
+
+    Time series plots are essential for:
+      * Epidemiology: Tracking the daily count of new infection cases during an epidemic.
+      * Healthcare: Monitoring patient vitals (e.g., heart rate) over the course of a hospital stay.
+      * Intelligence Analysis: Visualizing changes in identified troop movements over a tactical cycle.
+      * Data Science: Monitoring model performance metrics across sequential training epochs.
+      * Public Health: Tracking seasonal fluctuations in urban air quality indices.
+      * Finance: Analyzing historical price movements of various assets to identify trends.
+      * Operations: Monitoring server response times or throughput during peak traffic periods.
+      * Marketing: Tracking weekly conversion rates following a multi-channel campaign launch.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the temporal data, numeric values, 
+        and optional grouping variables.
+    value_column_name : str
+        The name of the column containing the numeric values to be plotted on 
+        the vertical y-axis.
+    time_column_name : str
+        The name of the column containing the temporal data (e.g., dates or 
+        sessions) for the x-axis.
+    grouping_column_name : str, optional
+        The name of a categorical column used to group the data into multiple 
+        colored lines. Defaults to None.
+    line_color : str, optional
+        The hex color code for the time-series line when no grouping is applied. 
+        Defaults to "#3269a8".
+    line_alpha : float, optional
+        The transparency level (alpha) of the line and associated markers 
+        (0 to 1). Defaults to 0.8.
+    color_palette : str, optional
+        The name of the seaborn color palette to use when grouping by a 
+        categorical variable. Defaults to "Set2".
+    show_legend : bool, optional
+        Whether to display the legend for grouping categories. Defaults to True.
+    marker_size_column_name : str, optional
+        The name of an additional numeric column to control the size of 
+        optional scatter markers. Defaults to None.
+    marker_size_normalization : tuple, optional
+        A (min, max) tuple representing the scaling range for the markers. 
+        Defaults to None.
+    number_of_x_axis_ticks : int, optional
+        The maximum number of ticks to display on the horizontal time axis 
+        to avoid overcrowding. Defaults to None.
+    x_axis_tick_rotation : int, optional
+        The rotation angle (in degrees) for the x-axis tick labels. Defaults to None.
+    title_for_plot : str, optional
+        The primary title text displayed at the top of the figure. Defaults to None.
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text displayed below the main title. Defaults to None.
+    caption_for_plot : str, optional
+        Explanatory text or notes displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the source of the data, appended to the caption. Defaults to None.
+    x_indent : float, optional
+        Horizontal offset for the titles and captions relative to the axes. 
+        Defaults to -0.127.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the grid. Defaults to 1.125.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the grid. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the grid. Defaults to -0.3.
+    figure_size : tuple, optional
+        Dimensions of the output figure as a (width, height) tuple in inches. 
+        Defaults to (8, 5).
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the time series plot using matplotlib and 
+        optionally saves it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Daily infection monitoring
+    import pandas as pd
+    import numpy as np
+    dates = pd.date_range(start="2024-01-01", periods=30)
+    epi_df = pd.DataFrame({
+        'Date': dates,
+        'Daily Cases': np.random.randint(10, 100, 30)
+    })
+    PlotTimeSeries(
+        epi_df, 'Daily Cases', 'Date',
+        title_for_plot="Pandemic Surveillance Dashboard",
+        subtitle_for_plot="Daily confirmed infections monitor"
+    )
+
+    # Intelligence Analysis: Monitoring troop movements
+    intel_df = pd.DataFrame({
+        'Date': pd.date_range(start="2024-03-01", periods=10),
+        'Movements': [12, 15, 8, 25, 45, 30, 20, 55, 60, 42],
+        'Sector': ['Alpha'] * 5 + ['Bravo'] * 5
+    })
+    PlotTimeSeries(
+        intel_df, 'Movements', 'Date', grouping_column_name='Sector',
+        title_for_plot="Sector Troop Transition Activity",
+        subtitle_for_plot="Observed major asset movements across monitored sectors"
+    )
+
+    # Healthcare: Patient vital sign tracking
+    vitals_df = pd.DataFrame({
+        'Hour': np.arange(1, 25),
+        'HR': np.random.normal(75, 5, 24),
+        'Fever Intensity': np.random.uniform(0, 1, 24)
+    })
+    PlotTimeSeries(
+        vitals_df, 'HR', 'Hour',
+        marker_size_column_name='Fever Intensity',
+        title_for_plot="Patient Vitals Monitor",
+        caption_for_plot="Markers are sized by normalized fever intensity measurements."
+    )
     """
     
     # Create figure and axes

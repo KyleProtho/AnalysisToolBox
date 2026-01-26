@@ -24,24 +24,90 @@ def PlotDensityByGroup(dataframe,
                        # Plot saving arguments
                        filepath_to_save_plot=None):
     """
-    Generates a density plot for a given dataframe, with the option to group by a specific column.
+    Generate a formatted kernel density estimate (KDE) plot grouped by a categorical variable.
 
-    Args:
-        dataframe (pandas.DataFrame): The dataframe to plot.
-        value_column_name (str): The name of the column in the dataframe to use for the x-axis values.
-        grouping_column_name (str): The name of the column in the dataframe to use for grouping data.
-        color_palette (str, optional): The color palette to use for the plot. Defaults to 'Set2'.
-        show_legend (bool, optional): Whether to show the legend. Defaults to True.
-        figure_size (tuple, optional): The size of the figure. Defaults to (8, 6).
-        title_for_plot (str, optional): The title for the plot. Defaults to None.
-        subtitle_for_plot (str, optional): The subtitle for the plot. Defaults to None.
-        caption_for_plot (str, optional): The caption for the plot. Defaults to None.
-        data_source_for_plot (str, optional): The data source for the plot. Defaults to None.
-        show_y_axis (bool, optional): Whether to show the y-axis. Defaults to False.
-        title_y_indent (float, optional): The y-indent for the title. Defaults to 1.1.
-        subtitle_y_indent (float, optional): The y-indent for the subtitle. Defaults to 1.05.
-        caption_y_indent (float, optional): The y-indent for the caption. Defaults to -0.15.
-        filepath_to_save_plot (str, optional): The filepath to save the plot. Defaults to None.
+    This function creates a high-quality density plot using seaborn's kdeplot to 
+    visualize the distribution of a continuous numeric variable across different 
+    categories. It provides a smooth representation of the data distribution, 
+    making it easier to identify differences in central tendency, spread, and 
+    multi-modality between groups. The plot features professional formatting, 
+    including filled density areas, customizable color palettes, and word-wrapped 
+    captions.
+
+    Density plots are essential for:
+      * Epidemiology: Comparing the distribution of incubation periods across different viral strains.
+      * Healthcare: Analyzing the distribution of patient recovery times for various clinical treatments.
+      * Data Science: Comparing the probability density of model prediction errors across different datasets.
+      * Public Health: Monitoring the distribution of particulate matter concentrations across urban regions.
+      * Finance: Analyzing the probability density of daily returns for multiple investment portfolios.
+      * Operations: Examining the distribution of processing times across different manufacturing shifts.
+      * Social Science: Visualizing the distribution of standardized test scores across demographic segments.
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The pandas DataFrame containing the numeric values and categorical grouping variable.
+    value_column_name : str
+        The name of the continuous numeric column to be plotted on the x-axis.
+    grouping_column_name : str
+        The name of the categorical column used to separate the data into different density curves.
+    color_palette : str, optional
+        The name of the seaborn color palette to use for the density curves. Defaults to 'Set2'.
+    show_legend : bool, optional
+        Whether to display the legend mapping colors to grouping levels. Defaults to True.
+    figure_size : tuple, optional
+        The dimensions of the output figure as a (width, height) tuple in inches. Defaults to (8, 6).
+    title_for_plot : str, optional
+        The primary title text displayed at the top of the chart. Defaults to None.
+    subtitle_for_plot : str, optional
+        Descriptive subtitle text displayed below the main title. Defaults to None.
+    caption_for_plot : str, optional
+        Explanatory text or notes displayed at the bottom of the plot. Defaults to None.
+    data_source_for_plot : str, optional
+        Text identifying the source of the data, appended to the caption. Defaults to None.
+    show_y_axis : bool, optional
+        Whether to display the y-axis (density scale). Defaults to False.
+    title_y_indent : float, optional
+        Vertical offset for the title position relative to the axes. Defaults to 1.1.
+    subtitle_y_indent : float, optional
+        Vertical offset for the subtitle position relative to the axes. Defaults to 1.05.
+    caption_y_indent : float, optional
+        Vertical offset for the caption position relative to the axes. Defaults to -0.15.
+    filepath_to_save_plot : str, optional
+        The local path (ending in .png or .jpg) where the plot should be exported. 
+        If None, the file is not saved. Defaults to None.
+
+    Returns
+    -------
+    None
+        The function displays the density plot using matplotlib and optionally 
+        saves it to disk.
+
+    Examples
+    --------
+    # Epidemiology: Distribution of incubation periods by strain
+    import pandas as pd
+    incubation_df = pd.DataFrame({
+        'Strain': ['Strain A'] * 100 + ['Strain B'] * 100,
+        'Days': [2, 3, 3, 4, 5, 2.5, 3.5] * 28 + [5, 6, 7, 8, 5.5, 6.5, 7.5] * 28
+    })
+    PlotDensityByGroup(
+        incubation_df, 'Days', 'Strain',
+        title_for_plot="Viral Incubation Period Density",
+        subtitle_for_plot="Comparison of time to symptom onset between two dominant strains"
+    )
+
+    # Healthcare: Patient recovery times by treatment protocol
+    recovery_df = pd.DataFrame({
+        'Protocol': ['Standard'] * 50 + ['Intensive'] * 50,
+        'Recovery Days': [10, 12, 11, 14, 13] * 10 + [7, 9, 8, 10, 8.5] * 10
+    })
+    PlotDensityByGroup(
+        recovery_df, 'Recovery Days', 'Protocol',
+        color_palette="husl",
+        title_for_plot="Treatment Efficacy Distribution",
+        data_source_for_plot="Clinical Trial Database v2.1"
+    )
     """
     
     # Create figure and axes
