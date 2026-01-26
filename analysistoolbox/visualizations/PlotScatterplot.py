@@ -221,10 +221,9 @@ def PlotScatterplot(dataframe,
                 scatter_kws={
                     'color': dot_fill_color,
                     'alpha': 0.5,
-                    'linewidth': 0.5,
+                    'linewidths': 0.5,
                     'edgecolor': dot_fill_color,
-                    # 'size': size_by_column_name,
-                    # 'size_norm': size_normalization,
+                    's': dataframe[size_by_column_name] * size_normalization[1] if size_by_column_name and size_normalization else (dataframe[size_by_column_name] if size_by_column_name else 20),
                 },
                 fit_reg=True,
                 line_kws={'color': line_color}
@@ -238,9 +237,8 @@ def PlotScatterplot(dataframe,
                 palette=group_color_palette,
                 scatter_kws={
                     'alpha': 0.5,
-                    'linewidth': 0.5,
-                    'size': size_by_column_name,
-                    'size_norm': size_normalization,
+                    'linewidths': 0.5,
+                    's': dataframe[size_by_column_name] * size_normalization[1] if size_by_column_name and size_normalization else (dataframe[size_by_column_name] if size_by_column_name else 20),
                 },
                 fit_reg=True
             )
@@ -254,10 +252,9 @@ def PlotScatterplot(dataframe,
                 scatter_kws={
                     'color': dot_fill_color,
                     'alpha': 0.5,
-                    'linewidth': 0.5,
+                    'linewidths': 0.5,
                     'edgecolor': dot_fill_color,
-                    # 'size': size_by_column_name,
-                    # 'size_norm': size_normalization,
+                    's': dataframe[size_by_column_name] * size_normalization[1] if size_by_column_name and size_normalization else (dataframe[size_by_column_name] if size_by_column_name else 20),
                 },
                 lowess=True,
                 line_kws={'color': line_color}
@@ -271,9 +268,8 @@ def PlotScatterplot(dataframe,
                 palette=group_color_palette,
                 scatter_kws={
                     'alpha': 0.5,
-                    'linewidth': 0.5,
-                    'size': size_by_column_name,
-                    'size_norm': size_normalization,
+                    'linewidths': 0.5,
+                    's': dataframe[size_by_column_name] * size_normalization[1] if size_by_column_name and size_normalization else (dataframe[size_by_column_name] if size_by_column_name else 20),
                 },
                 lowess=True
             )

@@ -10,19 +10,68 @@ def ConductClusterAnalysis(dataframe,
                            min_samples=5, 
                            map_clusters=False):
     """
-    Conducts cluster analysis on geospatial data using the DBSCAN algorithm.
-     Mimics the functionality of Bellingcat's geoclustering tool.
+    Perform density-based spatial clustering on geospatial data.
 
-    Args:
-        dataframe (pd.DataFrame): The input dataframe containing geospatial data.
-        longitude_column (str): Name of the column containing longitude values. Defaults to 'lon'.
-        latitude_column (str): Name of the column containing latitude values. Defaults to 'lat'.
-        distance_km (float): The maximum distance between two samples for one to be considered as in the neighborhood of the other. Defaults to 0.5 km.
-        min_samples (int): The number of samples (or total weight) in a neighborhood for a point to be considered as a core point. This includes the point itself. Defaults to 5.
-        map_clusters (bool): If True, displays a folium map of the clusters. Defaults to False.
+    This function utilizes the DBSCAN (Density-Based Spatial Clustering of Applications with Noise)
+    algorithm to identify clusters of geographic points based on their spatial proximity. Unlike
+    centroid-based methods like K-Means, DBSCAN can discover clusters of arbitrary shapes and
+    is robust to outliers, which are labeled as 'Noise'. The function specifically employs the
+    Haversine distance metric to calculate the great-circle distance between points on the 
+    Earth's surface, ensuring accuracy for large-scale geospatial analysis.
 
-    Returns:
-        pd.DataFrame: A summary dataframe containing cluster statistics (midpoint, count).
+    Geospatial cluster analysis is essential for:
+      * Identifying periodic gathering points or high-activity zones in intelligence analysis
+      * Mapping disease outbreaks or infection hotspots in epidemiology
+      * Analyzing urban traffic patterns and identifying public transit bottlenecks
+      * Optimizing logistics and locating optimal supply chain distribution centers
+      * Detecting anomalies or "ghost" signals in sensor networks
+      * Exploring environmental patterns such as deforestation or wildlife migration
+      * Segmenting customer locations for localized marketing strategies
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The input dataset containing geographic coordinates.
+    longitude_column : str, optional
+        The name of the column containing longitude values. Defaults to 'lon'.
+    latitude_column : str, optional
+        The name of the column containing latitude values. Defaults to 'lat'.
+    distance_km : float, optional
+        The maximum distance (epsilon) between two points to be considered neighbors, 
+        measured in kilometers. Defaults to 5.
+    min_samples : int, optional
+        The minimum number of points required to form a dense region (cluster). 
+        Defaults to 5.
+    map_clusters : bool, optional
+        Whether to generate and display an interactive Folium map visualization 
+        of the resulting clusters. Defaults to False.
+
+    Returns
+    -------
+    pd.DataFrame
+        A summary DataFrame containing statistics for each identified cluster, including
+        the cluster ID, cluster name, midpoint coordinates (mean), and the point count.
+
+    Examples
+    --------
+    # Intelligence analysis: Identifying high-activity zones from signal data
+    import pandas as pd
+    import numpy as np
+    signal_data = pd.DataFrame({
+        'signal_id': range(1, 101),
+        'lat': [34.05 + np.random.normal(0, 0.01) for _ in range(100)],
+        'lon': [-118.24 + np.random.normal(0, 0.01) for _ in range(100)]
+    })
+    
+    cluster_summary = ConductClusterAnalysis(
+        signal_data,
+        longitude_column='lon',
+        latitude_column='lat',
+        distance_km=0.5,
+        min_samples=10,
+        map_clusters=True
+    )
+    # Returns summary statistics and displays an interactive map of clusters
     """
     # Lazy load uncommon packages
     import folium

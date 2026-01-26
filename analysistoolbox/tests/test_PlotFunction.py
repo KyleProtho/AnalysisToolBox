@@ -1,11 +1,15 @@
 # test_PlotFunction.py
 import unittest
 import numpy as np
+import sympy
 from analysistoolbox.calculus import PlotFunction
 
 class TestPlotFunction(unittest.TestCase):
     
     def test_plot_function(self):
+        # Set sympy symbol
+        x = sympy.Symbol('x')
+
         # Test basic function plot
         PlotFunction(lambda x: x**2)
         

@@ -9,19 +9,72 @@ def ConductSpatialAutocorrelation(dataframe,
                                   k=5, 
                                   plot=False):
     """
-    Conducts Local Spatial Autocorrelation (Local Moran's I) analysis on a dataframe of points.
+    Perform Local Spatial Autocorrelation (Local Moran's I) to identify spatial clusters and outliers.
+
+    This function calculates Local Indicators of Spatial Association (LISA) to detect local 
+    hotspots (High-High), coldspots (Low-Low), and spatial outliers (High-Low or Low-High). 
+    It utilizes the Local Moran's I statistic combined with a K-Nearest Neighbors (KNN) 
+    spatial weights matrix. Statistical significance is determined via permutation testing, 
+    allowing for the identification of areas where values are significantly more similar 
+    or dissimilar to their neighbors than would be expected by chance.
+
+    Spatial autocorrelation analysis is essential for:
+      * Identifying geographic clusters of high disease incidence in epidemiology
+      * Detecting localized price anomalies or supply chain disruptions in logistics
+      * Pinpointing demographic shifts or localized sentiment patterns in intelligence analysis
+      * Validating environmental pollution hotspots or biodiversity pockets
+      * Strategic urban planning by identifying zones of extreme socioeconomic activity
+      * Fraud detection by identifying geographic clusters of suspicious financial activity
+      * Retail optimization by mapping high-performing store catchments and market potential
+
+    Parameters
+    ----------
+    dataframe : pd.DataFrame
+        The input dataset containing geographic coordinates and the variable to be analyzed.
+    longitude_column : str, optional
+        The name of the column containing longitude values. Defaults to 'lon'.
+    latitude_column : str, optional
+        The name of the column containing latitude values. Defaults to 'lat'.
+    value_column : str, optional
+        The name of the numeric column to analyze for spatial patterns. If None, the function 
+        automatically selects the first numeric column that is not the latitude or longitude 
+        column. Defaults to None.
+    k : int, optional
+        The number of nearest neighbors to use when constructing the spatial weights matrix. 
+        Defaults to 5.
+    plot : bool, optional
+        Whether to generate and display an interactive Folium map visualization of the 
+        resulting hotspots, coldspots, and outliers. Defaults to False.
+
+    Returns
+    -------
+    pd.DataFrame
+        The original DataFrame augmented with 'moran_i' (local statistic), 'p_value' 
+        (significance), and 'cluster_category' (e.g., 'Hotspot (High-High)', 
+        'Not Significant') columns.
+
+    Examples
+    --------
+    # Epidemiology: Mapping clusters of high infection rates
+    import pandas as pd
+    import numpy as np
+    infection_data = pd.DataFrame({
+        'county_id': range(100),
+        'lat': [40.7 + np.random.normal(0, 0.5) for _ in range(100)],
+        'lon': [-74.0 + np.random.normal(0, 0.5) for _ in range(100)],
+        'infection_rate': [10 + np.random.normal(0, 5) for _ in range(100)]
+    })
     
-    Args:
-        dataframe (pd.DataFrame): The input dataframe containing geospatial data.
-        longitude_column (str): Name of the column containing longitude values. Defaults to 'lon'.
-        latitude_column (str): Name of the column containing latitude values. Defaults to 'lat'.
-        value_column (str, optional): Name of the column containing the value to analyze. 
-                                      If None, uses the first numeric column that is not lat/lon.
-        k (int): Number of nearest neighbors to use for spatial weights. Defaults to 5.
-        plot (bool): If True, displays a folium map of the results. Defaults to False.
-        
-    Returns:
-        pd.DataFrame: DataFrame with original data plus 'moran_i', 'p_value', 'cluster_category' columns.
+    # Introduce a simulated hotspot
+    infection_data.loc[0:10, 'infection_rate'] = 50 
+    
+    results_df = ConductSpatialAutocorrelation(
+        infection_data,
+        value_column='infection_rate',
+        k=8,
+        plot=True
+    )
+    # Identifies the simulated hotspot and highlights significant clusters on a map.
     """
     # Lazy load dependencies
     try:

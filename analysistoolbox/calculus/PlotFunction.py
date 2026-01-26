@@ -114,7 +114,7 @@ def PlotFunction(f_of_x,
     numerical output cannot. Visual inspection remains a cornerstone of
     analytic sense-making across disciplines.
     """
-    
+
     # Plot the function
     x = np.linspace(minimum_x, maximum_x, n)
     y = np.zeros(len(x))

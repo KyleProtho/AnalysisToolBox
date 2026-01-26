@@ -1,6 +1,8 @@
 # Load packages
 import matplotlib.pyplot as plt
 import numpy as np
+import sympy
+from typing import Optional
 
 # Declare function
 def FindDerivative(
@@ -8,6 +10,9 @@ def FindDerivative(
     print_functions: bool = False,
     return_derivative_function: bool = False,
     plot_functions: bool = False,
+    minimum_x: float = -10,
+    maximum_x: float = 10,
+    n: int = 100,
     **plot_kwargs
 ) -> Optional[sympy.Expr]:
     """
@@ -43,9 +48,15 @@ def FindDerivative(
         If True, prints the original and derivative expressions for inspection.
     return_derivative_function
         If True, returns the symbolic derivative expression.
-    show_plot
+    plot_functions
         If True, generates a plot of the original and derivative over a default or user-supplied
         domain using `plot_kwargs`.
+    minimum_x
+        The minimum x value for plotting. Defaults to -10.
+    maximum_x
+        The maximum x value for plotting. Defaults to 10.
+    n
+        The number of points to use for plotting. Defaults to 100.
     **plot_kwargs
         Additional keyword arguments passed to the plotting routine.
 
@@ -67,14 +78,21 @@ def FindDerivative(
     like maxima, minima, or inflection points that are not obvious from raw numbers alone.
 
     """
-    # Lazy load uncommon packages
-    import sympy
     
+    # Identify the symbolic variable
+    symbols = f_of_x.free_symbols
+    if not symbols:
+        # Constant function, assume 'x' as default symbol if needed
+        x = sympy.Symbol('x')
+    else:
+        # Sort symbols and take the first one (usually 'x')
+        x = sorted(list(symbols), key=lambda s: s.name)[0]
+
     # Compute the derivative of the higher-order function using sympy
     try:
         d_f_of_x = sympy.diff(f_of_x, x)
-    except NameError:
-        raise ValueError("The function must be a sympy expression. Ensure that you have imported sympy and declared x as a sympy symbol. ( e.g., x = sympy.Symbol('x') )" )
+    except Exception as e:
+        raise ValueError(f"The function must be a sympy expression. Error: {e}")
     
     # Print the derivative function
     if print_functions:
@@ -87,8 +105,8 @@ def FindDerivative(
         x_values = np.linspace(minimum_x, maximum_x, n)
         
         # Vectorize the original function and its derivative
-        vfunc = np.vectorize(lambda val: f_of_x.evalf(subs={x: val}))
-        vfunc_derivative = np.vectorize(lambda val: d_f_of_x.evalf(subs={x: val}))
+        vfunc = np.vectorize(lambda val: float(f_of_x.evalf(subs={x: val})))
+        vfunc_derivative = np.vectorize(lambda val: float(d_f_of_x.evalf(subs={x: val})))
 
         # Create y values for original function and its derivative using the vectorized functions
         y_values_original = vfunc(x_values)
