@@ -1,10 +1,5 @@
-# This workflow will upload a Python Package to PyPI when setup.py version changes
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python#publishing-to-package-registries
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
+# Publishes analysistoolbox to PyPI when the version in setup.py changes on master.
+# Requires a PYPI_API_TOKEN secret set in: GitHub repo → Settings → Secrets → Actions
 
 name: Upload Python Package
 
@@ -24,55 +19,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
-        fetch-depth: 2  # Fetch last 2 commits to compare versions
-    
+        fetch-depth: 2
+
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
-    
-    - name: Extract version from setup.py
-      id: extract_version
-      run: |
-        VERSION=$(python -c "import re; content = open('setup.py').read(); match = re.search(r\"version=['\\\"]([^'\\\"]+)['\\\"]\", content); print(match.group(1) if match else '')")
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-        echo "Current version: $VERSION"
-    
+
     - name: Check if version changed
       id: check_version
       run: |
-        CURRENT_VERSION="${{ steps.extract_version.outputs.version }}"
-        PREVIOUS_VERSION=$(git show HEAD~1:setup.py 2>/dev/null | python -c "import re, sys; content = sys.stdin.read(); match = re.search(r\"version=['\\\"]([^'\\\"]+)['\\\"]\", content); print(match.group(1) if match else '')" || echo "")
-        
-        if [ -z "$PREVIOUS_VERSION" ]; then
-          echo "No previous version found, will publish"
+        CURRENT=$(python -c "import re; m = re.search(r\"version=['\\\"]([^'\\\"]+)['\\\"]\", open('setup.py').read()); print(m.group(1))")
+        PREVIOUS=$(git show HEAD~1:setup.py 2>/dev/null | python -c "import re,sys; m = re.search(r\"version=['\\\"]([^'\\\"]+)['\\\"]\", sys.stdin.read()); print(m.group(1) if m else '')" || echo "")
+        echo "current=$CURRENT" >> $GITHUB_OUTPUT
+        echo "previous=$PREVIOUS" >> $GITHUB_OUTPUT
+        if [ "$CURRENT" != "$PREVIOUS" ]; then
           echo "should_publish=true" >> $GITHUB_OUTPUT
-        elif [ "$CURRENT_VERSION" != "$PREVIOUS_VERSION" ]; then
-          echo "Version changed from $PREVIOUS_VERSION to $CURRENT_VERSION, will publish"
-          echo "should_publish=true" >> $GITHUB_OUTPUT
+          echo "Version changed: $PREVIOUS → $CURRENT"
         else
-          echo "Version unchanged ($CURRENT_VERSION), skipping publish"
           echo "should_publish=false" >> $GITHUB_OUTPUT
+          echo "Version unchanged ($CURRENT), skipping publish"
         fi
-    
-    - name: Install dependencies
+
+    - name: Install build tools
       if: steps.check_version.outputs.should_publish == 'true'
-      run: |
-        python -m pip install --upgrade pip
-        pip install build twine
-    
+      run: pip install --upgrade build twine
+
     - name: Build package
       if: steps.check_version.outputs.should_publish == 'true'
       run: python -m build
-    
-    - name: Publish package to PyPI
+
+    - name: Publish to PyPI
       if: steps.check_version.outputs.should_publish == 'true'
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        # Note: PYPI_API_TOKEN must be a PyPI API token starting with "pypi-"
-        # Generate one at: https://pypi.org/manage/account/token/
-        password: ${{ secrets.PYPI_API_TOKEN }}
-        repository_url: https://upload.pypi.org/legacy/
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: twine upload dist/*

@@ -96,7 +96,8 @@ def GeocodeUSAddresses(dataframe,
         return np.nan, np.nan
     
     # Apply the function to the desired column and create new columns for latitude and longitude
-    dataframe[latitude_column_name], dataframe[longitude_column_name] = zip(*dataframe[address_column_name].apply(get_geocode))
+    # get_geocode returns (longitude, latitude)
+    dataframe[longitude_column_name], dataframe[latitude_column_name] = zip(*dataframe[address_column_name].apply(get_geocode))
     
     # Return the dataframe with the new columns
     return dataframe

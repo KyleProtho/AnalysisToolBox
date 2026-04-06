@@ -196,12 +196,12 @@ def ConductPropensityScoreMatching(dataframe,
     
     # Perform KNN matching 1:max_matches_per_subject
     try:
-        psm.knn_matched_12n(
-            matcher='propensity_logit', 
+        psm.kdtree_matched_12n(
+            matcher='propensity_logit',
             how_many=max_matches_per_subject
         )
     except Exception as e:
-        raise ValueError("The propensity score matching failed. \n" + e + "\n\nTry setting balance_groups to False.")
+        raise ValueError("The propensity score matching failed. \n" + str(e) + "\n\nTry setting balance_groups to False.")
     
     # Create a dataframe of the matched subjects
     dataframe_matched = psm.df_matched
