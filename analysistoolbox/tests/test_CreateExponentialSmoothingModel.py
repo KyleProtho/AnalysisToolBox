@@ -1,137 +1,313 @@
-#!/usr/bin/env python3
-"""
-Simple test snippet for CreateExponentialSmoothingModel function
-"""
+import matplotlib
+matplotlib.use('Agg')  # Non-interactive backend — must precede any pyplot import
 
-import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
+import io
 import sys
-import os
+import unittest
+from pathlib import Path
 
-# Add the analysistoolbox module to the path
-sys.path.append(os.path.join(os.path.dirname(__file__), 'analysistoolbox'))
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 
+# Pin to the local dev source tree (insert repo root so stdlib 'statistics' is not shadowed)
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from analysistoolbox.predictive_analytics.CreateExponentialSmoothingModel import CreateExponentialSmoothingModel
 
-# Create sample time series data
-print("Creating sample time series data...")
 
-# Create 24 months of monthly data with trend and seasonality
-dates = pd.date_range(start='2020-01-01', periods=24, freq='M')
-np.random.seed(42)
+def _make_df(seed=412, n=60):
+    rng = np.random.default_rng(seed)
+    dates = pd.date_range('2018-01-01', periods=n, freq='MS')
+    # Simple trend + noise, no seasonality
+    y = np.arange(n) * 0.5 + rng.standard_normal(n) * 2.0 + 10.0
+    return pd.DataFrame({'date': dates, 'y': y})
 
-# Generate data with trend and seasonality
-trend = np.linspace(100, 150, 24)  # Upward trend
-seasonal = 10 * np.sin(2 * np.pi * np.arange(24) / 12)  # Annual seasonality
-noise = np.random.normal(0, 3, 24)  # Random noise
-values = trend + seasonal + noise
 
-# Create DataFrame
-df = pd.DataFrame({
-    'date': dates,
-    'sales': values
-})
+class TestCreateExponentialSmoothingModel(unittest.TestCase):
 
-print(f"Sample data shape: {df.shape}")
-print("\nFirst few rows:")
-print(df.head())
-print("\nLast few rows:")
-print(df.tail())
+    def tearDown(self):
+        plt.clf()
+        plt.close('all')
 
-# Test Simple Exponential Smoothing
-print("\n" + "="*60)
-print("TESTING SIMPLE EXPONENTIAL SMOOTHING")
-print("="*60)
+    # ------------------------------------------------------------------ #
+    # Return type
+    # ------------------------------------------------------------------ #
 
-results_simple = CreateExponentialSmoothingModel(
-    dataframe=df,
-    time_column='date',
-    outcome_column='sales',
-    smoothing_type='simple',
-    forecast_periods=6,
-    print_model_performance=True,
-    print_parameter_summary=True,
-    print_forecast_summary=True,
-    plot_model_performance=True,
-    plot_forecast=True,
-    plot_decomposition=False  # Skip decomposition for simple model
-)
+    def test_returns_dict(self):
+        """Function returns a dict with the expected keys."""
+        df = _make_df()
+        result = CreateExponentialSmoothingModel(
+            df, 'date', 'y',
+            smoothing_type='simple',
+            print_model_performance=False,
+            print_parameter_summary=False,
+            print_forecast_summary=False,
+            plot_model_performance=False,
+            plot_forecast=False,
+            plot_decomposition=False,
+            plot_training_and_test_mse=False,
+        )
+        self.assertIsInstance(result, dict)
+        for key in ('model', 'model_type', 'fitted_values', 'forecast', 'performance_metrics', 'parameters', 'data'):
+            self.assertIn(key, result)
 
-print(f"\nModel type used: {results_simple['model_type']}")
-print(f"RMSE: {results_simple['performance_metrics']['rmse']:.4f}")
-print(f"MAPE: {results_simple['performance_metrics']['mape']:.2f}%")
+    def test_performance_metrics_keys(self):
+        """performance_metrics dict contains training_rmse and test_rmse."""
+        df = _make_df()
+        result = CreateExponentialSmoothingModel(
+            df, 'date', 'y',
+            smoothing_type='simple',
+            print_model_performance=False,
+            print_parameter_summary=False,
+            print_forecast_summary=False,
+            plot_model_performance=False,
+            plot_forecast=False,
+            plot_decomposition=False,
+            plot_training_and_test_mse=False,
+        )
+        pm = result['performance_metrics']
+        self.assertIn('training_rmse', pm)
+        self.assertIn('test_rmse', pm)
 
-# Test Double Exponential Smoothing
-print("\n" + "="*60)
-print("TESTING DOUBLE EXPONENTIAL SMOOTHING")
-print("="*60)
+    # ------------------------------------------------------------------ #
+    # Training and test RMSE output
+    # ------------------------------------------------------------------ #
 
-results_double = CreateExponentialSmoothingModel(
-    dataframe=df,
-    time_column='date',
-    outcome_column='sales',
-    smoothing_type='double',
-    forecast_periods=6,
-    print_model_performance=True,
-    print_parameter_summary=True,
-    print_forecast_summary=True,
-    plot_model_performance=True,
-    plot_forecast=True,
-    plot_decomposition=False
-)
+    def test_print_performance_includes_training_rmse(self):
+        """print_model_performance=True prints 'Training RMSE:'."""
+        df = _make_df()
+        buf = io.StringIO()
+        sys.stdout = buf
+        try:
+            CreateExponentialSmoothingModel(
+                df, 'date', 'y',
+                smoothing_type='simple',
+                print_model_performance=True,
+                print_parameter_summary=False,
+                print_forecast_summary=False,
+                plot_model_performance=False,
+                plot_forecast=False,
+                plot_decomposition=False,
+                plot_training_and_test_mse=False,
+            )
+        finally:
+            sys.stdout = sys.__stdout__
+        self.assertIn('Training RMSE:', buf.getvalue())
 
-print(f"\nModel type used: {results_double['model_type']}")
-print(f"RMSE: {results_double['performance_metrics']['rmse']:.4f}")
-print(f"MAPE: {results_double['performance_metrics']['mape']:.2f}%")
+    def test_print_performance_includes_test_rmse(self):
+        """print_model_performance=True prints 'Test RMSE:'."""
+        df = _make_df()
+        buf = io.StringIO()
+        sys.stdout = buf
+        try:
+            CreateExponentialSmoothingModel(
+                df, 'date', 'y',
+                smoothing_type='simple',
+                print_model_performance=True,
+                print_parameter_summary=False,
+                print_forecast_summary=False,
+                plot_model_performance=False,
+                plot_forecast=False,
+                plot_decomposition=False,
+                plot_training_and_test_mse=False,
+            )
+        finally:
+            sys.stdout = sys.__stdout__
+        self.assertIn('Test RMSE:', buf.getvalue())
 
-# Test Triple Exponential Smoothing
-print("\n" + "="*60)
-print("TESTING TRIPLE EXPONENTIAL SMOOTHING")
-print("="*60)
+    def test_rmse_values_are_positive_finite(self):
+        """training_rmse and test_rmse in performance_metrics are positive finite floats."""
+        df = _make_df()
+        result = CreateExponentialSmoothingModel(
+            df, 'date', 'y',
+            smoothing_type='simple',
+            print_model_performance=False,
+            print_parameter_summary=False,
+            print_forecast_summary=False,
+            plot_model_performance=False,
+            plot_forecast=False,
+            plot_decomposition=False,
+            plot_training_and_test_mse=False,
+        )
+        pm = result['performance_metrics']
+        self.assertGreater(pm['training_rmse'], 0)
+        self.assertGreater(pm['test_rmse'], 0)
+        self.assertTrue(np.isfinite(pm['training_rmse']))
+        self.assertTrue(np.isfinite(pm['test_rmse']))
 
-results_triple = CreateExponentialSmoothingModel(
-    dataframe=df,
-    time_column='date',
-    outcome_column='sales',
-    smoothing_type='triple',
-    seasonal_periods=12,  # Monthly data with annual seasonality
-    forecast_periods=6,
-    print_model_performance=True,
-    print_parameter_summary=True,
-    print_forecast_summary=True,
-    plot_model_performance=True,
-    plot_forecast=True,
-    plot_decomposition=True  # Show decomposition for triple model
-)
+    def test_print_performance_off_suppresses_rmse(self):
+        """With print_model_performance=False, no Training/Test RMSE lines appear."""
+        df = _make_df()
+        buf = io.StringIO()
+        sys.stdout = buf
+        try:
+            CreateExponentialSmoothingModel(
+                df, 'date', 'y',
+                smoothing_type='simple',
+                print_model_performance=False,
+                print_parameter_summary=False,
+                print_forecast_summary=False,
+                plot_model_performance=False,
+                plot_forecast=False,
+                plot_decomposition=False,
+                plot_training_and_test_mse=False,
+            )
+        finally:
+            sys.stdout = sys.__stdout__
+        self.assertNotIn('Training RMSE:', buf.getvalue())
+        self.assertNotIn('Test RMSE:', buf.getvalue())
 
-print(f"\nModel type used: {results_triple['model_type']}")
-print(f"RMSE: {results_triple['performance_metrics']['rmse']:.4f}")
-print(f"MAPE: {results_triple['performance_metrics']['mape']:.2f}%")
+    # ------------------------------------------------------------------ #
+    # Edge cases
+    # ------------------------------------------------------------------ #
 
-# Test Auto Model Selection
-print("\n" + "="*60)
-print("TESTING AUTO MODEL SELECTION")
-print("="*60)
+    def test_double_smoothing(self):
+        """smoothing_type='double' trains without error and returns RMSE metrics."""
+        df = _make_df()
+        result = CreateExponentialSmoothingModel(
+            df, 'date', 'y',
+            smoothing_type='double',
+            print_model_performance=False,
+            print_parameter_summary=False,
+            print_forecast_summary=False,
+            plot_model_performance=False,
+            plot_forecast=False,
+            plot_decomposition=False,
+            plot_training_and_test_mse=False,
+        )
+        self.assertIn('training_rmse', result['performance_metrics'])
 
-results_auto = CreateExponentialSmoothingModel(
-    dataframe=df,
-    time_column='date',
-    outcome_column='sales',
-    smoothing_type='auto',  # Let the function choose the best model
-    forecast_periods=6,
-    print_model_performance=True,
-    print_parameter_summary=True,
-    print_forecast_summary=True,
-    plot_model_performance=True,
-    plot_forecast=True,
-    plot_decomposition=True
-)
+    def test_custom_test_size(self):
+        """test_size=0.1 produces valid RMSE metrics without error."""
+        df = _make_df()
+        result = CreateExponentialSmoothingModel(
+            df, 'date', 'y',
+            smoothing_type='simple',
+            test_size=0.1,
+            print_model_performance=False,
+            print_parameter_summary=False,
+            print_forecast_summary=False,
+            plot_model_performance=False,
+            plot_forecast=False,
+            plot_decomposition=False,
+            plot_training_and_test_mse=False,
+        )
+        self.assertGreater(result['performance_metrics']['test_rmse'], 0)
 
-print(f"\nAuto-selected model type: {results_auto['model_type']}")
-print(f"RMSE: {results_auto['performance_metrics']['rmse']:.4f}")
-print(f"MAPE: {results_auto['performance_metrics']['mape']:.2f}%")
+    # ------------------------------------------------------------------ #
+    # Plot smoke tests (verify no exceptions are raised)
+    # ------------------------------------------------------------------ #
 
-print("\n" + "="*60)
-print("TEST COMPLETED SUCCESSFULLY!")
-print("="*60)
+    def test_rmse_comparison_plot_enabled(self):
+        """plot_training_and_test_mse=True renders without raising an exception."""
+        df = _make_df()
+        try:
+            CreateExponentialSmoothingModel(
+                df, 'date', 'y',
+                smoothing_type='simple',
+                print_model_performance=False,
+                print_parameter_summary=False,
+                print_forecast_summary=False,
+                plot_model_performance=False,
+                plot_forecast=False,
+                plot_decomposition=False,
+                plot_training_and_test_mse=True,
+            )
+        except Exception as e:
+            self.fail(f"Unexpected exception with RMSE comparison plot enabled: {e}")
+
+    def test_rmse_comparison_plot_disabled(self):
+        """plot_training_and_test_mse=False skips the chart without error."""
+        df = _make_df()
+        try:
+            CreateExponentialSmoothingModel(
+                df, 'date', 'y',
+                smoothing_type='simple',
+                print_model_performance=False,
+                print_parameter_summary=False,
+                print_forecast_summary=False,
+                plot_model_performance=False,
+                plot_forecast=False,
+                plot_decomposition=False,
+                plot_training_and_test_mse=False,
+            )
+        except Exception as e:
+            self.fail(f"Unexpected exception with RMSE plot disabled: {e}")
+
+    def test_custom_bar_colors(self):
+        """Custom training_bar_color and test_bar_color are accepted without error."""
+        df = _make_df()
+        try:
+            CreateExponentialSmoothingModel(
+                df, 'date', 'y',
+                smoothing_type='simple',
+                print_model_performance=False,
+                print_parameter_summary=False,
+                print_forecast_summary=False,
+                plot_model_performance=False,
+                plot_forecast=False,
+                plot_decomposition=False,
+                plot_training_and_test_mse=True,
+                training_bar_color='green',
+                test_bar_color='orange',
+            )
+        except Exception as e:
+            self.fail(f"Unexpected exception with custom bar colors: {e}")
+
+    def test_performance_plot_smoke(self):
+        """plot_model_performance=True renders without raising an exception."""
+        df = _make_df()
+        try:
+            CreateExponentialSmoothingModel(
+                df, 'date', 'y',
+                smoothing_type='simple',
+                print_model_performance=False,
+                print_parameter_summary=False,
+                print_forecast_summary=False,
+                plot_model_performance=True,
+                plot_forecast=False,
+                plot_decomposition=False,
+                plot_training_and_test_mse=False,
+            )
+        except Exception as e:
+            self.fail(f"Unexpected exception with performance plot enabled: {e}")
+
+    def test_forecast_plot_smoke(self):
+        """plot_forecast=True renders without raising an exception."""
+        df = _make_df()
+        try:
+            CreateExponentialSmoothingModel(
+                df, 'date', 'y',
+                smoothing_type='simple',
+                print_model_performance=False,
+                print_parameter_summary=False,
+                print_forecast_summary=False,
+                plot_model_performance=False,
+                plot_forecast=True,
+                plot_decomposition=False,
+                plot_training_and_test_mse=False,
+            )
+        except Exception as e:
+            self.fail(f"Unexpected exception with forecast plot enabled: {e}")
+
+    def test_all_plots_enabled(self):
+        """Enabling all standard plots raises no exception."""
+        df = _make_df()
+        try:
+            CreateExponentialSmoothingModel(
+                df, 'date', 'y',
+                smoothing_type='double',
+                print_model_performance=True,
+                print_parameter_summary=True,
+                print_forecast_summary=True,
+                plot_model_performance=True,
+                plot_forecast=True,
+                plot_decomposition=False,
+                plot_training_and_test_mse=True,
+            )
+        except Exception as e:
+            self.fail(f"Unexpected exception with all plots enabled: {e}")
+
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)

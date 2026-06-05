@@ -46,7 +46,19 @@ def CreateLinearRegressionModel(dataframe,
                                 caption_for_feature_importance_plot=None,
                                 title_y_indent_for_feature_importance_plot=1.15,
                                 subtitle_y_indent_for_feature_importance_plot=1.1,
-                                caption_y_indent_for_feature_importance_plot=-0.15):
+                                caption_y_indent_for_feature_importance_plot=-0.15,
+                                # MSE comparison plot arguments
+                                plot_training_and_test_mse=True,
+                                training_bar_color="#3a86ff",
+                                test_bar_color="#b0170c",
+                                figure_size_for_mse_comparison_plot=(7, 5),
+                                title_for_mse_comparison_plot="Training vs. Test MSE",
+                                subtitle_for_mse_comparison_plot="Compares model error on the training and test datasets.",
+                                caption_for_mse_comparison_plot=None,
+                                title_y_indent_for_mse_comparison_plot=1.10,
+                                subtitle_y_indent_for_mse_comparison_plot=1.05,
+                                caption_y_indent_for_mse_comparison_plot=-0.15,
+                                x_indent_for_mse_comparison_plot=-0.115):
     """
     Train, evaluate, and visualize a multiple linear regression model.
 
@@ -128,6 +140,19 @@ def CreateLinearRegressionModel(dataframe,
         Text elements for the feature importance visualization.
     title_y_indent_for_feature_importance_plot, subtitle_y_indent_for_feature_importance_plot, caption_y_indent_for_feature_importance_plot
         Coordinate offsets for text placement in the importance plot.
+    plot_training_and_test_mse
+        Whether to generate a bar chart comparing MSE on the training set versus
+        the test set. A large gap indicates overfitting. Defaults to True.
+    training_bar_color
+        Fill color for the training MSE bar. Defaults to "#3a86ff".
+    test_bar_color
+        Fill color for the test MSE bar. Defaults to "#b0170c".
+    figure_size_for_mse_comparison_plot
+        Dimensions (width, height) for the MSE comparison chart. Defaults to (7, 5).
+    title_for_mse_comparison_plot, subtitle_for_mse_comparison_plot, caption_for_mse_comparison_plot
+        Text elements for the MSE comparison chart.
+    title_y_indent_for_mse_comparison_plot, subtitle_y_indent_for_mse_comparison_plot, caption_y_indent_for_mse_comparison_plot, x_indent_for_mse_comparison_plot
+        Coordinate offsets for text placement in the MSE comparison chart.
 
     Returns
     -------
@@ -213,12 +238,18 @@ def CreateLinearRegressionModel(dataframe,
     # w_norm = model.coef_
     # print(f"\nModel parameters:    w: {w_norm}, b:{b_norm}")
     
-    # Add predictions to test set
+    # Add predictions to training and test sets
+    train['Predicted'] = model.predict(train[list_of_predictor_variables])
     test['Predicted'] = model.predict(test[list_of_predictor_variables])
-    
+
+    # Compute training and test MSE
+    training_mse = metrics.mean_squared_error(train[outcome_variable], train['Predicted'])
+    test_mse = metrics.mean_squared_error(test[outcome_variable], test['Predicted'])
+
     # Show mean squared error if outcome is numerical
     if print_model_training_performance:
-        print('Mean Squared Error:', metrics.mean_squared_error(test[outcome_variable], test['Predicted']))
+        print('Training MSE:', training_mse)
+        print('Test MSE:', test_mse)
         print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
         print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
         
@@ -483,6 +514,87 @@ def CreateLinearRegressionModel(dataframe,
         plt.show()
         plt.clf()
     
+    # Plot training vs. test MSE comparison if requested
+    if plot_training_and_test_mse:
+        fig, ax = plt.subplots(figsize=figure_size_for_mse_comparison_plot)
+
+        mse_values = [training_mse, test_mse]
+        bar_labels = ['Training', 'Test']
+        bar_colors = [training_bar_color, test_bar_color]
+
+        bars = ax.bar(
+            bar_labels,
+            mse_values,
+            color=bar_colors,
+            alpha=0.8,
+            width=0.5
+        )
+
+        # Add data labels above each bar
+        for bar in bars:
+            height = bar.get_height()
+            ax.text(
+                bar.get_x() + bar.get_width() / 2.0,
+                height,
+                f'{height:,.4f}',
+                ha='center',
+                va='bottom',
+                fontsize=10,
+                color='#262626'
+            )
+
+        # Remove top and right spines, style remaining spines
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['bottom'].set_color('#666666')
+        ax.spines['left'].set_visible(False)
+
+        # Format tick labels
+        ax.tick_params(which='major', labelsize=9, color='#666666')
+        ax.yaxis.set_ticks([])
+
+        # Add space for title and subtitle
+        plt.subplots_adjust(top=0.85)
+
+        # Title
+        ax.text(
+            x=x_indent_for_mse_comparison_plot,
+            y=title_y_indent_for_mse_comparison_plot,
+            s=title_for_mse_comparison_plot,
+            fontsize=14,
+            color='#262626',
+            transform=ax.transAxes
+        )
+
+        # Subtitle
+        ax.text(
+            x=x_indent_for_mse_comparison_plot,
+            y=subtitle_y_indent_for_mse_comparison_plot,
+            s=subtitle_for_mse_comparison_plot,
+            fontsize=11,
+            color='#666666',
+            transform=ax.transAxes
+        )
+
+        # Caption
+        if caption_for_mse_comparison_plot is not None or data_source_for_plot is not None:
+            wrapped_caption = ""
+            if caption_for_mse_comparison_plot is not None:
+                wrapped_caption = textwrap.fill(caption_for_mse_comparison_plot, 130, break_long_words=False)
+            if data_source_for_plot is not None:
+                wrapped_caption = wrapped_caption + "\n\nSource: " + data_source_for_plot
+            ax.text(
+                x=x_indent_for_mse_comparison_plot,
+                y=caption_y_indent_for_mse_comparison_plot,
+                s=wrapped_caption,
+                fontsize=8,
+                color='#666666',
+                transform=ax.transAxes
+            )
+
+        plt.show()
+        plt.clf()
+
     # Return the model
     return model
 

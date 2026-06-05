@@ -21,8 +21,21 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
                                       random_seed=412,
                                       # Output arguments
                                       print_peak_to_peak_range_of_each_predictor=False,
+                                      print_model_training_performance=False,
                                       plot_loss=True,
-                                      plot_model_test_performance=True):
+                                      plot_model_test_performance=True,
+                                      # MSE/accuracy comparison plot arguments
+                                      plot_training_and_test_mse=True,
+                                      training_bar_color="#3a86ff",
+                                      test_bar_color="#b0170c",
+                                      figure_size_for_mse_comparison_plot=(7, 5),
+                                      title_for_mse_comparison_plot=None,
+                                      subtitle_for_mse_comparison_plot=None,
+                                      caption_for_mse_comparison_plot=None,
+                                      title_y_indent_for_mse_comparison_plot=1.10,
+                                      subtitle_y_indent_for_mse_comparison_plot=1.05,
+                                      caption_y_indent_for_mse_comparison_plot=-0.15,
+                                      x_indent_for_mse_comparison_plot=-0.115):
     """
     Construct, train, and evaluate a deep neural network for binary/multi-class classification or regression.
 
@@ -78,14 +91,28 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
         The integer seed used for TensorFlow's random state and data 
         partitioning. Defaults to 412.
     print_peak_to_peak_range_of_each_predictor
-        If True, prints the scale of the predictor variables to help assess 
+        If True, prints the scale of the predictor variables to help assess
         data range. Defaults to False.
+    print_model_training_performance
+        If True, prints training and test MSE (regression) or training and
+        test accuracy (classification) after training. Defaults to False.
     plot_loss
-        Whether to render the training loss curve as a function of epochs. 
+        Whether to render the training loss curve as a function of epochs.
         Defaults to True.
     plot_model_test_performance
-        Whether to generate a diagnostic plot (Confusion Matrix, Probability 
+        Whether to generate a diagnostic plot (Confusion Matrix, Probability
         Scatter, or Regplot) for the test dataset. Defaults to True.
+    plot_training_and_test_mse
+        Whether to render a bar chart comparing the training and test metric
+        (MSE for regression, accuracy for classification). Defaults to True.
+    training_bar_color, test_bar_color
+        Bar colors for the training and test bars. Defaults to blue / red.
+    figure_size_for_mse_comparison_plot
+        Dimensions (width, height) for the comparison chart. Defaults to (7, 5).
+    title_for_mse_comparison_plot, subtitle_for_mse_comparison_plot, caption_for_mse_comparison_plot
+        Text elements for the comparison chart. Sensible defaults are used when None.
+    title_y_indent_for_mse_comparison_plot, subtitle_y_indent_for_mse_comparison_plot, caption_y_indent_for_mse_comparison_plot, x_indent_for_mse_comparison_plot
+        Coordinate offsets for text placement in the comparison chart.
 
     Returns
     -------
@@ -247,13 +274,39 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
         plt.ylabel('Loss')
         plt.show()
     
-    # Test the model
-    predictions = model.predict(test[list_of_predictor_variables].values)
+    # Predict on training and test sets
+    train_preds = model.predict(train[list_of_predictor_variables].values)
+    test_preds = model.predict(test[list_of_predictor_variables].values)
     if is_outcome_categorical and len(dataframe[outcome_variable].unique()) > 2:
-        predictions = tf.nn.softmax(predictions).numpy()  # Convert to probabilities
-        predictions = pd.DataFrame(predictions).idxmax(axis=1).values  # Convert to class labels
-    test['Predicted'] = predictions
-    
+        train_preds = pd.DataFrame(tf.nn.softmax(train_preds).numpy()).idxmax(axis=1).values
+        test_preds = pd.DataFrame(tf.nn.softmax(test_preds).numpy()).idxmax(axis=1).values
+    train['Predicted'] = train_preds
+    test['Predicted'] = test_preds
+
+    # Compute training and test metrics
+    if is_outcome_categorical:
+        if len(dataframe[outcome_variable].unique()) == 2:
+            # Binary: sigmoid probabilities → threshold at 0.5
+            train_labels = (train['Predicted'].values.flatten() >= 0.5).astype(int)
+            test_labels = (test['Predicted'].values.flatten() >= 0.5).astype(int)
+        else:
+            train_labels = train['Predicted']
+            test_labels = test['Predicted']
+        training_metric = metrics.accuracy_score(train[outcome_variable], train_labels)
+        test_metric = metrics.accuracy_score(test[outcome_variable], test_labels)
+    else:
+        training_metric = metrics.mean_squared_error(train[outcome_variable], train['Predicted'].values.flatten())
+        test_metric = metrics.mean_squared_error(test[outcome_variable], test['Predicted'].values.flatten())
+
+    # Print training and test performance
+    if print_model_training_performance:
+        if is_outcome_categorical:
+            print('Training Accuracy:', training_metric)
+            print('Test Accuracy:', test_metric)
+        else:
+            print('Training MSE:', training_metric)
+            print('Test MSE:', test_metric)
+
     # Plot results of model test
     if plot_model_test_performance:
         plt.figure(figsize=(9,9))
@@ -293,6 +346,45 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
             plt.title('Predicted vs. Observed Outcome', size = 15)
         plt.show()
     
+    # Plot training vs. test metric comparison
+    if plot_training_and_test_mse:
+        import textwrap as _tw
+        if is_outcome_categorical:
+            chart_title = title_for_mse_comparison_plot or "Training vs. Test Accuracy"
+            chart_subtitle = subtitle_for_mse_comparison_plot or "Compares model accuracy on the training and test datasets."
+            value_fmt = '{:.4f}'
+        else:
+            chart_title = title_for_mse_comparison_plot or "Training vs. Test MSE"
+            chart_subtitle = subtitle_for_mse_comparison_plot or "Compares model error on the training and test datasets."
+            value_fmt = '{:,.4f}'
+
+        fig, ax = plt.subplots(figsize=figure_size_for_mse_comparison_plot)
+        bar_values = [training_metric, test_metric]
+        bar_labels = ['Training', 'Test']
+        bar_colors = [training_bar_color, test_bar_color]
+        bars = ax.bar(bar_labels, bar_values, color=bar_colors, alpha=0.8, width=0.5)
+        for bar in bars:
+            height = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width() / 2.0, height,
+                    value_fmt.format(height), ha='center', va='bottom', fontsize=10, color='#262626')
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['bottom'].set_color('#666666')
+        ax.spines['left'].set_visible(False)
+        ax.tick_params(which='major', labelsize=9, color='#666666')
+        ax.yaxis.set_ticks([])
+        plt.subplots_adjust(top=0.85)
+        ax.text(x=x_indent_for_mse_comparison_plot, y=title_y_indent_for_mse_comparison_plot,
+                s=chart_title, fontsize=14, color="#262626", transform=ax.transAxes)
+        ax.text(x=x_indent_for_mse_comparison_plot, y=subtitle_y_indent_for_mse_comparison_plot,
+                s=chart_subtitle, fontsize=11, color="#666666", transform=ax.transAxes)
+        if caption_for_mse_comparison_plot is not None:
+            ax.text(x=x_indent_for_mse_comparison_plot, y=caption_y_indent_for_mse_comparison_plot,
+                    s=_tw.fill(caption_for_mse_comparison_plot, 80, break_long_words=False),
+                    fontsize=8, color="#666666", transform=ax.transAxes)
+        plt.show()
+        plt.clf()
+
     # Return the model
     if scale_predictor_variables:
         dict_return = {

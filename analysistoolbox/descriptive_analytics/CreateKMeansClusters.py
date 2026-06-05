@@ -199,7 +199,8 @@ def CreateKMeansClusters(dataframe,
         visualizer = KElbowVisualizer(
             model,
             k=(2, max_clusters),
-            timings=True
+            timings=True,
+            force_model=True
         )
         visualizer.fit(dataframe)
         visualizer.show()

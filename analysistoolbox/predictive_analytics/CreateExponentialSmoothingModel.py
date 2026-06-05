@@ -23,6 +23,7 @@ def CreateExponentialSmoothingModel(dataframe,
                                     trend_type="additive",  # "additive" or "multiplicative"
                                     seasonal_type="additive",  # "additive" or "multiplicative"
                                     damped_trend=False,  # Whether to use damped trend
+                                    test_size=0.2,  # Proportion of data held out as temporal test set
                                     # Model selection parameters
                                     auto_optimize=True,  # Whether to automatically optimize parameters
                                     optimization_method="L-BFGS-B",  # Optimization method
@@ -63,7 +64,19 @@ def CreateExponentialSmoothingModel(dataframe,
                                     caption_y_indent_for_decomposition_plot=-0.215,
                                     x_indent_for_performance_plot=-0.115,
                                     x_indent_for_forecast_plot=-0.115,
-                                    x_indent_for_decomposition_plot=-0.115):
+                                    x_indent_for_decomposition_plot=-0.115,
+                                    # RMSE comparison plot arguments
+                                    plot_training_and_test_mse=True,
+                                    training_bar_color="#3a86ff",
+                                    test_bar_color="#b0170c",
+                                    figure_size_for_mse_comparison_plot=(7, 5),
+                                    title_for_mse_comparison_plot=None,
+                                    subtitle_for_mse_comparison_plot=None,
+                                    caption_for_mse_comparison_plot=None,
+                                    title_y_indent_for_mse_comparison_plot=1.10,
+                                    subtitle_y_indent_for_mse_comparison_plot=1.05,
+                                    caption_y_indent_for_mse_comparison_plot=-0.15,
+                                    x_indent_for_mse_comparison_plot=-0.115):
     """
     Construct, fit, and evaluate exponential smoothing models for time series forecasting.
 
@@ -118,8 +131,12 @@ def CreateExponentialSmoothingModel(dataframe,
         The nature of the seasonal component: "additive" or "multiplicative". 
         Defaults to "additive".
     damped_trend
-        Whether to dampen the trend approach to a horizontal line over time. 
+        Whether to dampen the trend approach to a horizontal line over time.
         Defaults to False.
+    test_size
+        Proportion of observations held out as a temporal test set (the last
+        `test_size` fraction of rows). The model is fit on the remaining
+        earlier observations. Defaults to 0.2.
     auto_optimize
         If True, utilizes numerical solvers to find optimal smoothing 
         coefficients based on historical data. Defaults to True.
@@ -150,6 +167,17 @@ def CreateExponentialSmoothingModel(dataframe,
         Vertical coordinate offsets for caption text.
     x_indent_for_performance_plot, x_indent_for_forecast_plot, x_indent_for_decomposition_plot
         Horizontal coordinate offsets for text placement in the plots.
+    plot_training_and_test_mse
+        Whether to render a bar chart comparing training RMSE and test RMSE.
+        Defaults to True.
+    training_bar_color, test_bar_color
+        Bar colors for the training and test bars. Defaults to blue / red.
+    figure_size_for_mse_comparison_plot
+        Dimensions (width, height) for the comparison chart. Defaults to (7, 5).
+    title_for_mse_comparison_plot, subtitle_for_mse_comparison_plot, caption_for_mse_comparison_plot
+        Text elements for the comparison chart. Sensible defaults are used when None.
+    title_y_indent_for_mse_comparison_plot, subtitle_y_indent_for_mse_comparison_plot, caption_y_indent_for_mse_comparison_plot, x_indent_for_mse_comparison_plot
+        Coordinate offsets for text placement in the comparison chart.
 
     Returns
     -------
@@ -157,11 +185,11 @@ def CreateExponentialSmoothingModel(dataframe,
         A dictionary containing the following keys:
           * 'model': The fitted statsmodels Holt-Winters model object.
           * 'model_type': The smoothing method used (simple, double, or triple).
-          * 'fitted_values': A Series of historical values predicted by the model.
-          * 'forecast': A Series of future predictions.
-          * 'performance_metrics': A dictionary with MSE, RMSE, MAE, and MAPE.
+          * 'fitted_values': A Series of in-sample (training) values predicted by the model.
+          * 'forecast': A Series of future predictions beyond the training period.
+          * 'performance_metrics': A dictionary with training_rmse, test_rmse, training_mae, and training_mape.
           * 'parameters': The optimized smoothing coefficients.
-          * 'data': The cleaned time series data used for modeling.
+          * 'data': The full cleaned time series used for modeling.
 
     Examples
     --------
@@ -205,7 +233,13 @@ def CreateExponentialSmoothingModel(dataframe,
     # Check for sufficient data
     if len(ts_data) < 4:
         raise ValueError("Insufficient data for exponential smoothing. Need at least 4 observations.")
-    
+
+    # Split data temporally: last test_size proportion becomes the test set
+    n_total = len(ts_data)
+    n_train = int(n_total * (1 - test_size))
+    train_ts = ts_data.iloc[:n_train]
+    test_ts = ts_data.iloc[n_train:]
+
     # Auto-detect seasonal periods if not provided and using triple exponential smoothing
     if smoothing_type == "auto" or smoothing_type == "triple":
         if seasonal_periods is None:
@@ -259,17 +293,17 @@ def CreateExponentialSmoothingModel(dataframe,
     if gamma is not None:
         model_params['smoothing_seasonal'] = gamma
     
-    # Set up the model based on smoothing type
+    # Set up the model based on smoothing type (fit on training portion only)
     if smoothing_type == "simple":
         model = ExponentialSmoothing(
-            ts_data,
+            train_ts,
             trend=None,
             seasonal=None,
             **model_params
         )
     elif smoothing_type == "double":
         model = ExponentialSmoothing(
-            ts_data,
+            train_ts,
             trend=trend_type,
             seasonal=None,
             damped_trend=damped_trend,
@@ -279,7 +313,7 @@ def CreateExponentialSmoothingModel(dataframe,
         if seasonal_periods is None:
             raise ValueError("seasonal_periods must be specified for triple exponential smoothing")
         model = ExponentialSmoothing(
-            ts_data,
+            train_ts,
             trend=trend_type,
             seasonal=seasonal_type,
             seasonal_periods=seasonal_periods,
@@ -295,29 +329,33 @@ def CreateExponentialSmoothingModel(dataframe,
     else:
         fitted_model = model.fit()
     
-    # Generate fitted values
+    # Generate fitted values (training period only)
     fitted_values = fitted_model.fittedvalues
-    
-    # Generate forecasts
+
+    # Generate future forecasts beyond the training period
     forecast = fitted_model.forecast(steps=forecast_periods)
-    
-    # Calculate performance metrics
-    mse = mean_squared_error(ts_data, fitted_values)
-    mae = mean_absolute_error(ts_data, fitted_values)
-    rmse = np.sqrt(mse)
-    mape = np.mean(np.abs((ts_data - fitted_values) / ts_data)) * 100
-    
+
+    # Calculate training performance metrics
+    training_mse = mean_squared_error(train_ts, fitted_values)
+    training_mae = mean_absolute_error(train_ts, fitted_values)
+    training_rmse = np.sqrt(training_mse)
+    training_mape = np.mean(np.abs((train_ts - fitted_values) / train_ts)) * 100
+
+    # Calculate test performance metrics (forecast over held-out test period)
+    test_forecast_values = fitted_model.forecast(steps=len(test_ts))
+    test_rmse = np.sqrt(mean_squared_error(test_ts.values, test_forecast_values.values))
+
     # Print model performance if requested
     if print_model_performance:
         print(f"\n{'='*60}")
         print("EXPONENTIAL SMOOTHING MODEL PERFORMANCE")
         print(f"{'='*60}")
         print(f"Model Type: {smoothing_type.title()} Exponential Smoothing")
-        print(f"Data Points: {len(ts_data)}")
-        print(f"Mean Squared Error (MSE): {mse:.4f}")
-        print(f"Root Mean Squared Error (RMSE): {rmse:.4f}")
-        print(f"Mean Absolute Error (MAE): {mae:.4f}")
-        print(f"Mean Absolute Percentage Error (MAPE): {mape:.2f}%")
+        print(f"Training Points: {len(train_ts)} | Test Points: {len(test_ts)}")
+        print(f"Training RMSE: {training_rmse:.4f}")
+        print(f"Test RMSE: {test_rmse:.4f}")
+        print(f"Training MAE: {training_mae:.4f}")
+        print(f"Training MAPE: {training_mape:.2f}%")
         print("="*60)
     
     # Print parameter summary if requested
@@ -358,9 +396,9 @@ def CreateExponentialSmoothingModel(dataframe,
         # Create the plot
         ax = plt.subplot(111)
         
-        # Plot actual values
-        ax.plot(ts_data.index, ts_data.values, 
-                marker='o', markersize=3, linewidth=1, 
+        # Plot actual values (training set)
+        ax.plot(train_ts.index, train_ts.values,
+                marker='o', markersize=3, linewidth=1,
                 color=dot_fill_color, alpha=0.7, label='Actual')
         
         # Plot fitted values
@@ -410,17 +448,17 @@ def CreateExponentialSmoothingModel(dataframe,
         
         ax = plt.subplot(111)
         
-        # Plot historical data
-        ax.plot(ts_data.index, ts_data.values, 
-                marker='o', markersize=3, linewidth=1, 
+        # Plot historical data (full series including test period for context)
+        ax.plot(ts_data.index, ts_data.values,
+                marker='o', markersize=3, linewidth=1,
                 color=dot_fill_color, alpha=0.7, label='Historical')
         
         # Plot fitted values
         ax.plot(fitted_values.index, fitted_values.values, 
                 linewidth=2, color=line_color, label='Fitted')
         
-        # Create forecast index
-        last_date = ts_data.index[-1]
+        # Create forecast index (starts from end of training period)
+        last_date = train_ts.index[-1]
         if isinstance(last_date, pd.Timestamp):
             if pd.infer_freq(ts_data.index) == 'D':  # Daily
                 forecast_index = pd.date_range(start=last_date + pd.Timedelta(days=1), 
@@ -548,6 +586,39 @@ def CreateExponentialSmoothingModel(dataframe,
         except Exception as e:
             print(f"Could not create decomposition plot: {e}")
     
+    # Plot training vs. test RMSE comparison
+    if plot_training_and_test_mse:
+        import textwrap as _tw
+        chart_title = title_for_mse_comparison_plot or "Training vs. Test RMSE"
+        chart_subtitle = subtitle_for_mse_comparison_plot or "Compares model error on the training and test datasets."
+
+        fig, ax = plt.subplots(figsize=figure_size_for_mse_comparison_plot)
+        bar_values = [training_rmse, test_rmse]
+        bar_labels = ['Training', 'Test']
+        bar_colors = [training_bar_color, test_bar_color]
+        bars = ax.bar(bar_labels, bar_values, color=bar_colors, alpha=0.8, width=0.5)
+        for bar in bars:
+            height = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width() / 2.0, height,
+                    '{:,.4f}'.format(height), ha='center', va='bottom', fontsize=10, color='#262626')
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['bottom'].set_color('#666666')
+        ax.spines['left'].set_visible(False)
+        ax.tick_params(which='major', labelsize=9, color='#666666')
+        ax.yaxis.set_ticks([])
+        plt.subplots_adjust(top=0.85)
+        ax.text(x=x_indent_for_mse_comparison_plot, y=title_y_indent_for_mse_comparison_plot,
+                s=chart_title, fontsize=14, color="#262626", transform=ax.transAxes)
+        ax.text(x=x_indent_for_mse_comparison_plot, y=subtitle_y_indent_for_mse_comparison_plot,
+                s=chart_subtitle, fontsize=11, color="#666666", transform=ax.transAxes)
+        if caption_for_mse_comparison_plot is not None:
+            ax.text(x=x_indent_for_mse_comparison_plot, y=caption_y_indent_for_mse_comparison_plot,
+                    s=_tw.fill(caption_for_mse_comparison_plot, 80, break_long_words=False),
+                    fontsize=8, color="#666666", transform=ax.transAxes)
+        plt.show()
+        plt.clf()
+
     # Return results
     results = {
         'model': fitted_model,
@@ -555,13 +626,13 @@ def CreateExponentialSmoothingModel(dataframe,
         'fitted_values': fitted_values,
         'forecast': forecast,
         'performance_metrics': {
-            'mse': mse,
-            'rmse': rmse,
-            'mae': mae,
-            'mape': mape
+            'training_rmse': training_rmse,
+            'test_rmse': test_rmse,
+            'training_mae': training_mae,
+            'training_mape': training_mape,
         },
         'parameters': fitted_model.params,
         'data': ts_data
     }
-    
+
     return results

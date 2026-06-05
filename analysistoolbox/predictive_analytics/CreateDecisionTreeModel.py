@@ -19,7 +19,7 @@ def CreateDecisionTreeModel(dataframe,
                             # Model training arguments
                             test_size=0.2,
                             categorical_splitting_criterion='entropy',
-                            numerical_splitting_criterion='mse',
+                            numerical_splitting_criterion='squared_error',
                             maximum_depth=None,
                             minimum_impurity_decrease=0.0,
                             random_seed=412,
@@ -55,7 +55,19 @@ def CreateDecisionTreeModel(dataframe,
                             # Decision tree plot arguments
                             plot_decision_tree=False,
                             decision_tree_plot_size=(20, 20),
-                            print_decision_rules=False):
+                            print_decision_rules=False,
+                            # MSE/accuracy comparison plot arguments
+                            plot_training_and_test_mse=True,
+                            training_bar_color="#3a86ff",
+                            test_bar_color="#b0170c",
+                            figure_size_for_mse_comparison_plot=(7, 5),
+                            title_for_mse_comparison_plot=None,
+                            subtitle_for_mse_comparison_plot=None,
+                            caption_for_mse_comparison_plot=None,
+                            title_y_indent_for_mse_comparison_plot=1.10,
+                            subtitle_y_indent_for_mse_comparison_plot=1.05,
+                            caption_y_indent_for_mse_comparison_plot=-0.15,
+                            x_indent_for_mse_comparison_plot=-0.115):
     """
     Train, evaluate, and visualize a decision tree model for classification or regression.
 
@@ -101,8 +113,9 @@ def CreateDecisionTreeModel(dataframe,
         The function to measure the quality of a split for classification. 
         Supported values are "gini" and "entropy". Defaults to "entropy".
     numerical_splitting_criterion
-        The function to measure the quality of a split for regression. 
-        Supported values are "mse", "friedman_mse", and "mae". Defaults to "mse".
+        The function to measure the quality of a split for regression.
+        Supported values are "squared_error", "friedman_mse", "absolute_error",
+        and "poisson". Defaults to "squared_error".
     maximum_depth
         The maximum depth of the tree. If None, nodes are expanded until all 
         leaves are pure. Defaults to None.
@@ -144,14 +157,38 @@ def CreateDecisionTreeModel(dataframe,
     title_y_indent_for_feature_importance_plot, subtitle_y_indent_for_feature_importance_plot, caption_y_indent_for_feature_importance_plot
         Coordinate offsets for text placement in the importance plot.
     plot_decision_tree
-        If True, renders a visual diagram of the trained decision tree. 
+        If True, renders a visual diagram of the trained decision tree.
         Defaults to False.
     decision_tree_plot_size
-        Dimensions (width, height) for the tree structure diagram. 
+        Dimensions (width, height) for the tree structure diagram.
         Defaults to (20, 20).
     print_decision_rules
-        If True, prints a text-based version of the decision logic to the 
+        If True, prints a text-based version of the decision logic to the
         console. Defaults to False.
+    plot_training_and_test_mse
+        If True, renders a bar chart comparing training vs. test MSE (for
+        regression) or training vs. test accuracy (for classification).
+        Defaults to True.
+    training_bar_color
+        Hex color for the training bar in the comparison chart. Defaults to "#3a86ff".
+    test_bar_color
+        Hex color for the test bar in the comparison chart. Defaults to "#b0170c".
+    figure_size_for_mse_comparison_plot
+        Dimensions (width, height) for the comparison chart. Defaults to (7, 5).
+    title_for_mse_comparison_plot
+        Title text for the comparison chart. Defaults to a metric-appropriate string.
+    subtitle_for_mse_comparison_plot
+        Subtitle text for the comparison chart. Defaults to a metric-appropriate string.
+    caption_for_mse_comparison_plot
+        Optional caption text for the comparison chart. Defaults to None.
+    title_y_indent_for_mse_comparison_plot
+        Vertical position of the title in axes-fraction coordinates. Defaults to 1.10.
+    subtitle_y_indent_for_mse_comparison_plot
+        Vertical position of the subtitle in axes-fraction coordinates. Defaults to 1.05.
+    caption_y_indent_for_mse_comparison_plot
+        Vertical position of the caption in axes-fraction coordinates. Defaults to -0.15.
+    x_indent_for_mse_comparison_plot
+        Horizontal starting position for title/subtitle/caption text. Defaults to -0.115.
 
     Returns
     -------
@@ -218,17 +255,28 @@ def CreateDecisionTreeModel(dataframe,
     # Fit the model
     model = model.fit(train[list_of_predictor_variables], train[outcome_variable])
     
-    # Add predictions to test set
+    # Add predictions to training and test sets
+    train['Predicted'] = model.predict(train[list_of_predictor_variables])
     test['Predicted'] = model.predict(test[list_of_predictor_variables])
-    
-    # Show mean squared error and variance if outcome is numerical
+
+    # Compute training and test metrics
+    if is_outcome_categorical:
+        training_metric = metrics.accuracy_score(train[outcome_variable], train['Predicted'])
+        test_metric = metrics.accuracy_score(test[outcome_variable], test['Predicted'])
+    else:
+        training_metric = metrics.mean_squared_error(train[outcome_variable], train['Predicted'])
+        test_metric = metrics.mean_squared_error(test[outcome_variable], test['Predicted'])
+
+    # Print training and test performance
     if print_model_training_performance:
         if is_outcome_categorical == False:
-            print('Mean Squared Error:', metrics.mean_squared_error(test[outcome_variable], test['Predicted']))
+            print('Training MSE:', training_metric)
+            print('Test MSE:', test_metric)
             print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
             print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
-        # Show accuracy if outcome is categorical
         else:
+            print('Training Accuracy:', training_metric)
+            print('Test Accuracy:', test_metric)
             classifcation_report = metrics.classification_report(test[outcome_variable], test['Predicted'])
             print("Classification Report:\n", classifcation_report, sep="")
     
@@ -310,7 +358,6 @@ def CreateDecisionTreeModel(dataframe,
                 scatter_kws={
                     'color': dot_fill_color,
                     'alpha': 0.5,
-                    'linewidth': 0.5,
                     'edgecolor': dot_fill_color
                 },
                 lowess=True,
@@ -544,6 +591,60 @@ def CreateDecisionTreeModel(dataframe,
         plt.show()
         plt.clf()
      
+    # Plot training vs. test MSE or accuracy comparison
+    if plot_training_and_test_mse:
+        if is_outcome_categorical:
+            chart_title = title_for_mse_comparison_plot or "Training vs. Test Accuracy"
+            chart_subtitle = subtitle_for_mse_comparison_plot or "Compares model accuracy on the training and test datasets."
+            value_fmt = '{:.4f}'
+        else:
+            chart_title = title_for_mse_comparison_plot or "Training vs. Test MSE"
+            chart_subtitle = subtitle_for_mse_comparison_plot or "Compares model error on the training and test datasets."
+            value_fmt = '{:,.4f}'
+
+        fig, ax = plt.subplots(figsize=figure_size_for_mse_comparison_plot)
+        bar_values = [training_metric, test_metric]
+        bar_labels = ['Training', 'Test']
+        bar_colors = [training_bar_color, test_bar_color]
+        bars = ax.bar(bar_labels, bar_values, color=bar_colors, alpha=0.8, width=0.5)
+        for bar in bars:
+            height = bar.get_height()
+            ax.text(
+                bar.get_x() + bar.get_width() / 2.0,
+                height,
+                value_fmt.format(height),
+                ha='center', va='bottom', fontsize=10, color='#262626'
+            )
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['bottom'].set_color('#666666')
+        ax.spines['left'].set_visible(False)
+        ax.tick_params(which='major', labelsize=9, color='#666666')
+        ax.yaxis.set_ticks([])
+        plt.subplots_adjust(top=0.85)
+        ax.text(
+            x=x_indent_for_mse_comparison_plot,
+            y=title_y_indent_for_mse_comparison_plot,
+            s=chart_title,
+            fontsize=14, color="#262626", transform=ax.transAxes
+        )
+        ax.text(
+            x=x_indent_for_mse_comparison_plot,
+            y=subtitle_y_indent_for_mse_comparison_plot,
+            s=chart_subtitle,
+            fontsize=11, color="#666666", transform=ax.transAxes
+        )
+        if caption_for_mse_comparison_plot is not None:
+            import textwrap as _tw
+            ax.text(
+                x=x_indent_for_mse_comparison_plot,
+                y=caption_y_indent_for_mse_comparison_plot,
+                s=_tw.fill(caption_for_mse_comparison_plot, 80, break_long_words=False),
+                fontsize=8, color="#666666", transform=ax.transAxes
+            )
+        plt.show()
+        plt.clf()
+
     # Return the model
     return model
 
