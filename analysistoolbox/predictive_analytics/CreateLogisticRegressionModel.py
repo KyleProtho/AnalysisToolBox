@@ -22,18 +22,18 @@ def CreateLogisticRegressionModel(dataframe,
                                   random_seed=412,
                                   # Output arguments
                                   print_model_training_performance=False,
-                                  # MSE/accuracy comparison plot arguments
-                                  plot_training_and_test_mse=True,
+                                  # Performance comparison plot arguments
+                                  plot_training_and_test_performance=True,
                                   training_bar_color="#3a86ff",
                                   test_bar_color="#b0170c",
-                                  figure_size_for_mse_comparison_plot=(7, 5),
-                                  title_for_mse_comparison_plot=None,
-                                  subtitle_for_mse_comparison_plot=None,
-                                  caption_for_mse_comparison_plot=None,
-                                  title_y_indent_for_mse_comparison_plot=1.10,
-                                  subtitle_y_indent_for_mse_comparison_plot=1.05,
-                                  caption_y_indent_for_mse_comparison_plot=-0.15,
-                                  x_indent_for_mse_comparison_plot=-0.115):
+                                  figure_size_for_performance_comparison_plot=(7, 5),
+                                  title_for_performance_comparison_plot=None,
+                                  subtitle_for_performance_comparison_plot=None,
+                                  caption_for_performance_comparison_plot=None,
+                                  title_y_indent_for_performance_comparison_plot=1.10,
+                                  subtitle_y_indent_for_performance_comparison_plot=1.05,
+                                  caption_y_indent_for_performance_comparison_plot=-0.15,
+                                  x_indent_for_performance_comparison_plot=-0.115):
     """
     Train, evaluate, and visualize a logistic regression model for binary classification.
 
@@ -87,18 +87,18 @@ def CreateLogisticRegressionModel(dataframe,
         Controls the randomness of the data split and solver initialization.
         Defaults to 412.
     print_model_training_performance
-        If True, prints training accuracy and test accuracy after fitting.
+        If True, prints training error rate and test error rate after fitting.
         Defaults to False.
-    plot_training_and_test_mse
-        Whether to render a bar chart comparing training accuracy and test
-        accuracy. Defaults to True.
+    plot_training_and_test_performance
+        Whether to render a bar chart comparing training error rate and test
+        error rate. Defaults to True.
     training_bar_color, test_bar_color
         Bar colors for the training and test bars. Defaults to blue / red.
-    figure_size_for_mse_comparison_plot
+    figure_size_for_performance_comparison_plot
         Dimensions (width, height) for the comparison chart. Defaults to (7, 5).
-    title_for_mse_comparison_plot, subtitle_for_mse_comparison_plot, caption_for_mse_comparison_plot
+    title_for_performance_comparison_plot, subtitle_for_performance_comparison_plot, caption_for_performance_comparison_plot
         Text elements for the comparison chart. Sensible defaults are used when None.
-    title_y_indent_for_mse_comparison_plot, subtitle_y_indent_for_mse_comparison_plot, caption_y_indent_for_mse_comparison_plot, x_indent_for_mse_comparison_plot
+    title_y_indent_for_performance_comparison_plot, subtitle_y_indent_for_performance_comparison_plot, caption_y_indent_for_performance_comparison_plot, x_indent_for_performance_comparison_plot
         Coordinate offsets for text placement in the comparison chart.
 
     Returns
@@ -175,14 +175,14 @@ def CreateLogisticRegressionModel(dataframe,
     train['Predicted'] = model.predict(train[list_of_predictor_variables])
     test['Predicted'] = model.predict(test[list_of_predictor_variables])
 
-    # Compute training and test accuracy
-    training_accuracy = metrics.accuracy_score(train[outcome_variable], train['Predicted'])
-    score = model.score(test[list_of_predictor_variables], test[outcome_variable])
+    # Compute training and test error rate (1 - accuracy)
+    training_error_rate = 1 - metrics.accuracy_score(train[outcome_variable], train['Predicted'])
+    test_error_rate = 1 - model.score(test[list_of_predictor_variables], test[outcome_variable])
 
-    # Print training and test accuracy
+    # Print training and test error rate
     if print_model_training_performance:
-        print('Training Accuracy:', training_accuracy)
-        print('Test Accuracy:', score)
+        print('Training Error Rate:', training_error_rate)
+        print('Test Error Rate:', test_error_rate)
 
     # Print the confusion matrix
     confusion_matrix = metrics.confusion_matrix(
@@ -201,21 +201,21 @@ def CreateLogisticRegressionModel(dataframe,
         )
         plt.ylabel('Actual label')
         plt.xlabel('Predicted label')
-        all_sample_title = 'Accuracy Score: {0}'.format(score)
+        all_sample_title = 'Error Rate: {0:.4f}'.format(test_error_rate)
         plt.title(all_sample_title, size = 15)
         plt.show()
     else:
         print("Confusion matrix:")
         print(confusion_matrix)
         
-    # Plot training vs. test accuracy comparison
-    if plot_training_and_test_mse:
+    # Plot training vs. test error rate comparison
+    if plot_training_and_test_performance:
         import textwrap as _tw
-        chart_title = title_for_mse_comparison_plot or "Training vs. Test Accuracy"
-        chart_subtitle = subtitle_for_mse_comparison_plot or "Compares model accuracy on the training and test datasets."
+        chart_title = title_for_performance_comparison_plot or "Training vs. Test Error Rate"
+        chart_subtitle = subtitle_for_performance_comparison_plot or "Compares model error rate on the training and test datasets."
 
-        fig, ax = plt.subplots(figsize=figure_size_for_mse_comparison_plot)
-        bar_values = [training_accuracy, score]
+        fig, ax = plt.subplots(figsize=figure_size_for_performance_comparison_plot)
+        bar_values = [training_error_rate, test_error_rate]
         bar_labels = ['Training', 'Test']
         bar_colors = [training_bar_color, test_bar_color]
         bars = ax.bar(bar_labels, bar_values, color=bar_colors, alpha=0.8, width=0.5)
@@ -230,13 +230,13 @@ def CreateLogisticRegressionModel(dataframe,
         ax.tick_params(which='major', labelsize=9, color='#666666')
         ax.yaxis.set_ticks([])
         plt.subplots_adjust(top=0.85)
-        ax.text(x=x_indent_for_mse_comparison_plot, y=title_y_indent_for_mse_comparison_plot,
+        ax.text(x=x_indent_for_performance_comparison_plot, y=title_y_indent_for_performance_comparison_plot,
                 s=chart_title, fontsize=14, color="#262626", transform=ax.transAxes)
-        ax.text(x=x_indent_for_mse_comparison_plot, y=subtitle_y_indent_for_mse_comparison_plot,
+        ax.text(x=x_indent_for_performance_comparison_plot, y=subtitle_y_indent_for_performance_comparison_plot,
                 s=chart_subtitle, fontsize=11, color="#666666", transform=ax.transAxes)
-        if caption_for_mse_comparison_plot is not None:
-            ax.text(x=x_indent_for_mse_comparison_plot, y=caption_y_indent_for_mse_comparison_plot,
-                    s=_tw.fill(caption_for_mse_comparison_plot, 80, break_long_words=False),
+        if caption_for_performance_comparison_plot is not None:
+            ax.text(x=x_indent_for_performance_comparison_plot, y=caption_y_indent_for_performance_comparison_plot,
+                    s=_tw.fill(caption_for_performance_comparison_plot, 80, break_long_words=False),
                     fontsize=8, color="#666666", transform=ax.transAxes)
         plt.show()
         plt.clf()

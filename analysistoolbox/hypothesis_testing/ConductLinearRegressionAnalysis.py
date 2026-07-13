@@ -11,8 +11,11 @@ def ConductLinearRegressionAnalysis(dataframe,
                                     list_of_predictors,
                                     add_constant=False,
                                     scale_predictors=False,
+                                    variable_selection='none',
+                                    selection_limit=4,
+                                    selection_p_threshold=0.05,
                                     show_diagnostic_plots_for_each_predictor=False,
-                                    show_help=False):
+                                    show_help=True):
     """
     Conduct linear regression analysis to model relationships between variables and assess significance.
 
@@ -49,6 +52,26 @@ def ConductLinearRegressionAnalysis(dataframe,
     scale_predictors
         If True, scales the predictor variables to have a mean of 0 and standard
         deviation of 1 using `StandardScaler` before fitting the model. Defaults to False.
+    variable_selection
+        Stepwise variable selection method to apply before fitting the final model.
+        Options:
+          * 'none'     — No selection; use all predictors in ``list_of_predictors``.
+          * 'forward'  — Start from the null model (intercept only) and greedily add
+            the predictor that most lowers AIC, stopping when no addition helps or
+            ``selection_limit`` is reached.
+          * 'backward' — Start with all predictors and iteratively remove the one with
+            the highest p-value until all remaining p-values fall below
+            ``selection_p_threshold``.
+          * 'mixed'    — Forward steps add variables by AIC improvement; after each
+            addition, any in-model predictor whose p-value exceeds
+            ``selection_p_threshold`` is removed. Continues until stable.
+        Defaults to 'none'.
+    selection_limit
+        Hard cap on the number of predictors kept by 'forward' or 'mixed' selection.
+        Defaults to 4.
+    selection_p_threshold
+        P-value threshold used by 'backward' and 'mixed' selection. Predictors with
+        p-value at or above this threshold are candidates for removal. Defaults to 0.05.
     show_diagnostic_plots_for_each_predictor
         If True, displays diagnostic regression plots (e.g., partial regression plots)
         for each predictor in the model. Defaults to False.
@@ -112,6 +135,182 @@ def ConductLinearRegressionAnalysis(dataframe,
     dataframe.dropna(inplace=True)
     dataframe = dataframe[np.isfinite(dataframe).all(1)]
 
+    # Variable selection (forward / backward / mixed)
+    if variable_selection in ('forward', 'backward', 'mixed'):
+        print("\n" + "=" * 62)
+        print(f"  {variable_selection.upper()} SELECTION")
+        print("=" * 62)
+        print(
+            "\n  Warning: Forward selection is a greedy approach, and might include\n"
+            "  variables early that later become redundant.\n"
+        )
+
+        if variable_selection in ('forward', 'mixed'):
+            print("  What is AIC?  (Akaike Information Criterion)")
+            print("  " + "-" * 46)
+            print(
+                "  AIC measures how well a model fits the data while penalizing\n"
+                "  complexity. Every predictor you add reduces residual error\n"
+                "  (RSS), but AIC charges a 'complexity penalty' of 2 points per\n"
+                "  new parameter. A predictor earns its place only if its error\n"
+                "  reduction outweighs that cost.\n"
+                "  Lower AIC = better model. A difference of 2 points is\n"
+                "  noticeable; 10+ is substantial."
+            )
+            if variable_selection == 'mixed':
+                print()
+
+        if variable_selection in ('backward', 'mixed'):
+            print("  P-value threshold: {:.2f}".format(selection_p_threshold))
+            print("  " + "-" * 46)
+            print(
+                "  A predictor's p-value is the probability of observing its\n"
+                "  estimated coefficient -- or one more extreme -- purely by\n"
+                "  chance, assuming the predictor has no true effect.\n"
+                "  p < {t:.2f}  ->  statistically significant; keep the predictor.\n"
+                "  p >= {t:.2f} ->  likely noise; remove the predictor.".format(
+                    t=selection_p_threshold
+                )
+            )
+
+        # Null model (intercept only) used as AIC baseline for forward/mixed
+        null_X = pd.DataFrame({"const": np.ones(len(dataframe))}, index=dataframe.index)
+        null_aic = sm.OLS(dataframe[outcome_variable], null_X).fit().aic
+
+        # ── FORWARD SELECTION ────────────────────────────────────────
+        if variable_selection == 'forward':
+            remaining = list_of_predictors.copy()
+            selected = []
+            current_aic = null_aic
+            print(f"\n  Null model AIC (intercept only): {current_aic:.4f}")
+            print(f"  Candidates:  {remaining}")
+            print(f"  Limit:       {selection_limit}\n")
+
+            while remaining and len(selected) < selection_limit:
+                best_aic, best_var = current_aic, None
+                for var in remaining:
+                    try:
+                        cand_aic = sm.OLS(
+                            dataframe[outcome_variable],
+                            sm.add_constant(dataframe[selected + [var]])
+                        ).fit().aic
+                    except Exception:
+                        continue
+                    if cand_aic < best_aic:
+                        best_aic, best_var = cand_aic, var
+                if best_var is None:
+                    print("  Stopped: no remaining predictor improves AIC.")
+                    break
+                selected.append(best_var)
+                remaining.remove(best_var)
+                print(f"  Step {len(selected)}: Added '{best_var}' | AIC: {best_aic:.4f} | Improved by {current_aic - best_aic:.4f}")
+                current_aic = best_aic
+
+            if len(selected) == selection_limit and remaining:
+                print(f"\n  Stopped: reached the limit of {selection_limit} predictor(s).")
+            list_of_predictors = selected
+
+        # ── BACKWARD SELECTION ───────────────────────────────────────
+        elif variable_selection == 'backward':
+            current_preds = list_of_predictors.copy()
+            print(f"\n  Starting predictors: {current_preds}")
+            print(f"  P-value threshold:   {selection_p_threshold}\n")
+            step = 0
+
+            while len(current_preds) > 0:
+                X_curr = sm.add_constant(dataframe[current_preds])
+                pvals = sm.OLS(dataframe[outcome_variable], X_curr).fit().pvalues[current_preds]
+                worst_var = pvals.idxmax()
+                worst_p = pvals.max()
+                if worst_p <= selection_p_threshold:
+                    print(f"  All remaining predictors have p-value <= {selection_p_threshold}. Stopping.")
+                    break
+                step += 1
+                current_preds.remove(worst_var)
+                label = current_preds if current_preds else ['(none)']
+                print(f"  Step {step}: Removed '{worst_var}' | p-value: {worst_p:.4f} | Remaining: {label}")
+
+            list_of_predictors = current_preds
+
+        # ── MIXED SELECTION ──────────────────────────────────────────
+        elif variable_selection == 'mixed':
+            remaining = list_of_predictors.copy()
+            selected = []
+            current_aic = null_aic
+            print(f"\n  Null model AIC (intercept only): {current_aic:.4f}")
+            print(f"  Candidates: {remaining}")
+            print(f"  Limit: {selection_limit}  |  P-value threshold: {selection_p_threshold}\n")
+
+            step = 0
+            seen_states = set()
+            max_iter = (len(list_of_predictors) + 1) * 4
+
+            for _ in range(max_iter):
+                state = frozenset(selected)
+                if state in seen_states:
+                    print("  Converged: model has stabilized.")
+                    break
+                seen_states.add(state)
+                forward_taken = False
+                backward_taken = False
+
+                # Forward step: add best predictor by AIC
+                if remaining and len(selected) < selection_limit:
+                    best_aic, best_var = current_aic, None
+                    for var in remaining:
+                        try:
+                            cand_aic = sm.OLS(
+                                dataframe[outcome_variable],
+                                sm.add_constant(dataframe[selected + [var]])
+                            ).fit().aic
+                        except Exception:
+                            continue
+                        if cand_aic < best_aic:
+                            best_aic, best_var = cand_aic, var
+                    if best_var is not None:
+                        selected.append(best_var)
+                        remaining.remove(best_var)
+                        step += 1
+                        print(f"  Step {step} [+]: Added '{best_var}' | AIC: {best_aic:.4f} | Improved by {current_aic - best_aic:.4f}")
+                        current_aic = best_aic
+                        forward_taken = True
+
+                # Backward step: remove worst predictor if p-value exceeds threshold
+                if len(selected) >= 1:
+                    try:
+                        X_curr = sm.add_constant(dataframe[selected])
+                        pvals = sm.OLS(dataframe[outcome_variable], X_curr).fit().pvalues[selected]
+                        worst_var = pvals.idxmax()
+                        worst_p = pvals.max()
+                        if worst_p > selection_p_threshold:
+                            selected.remove(worst_var)
+                            remaining.append(worst_var)
+                            step += 1
+                            print(f"  Step {step} [-]: Removed '{worst_var}' | p-value: {worst_p:.4f}")
+                            current_aic = (
+                                sm.OLS(dataframe[outcome_variable],
+                                       sm.add_constant(dataframe[selected])).fit().aic
+                                if selected else null_aic
+                            )
+                            backward_taken = True
+                    except Exception:
+                        pass
+
+                if not forward_taken and not backward_taken:
+                    print("  Converged: no further additions or removals improve the model.")
+                    break
+
+            if len(selected) == selection_limit and remaining:
+                print(f"\n  Stopped: reached the limit of {selection_limit} predictor(s).")
+            list_of_predictors = selected
+
+        print(f"\n  Final selected predictors ({len(list_of_predictors)}): {list_of_predictors}")
+        print("=" * 62 + "\n")
+
+        if not list_of_predictors:
+            print("No predictors were selected. Returning None.")
+            return None
+
     # Add constant
     if add_constant:
         dataframe = sm.add_constant(dataframe)
@@ -134,6 +333,17 @@ def ConductLinearRegressionAnalysis(dataframe,
         model = sm.OLS(dataframe[outcome_variable], dataframe[list_of_predictors])
     model_res = model.fit()
     model_summary = model_res.summary()
+
+    # Show the F-statistic and p-value of the model, along with some text to help interpret it
+    if show_help:
+        print("\nThe F-statistic tests the null hypothesis that all of the regression coefficients are equal to zero. "
+              "The alternative hypothesis is that at least one of the regression coefficients is not equal to zero.")
+        print("\nF-statistic value:", model_res.fvalue)
+        print("F-statistic p-value:", model_res.f_pvalue)
+        if model_res.f_pvalue < 0.05:
+            print("The F-statistic is statistically significant, meaning that we can reject the null hypothesis.")
+        else:
+            print("The F-statistic is not statistically significant, meaning that we cannot reject the null hypothesis.")
     
     # If requested, show diagnostic plots
     if show_diagnostic_plots_for_each_predictor:

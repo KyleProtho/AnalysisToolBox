@@ -45,7 +45,7 @@ class TestCreateLinearRegressionModel(unittest.TestCase):
             self.df, self.outcome, self.predictors,
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsInstance(model, LinearRegression)
 
@@ -56,7 +56,7 @@ class TestCreateLinearRegressionModel(unittest.TestCase):
             scale_variables=True,
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsInstance(model, Pipeline)
 
@@ -70,7 +70,7 @@ class TestCreateLinearRegressionModel(unittest.TestCase):
             self.df, self.outcome, self.predictors,
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         preds = model.predict(self.df[self.predictors])
         self.assertEqual(len(preds), len(self.df))
@@ -81,7 +81,7 @@ class TestCreateLinearRegressionModel(unittest.TestCase):
             self.df, self.outcome, self.predictors,
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         for coef in model.coef_:
             self.assertGreater(coef, 0)
@@ -100,7 +100,7 @@ class TestCreateLinearRegressionModel(unittest.TestCase):
                 print_model_training_performance=True,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -116,7 +116,7 @@ class TestCreateLinearRegressionModel(unittest.TestCase):
                 print_model_training_performance=True,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -132,7 +132,7 @@ class TestCreateLinearRegressionModel(unittest.TestCase):
                 print_model_training_performance=True,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -155,7 +155,7 @@ class TestCreateLinearRegressionModel(unittest.TestCase):
             test_size=0,
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsNotNone(model)
 
@@ -167,7 +167,7 @@ class TestCreateLinearRegressionModel(unittest.TestCase):
             df_nan, self.outcome, self.predictors,
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsNotNone(model)
 
@@ -177,7 +177,7 @@ class TestCreateLinearRegressionModel(unittest.TestCase):
             self.df, self.outcome, ['x1'],
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsNotNone(model)
 
@@ -192,31 +192,31 @@ class TestCreateLinearRegressionModel(unittest.TestCase):
                 self.df, self.outcome, self.predictors,
                 plot_model_test_performance=True,
                 plot_feature_importance=True,
-                plot_training_and_test_mse=True,
+                plot_training_and_test_performance=True,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with all plots enabled: {e}")
 
-    def test_mse_comparison_plot_disabled(self):
-        """plot_training_and_test_mse=False skips the MSE chart without error."""
+    def test_performance_comparison_plot_disabled(self):
+        """plot_training_and_test_performance=False skips the MSE chart without error."""
         try:
             CreateLinearRegressionModel(
                 self.df, self.outcome, self.predictors,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with MSE plot disabled: {e}")
 
-    def test_custom_mse_bar_colors(self):
+    def test_custom_performance_bar_colors(self):
         """Custom training_bar_color and test_bar_color arguments are accepted."""
         try:
             CreateLinearRegressionModel(
                 self.df, self.outcome, self.predictors,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=True,
+                plot_training_and_test_performance=True,
                 training_bar_color='green',
                 test_bar_color='orange',
             )

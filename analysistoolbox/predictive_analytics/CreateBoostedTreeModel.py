@@ -45,18 +45,18 @@ def CreateBoostedTreeModel(dataframe,
                            title_y_indent_for_feature_importance_plot=1.15,
                            subtitle_y_indent_for_feature_importance_plot=1.1,
                            caption_y_indent_for_feature_importance_plot=-0.15,
-                           # MSE/accuracy comparison plot arguments
-                           plot_training_and_test_mse=True,
+                           # Performance comparison plot arguments
+                           plot_training_and_test_performance=True,
                            training_bar_color="#3a86ff",
                            test_bar_color="#b0170c",
-                           figure_size_for_mse_comparison_plot=(7, 5),
-                           title_for_mse_comparison_plot=None,
-                           subtitle_for_mse_comparison_plot=None,
-                           caption_for_mse_comparison_plot=None,
-                           title_y_indent_for_mse_comparison_plot=1.10,
-                           subtitle_y_indent_for_mse_comparison_plot=1.05,
-                           caption_y_indent_for_mse_comparison_plot=-0.15,
-                           x_indent_for_mse_comparison_plot=-0.115):
+                           figure_size_for_performance_comparison_plot=(7, 5),
+                           title_for_performance_comparison_plot=None,
+                           subtitle_for_performance_comparison_plot=None,
+                           caption_for_performance_comparison_plot=None,
+                           title_y_indent_for_performance_comparison_plot=1.10,
+                           subtitle_y_indent_for_performance_comparison_plot=1.05,
+                           caption_y_indent_for_performance_comparison_plot=-0.15,
+                           x_indent_for_performance_comparison_plot=-0.115):
     """
     Train, evaluate, and visualize a gradient boosted tree model using XGBoost.
 
@@ -136,16 +136,16 @@ def CreateBoostedTreeModel(dataframe,
         Text elements for the importance visualization.
     title_y_indent_for_feature_importance_plot, subtitle_y_indent_for_feature_importance_plot, caption_y_indent_for_feature_importance_plot
         Coordinate offsets for text placement in the importance plot.
-    plot_training_and_test_mse
+    plot_training_and_test_performance
         Whether to render a bar chart comparing the training and test metric
-        (MSE for regression, accuracy for classification). Defaults to True.
+        (MSE for regression, error rate for classification). Defaults to True.
     training_bar_color, test_bar_color
         Bar colors for the training and test bars. Defaults to blue / red.
-    figure_size_for_mse_comparison_plot
+    figure_size_for_performance_comparison_plot
         Dimensions (width, height) for the comparison chart. Defaults to (7, 5).
-    title_for_mse_comparison_plot, subtitle_for_mse_comparison_plot, caption_for_mse_comparison_plot
+    title_for_performance_comparison_plot, subtitle_for_performance_comparison_plot, caption_for_performance_comparison_plot
         Text elements for the comparison chart. Sensible defaults are used when None.
-    title_y_indent_for_mse_comparison_plot, subtitle_y_indent_for_mse_comparison_plot, caption_y_indent_for_mse_comparison_plot, x_indent_for_mse_comparison_plot
+    title_y_indent_for_performance_comparison_plot, subtitle_y_indent_for_performance_comparison_plot, caption_y_indent_for_performance_comparison_plot, x_indent_for_performance_comparison_plot
         Coordinate offsets for text placement in the comparison chart.
 
     Returns
@@ -217,8 +217,8 @@ def CreateBoostedTreeModel(dataframe,
 
     # Compute training and test metrics
     if is_outcome_categorical:
-        training_metric = metrics.accuracy_score(train[outcome_variable], train['Predicted'])
-        test_metric = metrics.accuracy_score(test[outcome_variable], test['Predicted'])
+        training_metric = 1 - metrics.accuracy_score(train[outcome_variable], train['Predicted'])
+        test_metric = 1 - metrics.accuracy_score(test[outcome_variable], test['Predicted'])
     else:
         training_metric = metrics.mean_squared_error(train[outcome_variable], train['Predicted'])
         test_metric = metrics.mean_squared_error(test[outcome_variable], test['Predicted'])
@@ -230,10 +230,10 @@ def CreateBoostedTreeModel(dataframe,
             print('Test MSE:', test_metric)
             print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
             print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
-        # Show accuracy if outcome is categorical
+        # Show error rate if outcome is categorical
         else:
-            print('Training Accuracy:', training_metric)
-            print('Test Accuracy:', test_metric)
+            print('Training Error Rate:', training_metric)
+            print('Test Error Rate:', test_metric)
             classifcation_report = metrics.classification_report(test[outcome_variable], test['Predicted'])
             print("Classification Report:\n", classifcation_report, sep="")
      
@@ -514,18 +514,18 @@ def CreateBoostedTreeModel(dataframe,
         # Show the plot
         plt.show()
     
-    # Plot training vs. test metric comparison
-    if plot_training_and_test_mse:
+    # Plot training vs. test performance comparison
+    if plot_training_and_test_performance:
         if is_outcome_categorical:
-            chart_title = title_for_mse_comparison_plot or "Training vs. Test Accuracy"
-            chart_subtitle = subtitle_for_mse_comparison_plot or "Compares model accuracy on the training and test datasets."
+            chart_title = title_for_performance_comparison_plot or "Training vs. Test Error Rate"
+            chart_subtitle = subtitle_for_performance_comparison_plot or "Compares model error rate on the training and test datasets."
             value_fmt = '{:.4f}'
         else:
-            chart_title = title_for_mse_comparison_plot or "Training vs. Test MSE"
-            chart_subtitle = subtitle_for_mse_comparison_plot or "Compares model error on the training and test datasets."
+            chart_title = title_for_performance_comparison_plot or "Training vs. Test MSE"
+            chart_subtitle = subtitle_for_performance_comparison_plot or "Compares model error on the training and test datasets."
             value_fmt = '{:,.4f}'
 
-        fig, ax = plt.subplots(figsize=figure_size_for_mse_comparison_plot)
+        fig, ax = plt.subplots(figsize=figure_size_for_performance_comparison_plot)
         bar_values = [training_metric, test_metric]
         bar_labels = ['Training', 'Test']
         bar_colors = [training_bar_color, test_bar_color]
@@ -541,14 +541,14 @@ def CreateBoostedTreeModel(dataframe,
         ax.tick_params(which='major', labelsize=9, color='#666666')
         ax.yaxis.set_ticks([])
         plt.subplots_adjust(top=0.85)
-        ax.text(x=x_indent_for_mse_comparison_plot, y=title_y_indent_for_mse_comparison_plot,
+        ax.text(x=x_indent_for_performance_comparison_plot, y=title_y_indent_for_performance_comparison_plot,
                 s=chart_title, fontsize=14, color="#262626", transform=ax.transAxes)
-        ax.text(x=x_indent_for_mse_comparison_plot, y=subtitle_y_indent_for_mse_comparison_plot,
+        ax.text(x=x_indent_for_performance_comparison_plot, y=subtitle_y_indent_for_performance_comparison_plot,
                 s=chart_subtitle, fontsize=11, color="#666666", transform=ax.transAxes)
-        if caption_for_mse_comparison_plot is not None:
+        if caption_for_performance_comparison_plot is not None:
             import textwrap as _tw
-            ax.text(x=x_indent_for_mse_comparison_plot, y=caption_y_indent_for_mse_comparison_plot,
-                    s=_tw.fill(caption_for_mse_comparison_plot, 80, break_long_words=False),
+            ax.text(x=x_indent_for_performance_comparison_plot, y=caption_y_indent_for_performance_comparison_plot,
+                    s=_tw.fill(caption_for_performance_comparison_plot, 80, break_long_words=False),
                     fontsize=8, color="#666666", transform=ax.transAxes)
         plt.show()
         plt.clf()

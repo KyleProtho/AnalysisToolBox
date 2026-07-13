@@ -117,11 +117,31 @@ Tracks coverage against *An Introduction to Statistical Learning* (ISL) chapters
 
 ---
 
+## OSINT Data Collection
+
+Functions for gathering open-source intelligence from publicly available sources.
+Scoped to public APIs and legally accessible data only — excludes anything that primarily enables individual surveillance (people-search engines, phone lookups, social scraping, criminal/voter records).
+
+| Status | Function | Module | Source / Notes |
+|---|---|---|---|
+| ☐ Needed | `FetchDNSRecords` | `data_collection/` | DNS lookups (A, MX, NS, TXT, SOA) via `dnspython`; DNS data is fully public |
+| ☐ Needed | `FetchWHOISData` | `data_collection/` | WHOIS registration data for domains and IPs via `python-whois` |
+| ☐ Needed | `FetchIPGeolocation` | `data_collection/` | Geolocate an IP address using public APIs (ip-api.com / ipinfo.io); returns city/region/ASN, not individual PII |
+| ☐ Needed | `FetchWebArchiveSnapshot` | `data_collection/` | Retrieve archived page snapshots from the Internet Archive Wayback Machine CDX API |
+| ☐ Needed | `FetchPatentRecords` | `data_collection/` | Search USPTO open API or Google Patents by keyword, assignee, or CPC class |
+| ☐ Needed | `FetchWorldBankIndicator` | `data_collection/` | Download economic/development indicators from the World Bank Open Data API |
+| ☐ Needed | `FetchGovernmentDataset` | `data_collection/` | Search and download datasets from Data.gov and similar open government portals |
+| ☐ Needed | `ExtractDocumentMetadata` | `data_collection/` | Extract embedded metadata (author, timestamps, GPS coords) from PDFs and images via `pymupdf` / `Pillow` |
+| ☐ Needed | `FetchThreatIntelIOC` | `data_collection/` | Check IPs, domains, and file hashes against public threat feeds (AlienVault OTX API); defensive/research use |
+| ☐ Needed | `DecodeEncodedString` | `data_processing/` | Detect and decode Base64, hex, URL-encoding, and ROT13; useful for analyzing encoded artifacts |
+
+---
+
 ## Summary
 
 | | Count |
 |---|---|
 | ✅ Done | 13 |
-| ☐ Needed | 16 |
-| **Total** | **29** |
+| ☐ Needed | 26 |
+| **Total** | **39** |
 

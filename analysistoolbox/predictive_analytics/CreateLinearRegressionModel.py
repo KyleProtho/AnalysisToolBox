@@ -18,6 +18,9 @@ def CreateLinearRegressionModel(dataframe,
                                 test_size=0.2,
                                 fit_intercept=True,
                                 random_seed=412,
+                                variable_selection='none',
+                                selection_limit=4,
+                                selection_p_threshold=0.05,
                                 # Output arguments
                                 print_peak_to_peak_range_of_each_predictor=False,
                                 print_model_training_performance=False,
@@ -47,18 +50,18 @@ def CreateLinearRegressionModel(dataframe,
                                 title_y_indent_for_feature_importance_plot=1.15,
                                 subtitle_y_indent_for_feature_importance_plot=1.1,
                                 caption_y_indent_for_feature_importance_plot=-0.15,
-                                # MSE comparison plot arguments
-                                plot_training_and_test_mse=True,
+                                # Performance comparison plot arguments
+                                plot_training_and_test_performance=True,
                                 training_bar_color="#3a86ff",
                                 test_bar_color="#b0170c",
-                                figure_size_for_mse_comparison_plot=(7, 5),
-                                title_for_mse_comparison_plot="Training vs. Test MSE",
-                                subtitle_for_mse_comparison_plot="Compares model error on the training and test datasets.",
-                                caption_for_mse_comparison_plot=None,
-                                title_y_indent_for_mse_comparison_plot=1.10,
-                                subtitle_y_indent_for_mse_comparison_plot=1.05,
-                                caption_y_indent_for_mse_comparison_plot=-0.15,
-                                x_indent_for_mse_comparison_plot=-0.115):
+                                figure_size_for_performance_comparison_plot=(7, 5),
+                                title_for_performance_comparison_plot="Training vs. Test MSE",
+                                subtitle_for_performance_comparison_plot="Compares model error on the training and test datasets.",
+                                caption_for_performance_comparison_plot=None,
+                                title_y_indent_for_performance_comparison_plot=1.10,
+                                subtitle_y_indent_for_performance_comparison_plot=1.05,
+                                caption_y_indent_for_performance_comparison_plot=-0.15,
+                                x_indent_for_performance_comparison_plot=-0.115):
     """
     Train, evaluate, and visualize a multiple linear regression model.
 
@@ -102,8 +105,30 @@ def CreateLinearRegressionModel(dataframe,
         Whether to calculate the intercept for this model. If False, the 
         intercept will be set to 0.0. Defaults to True.
     random_seed
-        Controls the randomness of the train-test split for reproducibility. 
+        Controls the randomness of the train-test split for reproducibility.
         Defaults to 412.
+    variable_selection
+        Stepwise variable selection method applied to the training set before
+        fitting the final model. Options:
+          * 'none'     — No selection; use all predictors in
+            ``list_of_predictor_variables``.
+          * 'forward'  — Start from the null model (intercept only) and greedily
+            add the predictor that most lowers AIC (computed from training RSS),
+            stopping when no addition helps or ``selection_limit`` is reached.
+          * 'backward' — Start with all predictors and iteratively remove the one
+            with the highest p-value until all remaining p-values fall below
+            ``selection_p_threshold``.
+          * 'mixed'    — Forward steps add variables by AIC improvement; after each
+            addition, any in-model predictor whose p-value exceeds
+            ``selection_p_threshold`` is removed. Continues until stable.
+        Defaults to 'none'.
+    selection_limit
+        Hard cap on the number of predictors kept by 'forward' or 'mixed'
+        selection. Defaults to 4.
+    selection_p_threshold
+        P-value threshold used by 'backward' and 'mixed' selection. Predictors
+        with p-value at or above this threshold are candidates for removal.
+        Defaults to 0.05.
     print_peak_to_peak_range_of_each_predictor
         If True, prints the statistical range of each predictor column to 
         the console. Defaults to False.
@@ -140,18 +165,18 @@ def CreateLinearRegressionModel(dataframe,
         Text elements for the feature importance visualization.
     title_y_indent_for_feature_importance_plot, subtitle_y_indent_for_feature_importance_plot, caption_y_indent_for_feature_importance_plot
         Coordinate offsets for text placement in the importance plot.
-    plot_training_and_test_mse
+    plot_training_and_test_performance
         Whether to generate a bar chart comparing MSE on the training set versus
         the test set. A large gap indicates overfitting. Defaults to True.
     training_bar_color
         Fill color for the training MSE bar. Defaults to "#3a86ff".
     test_bar_color
         Fill color for the test MSE bar. Defaults to "#b0170c".
-    figure_size_for_mse_comparison_plot
+    figure_size_for_performance_comparison_plot
         Dimensions (width, height) for the MSE comparison chart. Defaults to (7, 5).
-    title_for_mse_comparison_plot, subtitle_for_mse_comparison_plot, caption_for_mse_comparison_plot
+    title_for_performance_comparison_plot, subtitle_for_performance_comparison_plot, caption_for_performance_comparison_plot
         Text elements for the MSE comparison chart.
-    title_y_indent_for_mse_comparison_plot, subtitle_y_indent_for_mse_comparison_plot, caption_y_indent_for_mse_comparison_plot, x_indent_for_mse_comparison_plot
+    title_y_indent_for_performance_comparison_plot, subtitle_y_indent_for_performance_comparison_plot, caption_y_indent_for_performance_comparison_plot, x_indent_for_performance_comparison_plot
         Coordinate offsets for text placement in the MSE comparison chart.
 
     Returns
@@ -210,7 +235,202 @@ def CreateLinearRegressionModel(dataframe,
     else:
         train = dataframe.copy()
         test = dataframe.copy()
-        
+
+    # Variable selection (forward / backward / mixed), run on training data
+    if variable_selection in ('forward', 'backward', 'mixed'):
+        print("\n" + "=" * 62)
+        print(f"  {variable_selection.upper()} SELECTION")
+        print("=" * 62)
+        print(
+            "\n  Warning: Forward selection is a greedy approach, and might include\n"
+            "  variables early that later become redundant.\n"
+        )
+
+        if variable_selection in ('forward', 'mixed'):
+            print("  What is AIC?  (Akaike Information Criterion)")
+            print("  " + "-" * 46)
+            print(
+                "  AIC measures how well a model fits the data while penalizing\n"
+                "  complexity. Every predictor you add reduces residual error\n"
+                "  (RSS), but AIC charges a 'complexity penalty' of 2 points per\n"
+                "  new parameter. A predictor earns its place only if its error\n"
+                "  reduction outweighs that cost.\n"
+                "  Lower AIC = better model. A difference of 2 points is\n"
+                "  noticeable; 10+ is substantial."
+            )
+            if variable_selection == 'mixed':
+                print()
+
+        if variable_selection in ('backward', 'mixed'):
+            print("  P-value threshold: {:.2f}".format(selection_p_threshold))
+            print("  " + "-" * 46)
+            print(
+                "  A predictor's p-value is the probability of observing its\n"
+                "  estimated coefficient -- or one more extreme -- purely by\n"
+                "  chance, assuming the predictor has no true effect.\n"
+                "  p < {t:.2f}  ->  statistically significant; keep the predictor.\n"
+                "  p >= {t:.2f} ->  likely noise; remove the predictor.".format(
+                    t=selection_p_threshold
+                )
+            )
+
+        n_train = len(train)
+        y_train = train[outcome_variable].values
+
+        # Helper: AIC from training RSS for a given variable list
+        def _aic(var_list):
+            _m = linear_model.LinearRegression(fit_intercept=fit_intercept)
+            _m.fit(train[var_list], y_train)
+            rss = np.sum((y_train - _m.predict(train[var_list])) ** 2)
+            if rss <= 0:
+                return -np.inf
+            k = len(var_list) + (1 if fit_intercept else 0)
+            return n_train * np.log(rss / n_train) + 2 * k
+
+        # Helper: OLS p-values for each predictor (excluding intercept)
+        def _pvalues(var_list):
+            from scipy import stats as _stats
+            X = train[var_list].values
+            n, p = X.shape
+            _m = linear_model.LinearRegression(fit_intercept=fit_intercept)
+            _m.fit(X, y_train)
+            rss = np.sum((y_train - _m.predict(X)) ** 2)
+            df_resid = n - p - (1 if fit_intercept else 0)
+            if df_resid <= 0:
+                return {v: 1.0 for v in var_list}
+            sigma_sq = rss / df_resid
+            X_aug = np.column_stack([np.ones(n), X]) if fit_intercept else X
+            try:
+                cov = sigma_sq * np.linalg.inv(X_aug.T @ X_aug)
+            except np.linalg.LinAlgError:
+                return {v: 1.0 for v in var_list}
+            se = np.sqrt(np.diag(cov))
+            pred_se = se[1:] if fit_intercept else se
+            t_stats = _m.coef_ / pred_se
+            pvals = 2 * (1 - _stats.t.cdf(np.abs(t_stats), df=df_resid))
+            return dict(zip(var_list, pvals))
+
+        # Null model AIC baseline
+        if fit_intercept:
+            null_rss = np.sum((y_train - y_train.mean()) ** 2)
+            null_aic = n_train * np.log(null_rss / n_train) + 2
+        else:
+            null_rss = np.sum(y_train ** 2)
+            null_aic = n_train * np.log(null_rss / n_train) if null_rss > 0 else -np.inf
+
+        # ── FORWARD SELECTION ────────────────────────────────────────
+        if variable_selection == 'forward':
+            remaining = list_of_predictor_variables.copy()
+            selected = []
+            current_aic = null_aic
+            print(f"\n  Null model AIC (intercept only): {current_aic:.4f}")
+            print(f"  Candidates:  {remaining}")
+            print(f"  Limit:       {selection_limit}\n")
+
+            while remaining and len(selected) < selection_limit:
+                best_aic, best_var = current_aic, None
+                for var in remaining:
+                    cand_aic = _aic(selected + [var])
+                    if cand_aic < best_aic:
+                        best_aic, best_var = cand_aic, var
+                if best_var is None:
+                    print("  Stopped: no remaining predictor improves AIC.")
+                    break
+                selected.append(best_var)
+                remaining.remove(best_var)
+                print(f"  Step {len(selected)}: Added '{best_var}' | AIC: {best_aic:.4f} | Improved by {current_aic - best_aic:.4f}")
+                current_aic = best_aic
+
+            if len(selected) == selection_limit and remaining:
+                print(f"\n  Stopped: reached the limit of {selection_limit} predictor(s).")
+            list_of_predictor_variables = selected
+
+        # ── BACKWARD SELECTION ───────────────────────────────────────
+        elif variable_selection == 'backward':
+            current_preds = list_of_predictor_variables.copy()
+            print(f"\n  Starting predictors: {current_preds}")
+            print(f"  P-value threshold:   {selection_p_threshold}\n")
+            step = 0
+
+            while len(current_preds) > 0:
+                pvals = _pvalues(current_preds)
+                worst_var = max(pvals, key=pvals.get)
+                worst_p = pvals[worst_var]
+                if worst_p <= selection_p_threshold:
+                    print(f"  All remaining predictors have p-value <= {selection_p_threshold}. Stopping.")
+                    break
+                step += 1
+                current_preds.remove(worst_var)
+                label = current_preds if current_preds else ['(none)']
+                print(f"  Step {step}: Removed '{worst_var}' | p-value: {worst_p:.4f} | Remaining: {label}")
+
+            list_of_predictor_variables = current_preds
+
+        # ── MIXED SELECTION ──────────────────────────────────────────
+        elif variable_selection == 'mixed':
+            remaining = list_of_predictor_variables.copy()
+            selected = []
+            current_aic = null_aic
+            print(f"\n  Null model AIC (intercept only): {current_aic:.4f}")
+            print(f"  Candidates: {remaining}")
+            print(f"  Limit: {selection_limit}  |  P-value threshold: {selection_p_threshold}\n")
+
+            step = 0
+            seen_states = set()
+            max_iter = (len(list_of_predictor_variables) + 1) * 4
+
+            for _ in range(max_iter):
+                state = frozenset(selected)
+                if state in seen_states:
+                    print("  Converged: model has stabilized.")
+                    break
+                seen_states.add(state)
+                forward_taken = False
+                backward_taken = False
+
+                # Forward step: add best predictor by AIC
+                if remaining and len(selected) < selection_limit:
+                    best_aic, best_var = current_aic, None
+                    for var in remaining:
+                        cand_aic = _aic(selected + [var])
+                        if cand_aic < best_aic:
+                            best_aic, best_var = cand_aic, var
+                    if best_var is not None:
+                        selected.append(best_var)
+                        remaining.remove(best_var)
+                        step += 1
+                        print(f"  Step {step} [+]: Added '{best_var}' | AIC: {best_aic:.4f} | Improved by {current_aic - best_aic:.4f}")
+                        current_aic = best_aic
+                        forward_taken = True
+
+                # Backward step: remove worst predictor if p-value exceeds threshold
+                if len(selected) >= 1:
+                    pvals = _pvalues(selected)
+                    worst_var = max(pvals, key=pvals.get)
+                    worst_p = pvals[worst_var]
+                    if worst_p > selection_p_threshold:
+                        selected.remove(worst_var)
+                        remaining.append(worst_var)
+                        step += 1
+                        print(f"  Step {step} [-]: Removed '{worst_var}' | p-value: {worst_p:.4f}")
+                        current_aic = _aic(selected) if selected else null_aic
+                        backward_taken = True
+
+                if not forward_taken and not backward_taken:
+                    print("  Converged: no further additions or removals improve the model.")
+                    break
+
+            if len(selected) == selection_limit and remaining:
+                print(f"\n  Stopped: reached the limit of {selection_limit} predictor(s).")
+            list_of_predictor_variables = selected
+
+        print(f"\n  Final selected predictors ({len(list_of_predictor_variables)}): {list_of_predictor_variables}")
+        print("=" * 62 + "\n")
+
+        if not list_of_predictor_variables:
+            print("No predictors were selected. Returning None.")
+            return None
+
     # Create linear regression object
     if scale_variables:
         model = make_pipeline(StandardScaler(),
@@ -515,8 +735,8 @@ def CreateLinearRegressionModel(dataframe,
         plt.clf()
     
     # Plot training vs. test MSE comparison if requested
-    if plot_training_and_test_mse:
-        fig, ax = plt.subplots(figsize=figure_size_for_mse_comparison_plot)
+    if plot_training_and_test_performance:
+        fig, ax = plt.subplots(figsize=figure_size_for_performance_comparison_plot)
 
         mse_values = [training_mse, test_mse]
         bar_labels = ['Training', 'Test']
@@ -558,9 +778,9 @@ def CreateLinearRegressionModel(dataframe,
 
         # Title
         ax.text(
-            x=x_indent_for_mse_comparison_plot,
-            y=title_y_indent_for_mse_comparison_plot,
-            s=title_for_mse_comparison_plot,
+            x=x_indent_for_performance_comparison_plot,
+            y=title_y_indent_for_performance_comparison_plot,
+            s=title_for_performance_comparison_plot,
             fontsize=14,
             color='#262626',
             transform=ax.transAxes
@@ -568,24 +788,24 @@ def CreateLinearRegressionModel(dataframe,
 
         # Subtitle
         ax.text(
-            x=x_indent_for_mse_comparison_plot,
-            y=subtitle_y_indent_for_mse_comparison_plot,
-            s=subtitle_for_mse_comparison_plot,
+            x=x_indent_for_performance_comparison_plot,
+            y=subtitle_y_indent_for_performance_comparison_plot,
+            s=subtitle_for_performance_comparison_plot,
             fontsize=11,
             color='#666666',
             transform=ax.transAxes
         )
 
         # Caption
-        if caption_for_mse_comparison_plot is not None or data_source_for_plot is not None:
+        if caption_for_performance_comparison_plot is not None or data_source_for_plot is not None:
             wrapped_caption = ""
-            if caption_for_mse_comparison_plot is not None:
-                wrapped_caption = textwrap.fill(caption_for_mse_comparison_plot, 130, break_long_words=False)
+            if caption_for_performance_comparison_plot is not None:
+                wrapped_caption = textwrap.fill(caption_for_performance_comparison_plot, 130, break_long_words=False)
             if data_source_for_plot is not None:
                 wrapped_caption = wrapped_caption + "\n\nSource: " + data_source_for_plot
             ax.text(
-                x=x_indent_for_mse_comparison_plot,
-                y=caption_y_indent_for_mse_comparison_plot,
+                x=x_indent_for_performance_comparison_plot,
+                y=caption_y_indent_for_performance_comparison_plot,
                 s=wrapped_caption,
                 fontsize=8,
                 color='#666666',

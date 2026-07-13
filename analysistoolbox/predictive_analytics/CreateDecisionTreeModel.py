@@ -56,18 +56,18 @@ def CreateDecisionTreeModel(dataframe,
                             plot_decision_tree=False,
                             decision_tree_plot_size=(20, 20),
                             print_decision_rules=False,
-                            # MSE/accuracy comparison plot arguments
-                            plot_training_and_test_mse=True,
+                            # Performance comparison plot arguments
+                            plot_training_and_test_performance=True,
                             training_bar_color="#3a86ff",
                             test_bar_color="#b0170c",
-                            figure_size_for_mse_comparison_plot=(7, 5),
-                            title_for_mse_comparison_plot=None,
-                            subtitle_for_mse_comparison_plot=None,
-                            caption_for_mse_comparison_plot=None,
-                            title_y_indent_for_mse_comparison_plot=1.10,
-                            subtitle_y_indent_for_mse_comparison_plot=1.05,
-                            caption_y_indent_for_mse_comparison_plot=-0.15,
-                            x_indent_for_mse_comparison_plot=-0.115):
+                            figure_size_for_performance_comparison_plot=(7, 5),
+                            title_for_performance_comparison_plot=None,
+                            subtitle_for_performance_comparison_plot=None,
+                            caption_for_performance_comparison_plot=None,
+                            title_y_indent_for_performance_comparison_plot=1.10,
+                            subtitle_y_indent_for_performance_comparison_plot=1.05,
+                            caption_y_indent_for_performance_comparison_plot=-0.15,
+                            x_indent_for_performance_comparison_plot=-0.115):
     """
     Train, evaluate, and visualize a decision tree model for classification or regression.
 
@@ -165,29 +165,29 @@ def CreateDecisionTreeModel(dataframe,
     print_decision_rules
         If True, prints a text-based version of the decision logic to the
         console. Defaults to False.
-    plot_training_and_test_mse
+    plot_training_and_test_performance
         If True, renders a bar chart comparing training vs. test MSE (for
-        regression) or training vs. test accuracy (for classification).
+        regression) or training vs. test error rate (for classification).
         Defaults to True.
     training_bar_color
         Hex color for the training bar in the comparison chart. Defaults to "#3a86ff".
     test_bar_color
         Hex color for the test bar in the comparison chart. Defaults to "#b0170c".
-    figure_size_for_mse_comparison_plot
+    figure_size_for_performance_comparison_plot
         Dimensions (width, height) for the comparison chart. Defaults to (7, 5).
-    title_for_mse_comparison_plot
+    title_for_performance_comparison_plot
         Title text for the comparison chart. Defaults to a metric-appropriate string.
-    subtitle_for_mse_comparison_plot
+    subtitle_for_performance_comparison_plot
         Subtitle text for the comparison chart. Defaults to a metric-appropriate string.
-    caption_for_mse_comparison_plot
+    caption_for_performance_comparison_plot
         Optional caption text for the comparison chart. Defaults to None.
-    title_y_indent_for_mse_comparison_plot
+    title_y_indent_for_performance_comparison_plot
         Vertical position of the title in axes-fraction coordinates. Defaults to 1.10.
-    subtitle_y_indent_for_mse_comparison_plot
+    subtitle_y_indent_for_performance_comparison_plot
         Vertical position of the subtitle in axes-fraction coordinates. Defaults to 1.05.
-    caption_y_indent_for_mse_comparison_plot
+    caption_y_indent_for_performance_comparison_plot
         Vertical position of the caption in axes-fraction coordinates. Defaults to -0.15.
-    x_indent_for_mse_comparison_plot
+    x_indent_for_performance_comparison_plot
         Horizontal starting position for title/subtitle/caption text. Defaults to -0.115.
 
     Returns
@@ -261,8 +261,8 @@ def CreateDecisionTreeModel(dataframe,
 
     # Compute training and test metrics
     if is_outcome_categorical:
-        training_metric = metrics.accuracy_score(train[outcome_variable], train['Predicted'])
-        test_metric = metrics.accuracy_score(test[outcome_variable], test['Predicted'])
+        training_metric = 1 - metrics.accuracy_score(train[outcome_variable], train['Predicted'])
+        test_metric = 1 - metrics.accuracy_score(test[outcome_variable], test['Predicted'])
     else:
         training_metric = metrics.mean_squared_error(train[outcome_variable], train['Predicted'])
         test_metric = metrics.mean_squared_error(test[outcome_variable], test['Predicted'])
@@ -275,8 +275,8 @@ def CreateDecisionTreeModel(dataframe,
             print('Variance Score:', metrics.r2_score(test[outcome_variable], test['Predicted']))
             print("Note: A variance score of 1 is perfect prediction and 0 means that there is no linear relationship between X and Y.")
         else:
-            print('Training Accuracy:', training_metric)
-            print('Test Accuracy:', test_metric)
+            print('Training Error Rate:', training_metric)
+            print('Test Error Rate:', test_metric)
             classifcation_report = metrics.classification_report(test[outcome_variable], test['Predicted'])
             print("Classification Report:\n", classifcation_report, sep="")
     
@@ -591,18 +591,18 @@ def CreateDecisionTreeModel(dataframe,
         plt.show()
         plt.clf()
      
-    # Plot training vs. test MSE or accuracy comparison
-    if plot_training_and_test_mse:
+    # Plot training vs. test performance comparison
+    if plot_training_and_test_performance:
         if is_outcome_categorical:
-            chart_title = title_for_mse_comparison_plot or "Training vs. Test Accuracy"
-            chart_subtitle = subtitle_for_mse_comparison_plot or "Compares model accuracy on the training and test datasets."
+            chart_title = title_for_performance_comparison_plot or "Training vs. Test Error Rate"
+            chart_subtitle = subtitle_for_performance_comparison_plot or "Compares model error rate on the training and test datasets."
             value_fmt = '{:.4f}'
         else:
-            chart_title = title_for_mse_comparison_plot or "Training vs. Test MSE"
-            chart_subtitle = subtitle_for_mse_comparison_plot or "Compares model error on the training and test datasets."
+            chart_title = title_for_performance_comparison_plot or "Training vs. Test MSE"
+            chart_subtitle = subtitle_for_performance_comparison_plot or "Compares model error on the training and test datasets."
             value_fmt = '{:,.4f}'
 
-        fig, ax = plt.subplots(figsize=figure_size_for_mse_comparison_plot)
+        fig, ax = plt.subplots(figsize=figure_size_for_performance_comparison_plot)
         bar_values = [training_metric, test_metric]
         bar_labels = ['Training', 'Test']
         bar_colors = [training_bar_color, test_bar_color]
@@ -623,23 +623,23 @@ def CreateDecisionTreeModel(dataframe,
         ax.yaxis.set_ticks([])
         plt.subplots_adjust(top=0.85)
         ax.text(
-            x=x_indent_for_mse_comparison_plot,
-            y=title_y_indent_for_mse_comparison_plot,
+            x=x_indent_for_performance_comparison_plot,
+            y=title_y_indent_for_performance_comparison_plot,
             s=chart_title,
             fontsize=14, color="#262626", transform=ax.transAxes
         )
         ax.text(
-            x=x_indent_for_mse_comparison_plot,
-            y=subtitle_y_indent_for_mse_comparison_plot,
+            x=x_indent_for_performance_comparison_plot,
+            y=subtitle_y_indent_for_performance_comparison_plot,
             s=chart_subtitle,
             fontsize=11, color="#666666", transform=ax.transAxes
         )
-        if caption_for_mse_comparison_plot is not None:
+        if caption_for_performance_comparison_plot is not None:
             import textwrap as _tw
             ax.text(
-                x=x_indent_for_mse_comparison_plot,
-                y=caption_y_indent_for_mse_comparison_plot,
-                s=_tw.fill(caption_for_mse_comparison_plot, 80, break_long_words=False),
+                x=x_indent_for_performance_comparison_plot,
+                y=caption_y_indent_for_performance_comparison_plot,
+                s=_tw.fill(caption_for_performance_comparison_plot, 80, break_long_words=False),
                 fontsize=8, color="#666666", transform=ax.transAxes
             )
         plt.show()

@@ -46,7 +46,7 @@ class TestCreateLogisticRegressionModel(unittest.TestCase):
             self.df, self.outcome, self.predictors,
             scale_predictor_variables=False,
             show_classification_plot=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsInstance(model, LogisticRegression)
 
@@ -56,7 +56,7 @@ class TestCreateLogisticRegressionModel(unittest.TestCase):
             self.df, self.outcome, self.predictors,
             scale_predictor_variables=True,
             show_classification_plot=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsInstance(result, dict)
         self.assertIn('model', result)
@@ -71,7 +71,7 @@ class TestCreateLogisticRegressionModel(unittest.TestCase):
         model = CreateLogisticRegressionModel(
             self.df, self.outcome, self.predictors,
             show_classification_plot=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         preds = model.predict(self.df[self.predictors])
         self.assertEqual(len(preds), len(self.df))
@@ -81,17 +81,17 @@ class TestCreateLogisticRegressionModel(unittest.TestCase):
         model = CreateLogisticRegressionModel(
             self.df, self.outcome, self.predictors,
             show_classification_plot=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         preds = model.predict(self.df[self.predictors])
         self.assertTrue(set(preds).issubset({0, 1}))
 
     # ------------------------------------------------------------------ #
-    # Training and test accuracy output
+    # Training and test error rate output
     # ------------------------------------------------------------------ #
 
-    def test_print_performance_includes_training_accuracy(self):
-        """print_model_training_performance=True prints 'Training Accuracy:'."""
+    def test_print_performance_includes_training_error_rate(self):
+        """print_model_training_performance=True prints 'Training Error Rate:'."""
         buf = io.StringIO()
         sys.stdout = buf
         try:
@@ -99,14 +99,14 @@ class TestCreateLogisticRegressionModel(unittest.TestCase):
                 self.df, self.outcome, self.predictors,
                 print_model_training_performance=True,
                 show_classification_plot=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
-        self.assertIn('Training Accuracy:', buf.getvalue())
+        self.assertIn('Training Error Rate:', buf.getvalue())
 
-    def test_print_performance_includes_test_accuracy(self):
-        """print_model_training_performance=True prints 'Test Accuracy:'."""
+    def test_print_performance_includes_test_error_rate(self):
+        """print_model_training_performance=True prints 'Test Error Rate:'."""
         buf = io.StringIO()
         sys.stdout = buf
         try:
@@ -114,14 +114,14 @@ class TestCreateLogisticRegressionModel(unittest.TestCase):
                 self.df, self.outcome, self.predictors,
                 print_model_training_performance=True,
                 show_classification_plot=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
-        self.assertIn('Test Accuracy:', buf.getvalue())
+        self.assertIn('Test Error Rate:', buf.getvalue())
 
-    def test_accuracy_values_are_valid(self):
-        """Training Accuracy and Test Accuracy are floats in [0, 1]."""
+    def test_error_rate_values_are_valid(self):
+        """Training Error Rate and Test Error Rate are floats in [0, 1]."""
         buf = io.StringIO()
         sys.stdout = buf
         try:
@@ -129,20 +129,20 @@ class TestCreateLogisticRegressionModel(unittest.TestCase):
                 self.df, self.outcome, self.predictors,
                 print_model_training_performance=True,
                 show_classification_plot=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
         lines = buf.getvalue().splitlines()
-        train_acc = float(next(l for l in lines if 'Training Accuracy:' in l).split(':')[1])
-        test_acc  = float(next(l for l in lines if 'Test Accuracy:' in l).split(':')[1])
-        self.assertGreaterEqual(train_acc, 0.0)
-        self.assertLessEqual(train_acc, 1.0)
-        self.assertGreaterEqual(test_acc, 0.0)
-        self.assertLessEqual(test_acc, 1.0)
+        train_error_rate = float(next(l for l in lines if 'Training Error Rate:' in l).split(':')[1])
+        test_error_rate  = float(next(l for l in lines if 'Test Error Rate:' in l).split(':')[1])
+        self.assertGreaterEqual(train_error_rate, 0.0)
+        self.assertLessEqual(train_error_rate, 1.0)
+        self.assertGreaterEqual(test_error_rate, 0.0)
+        self.assertLessEqual(test_error_rate, 1.0)
 
     def test_print_performance_off_by_default(self):
-        """With print_model_training_performance=False, no Training/Test Accuracy lines appear."""
+        """With print_model_training_performance=False, no Error Rate lines appear."""
         buf = io.StringIO()
         sys.stdout = buf
         try:
@@ -150,12 +150,12 @@ class TestCreateLogisticRegressionModel(unittest.TestCase):
                 self.df, self.outcome, self.predictors,
                 print_model_training_performance=False,
                 show_classification_plot=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
-        self.assertNotIn('Training Accuracy:', buf.getvalue())
-        self.assertNotIn('Test Accuracy:', buf.getvalue())
+        self.assertNotIn('Training Error Rate:', buf.getvalue())
+        self.assertNotIn('Test Error Rate:', buf.getvalue())
 
     # ------------------------------------------------------------------ #
     # Edge cases
@@ -166,7 +166,7 @@ class TestCreateLogisticRegressionModel(unittest.TestCase):
         model = CreateLogisticRegressionModel(
             self.df, self.outcome, ['x1'],
             show_classification_plot=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsNotNone(model)
 
@@ -177,7 +177,7 @@ class TestCreateLogisticRegressionModel(unittest.TestCase):
         model = CreateLogisticRegressionModel(
             df_nan, self.outcome, self.predictors,
             show_classification_plot=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsNotNone(model)
 
@@ -191,21 +191,21 @@ class TestCreateLogisticRegressionModel(unittest.TestCase):
             CreateLogisticRegressionModel(
                 self.df, self.outcome, self.predictors,
                 show_classification_plot=True,
-                plot_training_and_test_mse=True,
+                plot_training_and_test_performance=True,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with all plots enabled: {e}")
 
-    def test_accuracy_comparison_plot_disabled(self):
-        """plot_training_and_test_mse=False skips the comparison chart without error."""
+    def test_performance_comparison_plot_disabled(self):
+        """plot_training_and_test_performance=False skips the comparison chart without error."""
         try:
             CreateLogisticRegressionModel(
                 self.df, self.outcome, self.predictors,
                 show_classification_plot=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         except Exception as e:
-            self.fail(f"Unexpected exception with accuracy plot disabled: {e}")
+            self.fail(f"Unexpected exception with performance plot disabled: {e}")
 
     def test_custom_bar_colors(self):
         """Custom training_bar_color and test_bar_color are accepted without error."""
@@ -213,7 +213,7 @@ class TestCreateLogisticRegressionModel(unittest.TestCase):
             CreateLogisticRegressionModel(
                 self.df, self.outcome, self.predictors,
                 show_classification_plot=False,
-                plot_training_and_test_mse=True,
+                plot_training_and_test_performance=True,
                 training_bar_color='green',
                 test_bar_color='orange',
             )
@@ -226,7 +226,7 @@ class TestCreateLogisticRegressionModel(unittest.TestCase):
             CreateLogisticRegressionModel(
                 self.df, self.outcome, self.predictors,
                 show_classification_plot=True,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with confusion matrix plot enabled: {e}")

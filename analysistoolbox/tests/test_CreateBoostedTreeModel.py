@@ -47,7 +47,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
             is_outcome_categorical=False,
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsInstance(model, XGBRegressor)
 
@@ -59,7 +59,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
             is_outcome_categorical=True,
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsInstance(model, XGBClassifier)
 
@@ -74,7 +74,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
             is_outcome_categorical=False,
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         preds = model.predict(self.df[self.predictors].values)
         self.assertEqual(len(preds), len(self.df))
@@ -86,7 +86,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
             is_outcome_categorical=True,
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         preds = model.predict(self.df[self.predictors].values)
         self.assertEqual(len(preds), len(self.df))
@@ -106,7 +106,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
                 print_model_training_performance=True,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -123,7 +123,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
                 print_model_training_performance=True,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -140,7 +140,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
                 print_model_training_performance=True,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -153,11 +153,11 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
         self.assertTrue(np.isfinite(test_mse))
 
     # ------------------------------------------------------------------ #
-    # Training and test accuracy output — classification
+    # Training and test error rate output — classification
     # ------------------------------------------------------------------ #
 
-    def test_print_performance_classification_includes_training_accuracy(self):
-        """print_model_training_performance=True prints 'Training Accuracy:' for classification."""
+    def test_print_performance_classification_includes_training_error_rate(self):
+        """print_model_training_performance=True prints 'Training Error Rate:' for classification."""
         buf = io.StringIO()
         sys.stdout = buf
         try:
@@ -167,14 +167,14 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
                 print_model_training_performance=True,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
-        self.assertIn('Training Accuracy:', buf.getvalue())
+        self.assertIn('Training Error Rate:', buf.getvalue())
 
-    def test_print_performance_classification_includes_test_accuracy(self):
-        """print_model_training_performance=True prints 'Test Accuracy:' for classification."""
+    def test_print_performance_classification_includes_test_error_rate(self):
+        """print_model_training_performance=True prints 'Test Error Rate:' for classification."""
         buf = io.StringIO()
         sys.stdout = buf
         try:
@@ -184,14 +184,14 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
                 print_model_training_performance=True,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
-        self.assertIn('Test Accuracy:', buf.getvalue())
+        self.assertIn('Test Error Rate:', buf.getvalue())
 
-    def test_classification_accuracy_values_are_valid(self):
-        """Training Accuracy and Test Accuracy are floats in [0, 1]."""
+    def test_classification_error_rate_values_are_valid(self):
+        """Training Error Rate and Test Error Rate are floats in [0, 1]."""
         buf = io.StringIO()
         sys.stdout = buf
         try:
@@ -201,20 +201,20 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
                 print_model_training_performance=True,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
         lines = buf.getvalue().splitlines()
-        train_acc = float(next(l for l in lines if 'Training Accuracy:' in l).split(':')[1])
-        test_acc  = float(next(l for l in lines if 'Test Accuracy:' in l).split(':')[1])
-        self.assertGreaterEqual(train_acc, 0.0)
-        self.assertLessEqual(train_acc, 1.0)
-        self.assertGreaterEqual(test_acc, 0.0)
-        self.assertLessEqual(test_acc, 1.0)
+        train_error_rate = float(next(l for l in lines if 'Training Error Rate:' in l).split(':')[1])
+        test_error_rate  = float(next(l for l in lines if 'Test Error Rate:' in l).split(':')[1])
+        self.assertGreaterEqual(train_error_rate, 0.0)
+        self.assertLessEqual(train_error_rate, 1.0)
+        self.assertGreaterEqual(test_error_rate, 0.0)
+        self.assertLessEqual(test_error_rate, 1.0)
 
     def test_print_performance_classification_includes_classification_report(self):
-        """Classification Report is printed alongside accuracy metrics."""
+        """Classification Report is printed alongside error rate metrics."""
         buf = io.StringIO()
         sys.stdout = buf
         try:
@@ -224,7 +224,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
                 print_model_training_performance=True,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -241,7 +241,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
             is_outcome_categorical=False,
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsNotNone(model)
 
@@ -253,7 +253,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
             maximum_depth=1,
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsNotNone(model)
 
@@ -267,7 +267,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
             filter_nulls=True,
             plot_model_test_performance=False,
             plot_feature_importance=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsNotNone(model)
 
@@ -283,7 +283,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
                 is_outcome_categorical=False,
                 plot_model_test_performance=True,
                 plot_feature_importance=True,
-                plot_training_and_test_mse=True,
+                plot_training_and_test_performance=True,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with all regression plots enabled: {e}")
@@ -296,25 +296,25 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
                 is_outcome_categorical=True,
                 plot_model_test_performance=False,  # display() not available outside notebooks
                 plot_feature_importance=True,
-                plot_training_and_test_mse=True,
+                plot_training_and_test_performance=True,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with all classification plots enabled: {e}")
 
-    def test_mse_comparison_plot_disabled(self):
-        """plot_training_and_test_mse=False skips the comparison chart without error."""
+    def test_performance_comparison_plot_disabled(self):
+        """plot_training_and_test_performance=False skips the comparison chart without error."""
         try:
             CreateBoostedTreeModel(
                 self.df, self.outcome_reg, self.predictors,
                 is_outcome_categorical=False,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         except Exception as e:
-            self.fail(f"Unexpected exception with MSE plot disabled: {e}")
+            self.fail(f"Unexpected exception with performance plot disabled: {e}")
 
-    def test_custom_mse_bar_colors(self):
+    def test_custom_performance_bar_colors(self):
         """Custom training_bar_color and test_bar_color are accepted without error."""
         try:
             CreateBoostedTreeModel(
@@ -322,7 +322,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
                 is_outcome_categorical=False,
                 plot_model_test_performance=False,
                 plot_feature_importance=False,
-                plot_training_and_test_mse=True,
+                plot_training_and_test_performance=True,
                 training_bar_color='green',
                 test_bar_color='orange',
             )
@@ -337,7 +337,7 @@ class TestCreateBoostedTreeModel(unittest.TestCase):
                 is_outcome_categorical=False,
                 plot_model_test_performance=False,
                 plot_feature_importance=True,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with feature importance plot enabled: {e}")

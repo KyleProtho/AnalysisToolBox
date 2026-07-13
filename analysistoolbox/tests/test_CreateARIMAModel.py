@@ -44,7 +44,7 @@ class TestCreateARIMAModel(unittest.TestCase):
             df, 'y',
             test_for_stationarity=False,
             plot_residuals=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsInstance(result, SARIMAXResultsWrapper)
 
@@ -55,7 +55,7 @@ class TestCreateARIMAModel(unittest.TestCase):
             df, 'y',
             test_for_stationarity=False,
             plot_residuals=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertTrue(hasattr(result, 'fittedvalues'))
 
@@ -74,7 +74,7 @@ class TestCreateARIMAModel(unittest.TestCase):
                 test_for_stationarity=False,
                 print_model_training_performance=True,
                 plot_residuals=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -91,7 +91,7 @@ class TestCreateARIMAModel(unittest.TestCase):
                 test_for_stationarity=False,
                 print_model_training_performance=True,
                 plot_residuals=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -108,7 +108,7 @@ class TestCreateARIMAModel(unittest.TestCase):
                 test_for_stationarity=False,
                 print_model_training_performance=True,
                 plot_residuals=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -131,7 +131,7 @@ class TestCreateARIMAModel(unittest.TestCase):
                 test_for_stationarity=False,
                 print_model_training_performance=False,
                 plot_residuals=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -150,7 +150,7 @@ class TestCreateARIMAModel(unittest.TestCase):
             test_size=0.1,
             test_for_stationarity=False,
             plot_residuals=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsNotNone(result)
 
@@ -162,7 +162,7 @@ class TestCreateARIMAModel(unittest.TestCase):
             differencing_periods=1,
             test_for_stationarity=False,
             plot_residuals=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsNotNone(result)
 
@@ -170,28 +170,28 @@ class TestCreateARIMAModel(unittest.TestCase):
     # Plot smoke tests (verify no exceptions are raised)
     # ------------------------------------------------------------------ #
 
-    def test_rmse_comparison_plot_enabled(self):
-        """plot_training_and_test_mse=True renders without raising an exception."""
+    def test_performance_comparison_plot_enabled(self):
+        """plot_training_and_test_performance=True renders without raising an exception."""
         df = _make_df()
         try:
             CreateARIMAModel(
                 df, 'y',
                 test_for_stationarity=False,
                 plot_residuals=False,
-                plot_training_and_test_mse=True,
+                plot_training_and_test_performance=True,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with RMSE comparison plot enabled: {e}")
 
-    def test_rmse_comparison_plot_disabled(self):
-        """plot_training_and_test_mse=False skips the chart without error."""
+    def test_performance_comparison_plot_disabled(self):
+        """plot_training_and_test_performance=False skips the chart without error."""
         df = _make_df()
         try:
             CreateARIMAModel(
                 df, 'y',
                 test_for_stationarity=False,
                 plot_residuals=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with RMSE plot disabled: {e}")
@@ -204,7 +204,7 @@ class TestCreateARIMAModel(unittest.TestCase):
                 df, 'y',
                 test_for_stationarity=False,
                 plot_residuals=False,
-                plot_training_and_test_mse=True,
+                plot_training_and_test_performance=True,
                 training_bar_color='green',
                 test_bar_color='orange',
             )
@@ -219,7 +219,7 @@ class TestCreateARIMAModel(unittest.TestCase):
                 df, 'y',
                 test_for_stationarity=False,
                 plot_residuals=True,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with residual plot enabled: {e}")
@@ -234,7 +234,7 @@ class TestCreateARIMAModel(unittest.TestCase):
                 plot_time_series=True,
                 test_for_stationarity=False,
                 plot_residuals=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with time series plot enabled: {e}")
@@ -250,7 +250,7 @@ class TestCreateARIMAModel(unittest.TestCase):
                 test_for_stationarity=False,
                 plot_residuals=True,
                 print_model_training_performance=True,
-                plot_training_and_test_mse=True,
+                plot_training_and_test_performance=True,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with all plots enabled: {e}")

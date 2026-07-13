@@ -45,7 +45,7 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
             plot_model_performance=False,
             plot_forecast=False,
             plot_decomposition=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIsInstance(result, dict)
         for key in ('model', 'model_type', 'fitted_values', 'forecast', 'performance_metrics', 'parameters', 'data'):
@@ -63,7 +63,7 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
             plot_model_performance=False,
             plot_forecast=False,
             plot_decomposition=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         pm = result['performance_metrics']
         self.assertIn('training_rmse', pm)
@@ -88,7 +88,7 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
                 plot_model_performance=False,
                 plot_forecast=False,
                 plot_decomposition=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -109,7 +109,7 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
                 plot_model_performance=False,
                 plot_forecast=False,
                 plot_decomposition=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -127,7 +127,7 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
             plot_model_performance=False,
             plot_forecast=False,
             plot_decomposition=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         pm = result['performance_metrics']
         self.assertGreater(pm['training_rmse'], 0)
@@ -150,7 +150,7 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
                 plot_model_performance=False,
                 plot_forecast=False,
                 plot_decomposition=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         finally:
             sys.stdout = sys.__stdout__
@@ -173,7 +173,7 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
             plot_model_performance=False,
             plot_forecast=False,
             plot_decomposition=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertIn('training_rmse', result['performance_metrics'])
 
@@ -190,7 +190,7 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
             plot_model_performance=False,
             plot_forecast=False,
             plot_decomposition=False,
-            plot_training_and_test_mse=False,
+            plot_training_and_test_performance=False,
         )
         self.assertGreater(result['performance_metrics']['test_rmse'], 0)
 
@@ -198,8 +198,8 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
     # Plot smoke tests (verify no exceptions are raised)
     # ------------------------------------------------------------------ #
 
-    def test_rmse_comparison_plot_enabled(self):
-        """plot_training_and_test_mse=True renders without raising an exception."""
+    def test_performance_comparison_plot_enabled(self):
+        """plot_training_and_test_performance=True renders without raising an exception."""
         df = _make_df()
         try:
             CreateExponentialSmoothingModel(
@@ -211,13 +211,13 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
                 plot_model_performance=False,
                 plot_forecast=False,
                 plot_decomposition=False,
-                plot_training_and_test_mse=True,
+                plot_training_and_test_performance=True,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with RMSE comparison plot enabled: {e}")
 
-    def test_rmse_comparison_plot_disabled(self):
-        """plot_training_and_test_mse=False skips the chart without error."""
+    def test_performance_comparison_plot_disabled(self):
+        """plot_training_and_test_performance=False skips the chart without error."""
         df = _make_df()
         try:
             CreateExponentialSmoothingModel(
@@ -229,7 +229,7 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
                 plot_model_performance=False,
                 plot_forecast=False,
                 plot_decomposition=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with RMSE plot disabled: {e}")
@@ -247,7 +247,7 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
                 plot_model_performance=False,
                 plot_forecast=False,
                 plot_decomposition=False,
-                plot_training_and_test_mse=True,
+                plot_training_and_test_performance=True,
                 training_bar_color='green',
                 test_bar_color='orange',
             )
@@ -267,7 +267,7 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
                 plot_model_performance=True,
                 plot_forecast=False,
                 plot_decomposition=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with performance plot enabled: {e}")
@@ -285,7 +285,7 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
                 plot_model_performance=False,
                 plot_forecast=True,
                 plot_decomposition=False,
-                plot_training_and_test_mse=False,
+                plot_training_and_test_performance=False,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with forecast plot enabled: {e}")
@@ -303,7 +303,7 @@ class TestCreateExponentialSmoothingModel(unittest.TestCase):
                 plot_model_performance=True,
                 plot_forecast=True,
                 plot_decomposition=False,
-                plot_training_and_test_mse=True,
+                plot_training_and_test_performance=True,
             )
         except Exception as e:
             self.fail(f"Unexpected exception with all plots enabled: {e}")

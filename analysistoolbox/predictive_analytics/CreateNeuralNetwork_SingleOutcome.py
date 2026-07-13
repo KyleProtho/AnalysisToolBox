@@ -24,18 +24,18 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
                                       print_model_training_performance=False,
                                       plot_loss=True,
                                       plot_model_test_performance=True,
-                                      # MSE/accuracy comparison plot arguments
-                                      plot_training_and_test_mse=True,
+                                      # Performance comparison plot arguments
+                                      plot_training_and_test_performance=True,
                                       training_bar_color="#3a86ff",
                                       test_bar_color="#b0170c",
-                                      figure_size_for_mse_comparison_plot=(7, 5),
-                                      title_for_mse_comparison_plot=None,
-                                      subtitle_for_mse_comparison_plot=None,
-                                      caption_for_mse_comparison_plot=None,
-                                      title_y_indent_for_mse_comparison_plot=1.10,
-                                      subtitle_y_indent_for_mse_comparison_plot=1.05,
-                                      caption_y_indent_for_mse_comparison_plot=-0.15,
-                                      x_indent_for_mse_comparison_plot=-0.115):
+                                      figure_size_for_performance_comparison_plot=(7, 5),
+                                      title_for_performance_comparison_plot=None,
+                                      subtitle_for_performance_comparison_plot=None,
+                                      caption_for_performance_comparison_plot=None,
+                                      title_y_indent_for_performance_comparison_plot=1.10,
+                                      subtitle_y_indent_for_performance_comparison_plot=1.05,
+                                      caption_y_indent_for_performance_comparison_plot=-0.15,
+                                      x_indent_for_performance_comparison_plot=-0.115):
     """
     Construct, train, and evaluate a deep neural network for binary/multi-class classification or regression.
 
@@ -102,16 +102,16 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
     plot_model_test_performance
         Whether to generate a diagnostic plot (Confusion Matrix, Probability
         Scatter, or Regplot) for the test dataset. Defaults to True.
-    plot_training_and_test_mse
+    plot_training_and_test_performance
         Whether to render a bar chart comparing the training and test metric
-        (MSE for regression, accuracy for classification). Defaults to True.
+        (MSE for regression, error rate for classification). Defaults to True.
     training_bar_color, test_bar_color
         Bar colors for the training and test bars. Defaults to blue / red.
-    figure_size_for_mse_comparison_plot
+    figure_size_for_performance_comparison_plot
         Dimensions (width, height) for the comparison chart. Defaults to (7, 5).
-    title_for_mse_comparison_plot, subtitle_for_mse_comparison_plot, caption_for_mse_comparison_plot
+    title_for_performance_comparison_plot, subtitle_for_performance_comparison_plot, caption_for_performance_comparison_plot
         Text elements for the comparison chart. Sensible defaults are used when None.
-    title_y_indent_for_mse_comparison_plot, subtitle_y_indent_for_mse_comparison_plot, caption_y_indent_for_mse_comparison_plot, x_indent_for_mse_comparison_plot
+    title_y_indent_for_performance_comparison_plot, subtitle_y_indent_for_performance_comparison_plot, caption_y_indent_for_performance_comparison_plot, x_indent_for_performance_comparison_plot
         Coordinate offsets for text placement in the comparison chart.
 
     Returns
@@ -292,8 +292,8 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
         else:
             train_labels = train['Predicted']
             test_labels = test['Predicted']
-        training_metric = metrics.accuracy_score(train[outcome_variable], train_labels)
-        test_metric = metrics.accuracy_score(test[outcome_variable], test_labels)
+        training_metric = 1 - metrics.accuracy_score(train[outcome_variable], train_labels)
+        test_metric = 1 - metrics.accuracy_score(test[outcome_variable], test_labels)
     else:
         training_metric = metrics.mean_squared_error(train[outcome_variable], train['Predicted'].values.flatten())
         test_metric = metrics.mean_squared_error(test[outcome_variable], test['Predicted'].values.flatten())
@@ -301,8 +301,8 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
     # Print training and test performance
     if print_model_training_performance:
         if is_outcome_categorical:
-            print('Training Accuracy:', training_metric)
-            print('Test Accuracy:', test_metric)
+            print('Training Error Rate:', training_metric)
+            print('Test Error Rate:', test_metric)
         else:
             print('Training MSE:', training_metric)
             print('Test MSE:', test_metric)
@@ -346,19 +346,19 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
             plt.title('Predicted vs. Observed Outcome', size = 15)
         plt.show()
     
-    # Plot training vs. test metric comparison
-    if plot_training_and_test_mse:
+    # Plot training vs. test performance comparison
+    if plot_training_and_test_performance:
         import textwrap as _tw
         if is_outcome_categorical:
-            chart_title = title_for_mse_comparison_plot or "Training vs. Test Accuracy"
-            chart_subtitle = subtitle_for_mse_comparison_plot or "Compares model accuracy on the training and test datasets."
+            chart_title = title_for_performance_comparison_plot or "Training vs. Test Error Rate"
+            chart_subtitle = subtitle_for_performance_comparison_plot or "Compares model error rate on the training and test datasets."
             value_fmt = '{:.4f}'
         else:
-            chart_title = title_for_mse_comparison_plot or "Training vs. Test MSE"
-            chart_subtitle = subtitle_for_mse_comparison_plot or "Compares model error on the training and test datasets."
+            chart_title = title_for_performance_comparison_plot or "Training vs. Test MSE"
+            chart_subtitle = subtitle_for_performance_comparison_plot or "Compares model error on the training and test datasets."
             value_fmt = '{:,.4f}'
 
-        fig, ax = plt.subplots(figsize=figure_size_for_mse_comparison_plot)
+        fig, ax = plt.subplots(figsize=figure_size_for_performance_comparison_plot)
         bar_values = [training_metric, test_metric]
         bar_labels = ['Training', 'Test']
         bar_colors = [training_bar_color, test_bar_color]
@@ -374,13 +374,13 @@ def CreateNeuralNetwork_SingleOutcome(dataframe,
         ax.tick_params(which='major', labelsize=9, color='#666666')
         ax.yaxis.set_ticks([])
         plt.subplots_adjust(top=0.85)
-        ax.text(x=x_indent_for_mse_comparison_plot, y=title_y_indent_for_mse_comparison_plot,
+        ax.text(x=x_indent_for_performance_comparison_plot, y=title_y_indent_for_performance_comparison_plot,
                 s=chart_title, fontsize=14, color="#262626", transform=ax.transAxes)
-        ax.text(x=x_indent_for_mse_comparison_plot, y=subtitle_y_indent_for_mse_comparison_plot,
+        ax.text(x=x_indent_for_performance_comparison_plot, y=subtitle_y_indent_for_performance_comparison_plot,
                 s=chart_subtitle, fontsize=11, color="#666666", transform=ax.transAxes)
-        if caption_for_mse_comparison_plot is not None:
-            ax.text(x=x_indent_for_mse_comparison_plot, y=caption_y_indent_for_mse_comparison_plot,
-                    s=_tw.fill(caption_for_mse_comparison_plot, 80, break_long_words=False),
+        if caption_for_performance_comparison_plot is not None:
+            ax.text(x=x_indent_for_performance_comparison_plot, y=caption_y_indent_for_performance_comparison_plot,
+                    s=_tw.fill(caption_for_performance_comparison_plot, 80, break_long_words=False),
                     fontsize=8, color="#666666", transform=ax.transAxes)
         plt.show()
         plt.clf()
