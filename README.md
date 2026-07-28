@@ -4,21 +4,34 @@
   <img src="Square logo - White background.png" width="40%">
 </p>
 
-## Description
+**A Python toolkit built by a working analyst, for working analysts — so the code you rely on doesn't have to stay behind when you change jobs.**
 
-Analysis Tool Box (i.e. "analysistoolbox") is a collection of tools in Python for data collection and processing, statisitics, analytics, and intelligence analysis.
+## Why this exists
 
-## Getting Started
+Most data science toolkits are built for data scientists. `analysistoolbox` is built for analysts — the people who move between financial crime compliance, healthcare analytics, market research, and intelligence work, and who need a personal, portable, trustworthy set of tools that comes with them across every industry they land in.
 
-To install the package, run the following command in the root directory of the project:
+Four years and 150+ functions in, it's grown from a personal toolkit into something a lot of analysts might find useful: a curated, high-level API across 15 modules — data collection, cleaning, hypothesis testing, simulation, geospatial analysis, and more — designed to get you from raw data to a defensible answer without reinventing the wheel every time you start a new role.
+
+## What makes it different
+
+Three things, deliberately:
+
+- **Every function ships with a Teaching Note.** Most docstrings tell you *how* a function works. Ours also tell you *why it matters* — what question it answers, how it aids "sense-making," and where it can mislead you if used carelessly. See `analysistoolbox.calculus.PlotFunction` for a canonical example. This isn't decoration — it's there so you (or a teammate reviewing your work) can explain *why* an approach was chosen, not just defend that it ran without errors.
+- **Dataframe-first design.** Nearly every function takes a pandas DataFrame and a handful of column names, and returns a DataFrame or a plot. No fighting with mismatched APIs across five different libraries to do one analysis.
+- **Built from real analytic work, not textbook examples.** Functions like `ConductEntityMatching` (fuzzy-matching records across messy data sources) and `ConductClusterAnalysis` (geospatial clustering in the style of Bellingcat's OSINT tooling) come from actual investigative and compliance work, not academic exercises.
+
+## Installation
 
 ```bash
 pip install analysistoolbox
 ```
 
-Visualizations are created using the matplotlib and seaborn libraries. While you can select whichever seaborn style you'd like, the following Seaborn style tends to get the best looking plots:
+Requires Python 3.9+.
+
+Visualizations use matplotlib and seaborn. If you want plots that match the style used throughout this package's own examples:
 
 ```python
+import seaborn as sns
 sns.set(
     style="white",
     font="Arial",
@@ -26,137 +39,182 @@ sns.set(
 )
 ```
 
+## A five-line example
+
+```python
+from analysistoolbox.data_processing import CreateDataOverview
+from analysistoolbox.visualizations import PlotCorrelationMatrix
+import pandas as pd
+
+df = pd.read_csv('your_data.csv')
+CreateDataOverview(dataframe=df, plot_missingness=True)
+PlotCorrelationMatrix(dataframe=df)
+```
+
+## Guides (task-oriented, start here)
+
+The function reference below is organized by module, which is great once you know what you're looking for. If you're starting from a task instead, these walk through a real workflow end to end:
+
+- [Going from raw data to a clean EDA in 10 minutes](https://www.analysistoolbox.com/docs)
+- [Entity matching and deduplication for investigative or compliance work](https://www.analysistoolbox.com/docs)
+- [Geospatial clustering for OSINT-style analysis](https://www.analysistoolbox.com/docs)
+- [Uncertainty and risk modeling with Metalog distributions and SIPs](https://www.analysistoolbox.com/docs)
+
+The full library also has a companion set of free, browser-based tools for structured analytic techniques (ACH, SWOT, Decision Matrix, Mind Maps) at [analysistoolbox.com/tools](https://www.analysistoolbox.com/tools) — no install required, your data never leaves your machine.
+
 ## Documentation Standards
 
-To verify that the library remains accessible to students and professionals alike, all functions in the library should include a **Teaching Note** in their docstring. This note should explain *why* the function matters, how it aids in "sense-making," or what qualitative insights it reveals, rather than just describing the mechanics of the code.
+Every function in this library includes a **Teaching Note** in its docstring, explaining *why* the function matters and what it reveals — not just how it works. This is a hard requirement for anything added to the package, not a nice-to-have.
 
-See `analysistoolbox.calculus.PlotFunction` for a canonical example.
+## Choosing between similar functions
+
+A few places in this library offer more than one way to do something similar. A quick guide to which to reach for:
+
+**Clustering (`descriptive_analytics`)**
+| Function | Best for |
+|---|---|
+| `CreateKMeansClusters` | Fast, simple clusters when you can specify the number of clusters up front and expect roughly spherical groups |
+| `CreateHierarchicalClusters` | When you want a dendrogram-style view of how groups nest, or don't know the right number of clusters yet |
+| `CreateGaussianMixtureClusters` | When you need soft cluster assignments (probability of belonging to each cluster), not hard boundaries |
+
+**Uncertainty modeling (`simulations`)**
+| Function | Best for |
+|---|---|
+| `CreateMetalogDistribution` / `CreateMetalogDistributionFromPercentiles` | Modeling a single uncertain quantity from data or expert-elicited percentiles |
+| `CreateSIPDataframe` | Generating independent stochastically-indexed percentiles for Monte Carlo work |
+| `CreateSLURPDistributionFrom...` (linear regression / logistic regression / exponential smoothing) | When you need uncertainty estimates that preserve the relationship between a model's prediction and its inputs — use the SLURP variant matching whichever model you already fit |
+
+**Regression-style hypothesis testing (`hypothesis_testing`)**
+| Function | Best for |
+|---|---|
+| `ConductLinearRegressionAnalysis` | Continuous outcome |
+| `ConductLogisticRegressionAnalysis` | Binary outcome |
+| `ConductCoxProportionalHazardRegression` | Time-to-event outcome (survival analysis) |
 
 ## Table of Contents / Usage
 
 There are many modules in the analysistoolbox package, each with their own functions. The following is a list of the modules:
 
 - [Calculus](#calculus)
-  - [FindDerivative](#findderivative)
-  - [FindLimitOfFunction](#findlimitoffunction)
-  - [FindMinimumSquareLoss](#findminimumsquareloss)
-  - [PlotFunction](#plotfunction)
+  * [FindDerivative](#findderivative)
+  * [FindLimitOfFunction](#findlimitoffunction)
+  * [FindMinimumSquareLoss](#findminimumsquareloss)
+  * [PlotFunction](#plotfunction)
 - [Data Collection](#data-collection)
-  - [ExtractTextFromPDF](#extracttextfrompdf)
-  - [FetchPDFFromURL](#fetchpdffromurl)
-  - [FetchUSShapefile](#fetchusshapefile)
-  - [FetchWebsiteText](#fetchwebsitetext)
-  - [GetCompanyFilings](#getcompanyfilings)
-  - [GetGoogleSearchResults](#getgooglesearchresults)
-  - [GetZipFile](#getzipfile)
+  * [ExtractTextFromPDF](#extracttextfrompdf)
+  * [FetchPDFFromURL](#fetchpdffromurl)
+  * [FetchUSShapefile](#fetchusshapefile)
+  * [FetchWebsiteText](#fetchwebsitetext)
+  * [GetCompanyFilings](#getcompanyfilings)
+  * [GetGoogleSearchResults](#getgooglesearchresults)
+  * [GetZipFile](#getzipfile)
 - [Data Processing](#data-processing)
-  - [AddDateNumberColumns](#adddatenumbercolumns)
-  - [AddLeadingZeros](#addleadingzeros)
-  - [AddRowCountColumn](#addrowcountcolumn)
-  - [AddTPeriodColumn](#addtperiodcolumn)
-  - [AddTukeyOutlierColumn](#addtukeyoutliercolumn)
-  - [CleanTextColumns](#cleantextcolumns)
-  - [ConductAnomalyDetection](#conductanomalydetection)
-  - [ConductEntityMatching](#conductentitymatching)
-  - [ConvertOddsToProbability](#convertdoddsprobability)
-  - [CountMissingDataByGroup](#countmissingdatabygroup)
-  - [CreateBinnedColumn](#createbinnedcolumn)
-  - [CreateDataOverview](#createdataoverview)
-  - [CreateRandomSampleGroups](#createrandomsamplegroups)
-  - [CreateRareCategoryColumn](#createrarecategorycolumn)
-  - [CreateStratifiedRandomSampleGroups](#createstratifiedrandomsamplegroups)
-  - [ImputeMissingValuesUsingNearestNeighbors](#imputemissingvaluesusingnearestneighbors)
-  - [VerifyGranularity](#verifygranularity)
+  * [AddDateNumberColumns](#adddatenumbercolumns)
+  * [AddLeadingZeros](#addleadingzeros)
+  * [AddRowCountColumn](#addrowcountcolumn)
+  * [AddTPeriodColumn](#addtperiodcolumn)
+  * [AddTukeyOutlierColumn](#addtukeyoutliercolumn)
+  * [CleanTextColumns](#cleantextcolumns)
+  * [ConductAnomalyDetection](#conductanomalydetection)
+  * [ConductEntityMatching](#conductentitymatching)
+  * [ConvertOddsToProbability](#convertoddstoprobability)
+  * [CountMissingDataByGroup](#countmissingdatabygroup)
+  * [CreateBinnedColumn](#createbinnedcolumn)
+  * [CreateDataOverview](#createdataoverview)
+  * [CreateRandomSampleGroups](#createrandomsamplegroups)
+  * [CreateRareCategoryColumn](#createrarecategorycolumn)
+  * [CreateStratifiedRandomSampleGroups](#createstratifiedrandomsamplegroups)
+  * [ImputeMissingValuesUsingNearestNeighbors](#imputemissingvaluesusingnearestneighbors)
+  * [VerifyGranularity](#verifygranularity)
 - [Descriptive Analytics](#descriptive-analytics)
-  - [ConductManifoldLearning](#conductmanifoldlearning)
-  - [ConductPrincipalComponentAnalysis](#conductprincipalcomponentanalysis)
-  - [ConductPropensityScoreMatching](#conductpropensityscorematching)
-  - [CreateAssociationRules](#createassociationrules)
-  - [CreateGaussianMixtureClusters](#creategaussianmixtureclusters)
-  - [CreateHierarchicalClusters](#createhierarchicalclusters)
-  - [CreateKMeansClusters](#createkmeansclusters)
-  - [GenerateEDAWithLIDA](#generatedewithlida)
+  * [ConductManifoldLearning](#conductmanifoldlearning)
+  * [ConductPrincipalComponentAnalysis](#conductprincipalcomponentanalysis)
+  * [ConductPropensityScoreMatching](#conductpropensityscorematching)
+  * [CreateAssociationRules](#createassociationrules)
+  * [CreateGaussianMixtureClusters](#creategaussianmixtureclusters)
+  * [CreateHierarchicalClusters](#createhierarchicalclusters)
+  * [CreateKMeansClusters](#createkmeansclusters)
+  * [GenerateEDAWithLIDA](#generateedawithlida)
 - [File Management](#file-management)
-  - [ImportDataFromFolder](#importdatafromfolder)
-  - [CreateFileTree](#createfiletree)
-  - [CreateCopyOfPDF](#createcopyofpdf)
-  - [ConvertWordDocsToPDF](#convertworddocstopdf)
+  * [ImportDataFromFolder](#importdatafromfolder)
+  * [CreateFileTree](#createfiletree)
+  * [CreateCopyOfPDF](#createcopyofpdf)
+  * [ConvertWordDocsToPDF](#convertworddocstopdf)
 - [Geospatial Analysis](#geospatial-analysis)
-  - [ConductClusterAnalysis](#conductclusteranalysis)
-  - [ConductSpatialAutocorrelation](#conductspatialautocorrelation)
+  * [ConductClusterAnalysis](#conductclusteranalysis)
+  * [ConductSpatialAutocorrelation](#conductspatialautocorrelation)
 - [Hypothesis Testing](#hypothesis-testing)
-  - [ChiSquareTestOfIndependence](#chisquaretestofindependence)
-  - [ChiSquareTestOfIndependenceFromTable](#chisquaretestofindependencefromtable)
-  - [ConductCoxProportionalHazardRegression](#conductcoxproportionalhazardregression)
-  - [ConductLinearRegressionAnalysis](#conductlinearregressionanalysis)
-  - [ConductLogisticRegressionAnalysis](#conductlogisticregressionanalysis)
-  - [OneSampleTTest](#onesamplettest)
-  - [OneWayANOVA](#onewayanova)
-  - [TTestOfMeanFromStats](#ttestofmeanfromstats)
-  - [TTestOfProportionFromStats](#ttestofproportionfromstats)
-  - [TTestOfTwoMeansFromStats](#ttestoftwomeansfromstats)
-  - [TwoSampleTTestOfIndependence](#twosampletestofindependence)
-  - [TwoSampleTTestPaired](#twosampletestpaired)
+  * [ChiSquareTestOfIndependence](#chisquaretestofindependence)
+  * [ChiSquareTestOfIndependenceFromTable](#chisquaretestofindependencefromtable)
+  * [ConductCoxProportionalHazardRegression](#conductcoxproportionalhazardregression)
+  * [ConductLinearRegressionAnalysis](#conductlinearregressionanalysis)
+  * [ConductLogisticRegressionAnalysis](#conductlogisticregressionanalysis)
+  * [OneSampleTTest](#onesamplettest)
+  * [OneWayANOVA](#onewayanova)
+  * [TTestOfMeanFromStats](#ttestofmeanfromstats)
+  * [TTestOfProportionFromStats](#ttestofproportionfromstats)
+  * [TTestOfTwoMeansFromStats](#ttestoftwomeansfromstats)
+  * [TwoSampleTTestOfIndependence](#twosampletestofindependence)
+  * [TwoSampleTTestPaired](#twosampletestpaired)
 - [Linear Algebra](#linear-algebra)
-  - [CalculateEigenvalues](#calculateeigenvalues)
-  - [ConvertMatrixToRowEchelonForm](#convertmatrixtorowechelonform)
-  - [ConvertSystemOfEquationsToMatrix](#convertsystemofequationstomatrix)
-  - [PlotVectors](#plotvectors)
-  - [SolveSystemOfEquations](#solvesystemofequations)
-  - [VisualizeMatrixAsLinearTransformation](#visualizematrixaslineartransformation)
+  * [CalculateEigenvalues](#calculateeigenvalues)
+  * [ConvertMatrixToRowEchelonForm](#convertmatrixtorowechelonform)
+  * [ConvertSystemOfEquationsToMatrix](#convertsystemofequationstomatrix)
+  * [PlotVectors](#plotvectors)
+  * [SolveSystemOfEquations](#solvesystemofequations)
+  * [VisualizeMatrixAsLinearTransformation](#visualizematrixaslineartransformation)
 - [LLM](#llm)
-  - [SendPromptToAnthropic](#sendprompttoanthropic)
-  - [SendPromptToChatGPT](#sendprompttochatgpt)
+  * [SendPromptToAnthropic](#sendprompttoanthropic)
+  * [SendPromptToChatGPT](#sendprompttochatgpt)
 - [Predictive Analytics](#predictive-analytics)
-  - [CreateARIMAModel](#createarimamodel)
-  - [CreateBoostedTreeModel](#createboostedtreemodel)
-  - [CreateDecisionTreeModel](#createdecisiontreemodel)
-  - [CreateExponentialSmoothingModel](#createexponentialsmoothingmodel)
-  - [CreateLinearRegressionModel](#createlinearregressionmodel)
-  - [CreateLogisticRegressionModel](#createlogisticregressionmodel)
-  - [CreateNeuralNetwork_SingleOutcome](#createneuralnetwork_singleoutcome)
+  * [CreateARIMAModel](#createarimamodel)
+  * [CreateBoostedTreeModel](#createboostedtreemodel)
+  * [CreateDecisionTreeModel](#createdecisiontreemodel)
+  * [CreateExponentialSmoothingModel](#createexponentialsmoothingmodel)
+  * [CreateLinearRegressionModel](#createlinearregressionmodel)
+  * [CreateLogisticRegressionModel](#createlogisticregressionmodel)
+  * [CreateNeuralNetwork_SingleOutcome](#createneuralnetwork_singleoutcome)
 - [Prescriptive Analytics](#prescriptive-analytics)
-  - [ConductLinearOptimization](#conductlinearoptimization)
-  - [CreateContentBasedRecommender](#createcontentbasedrecommender)
+  * [ConductLinearOptimization](#conductlinearoptimization)
+  * [CreateContentBasedRecommender](#createcontentbasedrecommender)
 - [Probability](#probability)
-  - [ProbabilityOfAtLeastOne](#probabilityofatleastone)
+  * [ProbabilityOfAtLeastOne](#probabilityofatleastone)
 - [Simulations](#simulations)
-  - [CreateMetalogDistribution](#createmetalogdistribution)
-  - [CreateMetalogDistributionFromPercentiles](#createmetalogdistributionfrompercentiles)
-  - [CreateSIPDataframe](#createsipdataframe)
-  - [CreateSLURPDistributionFromLinearRegression](#createslurpdistributionfromlinearregression)
-  - [CreateSLURPDistributionFromLogisticRegression](#createslurpdistributionfromlogisticregression)
-  - [CreateSLURPDistributionFromExponentialSmoothing](#createslurpdistributionfromexponentialsmoothing)
-  - [SimulateCountOfSuccesses](#simulatecountofsuccesses)
-  - [SimulateCountOutcome](#simulatecountoutcome)
-  - [SimulateCountUntilFirstSuccess](#simulatecountuntilfirstsuccess)
-  - [SimulateNormallyDistributedOutcome](#simulatenormallydistributedoutcome)
-  - [SimulateTDistributedOutcome](#simulatetdistributedoutcome)
-  - [SimulateTimeBetweenEvents](#simulatetimebetweenevents)
-  - [SimulateTimeUntilNEvents](#simulatetimeuntilnevents)
+  * [CreateMetalogDistribution](#createmetalogdistribution)
+  * [CreateMetalogDistributionFromPercentiles](#createmetalogdistributionfrompercentiles)
+  * [CreateSIPDataframe](#createsipdataframe)
+  * [CreateSLURPDistributionFromLinearRegression](#createslurpdistributionfromlinearregression)
+  * [CreateSLURPDistributionFromLogisticRegression](#createslurpdistributionfromlogisticregression)
+  * [CreateSLURPDistributionFromExponentialSmoothing](#createslurpdistributionfromexponentialsmoothing)
+  * [SimulateCountOfSuccesses](#simulatecountofsuccesses)
+  * [SimulateCountOutcome](#simulatecountoutcome)
+  * [SimulateCountUntilFirstSuccess](#simulatecountuntilfirstsuccess)
+  * [SimulateNormallyDistributedOutcome](#simulatenormallydistributedoutcome)
+  * [SimulateTDistributedOutcome](#simulatetdistributedoutcome)
+  * [SimulateTimeBetweenEvents](#simulatetimebetweenevents)
+  * [SimulateTimeUntilNEvents](#simulatetimeuntilnevents)
 - [Statistics](#statistics)
-  - [CalculateConfidenceIntervalOfMean](#calculateconfidenceintervalofmean)
-  - [CalculateConfidenceIntervalOfProportion](#calculateconfidenceintervalofproportion)
+  * [CalculateConfidenceIntervalOfMean](#calculateconfidenceintervalofmean)
+  * [CalculateConfidenceIntervalOfProportion](#calculateconfidenceintervalofproportion)
 - [Visualizations](#visualizations)
-  - [Plot100PercentStackedBarChart](#plot100percentstackedbarchart)
-  - [PlotBarChart](#plotbarchart)
-  - [PlotBoxWhiskerByGroup](#plotboxwhiskerbygroup)
-  - [PlotBulletChart](#plotbulletchart)
-  - [PlotCard](#plotcard)
-  - [PlotClusteredBarChart](#plotclusteredbarchart)
-  - [PlotContingencyHeatmap](#plotcontingencyheatmap)
-  - [PlotCorrelationMatrix](#plotcorrelationmatrix)
-  - [PlotDensityByGroup](#plotdensitybygroup)
-  - [PlotDotPlot](#plotdotplot)
-  - [PlotHeatmap](#plotheatmap)
-  - [PlotOverlappingAreaChart](#plotoverlappingareachart)
-  - [PlotRiskTolerance](#plotrisktolerance)
-  - [PlotScatterplot](#plotscatterplot)
-  - [PlotSingleVariableCountPlot](#plotsinglevariablecountplot)
-  - [PlotSingleVariableHistogram](#plotsinglevariablehistogram)
-  - [PlotTimeSeries](#plottimeseries)
-  - [RenderTableOne](#rendertableone)
-
+  * [Plot100PercentStackedBarChart](#plot100percentstackedbarchart)
+  * [PlotBarChart](#plotbarchart)
+  * [PlotBoxWhiskerByGroup](#plotboxwhiskerbygroup)
+  * [PlotBulletChart](#plotbulletchart)
+  * [PlotCard](#plotcard)
+  * [PlotClusteredBarChart](#plotclusteredbarchart)
+  * [PlotContingencyHeatmap](#plotcontingencyheatmap)
+  * [PlotCorrelationMatrix](#plotcorrelationmatrix)
+  * [PlotDensityByGroup](#plotdensitybygroup)
+  * [PlotDotPlot](#plotdotplot)
+  * [PlotHeatmap](#plotheatmap)
+  * [PlotOverlappingAreaChart](#plotoverlappingareachart)
+  * [PlotRiskTolerance](#plotrisktolerance)
+  * [PlotScatterplot](#plotscatterplot)
+  * [PlotSingleVariableCountPlot](#plotsinglevariablecountplot)
+  * [PlotSingleVariableHistogram](#plotsinglevariablehistogram)
+  * [PlotTimeSeries](#plottimeseries)
+  * [RenderTableOne](#rendertableone)
 
 ### Calculus
 
@@ -177,9 +235,9 @@ f_of_x = x**3 + 2*x**2 + 3*x + 4
 
 # Use the FindDerivative function
 FindDerivative(
-    f_of_x, 
-    print_functions=True, 
-    return_derivative_function=True, 
+    f_of_x,
+    print_functions=True,
+    return_derivative_function=True,
     plot_functions=True
 )
 ```
@@ -202,13 +260,13 @@ f_of_x = np.sin(x) / x
 
 # Use the FindLimitOfFunction function
 FindLimitOfFunction(
-    f_of_x, 
-    point=0, 
-    step=0.01, 
-    plot_function=True, 
-    x_minimum=-10, 
-    x_maximum=10, 
-    n=1000, 
+    f_of_x,
+    point=0,
+    step=0.01,
+    plot_function=True,
+    x_minimum=-10,
+    x_maximum=10,
+    n=1000,
     tangent_line_window=1
 )
 ```
@@ -227,8 +285,8 @@ predicted_values = [1.1, 1.9, 3.2, 3.7, 5.1]
 
 # Use the FindMinimumSquareLoss function
 minimum_square_loss = FindMinimumSquareLoss(
-    observed_values, 
-    predicted_values, 
+    observed_values,
+    predicted_values,
     show_plot=True
 )
 
@@ -267,9 +325,9 @@ from analysistoolbox.data_collection import ExtractTextFromPDF
 
 # Call the function
 ExtractTextFromPDF(
-    filepath_to_pdf="/path/to/your/input.pdf", 
-    filepath_for_exported_text="/path/to/your/output.txt", 
-    start_page=1, 
+    filepath_to_pdf="/path/to/your/input.pdf",
+    filepath_for_exported_text="/path/to/your/output.txt",
+    start_page=1,
     end_page=None
 )
 ```
@@ -284,14 +342,14 @@ from analysistoolbox.data_collection import FetchPDFFromURL
 
 # Call the function to download the PDF
 FetchPDFFromURL(
-    url="https://example.com/sample.pdf", 
+    url="https://example.com/sample.pdf",
     filename="C:/folder/sample.pdf"
 )
 ```
 
 #### FetchUSShapefile
 
-The **FetchUSShapefile** function fetches a geographical shapefile from the TIGER database of the U.S. Census Bureau. 
+The **FetchUSShapefile** function fetches a geographical shapefile from the TIGER database of the U.S. Census Bureau.
 
 ```python
 # Import the function
@@ -299,9 +357,9 @@ from analysistoolbox.data_collection import FetchUSShapefile
 
 # Fetch the shapefile for the census tracts in King County, Washington, for the 2021 census year
 shapefile = FetchUSShapefile(
-    state='PA', 
-    county='Allegheny', 
-    geography='tract', 
+    state='PA',
+    county='Allegheny',
+    geography='tract',
     census_year=2021
 )
 
@@ -319,7 +377,7 @@ from analysistoolbox.data_collection import FetchWebsiteText
 
 # Call the function
 text = FetchWebsiteText(
-    url="https://www.example.com", 
+    url="https://www.example.com",
     browserless_api_key="your_browserless_api_key"
 )
 
@@ -358,10 +416,10 @@ from analysistoolbox.data_collection import GetGoogleSearchResults
 # Call the function with the query
 # Make sure to replace 'your_serper_api_key' with your actual Serper API key
 results = GetGoogleSearchResults(
-    query="Python programming", 
-    serper_api_key='your_serper_api_key', 
-    number_of_results=5, 
-    apply_autocorrect=True, 
+    query="Python programming",
+    serper_api_key='your_serper_api_key',
+    number_of_results=5,
+    apply_autocorrect=True,
     display_results=True
 )
 
@@ -379,7 +437,7 @@ from analysistoolbox.data_collection import GetZipFile
 
 # Call the function
 GetZipFile(
-    url="http://example.com/file.zip", 
+    url="http://example.com/file.zip",
     path_to_save_folder="/path/to/save/folder"
 )
 ```
@@ -402,7 +460,7 @@ df = pd.DataFrame(data)
 
 # Use the function on the sample dataframe
 df = AddDateNumberColumns(
-    dataframe=df, 
+    dataframe=df,
     date_column_name='Date'
 )
 
@@ -425,8 +483,8 @@ df = pd.DataFrame(data)
 
 # Use the AddLeadingZeros function
 df = AddLeadingZeros(
-    dataframe=df, 
-    column_name='ID', 
+    dataframe=df,
+    column_name='ID',
     add_as_new_column=True
 )
 
@@ -453,9 +511,9 @@ df = pd.DataFrame(data)
 
 # Call the function
 df_updated = AddRowCountColumn(
-    dataframe=df, 
-    list_of_grouping_variables=['Payment Method'], 
-    list_of_order_columns=['Transaction Order'], 
+    dataframe=df,
+    list_of_grouping_variables=['Payment Method'],
+    list_of_order_columns=['Transaction Order'],
     list_of_ascending_order_args=[True]
 )
 
@@ -482,8 +540,8 @@ df = pd.DataFrame(data)
 
 # Use the function
 df_updated = AddTPeriodColumn(
-    dataframe=df, 
-    date_column_name='date', 
+    dataframe=df,
+    date_column_name='date',
     t_period_interval='days'
 )
 
@@ -505,9 +563,9 @@ data = pd.DataFrame({'values': [1, 2, 3, 4, 5, 6, 7, 8, 9, 20]})
 
 # Use the function
 df_updated = AddTukeyOutlierColumn(
-    dataframe=data, 
-    value_column_name='values', 
-    tukey_boundary_multiplier=1.5, 
+    dataframe=data,
+    value_column_name='values',
+    tukey_boundary_multiplier=1.5,
     plot_tukey_outliers=True
 )
 
@@ -551,7 +609,7 @@ df = pd.DataFrame({
 
 # Conduct anomaly detection
 df_anomaly_detected = ConductAnomalyDetection(
-    dataframe=df, 
+    dataframe=df,
     list_of_columns_to_analyze=['A', 'B']
 )
 
@@ -591,7 +649,7 @@ matched_entities = ConductEntityMatching(
     columns_to_compare=['Name', 'City'],
     match_methods=['Partial Token Set Ratio', 'Weighted Ratio']
 )
-``` 
+```
 
 #### ConvertOddsToProbability
 
@@ -615,7 +673,7 @@ print(df)
 
 # Use the function to convert odds to probability
 df = ConvertOddsToProbability(
-    dataframe=df, 
+    dataframe=df,
     odds_column='Odds'
 )
 ```
@@ -640,7 +698,7 @@ df = pd.DataFrame(data)
 
 # Use the function to count missing data by group
 CountMissingDataByGroup(
-    dataframe=df, 
+    dataframe=df,
     list_of_grouping_columns=['Group']
 )
 ```
@@ -665,9 +723,9 @@ df = pd.DataFrame(data)
 
 # Use the function to create a binned column
 df_binned = CreateBinnedColumn(
-    dataframe=df, 
-    numeric_column_name='Value1', 
-    number_of_bins=3, 
+    dataframe=df,
+    numeric_column_name='Value1',
+    number_of_bins=3,
     binning_strategy='uniform'
 )
 ```
@@ -692,18 +750,18 @@ df = pd.DataFrame(data)
 
 # Use the function to create an overview of the dataframe
 CreateDataOverview(
-    dataframe=df, 
+    dataframe=df,
     plot_missingness=True
 )
 ```
 
 #### CreateRandomSampleGroups
 
-The **CreateRandomSampleGroups** function a takes a pandas DataFrame, shuffle its rows, assign each row to one of n groups, and then return the updated DataFrame with an additional column indicating the group number.
+The **CreateRandomSampleGroups** function takes a pandas DataFrame, shuffles its rows, assigns each row to one of n groups, and then returns the updated DataFrame with an additional column indicating the group number.
 
 ```python
 # Import necessary packages
-from analysistoolbox.data_processing import CreateRandomSampleGroups 
+from analysistoolbox.data_processing import CreateRandomSampleGroups
 import pandas as pd
 
 # Create a sample DataFrame
@@ -716,8 +774,8 @@ df = pd.DataFrame(data)
 
 # Use the function
 grouped_df = CreateRandomSampleGroups(
-    dataframe=df, 
-    number_of_groups=2, 
+    dataframe=df,
+    number_of_groups=2,
     random_seed=123
 )
 ```
@@ -728,7 +786,7 @@ The **CreateRareCategoryColumn** function creates a new column in a Pandas dataf
 
 ```python
 # Import necessary packages
-from analysistoolbox.data_processing import CreateRareCategoryColumn 
+from analysistoolbox.data_processing import CreateRareCategoryColumn
 import pandas as pd
 
 # Create a sample DataFrame
@@ -741,9 +799,9 @@ df = pd.DataFrame(data)
 
 # Use the function
 updated_df = CreateRareCategoryColumn(
-    dataframe=df, 
-    categorical_column_name='Name', 
-    rare_category_label='Rare', 
+    dataframe=df,
+    categorical_column_name='Name',
+    rare_category_label='Rare',
     rare_category_threshold=0.05,
     new_column_suffix='(rare category)'
 )
@@ -751,7 +809,7 @@ updated_df = CreateRareCategoryColumn(
 
 #### CreateStratifiedRandomSampleGroups
 
-The **CreateStratifiedRandomSampleGroups** unction performs stratified random sampling on a pandas DataFrame. Stratified random sampling is a method of sampling that involves the division of a population into smaller groups known as strata. In stratified random sampling, the strata are formed based on members' shared attributes or characteristics.
+The **CreateStratifiedRandomSampleGroups** function performs stratified random sampling on a pandas DataFrame. Stratified random sampling is a method of sampling that involves the division of a population into smaller groups known as strata. In stratified random sampling, the strata are formed based on members' shared attributes or characteristics.
 
 ```python
 # Import necessary packages
@@ -769,9 +827,9 @@ df = pd.DataFrame(data)
 
 # Use the function
 stratified_df = CreateStratifiedRandomSampleGroups(
-    dataframe=df, 
-    number_of_groups=2, 
-    list_categorical_column_names=['Name'], 
+    dataframe=df,
+    number_of_groups=2,
+    list_categorical_column_names=['Name'],
     random_seed=42
 )
 ```
@@ -797,9 +855,9 @@ df = pd.DataFrame(data)
 
 # Use the function
 imputed_df = ImputeMissingValuesUsingNearestNeighbors(
-    dataframe=df, 
-    list_of_numeric_columns_to_impute=['A', 'B', 'C', 'D'], 
-    number_of_neighbors=2, 
+    dataframe=df,
+    list_of_numeric_columns_to_impute=['A', 'B', 'C', 'D'],
+    number_of_neighbors=2,
     averaging_method='uniform'
 )
 ```
@@ -823,14 +881,16 @@ df = pd.DataFrame(data)
 
 # Use the function
 VerifyGranularity(
-    dataframe=df, 
-    list_of_key_columns=['Name', 'Age'], 
-    set_key_as_index=True, 
+    dataframe=df,
+    list_of_key_columns=['Name', 'Age'],
+    set_key_as_index=True,
     print_as_markdown=False
 )
 ```
 
 ### Descriptive Analytics
+
+> See [Choosing between similar functions](#choosing-between-similar-functions) above for guidance on the three clustering functions in this module.
 
 #### ConductManifoldLearning
 
@@ -848,11 +908,11 @@ iris_df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
 
 # Use the function
 new_df = ConductManifoldLearning(
-    dataframe=iris_df, 
-    list_of_numeric_columns=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'], 
-    number_of_components=2, 
-    random_seed=42, 
-    show_component_summary_plots=True, 
+    dataframe=iris_df,
+    list_of_numeric_columns=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'],
+    number_of_components=2,
+    random_seed=42,
+    show_component_summary_plots=True,
     sns_color_palette='Set2',
     summary_plot_size=(10, 10)
 )
@@ -864,7 +924,7 @@ The **ConductPrincipalComponentAnalysis** function performs Principal Component 
 
 ```python
 # Import necessary packages
-from analysistoolbox.descriptive_analytics import ConductManifoldLearning
+from analysistoolbox.descriptive_analytics import ConductPrincipalComponentAnalysis
 import pandas as pd
 from sklearn.datasets import load_iris
 
@@ -939,8 +999,8 @@ from sklearn import datasets
 iris = datasets.load_iris()
 
 # Convert the iris dataset to a pandas dataframe
-df = pd.DataFrame(data= np.c_[iris['data'], iris['target']],
-                  columns= iris['feature_names'] + ['target'])
+df = pd.DataFrame(data=np.c_[iris['data'], iris['target']],
+                  columns=iris['feature_names'] + ['target'])
 
 # Call the CreateGaussianMixtureClusters function
 df_clustered = CreateGaussianMixtureClusters(
@@ -1017,7 +1077,7 @@ df_clustered = CreateKMeansClusters(
 
 #### GenerateEDAWithLIDA
 
-The **GenerateEDAWithLIDA** function uses the LIDA package from Microsoft to generate exploratory data analysis (EDA) goals. 
+The **GenerateEDAWithLIDA** function uses the LIDA package from Microsoft to generate exploratory data analysis (EDA) goals.
 
 ```python
 # Import necessary packages
@@ -1126,7 +1186,6 @@ ConvertWordDocsToPDF(
 )
 ```
 
-
 ### Geospatial Analysis
 
 #### ConductClusterAnalysis
@@ -1189,6 +1248,8 @@ print(results[['lat', 'lon', 'value', 'cluster_category']])
 ```
 
 ### Hypothesis Testing
+
+> See [Choosing between similar functions](#choosing-between-similar-functions) above for guidance on picking the right regression-style test for your outcome type.
 
 #### ChiSquareTestOfIndependence
 
@@ -1453,7 +1514,7 @@ The **ConvertSystemOfEquationsToMatrix** function converts a system of linear eq
 from analysistoolbox.linear_algebra import ConvertSystemOfEquationsToMatrix
 import numpy as np
 
-# Define system of equations: 
+# Define system of equations:
 # 2x + 3y = 8
 # 4x - y = 1
 coefficients = np.array([
@@ -1659,6 +1720,7 @@ model = CreateDecisionTreeModel(
 #### CreateExponentialSmoothingModel
 
 Builds an exponential smoothing model for time series forecasting.
+
 ```python
 from analysistoolbox.predictive_analytics import CreateExponentialSmoothingModel
 
@@ -1820,7 +1882,7 @@ prob = ProbabilityOfAtLeastOne(
 
 ### Simulations
 
-The simulations module provides a comprehensive set of tools for statistical simulations and probability distributions:
+> See [Choosing between similar functions](#choosing-between-similar-functions) above for guidance on picking the right uncertainty-modeling function for your situation.
 
 #### CreateMetalogDistribution
 
@@ -1870,6 +1932,7 @@ sip_df = CreateSIPDataframe(
 ```
 
 #### CreateSLURPDistributionFromLinearRegression
+
 Creates a SIP with relationships preserved (SLURP) based on a linear regression model's prediction interval.
 
 ```python
@@ -1887,6 +1950,7 @@ slurp_dist = CreateSLURPDistributionFromLinearRegression(
 ```
 
 #### CreateSLURPDistributionFromLogisticRegression
+
 Creates a SLURP distribution for logistic regression models using confidence intervals for predicted probabilities.
 
 ```python
@@ -1905,6 +1969,7 @@ slurp_dist = CreateSLURPDistributionFromLogisticRegression(
 ```
 
 #### CreateSLURPDistributionFromExponentialSmoothing
+
 Creates a SLURP distribution for exponential smoothing models using prediction intervals for time series forecasts.
 
 ```python
@@ -1969,6 +2034,7 @@ attempts = SimulateCountUntilFirstSuccess(
 ```
 
 #### SimulateNormallyDistributedOutcome
+
 Generates normally distributed random variables.
 
 ```python
@@ -1984,6 +2050,7 @@ weights = SimulateNormallyDistributedOutcome(
 ```
 
 #### SimulateTDistributedOutcome
+
 Generates Student's t-distributed random variables.
 
 ```python
@@ -2013,6 +2080,7 @@ times = SimulateTimeBetweenEvents(
 ```
 
 #### SimulateTimeUntilNEvents
+
 Simulates Erlang-distributed waiting times.
 
 ```python
@@ -2071,6 +2139,7 @@ ci_results = CalculateConfidenceIntervalOfProportion(
 The visualizations module provides a comprehensive set of tools for creating publication-quality statistical plots and charts:
 
 #### Plot100PercentStackedBarChart
+
 Creates a 100% stacked bar chart for comparing proportional compositions across categories.
 
 ```python
@@ -2364,8 +2433,16 @@ table = RenderTableOne(
 
 ## Contributions
 
-Contributions to the analysistoolbox package are welcome! Please submit a pull request with your changes.
+Contributions to `analysistoolbox` are welcome! Please submit a pull request with your changes. If you're adding a new function, remember every function needs a Teaching Note in its docstring — see the Documentation Standards section above.
 
 ## License
 
-The analysistoolbox package is licensed under the GNU License. Read more about the GNU License at [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html).
+`analysistoolbox` is licensed under the **GNU General Public License v3.0 or later (GPL-3.0-or-later)**. See [LICENSE.md](LICENSE.md) for details.
+
+## About
+
+`analysistoolbox` is a collection of tools in Python for data collection and processing, statistics, analytics, and intelligence analysis, built and maintained by [Kyle Protho](mailto:kyletprotho@gmail.com).
+
+- Website & docs: [analysistoolbox.com](https://www.analysistoolbox.com/)
+- Free browser-based SAT tools: [analysistoolbox.com/tools](https://www.analysistoolbox.com/tools)
+- PyPI: [pypi.org/project/analysistoolbox](https://pypi.org/project/analysistoolbox/)

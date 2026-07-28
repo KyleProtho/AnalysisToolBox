@@ -57,6 +57,7 @@ from analysistoolbox.visualizations import PlotBarChart
 | `hypothesis_testing` | Statistical tests, regression, ANOVA |
 | `linear_algebra` | Matrix operations, eigenvalues |
 | `llm` | Anthropic and OpenAI API integration |
+| `network_analysis` | Graph construction from edge lists, network metrics |
 | `predictive_analytics` | ARIMA, XGBoost, neural networks |
 | `prescriptive_analytics` | Linear optimization, recommenders |
 | `probability` | Probability utilities |
