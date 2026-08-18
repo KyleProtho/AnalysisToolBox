@@ -1,1 +1,4 @@
+from .CalculateHaversineDistance import CalculateHaversineDistance
 from .ConductClusterAnalysis import ConductClusterAnalysis
+from .CreateChoroplethMapFromNames import CreateChoroplethMapFromNames
+from .FindNearestPointOfInterest import FindNearestPointOfInterest

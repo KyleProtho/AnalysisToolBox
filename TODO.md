@@ -8,8 +8,7 @@ Tracks coverage against *An Introduction to Statistical Learning* (ISL) chapters
 
 | Status | Function | Module |
 |---|---|---|
-| ✅ Done | — | — |
-| ☐ Needed | `CreateKNearestNeighborModel` | `predictive_analytics/` |
+| ✅ Done | `CreateKNearestNeighborModel` | `predictive_analytics/` |
 
 ---
 
@@ -137,11 +136,36 @@ Scoped to public APIs and legally accessible data only — excludes anything tha
 
 ---
 
+## Geospatial / OSINT Analysis Primitives
+
+Geospatial primitives and higher-level analytic techniques for tabular location data. Wave 1 items are
+low-dependency primitives that unlock the rest; Wave 2 items build on them.
+
+### Wave 1 — Primitives
+
+| Status | Function | Module | Notes |
+|---|---|---|---|
+| ✅ Done | `CalculateHaversineDistance` | `geospatial_analysis/` | Pairwise or point-to-point great-circle distance between rows. `ConductClusterAnalysis` already uses haversine internally — pull it out as a standalone, reusable primitive. Pure numpy, no new dependency. |
+| ☐ Needed | `ConvertCoordinateFormats` | `geospatial_analysis/` | Bidirectional conversion between decimal degrees, DMS, UTM, and MGRS on a tabular column. MGRS is the geocoordinate standard used by NATO militaries for geo-referencing and position reporting; analysts working from military reporting, satellite imagery metadata, or European mapping sources need to normalize into one format before analysis. Candidate libs: `mgrs`, `utm`, or `pyproj`. |
+| ✅ Done | `FindNearestPointOfInterest` | `geospatial_analysis/` | Given a dataframe of observations and a dataframe of reference points (facilities, checkpoints, prior sightings), return nearest reference point + distance for each row. Uses `sklearn.neighbors.BallTree` with haversine metric — fast at scale, natural companion to the existing cluster function. |
+
+### Wave 2 — Higher-Level Techniques (built on Wave 1)
+
+| Status | Function | Module | Notes |
+|---|---|---|---|
+| ☐ Needed | `CalculateBearingAndSpeed` | `geospatial_analysis/` | For time-ordered tracks (person, vehicle, vessel, aircraft with sequential lat/lon/timestamp rows), compute bearing/heading and speed between consecutive points. Useful for flagging anomalous movement (loitering, sudden course change, implausible speed) — a common OSINT pattern-of-life technique. |
+| ☐ Needed | `CheckPointInPolygon` / `CalculateGeofenceDwellTime` | `geospatial_analysis/` | Flag whether tabular points fall inside a boundary (from `FetchUSShapefile` output or an uploaded GeoJSON/shapefile) and, for time-series data, how long a subject dwelled inside it. Pairs naturally with the existing shapefile fetcher. |
+| ☐ Needed | `CalculateConvexHull` | `geospatial_analysis/` | Compute the minimum bounding polygon (and area) around a set of points — useful for defining an "area of interest" or estimating the spatial extent of an entity's activity from scattered observations. `scipy.spatial.ConvexHull`, no heavy new dependency. |
+| ☐ Needed | `ReverseGeocode` | `geospatial_analysis/` | Complement to `GeocodeUSAddresses` — lat/lon back to a human-readable address/place name via Nominatim/OSM, so it isn't US-only. Fills the international gap the current geocoder leaves. |
+| ☐ Needed | `GenerateKernelDensityHeatmap` | `geospatial_analysis/` | KDE-based density surface (vs. the hard clustering of DBSCAN) rendered as a Folium heatmap — good for "where is activity concentrated" questions where discrete clusters aren't the right framing. |
+
+---
+
 ## Summary
 
 | | Count |
 |---|---|
-| ✅ Done | 13 |
-| ☐ Needed | 26 |
-| **Total** | **39** |
+| ✅ Done | 15 |
+| ☐ Needed | 32 |
+| **Total** | **47** |
 
