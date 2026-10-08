@@ -21,7 +21,7 @@ def CreateSLURPDistributionFromLogisticRegression(logistic_regression_model,
                             show_summary=False,
                             return_format='dataframe',
                             # Plot parameters
-                            show_distribution_plot=True,
+                            plot_simulation_results=True,
                             figure_size=(8, 6),
                             fill_color="#999999",
                             fill_transparency=0.6,
@@ -93,7 +93,7 @@ def CreateSLURPDistributionFromLogisticRegression(logistic_regression_model,
     return_format : str, optional
         The format of the output: 'dataframe' (pd.DataFrame) or 'array' (np.ndarray). 
         Defaults to 'dataframe'.
-    show_distribution_plot : bool, optional
+    plot_simulation_results : bool, optional
         Whether to display a histogram of the generated probability samples. Defaults to True.
     figure_size : tuple, optional
         The size of the plot figure in inches (width, height). Defaults to (8, 6).
@@ -307,7 +307,7 @@ def CreateSLURPDistributionFromLogisticRegression(logistic_regression_model,
     metalog_df = pd.DataFrame(arr_metalog, columns=[f"{outcome_variable}_probability"])
     
     # Plot the metalog distribution
-    if show_distribution_plot:
+    if plot_simulation_results:
         # Create figure and axes
         fig, ax = plt.subplots(figsize=figure_size)
         

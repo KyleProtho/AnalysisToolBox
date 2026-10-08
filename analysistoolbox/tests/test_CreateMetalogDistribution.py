@@ -26,9 +26,9 @@ class TestCreateMetalogDistribution(unittest.TestCase):
         result = CreateMetalogDistribution(
             self.int_df, 
             'vals', 
-            number_of_samples=100, 
+            number_of_trials=100, 
             show_summary=False,
-            plot_metalog_distribution=True
+            plot_simulation_results=True
         )
         self.assertIsInstance(result, pd.DataFrame)
         self.assertEqual(len(result), 100)
@@ -43,7 +43,7 @@ class TestCreateMetalogDistribution(unittest.TestCase):
             'vals', 
             lower_bound=0, 
             upper_bound=100,
-            number_of_samples=50,
+            number_of_trials=50,
             show_summary=False
         )
         self.assertIsInstance(result, pd.DataFrame)
@@ -59,7 +59,7 @@ class TestCreateMetalogDistribution(unittest.TestCase):
         result = CreateMetalogDistribution(
             self.decimal_df, 
             'vals', 
-            number_of_samples=100,
+            number_of_trials=100,
             show_summary=False,
             return_format='array'
         )
@@ -74,7 +74,7 @@ class TestCreateMetalogDistribution(unittest.TestCase):
             'vals', 
             lower_bound=0, 
             upper_bound=1,
-            number_of_samples=50,
+            number_of_trials=50,
             show_summary=False
         )
         self.assertIsInstance(result, pd.DataFrame)

@@ -15,11 +15,11 @@ def CreateMetalogDistribution(dataframe,
                               term_maximum=9,
                               term_minimum=2,
                               term_for_random_sample=None,
-                              number_of_samples=10000,
+                              number_of_trials=10000,
                               show_summary=True,
                               return_format='dataframe',
                               # Histogram formatting arguments
-                              plot_metalog_distribution=True,
+                              plot_simulation_results=True,
                               fill_color="#999999",
                               fill_transparency=0.6,
                               figure_size=(8, 6),
@@ -82,7 +82,7 @@ def CreateMetalogDistribution(dataframe,
     term_for_random_sample : int, optional
         The specific number of terms to use when generating random samples. If None,
         the `term_limit` from the fitted metalog is used. Defaults to None.
-    number_of_samples : int, optional
+    number_of_trials : int, optional
         The number of stochastic samples to generate from the fitted distribution.
         Defaults to 10000.
     show_summary : bool, optional
@@ -91,7 +91,7 @@ def CreateMetalogDistribution(dataframe,
     return_format : str, optional
         The format of the returned samples: 'dataframe' (as a pd.DataFrame) or 'array'
         (as a np.ndarray). Defaults to 'dataframe'.
-    plot_metalog_distribution : bool, optional
+    plot_simulation_results : bool, optional
         Whether to display a histogram of the generated samples with optional mean/median
         indicators. Defaults to True.
     fill_color : str, optional
@@ -146,7 +146,7 @@ def CreateMetalogDistribution(dataframe,
         dataframe=latency_df,
         variable='ms',
         lower_bound=0,
-        number_of_samples=5000,
+        number_of_trials=5000,
         fill_color="#b0170c",
         show_summary=False
     )
@@ -234,7 +234,7 @@ def CreateMetalogDistribution(dataframe,
     # Randomly select values from the metalog distribution
     arr_metalog = pm.rmetalog(
         metalog_dist, 
-        n=number_of_samples, 
+        n=number_of_trials, 
         term=term_for_random_sample, 
         generator="hdr"
     )
@@ -243,7 +243,7 @@ def CreateMetalogDistribution(dataframe,
     metalog_df = pd.DataFrame(arr_metalog, columns=[variable])
     
     # Plot the metalog distribution, if requested
-    if plot_metalog_distribution:
+    if plot_simulation_results:
         # Create figure and axes
         fig, ax = plt.subplots(figsize=figure_size)
         

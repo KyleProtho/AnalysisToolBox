@@ -11,13 +11,14 @@ def CreateCorrelatedSIPs(mean_of_variable_1,
                          mean_of_variable_2,
                          std_of_variable_2,
                          correlation,
-                         number_of_samples=10000,
+                         number_of_trials=10000,
+                         random_seed=412,
                          variable_1_name='Variable 1',
                          variable_2_name='Variable 2',
                          # Printing arguments
                          print_simulation_result_summary=False,
                          # Scatterplot arguments
-                         show_scatterplot=True,
+                         plot_simulation_results=True,
                          dot_fill_color="#999999",
                          title_for_plot="Simulation Results",
                          subtitle_for_plot="Showing the correlation between two variables",
@@ -61,8 +62,10 @@ def CreateCorrelatedSIPs(mean_of_variable_1,
         The standard deviation for the second simulated variable.
     correlation : float
         The target Pearson correlation coefficient between the two variables (-1 to 1).
-    number_of_samples : int, optional
+    number_of_trials : int, optional
         The number of stochastic trials to generate. Defaults to 10000.
+    random_seed : int, optional
+        The seed for the random number generator to ensure replicability. Defaults to 412.
     variable_1_name : str, optional
         Label for the first variable in the output DataFrame and plot. Defaults to 'Variable 1'.
     variable_2_name : str, optional
@@ -70,7 +73,7 @@ def CreateCorrelatedSIPs(mean_of_variable_1,
     print_simulation_result_summary : bool, optional
         Whether to print the observed correlation and summary statistics of the generated data.
         Defaults to False.
-    show_scatterplot : bool, optional
+    plot_simulation_results : bool, optional
         Whether to display a scatterplot of the simulated samples. Defaults to True.
     dot_fill_color : str, optional
         The hex color code for the points in the scatterplot. Defaults to "#999999".
@@ -123,18 +126,21 @@ def CreateCorrelatedSIPs(mean_of_variable_1,
     )
     """
     
+    # Create a local random number generator for reproducible, side-effect-free draws
+    rng = np.random.default_rng(random_seed)
+
     # Create a z-scored variable for the first variable
-    variable_1 = np.random.normal(
-        loc=0, 
-        scale=1, 
-        size=number_of_samples
+    variable_1 = rng.normal(
+        loc=0,
+        scale=1,
+        size=number_of_trials
     )
 
     # Create a z-scored variable for the second variable
-    variable_2 = np.random.normal(
-        loc=0, 
-        scale=1, 
-        size=number_of_samples
+    variable_2 = rng.normal(
+        loc=0,
+        scale=1,
+        size=number_of_trials
     )
 
     # If correlation is provided, force the correlation between the two variables
@@ -163,7 +169,7 @@ def CreateCorrelatedSIPs(mean_of_variable_1,
         print(simulation_summary)
 
     # If scatterplot requested, generate plot
-    if show_scatterplot:
+    if plot_simulation_results:
         ax = sns.scatterplot(
             data=dataframe, 
             x=variable_1_name,

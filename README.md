@@ -1896,8 +1896,8 @@ distribution = CreateMetalogDistribution(
     dataframe=df,
     variable='sales',
     lower_bound=0,
-    number_of_samples=10000,
-    plot_metalog_distribution=True
+    number_of_trials=10000,
+    plot_simulation_results=True
 )
 ```
 
@@ -1913,7 +1913,7 @@ distribution = CreateMetalogDistributionFromPercentiles(
     list_of_values=[10, 20, 30, 50],
     list_of_percentiles=[0.1, 0.25, 0.75, 0.9],
     lower_bound=0,
-    show_distribution_plot=True
+    plot_simulation_results=True
 )
 ```
 
@@ -1964,7 +1964,7 @@ slurp_dist = CreateSLURPDistributionFromLogisticRegression(
     prediction_interval=0.95,  # confidence level for predicted probabilities
     lower_bound=0,  # lower bound for probabilities (default: 0)
     upper_bound=1,  # upper bound for probabilities (default: 1)
-    show_distribution_plot=True  # show the probability distribution plot
+    plot_simulation_results=True  # show the probability distribution plot
 )
 ```
 
@@ -1983,7 +1983,7 @@ slurp_dist = CreateSLURPDistributionFromExponentialSmoothing(
     prediction_interval=0.95,  # confidence level for prediction interval
     lower_bound=None,  # optional lower bound constraint
     upper_bound=None,  # optional upper bound constraint
-    show_distribution_plot=True  # show the forecast distribution plot
+    plot_simulation_results=True  # show the forecast distribution plot
 )
 ```
 

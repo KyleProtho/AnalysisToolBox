@@ -46,7 +46,7 @@ print("Test 1: Basic usage with default parameters")
 print("-" * 50)
 result1 = CreateSLURPDistributionFromExponentialSmoothing(
     exponential_smoothing_model=fitted_model,
-    show_distribution_plot=True,
+    plot_simulation_results=True,
     title_for_plot="SLURP Distribution from Exponential Smoothing",
     subtitle_for_plot="Basic test with default parameters"
 )
@@ -63,7 +63,7 @@ result2 = CreateSLURPDistributionFromExponentialSmoothing(
     forecast_steps=3,
     number_of_trials=5000,
     prediction_interval=0.90,
-    show_distribution_plot=True,
+    plot_simulation_results=True,
     show_summary=True,
     title_for_plot="SLURP Distribution - Custom Parameters",
     subtitle_for_plot="3-step ahead forecast, 90% prediction interval"
@@ -81,7 +81,7 @@ result3 = CreateSLURPDistributionFromExponentialSmoothing(
     exponential_smoothing_model=fitted_model,
     lower_bound=0,
     upper_bound=200,
-    show_distribution_plot=True,
+    plot_simulation_results=True,
     title_for_plot="SLURP Distribution with Bounds",
     subtitle_for_plot="Bounded between 0 and 200"
 )
@@ -96,7 +96,7 @@ print("-" * 50)
 result4 = CreateSLURPDistributionFromExponentialSmoothing(
     exponential_smoothing_model=fitted_model,
     return_format='array',
-    show_distribution_plot=False
+    plot_simulation_results=False
 )
 print(f"Result type: {type(result4)}")
 print(f"Result shape: {result4.shape}")
@@ -108,7 +108,7 @@ print("Test 5: No plot, just return data")
 print("-" * 50)
 result5 = CreateSLURPDistributionFromExponentialSmoothing(
     exponential_smoothing_model=fitted_model,
-    show_distribution_plot=False,
+    plot_simulation_results=False,
     number_of_trials=1000
 )
 print(f"Result shape: {result5.shape}")

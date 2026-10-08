@@ -16,12 +16,12 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
                                              term_maximum=None,
                                              term_minimum=2,
                                              term_for_random_sample=None,
-                                             number_of_samples=10000,
+                                             number_of_trials=10000,
                                              variable_name="Simulated Value",
                                              show_summary=True,
                                              return_format='dataframe',
                                              # Plot parameters
-                                             show_distribution_plot=True,
+                                             plot_simulation_results=True,
                                              figure_size=(8, 6),
                                              fill_color="#999999",
                                              fill_transparency=0.6,
@@ -82,7 +82,7 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
     term_for_random_sample : int, optional
         The specific number of terms used for generating samples. If None, the `term_limit`
         from the fitted distribution is used. Defaults to None.
-    number_of_samples : int, optional
+    number_of_trials : int, optional
         The number of stochastic samples to generate. Defaults to 10000.
     variable_name : str, optional
         Label for the variable in the output DataFrame and plot. Defaults to "Simulated Value".
@@ -92,7 +92,7 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
     return_format : str, optional
         The format of the output: 'dataframe' (pd.DataFrame) or 'array' (np.ndarray).
         Defaults to 'dataframe'.
-    show_distribution_plot : bool, optional
+    plot_simulation_results : bool, optional
         Whether to display a histogram of the generated samples. Defaults to True.
     figure_size : tuple, optional
         The size of the plot figure in inches (width, height). Defaults to (8, 6).
@@ -215,7 +215,7 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
     # Take a random sample from the metalog distribution
     arr_metalog = pm.rmetalog(
         m=metalog_dist, 
-        n=number_of_samples,
+        n=number_of_trials,
         term=term_for_random_sample
     )
     
@@ -223,7 +223,7 @@ def CreateMetalogDistributionFromPercentiles(list_of_values,
     metalog_df = pd.DataFrame(arr_metalog, columns=[variable_name])
     
     # Plot the metalog distribution
-    if show_distribution_plot:
+    if plot_simulation_results:
         # Create figure and axes
         fig, ax = plt.subplots(figsize=figure_size)
         

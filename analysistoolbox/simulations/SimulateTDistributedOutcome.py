@@ -3,7 +3,6 @@ from math import ceil, sqrt
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import random
 import seaborn as sns
 import textwrap
 
@@ -142,10 +141,9 @@ def SimulateTDistributedOutcome(degrees_of_freedom,
         if len(min_max_of_outcome) != 2:
             raise ValueError("If specified, min_max_of_outcome must be a list of length 2.")
     
-    # If specified, set random seed for replicability
-    if random_seed is not None:
-        random.seed(random_seed)
-    
+    # Create a local random number generator for reproducible, side-effect-free draws
+    rng = np.random.default_rng(random_seed)
+
     # If standard_deviation_of_outcome and min_max_of_outcome are not None, print a warning
     if standard_deviation_of_outcome is not None and min_max_of_outcome is not None:
         print("Warning: Both standard_deviation_of_outcome and min_max_of_outcome were specified. Ignoring min_max_of_outcome.")
@@ -159,13 +157,9 @@ def SimulateTDistributedOutcome(degrees_of_freedom,
             # The range rule of a t-distribution is typically equal to 4 times the standard deviation of the distribution, 
             # multiplied by the square root of the degrees of freedom.
     
-    # If specified, set random seed for replicability
-    if random_seed is not None:
-        random.seed(random_seed)
-        
     # Simulate T distributed outcome
-    list_sim_results = np.random.standard_t(df=degrees_of_freedom,
-                                            size=number_of_trials)
+    list_sim_results = rng.standard_t(df=degrees_of_freedom,
+                                      size=number_of_trials)
     
     # Convert T score to original value scale
     list_sim_results = list_sim_results * standard_deviation_of_outcome + expected_outcome

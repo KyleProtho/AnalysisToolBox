@@ -3,7 +3,6 @@ from math import ceil
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import random
 import seaborn as sns
 import textwrap
 
@@ -130,12 +129,11 @@ def SimulateTimeUntilNEvents(number_of_events=1,
     if return_format not in ['dataframe', 'array']:
         raise ValueError("return_format must be either 'dataframe' or 'array'.")
     
-    # If specified, set random seed for replicability
-    if random_seed is not None:
-        random.seed(random_seed)
-        
+    # Create a local random number generator for reproducible, side-effect-free draws
+    rng = np.random.default_rng(random_seed)
+
     # Simulate time between events
-    list_sim_results = np.random.gamma(
+    list_sim_results = rng.gamma(
         shape=number_of_events,
         scale=expected_time_between_events,
         size=number_of_trials

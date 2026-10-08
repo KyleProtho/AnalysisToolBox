@@ -3,7 +3,6 @@ from math import ceil
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import random
 import seaborn as sns
 import textwrap
 
@@ -124,13 +123,12 @@ def SimulateCountOutcome(expected_count,
     if return_format not in ['dataframe', 'array']:
         raise ValueError("return_format must be either 'dataframe' or 'array'.")
     
-    # If specified, set random seed for replicability
-    if random_seed is not None:
-        random.seed(random_seed)
-        
+    # Create a local random number generator for reproducible, side-effect-free draws
+    rng = np.random.default_rng(random_seed)
+
     # Simulate count outcome
-    list_sim_results = np.random.poisson(lam=expected_count,
-                                         size=number_of_trials)
+    list_sim_results = rng.poisson(lam=expected_count,
+                                   size=number_of_trials)
     
     # Convert results to a dataframe
     df_simulation = pd.DataFrame(list_sim_results,

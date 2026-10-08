@@ -3,7 +3,6 @@ from math import ceil
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import random
 import seaborn as sns
 import textwrap
 
@@ -126,9 +125,8 @@ def SimulateCountUntilFirstSuccess(probability_of_success,
     if return_format not in ['dataframe', 'array']:
         raise ValueError("return_format must be either 'dataframe' or 'array'.")
     
-    # If specified, set random seed for replicability
-    if random_seed is not None:
-        random.seed(random_seed)
+    # Create a local random number generator for reproducible, side-effect-free draws
+    rng = np.random.default_rng(random_seed)
 
     # Simulate count until first success
     list_sim_results = []
@@ -137,9 +135,8 @@ def SimulateCountUntilFirstSuccess(probability_of_success,
         event_count = 0
         while is_success == False:
             event_count += 1
-            sim_result = random.choices(population = [0, 1],
-                                        weights = [1-probability_of_success, probability_of_success])
-            sim_result = sum(sim_result)
+            sim_result = rng.choice([0, 1],
+                                    p=[1-probability_of_success, probability_of_success])
             if sim_result == 1:
                 list_sim_results.append(event_count)
                 is_success = True
