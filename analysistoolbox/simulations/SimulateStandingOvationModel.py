@@ -95,7 +95,7 @@ def SimulateStandingOvationModel(qualities=(0.4, 0.5, 0.6, 0.7),
         Whether a standing agent (other than a pioneer) sits down again when more than
         their peer threshold of the people they see are seated. Defaults to False.
     hall_shape : tuple of int, optional
-        The shape of the hall as (rows, seats per row). Row 0 is the front. Defaults to (20, 30).
+        The shape of the hall as (rows, seats per row). Row 0 is the front. Defaults to (20, 40).
     neighborhood : str, optional
         Which seats an agent can see:
           * 'cone': the cone_depth rows ahead, widening by one seat on each side per
